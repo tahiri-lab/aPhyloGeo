@@ -1,0 +1,19 @@
+### ./STAR   --runMode genomeGenerate      --runThreadN 4   --genomeDir starIndex   --genomeFastaFiles reference_genome/ref_genome.fasta      --genomeSAindexNbases 6   --sjdbGTFtagExonParentTranscript reference_genome/GCF_009858895.2_ASM985889v3_genomic.gff
+### GstrandBit 32
+versionGenome	2.7.4a
+genomeType	Full
+genomeFastaFiles	reference_genome/ref_genome.fasta 
+genomeSAindexNbases	6
+genomeChrBinNbits	18
+genomeSAsparseD	1
+genomeTransformType	None
+genomeTransformVCF	-
+sjdbOverhang	0
+sjdbFileChrStartEnd	- 
+sjdbGTFfile	-
+sjdbGTFchrPrefix	-
+sjdbGTFfeatureExon	exon
+sjdbGTFtagExonParentTranscript	reference_genome/GCF_009858895.2_ASM985889v3_genomic.gff
+sjdbGTFtagExonParentGene	gene_id
+sjdbInsertSave	Basic
+genomeFileSizes	262144 246703
