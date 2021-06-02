@@ -1,0 +1,131 @@
+
+Protein parsimony algorithm, version 3.7a
+
+ 5 species,  10  sites
+
+
+Name          Sequences
+----          ---------
+
+Alpha        ABCDEFGHIK 
+Beta         ..--...... 
+Gamma        ?...S..*?? 
+Delta        CIK....... 
+Epsilon      DIK....... 
+
+
+
+
+     3 trees in all found
+
+
+  +-----Gamma     
+  |  
+  |           +-----Epsilon   
+  |     +-----3  
+  1-----2     +-----Delta     
+  |     |  
+  |     +-----Beta      
+  |  
+  +-----Alpha     
+
+  remember: this is an unrooted tree!
+
+
+
+requires a total of     16.000
+
+
+steps in each site:
+         0   1   2   3   4   5   6   7   8   9
+     r-----------------------------------------
+    0|       3   1   5   3   2   0   0   2   0
+   10|   0                                    
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+
+         1                ?N?D?FG?IK 
+  1   Gamma        yes    ?BCD.FG*?? 
+  1      2         yes    ?N.DEFGHIK 
+  2      3         yes    .IK....... 
+  3   Epsilon     maybe   D......... 
+  3   Delta        yes    C......... 
+  2   Beta         yes    AB--...... 
+
+
+
+              +-----Epsilon   
+        +-----3  
+  +-----2     +-----Delta     
+  |     |  
+  |     +-----Gamma     
+  |  
+  1-----Beta      
+  |  
+  +-----Alpha     
+
+  remember: this is an unrooted tree!
+
+
+
+requires a total of     16.000
+
+
+steps in each site:
+         0   1   2   3   4   5   6   7   8   9
+     r-----------------------------------------
+    0|       3   1   5   3   2   0   0   2   0
+   10|   0                                    
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+
+         1                ?N??EFGHIK 
+  1      2         yes    ?N.DEFGHIK 
+  2      3         yes    .IK....... 
+  3   Epsilon     maybe   D......... 
+  3   Delta        yes    C......... 
+  2   Gamma        yes    ?BC.S..*?? 
+  1   Beta         yes    AB--EFGHIK 
+
+
+
+        +-----Epsilon   
+  +-----3  
+  |     +-----Delta     
+  |  
+  |     +-----Gamma     
+  1-----2  
+  |     +-----Beta      
+  |  
+  +-----Alpha     
+
+  remember: this is an unrooted tree!
+
+
+
+requires a total of     16.000
+
+
+steps in each site:
+         0   1   2   3   4   5   6   7   8   9
+     r-----------------------------------------
+    0|       3   1   5   3   2   0   0   2   0
+   10|   0                                    
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+
+         1                ???DEFGHIK 
+  1      3         yes    ?IKDEFGHIK 
+  3   Epsilon     maybe   D......... 
+  3   Delta        yes    C......... 
+  1      2         yes    ?N.DEFGHIK 
+  2   Gamma        yes    ?BC.S..*?? 
+  2   Beta         yes    AB--...... 
+
+

@@ -1,0 +1,77 @@
+
+Consensus tree program, version 3.7
+
+Species in order: 
+
+  1. A
+  2. B
+  3. H
+  4. D
+  5. J
+  6. G
+  7. E
+  8. F
+  9. I
+  10. C
+
+
+
+Sets included in the consensus tree
+
+Set (species in order)     How many times out of    9.00
+
+.......**.                   9.00
+..********                   9.00
+..****.***                   6.00
+..***.....                   6.00
+..***....*                   6.00
+..*.*.....                   4.00
+..***..***                   2.00
+
+
+Sets NOT included in consensus tree:
+
+Set (species in order)     How many times out of    9.00
+
+.....**...                   3.00
+.....*****                   3.00
+..**......                   3.00
+.....****.                   3.00
+..****...*                   2.00
+.....*.**.                   2.00
+..*.******                   2.00
+....******                   2.00
+...*******                   1.00
+
+
+Extended majority rule consensus tree
+
+CONSENSUS TREE:
+the numbers on the branches indicate the number
+of times the partition of the species into the two sets
+which are separated by that branch occurred
+among the trees, out of   9.00 trees
+
+                                          +-----------------------C
+                                          |
+                                  +--6.00-|               +-------H
+                                  |       |       +--4.00-|
+                                  |       +--6.00-|       +-------J
+                          +--2.00-|               |
+                          |       |               +---------------D
+                          |       |
+                  +--6.00-|       |                       +-------F
+                  |       |       +------------------9.00-|
+                  |       |                               +-------I
+          +--9.00-|       |
+          |       |       +---------------------------------------G
+  +-------|       |
+  |       |       +-----------------------------------------------E
+  |       |
+  |       +-------------------------------------------------------B
+  |
+  +---------------------------------------------------------------A
+
+
+  remember: this is an unrooted tree!
+

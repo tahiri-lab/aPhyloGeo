@@ -1,0 +1,65 @@
+
+DNA parsimony algorithm, version 3.7a
+
+ 5 species,  13  sites
+
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGUGGCCA AAU
+Beta         ..G..C.... ..C
+Gamma        C.UU.C.U.. C.A
+Delta        GGUA.UU.GG CC.
+Epsilon      GGGA.CU.GG CCC
+
+
+
+One most parsimonious tree found:
+
+
+                                            +-----Epsilon   
+               +----------------------------3  
+  +------------2                            +-------Delta     
+  |            |  
+  |            +----------------Gamma     
+  |  
+  1----Beta      
+  |  
+  +---------Alpha     
+
+  remember: this is an unrooted tree!
+
+
+
+requires a total of     19.000
+
+  between      and       length
+  -------      ---       ------
+     1           2       0.217949
+     2           3       0.487179
+     3      Epsilon      0.096154
+     3      Delta        0.134615
+     2      Gamma        0.275641
+     1      Beta         0.076923
+     1      Alpha        0.173077
+
+steps in each site:
+         0   1   2   3   4   5   6   7   8   9
+     r-----------------------------------------
+    0|       2   1   3   2   0   2   1   1   1
+   10|   1   1   1   3                        
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+          1                AABGTCGCCA AAY
+   1      2         yes    V.KD...... C..
+   2      3         yes    GG.A..T.GG .C.
+   3   Epsilon     maybe   ..G....... ..C
+   3   Delta        yes    ..T..T.... ..T
+   2   Gamma        yes    C.TT...T.. ..A
+   1   Beta        maybe   ..G....... ..C
+   1   Alpha        yes    ..C..G.... ..T
+
+

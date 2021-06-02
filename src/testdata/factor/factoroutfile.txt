@@ -1,0 +1,8 @@
+
+Factor -- multistate to binary recoding program, version 3.7a
+
+    4    8
+Alpha     11100000
+Beta      10001001
+Gamma     00011100
+Epsilon   11101010

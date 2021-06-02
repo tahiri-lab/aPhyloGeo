@@ -1,0 +1,64 @@
+
+Amino acid sequence
+   Maximum Likelihood method with molecular clock, version 3.7a
+
+ 5 species,  13  sites
+Jones-Taylor-Thornton model of amino acid change
+
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA AAT
+Beta         ..G..C.... ..C
+Gamma        C.TT.C.T.. C.A
+Delta        GGTA.TT.GG CC.
+Epsilon      GGGA.CT.GG CCC
+
+
+
+
+
+
+              +-----Epsilon   
+  +-----------4  
+  !           +-----Delta     
+--3  
+  !  +---------------Gamma     
+  +--2  
+     !         +-----Alpha     
+     +---------1  
+               +-----Beta      
+
+
+Ln Likelihood =  -140.47565
+
+ Ancestor      Node      Node Height     Length
+ --------      ----      ---- ------     ------
+ root            3      
+   3             4          0.20782      0.20782
+   4          Epsilon       0.30000      0.09218
+   4          Delta         0.30000      0.09218
+   3             2          0.04143      0.04143
+   2          Gamma         0.30000      0.25857
+   2             1          0.19471      0.15328
+   1          Alpha         0.30000      0.10529
+   1          Beta          0.30000      0.10529
+
+
+
+
+Probable sequences at interior nodes:
+
+  node       Reconstructed sequence (caps if > 0.95)
+
+    3        gataTCgCCa Cac
+    4        GGtATCTCGG CCc
+ Epsilon     GGGATCTCGG CCC
+ Delta       GGTATTTCGG CCT
+    2        aAtaTCGCCA CAc
+ Gamma       CATTTCGTCA CAA
+    1        AAgGTCGCCA AAc
+ Alpha       AACGTGGCCA AAT
+ Beta        AAGGTCGCCA AAC
+

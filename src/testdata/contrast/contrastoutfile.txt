@@ -1,0 +1,41 @@
+
+Continuous character contrasts analysis, version 3.69
+
+   5 Populations,    2 Characters
+
+Name                       Phenotypes
+----                       ----------
+
+Homo         4.09434   4.74493
+Pongo        3.61092   3.33220
+Macaca       2.37024   3.36730
+Ateles       2.02815   2.89037
+Galago      -1.46968   2.30259
+
+
+Contrasts (columns are different characters)
+--------- -------- --- --------- -----------
+
+   0.74593   2.17989
+   1.58474   0.71761
+   1.19293   0.86790
+   3.35832   0.89706
+
+Covariance matrix
+---------- ------
+
+    3.9423    1.7028
+    1.7028    1.7062
+
+Regressions (columns on rows)
+----------- -------- -- -----
+
+    1.0000    0.4319
+    0.9980    1.0000
+
+Correlations
+------------
+
+    1.0000    0.6566
+    0.6566    1.0000
+

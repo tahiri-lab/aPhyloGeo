@@ -1,0 +1,23 @@
+
+DNA compatibility algorithm, version 3.7a
+
+
+One most compatible tree found:
+
+
+              +-----Epsilon   
+        +-----3  
+  +-----2     +-----Delta     
+  |     |  
+  |     +-----Gamma     
+  |  
+  1-----Beta      
+  |  
+  +-----Alpha     
+
+  remember: this is an unrooted tree!
+
+
+
+total number of compatible sites is       11.0
+

@@ -1,0 +1,69 @@
+
+Nucleic acid sequence Maximum Likelihood method, version 3.7a
+
+ 5 species,  13  sites
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA AAT
+Beta         ..G..C.... ..C
+Gamma        C.TT.C.T.. C.A
+Delta        GGTA.TT.GG CC.
+Epsilon      GGGA.CT.GG CCC
+
+
+
+Empirical Base Frequencies:
+
+   A       0.24615
+   C       0.29231
+   G       0.24615
+  T(U)     0.21538
+
+Transition/transversion ratio =   2.000000
+
+
+                                                   +Epsilon   
+     +---------------------------------------------1  
+  +--2                                             +--------Delta     
+  |  |  
+  |  +Beta      
+  |  
+  3------------------------------Gamma     
+  |  
+  +-----Alpha     
+
+
+remember: this is an unrooted tree!
+
+Ln Likelihood =   -72.25449
+
+ Between        And            Length      Approx. Confidence Limits
+ -------        ---            ------      ------- ---------- ------
+
+     3          Alpha             0.18670     (     zero,     0.53645)
+     3             2              0.10687     (     zero,     0.42581)
+     2             1              1.51296     (     zero,     3.31131) **
+     1          Epsilon           0.00006     (     zero,     0.34299)
+     1          Delta             0.28136     (     zero,     0.62653) **
+     2          Beta              0.00006     (     zero,     0.32907)
+     3          Gamma             1.01861     (     zero,     2.33843) **
+
+     *  = significantly positive, P < 0.05
+     ** = significantly positive, P < 0.01
+
+
+Probable sequences at interior nodes:
+
+  node       Reconstructed sequence (caps if > 0.95)
+
+    3        AAcGTCGCCA AAc
+    2        AAGGTCGCCA AAC
+    1        GGGATCTCGG CCC
+ Epsilon     GGGATCTCGG CCC
+ Delta       GGTATTTCGG CCT
+ Beta        AAGGTCGCCA AAC
+ Gamma       CATTTCGTCA CAA
+ Alpha       AACGTGGCCA AAT
+

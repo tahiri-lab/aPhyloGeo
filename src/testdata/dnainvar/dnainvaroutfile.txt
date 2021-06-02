@@ -1,0 +1,120 @@
+
+Nucleic acid sequence Invariants method, version 3.7a
+
+ 4 species,  13  sites
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA AAT
+Beta         ..G..C.... ..C
+Gamma        C.TT.C.T.. C.A
+Delta        GGTA.TT.GG CC.
+
+
+
+   Pattern   Number of times
+
+     AAAC         1
+     AAAG         2
+     AACC         1
+     AACG         1
+     CCCG         1
+     CCTC         1
+     CGTT         1
+     GCCT         1
+     GGGT         1
+     GGTA         1
+     TCAT         1
+     TTTT         1
+
+
+Symmetrized patterns (1, 2 = the two purines  and  3, 4 = the two pyrimidines
+                  or  1, 2 = the two pyrimidines  and  3, 4 = the two purines)
+
+     1111         1
+     1112         2
+     1113         3
+     1121         1
+     1132         2
+     1133         1
+     1231         1
+     1322         1
+     1334         1
+
+Tree topologies (unrooted): 
+
+    I:  ((Alpha,Beta),(Gamma,Delta))
+   II:  ((Alpha,Gamma),(Beta,Delta))
+  III:  ((Alpha,Delta),(Beta,Gamma))
+
+
+Lake's linear invariants
+ (these are expected to be zero for the two incorrect tree topologies.
+  This is tested by testing the equality of the two parts
+  of each expression using a one-sided exact binomial test.
+  The null hypothesis is that the first part is no larger than the second.)
+
+ Tree                             Exact test P value    Significant?
+
+   I      1    -     0   =     1       0.5000               no
+   II     0    -     0   =     0       1.0000               no
+   III    0    -     0   =     0       1.0000               no
+
+
+Cavender's quadratic invariants (type L) using purines vs. pyrimidines
+ (these are expected to be zero, and thus have a nonsignificant
+  chi-square, for the correct tree topology)
+They will be misled if there are substantially
+different evolutionary rate between sites, or
+different purine:pyrimidine ratios from 1:1.
+
+  Tree I:
+
+   Contingency Table
+
+      2     8
+      1     2
+
+   Quadratic invariant =             4.0
+
+   Chi-square =    0.23111 (not significant)
+
+
+  Tree II:
+
+   Contingency Table
+
+      1     5
+      1     6
+
+   Quadratic invariant =            -1.0
+
+   Chi-square =    0.01407 (not significant)
+
+
+  Tree III:
+
+   Contingency Table
+
+      1     2
+      6     4
+
+   Quadratic invariant =             8.0
+
+   Chi-square =    0.66032 (not significant)
+
+
+
+
+Cavender's quadratic invariants (type K) using purines vs. pyrimidines
+ (these are expected to be zero for the correct tree topology)
+They will be misled if there are substantially
+different evolutionary rate between sites, or
+different purine:pyrimidine ratios from 1:1.
+No statistical test is done on them here.
+
+  Tree I:              -9.0
+  Tree II:              4.0
+  Tree III:             5.0
+

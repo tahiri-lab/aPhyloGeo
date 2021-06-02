@@ -1,0 +1,618 @@
+
+Bootstrapping algorithm, version 3.7a
+
+
+Bootstrap
+
+  5 species,   6  sites
+
+Name         Data
+----         ----
+
+Alpha        AACAAC
+Beta         ...CC.
+Gamma        .C....
+Delta        CCACCA
+Epsilon      CCA...
+
+
+    5     6
+Alpha       AAAAAC
+Beta        AAAAAC
+Gamma       AAACCC
+Delta       CCCCCA
+Epsilon     CCCCCC
+    5     6
+Alpha       AAACAA
+Beta        AAACCC
+Gamma       ACCCAA
+Delta       CCCACC
+Epsilon     CCCAAA
+    5     6
+Alpha       ACCACC
+Beta        ACCCCC
+Gamma       ACCACC
+Delta       CAACAA
+Epsilon     CAAACC
+    5     6
+Alpha       AAAAAC
+Beta        AAACCC
+Gamma       AACAAC
+Delta       CCCCCA
+Epsilon     CCCAAC
+    5     6
+Alpha       AACCAC
+Beta        AACCCC
+Gamma       CCCCAC
+Delta       CCAACA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       CCAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       ACCAAA
+Beta        ACCCCC
+Gamma       CCCAAA
+Delta       CAACCC
+Epsilon     CAAAAA
+    5     6
+Alpha       AAAAAC
+Beta        AACCCC
+Gamma       CCAAAC
+Delta       CCCCCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       AACAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACACCC
+Beta        ACCCCC
+Gamma       CCACCC
+Delta       CACAAA
+Epsilon     CAACCC
+    5     6
+Alpha       CACCCC
+Beta        CCCCCC
+Gamma       CACCCC
+Delta       ACAAAA
+Epsilon     AACCCC
+    5     6
+Alpha       AAAAAA
+Beta        AAAACC
+Gamma       AACCAA
+Delta       CCCCCC
+Epsilon     CCCCAA
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AAACCC
+Beta        AAACCC
+Gamma       ACCCCC
+Delta       CCCAAA
+Epsilon     CCCAAC
+    5     6
+Alpha       AAAAAA
+Beta        AAAACC
+Gamma       ACCCAA
+Delta       CCCCCC
+Epsilon     CCCCAA
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       ACCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AAAACC
+Beta        ACCCCC
+Gamma       CAAACC
+Delta       CCCCAA
+Epsilon     CAAACC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AAAAAC
+Beta        AAACCC
+Gamma       AACAAC
+Delta       CCCCCA
+Epsilon     CCCAAC
+    5     6
+Alpha       ACCCCC
+Beta        ACCCCC
+Gamma       ACCCCC
+Delta       CAAAAA
+Epsilon     CAACCC
+    5     6
+Alpha       AAAAAC
+Beta        CCCCCC
+Gamma       AAAAAC
+Delta       CCCCCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AACAAA
+Beta        AACCCC
+Gamma       CCCAAA
+Delta       CCACCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAACCA
+Beta        AAACCC
+Gamma       AACCCA
+Delta       CCCAAC
+Epsilon     CCCAAA
+    5     6
+Alpha       AACACC
+Beta        AACCCC
+Gamma       CCCACC
+Delta       CCACAA
+Epsilon     CCAACC
+    5     6
+Alpha       AAAAAC
+Beta        AAAAAC
+Gamma       AAACCC
+Delta       CCCCCA
+Epsilon     CCCCCA
+    5     6
+Alpha       CACCCC
+Beta        CCCCCC
+Gamma       CACCCC
+Delta       ACAAAA
+Epsilon     AACCCC
+    5     6
+Alpha       ACAAAA
+Beta        ACCCCC
+Gamma       ACAAAA
+Delta       CACCCC
+Epsilon     CAAAAA
+    5     6
+Alpha       AAAACC
+Beta        AAAACC
+Gamma       ACCCCC
+Delta       CCCCAA
+Epsilon     CCCCAC
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       AACAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AAAAAA
+Beta        AAAACC
+Gamma       AAACAA
+Delta       CCCCCC
+Epsilon     CCCCAA
+    5     6
+Alpha       ACACCC
+Beta        ACCCCC
+Gamma       CCACCC
+Delta       CACAAA
+Epsilon     CAACCC
+    5     6
+Alpha       AAACAA
+Beta        AAACCC
+Gamma       AACCAA
+Delta       CCCACC
+Epsilon     CCCAAA
+    5     6
+Alpha       CAAAAC
+Beta        CCCCCC
+Gamma       CAAAAC
+Delta       ACCCCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AAAAAC
+Beta        AAAAAC
+Gamma       AAACCC
+Delta       CCCCCA
+Epsilon     CCCCCA
+    5     6
+Alpha       AAAAAA
+Beta        AACCCC
+Gamma       AAAAAA
+Delta       CCCCCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAAACA
+Beta        AAAACC
+Gamma       AAACCA
+Delta       CCCCAC
+Epsilon     CCCCAA
+    5     6
+Alpha       CCCAAC
+Beta        CCCCCC
+Gamma       CCCAAC
+Delta       AAACCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AACACC
+Beta        AACCCC
+Gamma       AACACC
+Delta       CCACAA
+Epsilon     CCAACC
+    5     6
+Alpha       AAACCA
+Beta        AAACCC
+Gamma       ACCCCA
+Delta       CCCAAC
+Epsilon     CCCAAA
+    5     6
+Alpha       AAACAA
+Beta        AAACCC
+Gamma       ACCCAA
+Delta       CCCACC
+Epsilon     CCCAAA
+    5     6
+Alpha       ACCAAA
+Beta        ACCCCC
+Gamma       ACCAAA
+Delta       CAACCC
+Epsilon     CAAAAA
+    5     6
+Alpha       AAAACC
+Beta        ACCCCC
+Gamma       AAAACC
+Delta       CCCCAA
+Epsilon     CAAACC
+    5     6
+Alpha       CCAAAC
+Beta        CCCCCC
+Gamma       CCAAAC
+Delta       AACCCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AAAAAA
+Beta        AAAACC
+Gamma       ACCCAA
+Delta       CCCCCC
+Epsilon     CCCCAA
+    5     6
+Alpha       AACCCC
+Beta        AACCCC
+Gamma       ACCCCC
+Delta       CCAAAA
+Epsilon     CCACCC
+    5     6
+Alpha       AAAACA
+Beta        AAAACC
+Gamma       AAACCA
+Delta       CCCCAC
+Epsilon     CCCCAA
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       CCCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AACCAA
+Beta        AACCCC
+Gamma       AACCAA
+Delta       CCAACC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAAAAC
+Beta        AAACCC
+Gamma       ACCAAC
+Delta       CCCCCA
+Epsilon     CCCAAC
+    5     6
+Alpha       ACAACC
+Beta        ACCCCC
+Gamma       ACAACC
+Delta       CACCAA
+Epsilon     CAAACC
+    5     6
+Alpha       AAACAA
+Beta        AAACCC
+Gamma       AAACAA
+Delta       CCCACC
+Epsilon     CCCAAA
+    5     6
+Alpha       AAAAAC
+Beta        AACCCC
+Gamma       ACAAAC
+Delta       CCCCCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AAAAAA
+Beta        AAAACC
+Gamma       AAACAA
+Delta       CCCCCC
+Epsilon     CCCCAA
+    5     6
+Alpha       AAAAAA
+Beta        AACCCC
+Gamma       ACAAAA
+Delta       CCCCCC
+Epsilon     CCAAAA
+    5     6
+Alpha       ACCAAC
+Beta        ACCCCC
+Gamma       CCCAAC
+Delta       CAACCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AAAAAC
+Beta        AAAACC
+Gamma       ACCCAC
+Delta       CCCCCA
+Epsilon     CCCCAC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AAAAAC
+Beta        ACCCCC
+Gamma       CAAAAC
+Delta       CCCCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       CAAAAA
+Beta        CCCCCC
+Gamma       CAAAAA
+Delta       ACCCCC
+Epsilon     AAAAAA
+    5     6
+Alpha       CCAACC
+Beta        CCCCCC
+Gamma       CCAACC
+Delta       AACCAA
+Epsilon     AAAACC
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       ACCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AAACAC
+Beta        AAACCC
+Gamma       CCCCAC
+Delta       CCCACA
+Epsilon     CCCAAC
+    5     6
+Alpha       AAACCC
+Beta        ACCCCC
+Gamma       AAACCC
+Delta       CCCAAA
+Epsilon     CAACCC
+    5     6
+Alpha       CAAAAC
+Beta        CCCCCC
+Gamma       CAAAAC
+Delta       ACCCCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AACAAA
+Beta        AACCCC
+Gamma       ACCAAA
+Delta       CCACCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       ACCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AAACAC
+Beta        AAACCC
+Gamma       CCCCAC
+Delta       CCCACA
+Epsilon     CCCAAC
+    5     6
+Alpha       AAACCA
+Beta        AAACCC
+Gamma       AACCCA
+Delta       CCCAAC
+Epsilon     CCCAAA
+    5     6
+Alpha       ACCAAA
+Beta        ACCCCC
+Gamma       ACCAAA
+Delta       CAACCC
+Epsilon     CAAAAA
+    5     6
+Alpha       AAAAAA
+Beta        AACCCC
+Gamma       AAAAAA
+Delta       CCCCCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       ACCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACCCAA
+Beta        ACCCCC
+Gamma       CCCCAA
+Delta       CAAACC
+Epsilon     CAAAAA
+    5     6
+Alpha       AAAAAA
+Beta        ACCCCC
+Gamma       AAAAAA
+Delta       CCCCCC
+Epsilon     CAAAAA
+    5     6
+Alpha       AACCAA
+Beta        AACCCC
+Gamma       AACCAA
+Delta       CCAACC
+Epsilon     CCAAAA
+    5     6
+Alpha       AACAAA
+Beta        AACCCC
+Gamma       AACAAA
+Delta       CCACCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAAAAC
+Beta        AACCCC
+Gamma       ACAAAC
+Delta       CCCCCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACAAAC
+Beta        ACCCCC
+Gamma       ACAAAC
+Delta       CACCCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       AACAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACCCAC
+Beta        ACCCCC
+Gamma       ACCCAC
+Delta       CAAACA
+Epsilon     CAAAAC
+    5     6
+Alpha       AACAAA
+Beta        AACCCC
+Gamma       ACCAAA
+Delta       CCACCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAAAAA
+Beta        AACCCC
+Gamma       ACAAAA
+Delta       CCCCCC
+Epsilon     CCAAAA
+    5     6
+Alpha       AAAAAA
+Beta        AAAAAC
+Gamma       ACCCCA
+Delta       CCCCCC
+Epsilon     CCCCCA
+    5     6
+Alpha       AAAAAC
+Beta        AACCCC
+Gamma       ACAAAC
+Delta       CCCCCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AAACCC
+Beta        AAACCC
+Gamma       AACCCC
+Delta       CCCAAA
+Epsilon     CCCAAC
+    5     6
+Alpha       AAAACC
+Beta        ACCCCC
+Gamma       AAAACC
+Delta       CCCCAA
+Epsilon     CAAACC
+    5     6
+Alpha       AAAAAC
+Beta        AACCCC
+Gamma       AAAAAC
+Delta       CCCCCA
+Epsilon     CCAAAC
+    5     6
+Alpha       CAAAAA
+Beta        CCCCCC
+Gamma       CAAAAA
+Delta       ACCCCC
+Epsilon     AAAAAA
+    5     6
+Alpha       AACCAC
+Beta        AACCCC
+Gamma       AACCAC
+Delta       CCAACA
+Epsilon     CCAAAC
+    5     6
+Alpha       ACCAAC
+Beta        ACCCCC
+Gamma       CCCAAC
+Delta       CAACCA
+Epsilon     CAAAAC
+    5     6
+Alpha       AACCAC
+Beta        AACCCC
+Gamma       ACCCAC
+Delta       CCAACA
+Epsilon     CCAAAC
+    5     6
+Alpha       CAAAAC
+Beta        CCCCCC
+Gamma       CAAAAC
+Delta       ACCCCA
+Epsilon     AAAAAC
+    5     6
+Alpha       AAACCC
+Beta        AAACCC
+Gamma       AACCCC
+Delta       CCCAAA
+Epsilon     CCCACC
+    5     6
+Alpha       AACACC
+Beta        AACCCC
+Gamma       AACACC
+Delta       CCACAA
+Epsilon     CCAACC
+    5     6
+Alpha       AAAACC
+Beta        AAAACC
+Gamma       AACCCC
+Delta       CCCCAA
+Epsilon     CCCCAA
+    5     6
+Alpha       AAACAA
+Beta        AAACCC
+Gamma       AACCAA
+Delta       CCCACC
+Epsilon     CCCAAA
+    5     6
+Alpha       AACAAC
+Beta        AACCCC
+Gamma       ACCAAC
+Delta       CCACCA
+Epsilon     CCAAAC
+    5     6
+Alpha       AACACC
+Beta        AACCCC
+Gamma       AACACC
+Delta       CCACAA
+Epsilon     CCAACC
+    5     6
+Alpha       AAACAC
+Beta        AAACCC
+Gamma       CCCCAC
+Delta       CCCACA
+Epsilon     CCCAAC

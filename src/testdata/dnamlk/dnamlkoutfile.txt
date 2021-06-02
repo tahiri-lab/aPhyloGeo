@@ -1,0 +1,71 @@
+
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.7a
+
+ 5 species,  13  sites
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA AAT
+Beta         ..G..C.... ..C
+Gamma        C.TT.C.T.. C.A
+Delta        GGTA.TT.GG CC.
+Epsilon      GGGA.CT.GG CCC
+
+
+
+Empirical Base Frequencies:
+
+   A       0.24615
+   C       0.29231
+   G       0.24615
+  T(U)     0.21538
+
+Transition/transversion ratio =   2.000000
+
+
+
+
+
+                                           +----Epsilon   
+  +----------------------------------------4  
+  !                                        +----Delta     
+--3  
+  !                         +------------------Gamma     
+  +-------------------------2  
+                            !             +----Beta      
+                            +-------------1  
+                                          +----Alpha     
+
+
+Ln Likelihood =   -73.08941
+
+ Ancestor      Node      Node Height     Length
+ --------      ----      ---- ------     ------
+ root            3      
+   3             4          1.21171      1.21171
+   4          Epsilon       1.35166      0.13996
+   4          Delta         1.35166      0.13996
+   3             2          0.78116      0.78116
+   2          Gamma         1.35166      0.57050
+   2             1          1.19841      0.41724
+   1          Beta          1.35166      0.15326
+   1          Alpha         1.35166      0.15326
+
+
+
+Probable sequences at interior nodes:
+
+  node       Reconstructed sequence (caps if > 0.95)
+
+    3        ratrtcgcca cay
+    4        GGtATtTCGG CCt
+ Epsilon     GGGATCTCGG CCC
+ Delta       GGTATTTCGG CCT
+    2        aAtgTCGcCA cAy
+ Gamma       CATTTCGTCA CAA
+    1        AAcGTcGCCA AAt
+ Beta        AAGGTCGCCA AAC
+ Alpha       AACGTGGCCA AAT
+

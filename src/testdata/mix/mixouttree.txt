@@ -1,0 +1,4 @@
+(((Epsilon,Gamma),(Delta,Beta)),Alpha)[0.2500];
+((Gamma,((Epsilon,Delta),Beta)),Alpha)[0.2500];
+((Epsilon,(Gamma,(Delta,Beta))),Alpha)[0.2500];
+((Gamma,(Epsilon,(Delta,Beta))),Alpha)[0.2500];

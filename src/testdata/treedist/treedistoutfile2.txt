@@ -1,0 +1,11 @@
+
+Tree distance program, version 3.7a
+
+Branch score distances between adjacent pairs of trees:
+
+Trees 1 and 2:    2.000000e-01
+Trees 3 and 4:    3.162278e-01
+Trees 5 and 6:    2.000000e-01
+Trees 7 and 8:    2.000000e-01
+Trees 9 and 10:    2.000000e-01
+Trees 11 and 12:    3.162278e-01

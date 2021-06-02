@@ -1,0 +1,61 @@
+
+Amino acid sequence Maximum Likelihood method, version 3.7a
+
+ 5 species,  13  sites
+Jones-Taylor-Thornton model of amino acid change
+
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA AAT
+Beta         ..G..C.... ..C
+Gamma        C.TT.C.T.. C.A
+Delta        GGTA.TT.GG CC.
+Epsilon      GGGA.CT.GG CCC
+
+
+
+  +Beta      
+  |  
+  |                                     +Epsilon   
+  |      +------------------------------2  
+  4------3                              +------------Delta     
+  |      |  
+  |      +--------------------Gamma     
+  |  
+  +---------Alpha     
+
+
+remember: this is an unrooted tree!
+
+Ln Likelihood =  -131.55052
+
+ Between        And            Length      Approx. Confidence Limits
+ -------        ---            ------      ------- ---------- ------
+
+     4          Alpha             0.31006     (     zero,     0.66806) **
+     4          Beta              0.00010     (     zero,    infinity)
+     4             3              0.22206     (     zero,     0.62979) *
+     3             2              1.00907     (  0.13965,     1.87849) **
+     2          Epsilon           0.00010     (     zero,    infinity)
+     2          Delta             0.41175     (     zero,     0.86684) **
+     3          Gamma             0.68569     (  0.01628,     1.35510) **
+
+     *  = significantly positive, P < 0.05
+     ** = significantly positive, P < 0.01
+
+
+Probable sequences at interior nodes:
+
+  node       Reconstructed sequence (caps if > 0.95)
+
+    4        AAGGTCGCCA AAC
+ Beta        AAGGTCGCCA AAC
+    3        aAGgTCGCCA CAC
+    2        GGGATCTCGG CCC
+ Epsilon     GGGATCTCGG CCC
+ Delta       GGTATTTCGG CCT
+ Gamma       CATTTCGTCA CAA
+ Alpha       AACGTGGCCA AAT
+

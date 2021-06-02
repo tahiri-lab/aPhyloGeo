@@ -1,0 +1,169 @@
+
+Mixed parsimony algorithm, version 3.7a
+
+5 species, 6 characters
+
+Wagner parsimony method
+
+
+Name         Characters
+----         ----------
+
+Alpha        11011 0
+Beta         11000 0
+Gamma        10011 0
+Delta        00100 1
+Epsilon      00111 0
+
+
+
+     4 trees in all found
+
+
+
+
+           +--Epsilon   
+     +-----4  
+     !     +--Gamma     
+  +--2  
+  !  !     +--Delta     
+--1  +-----3  
+  !        +--Beta      
+  !  
+  +-----------Alpha     
+
+  remember: this is an unrooted tree!
+
+
+requires a total of      9.000
+
+steps in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       2   2   2   1   1   1            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+          1                1?011 0
+  1       2         no     ..... .
+  2       4        maybe   .0... .
+  4    Epsilon      yes    0.1.. .
+  4    Gamma        no     ..... .
+  2       3         yes    ...00 .
+  3    Delta        yes    001.. 1
+  3    Beta        maybe   .1... .
+  1    Alpha       maybe   .1... .
+
+
+
+
+
+     +--------Gamma     
+     !  
+  +--2     +--Epsilon   
+  !  !  +--4  
+  !  +--3  +--Delta     
+--1     !  
+  !     +-----Beta      
+  !  
+  +-----------Alpha     
+
+  remember: this is an unrooted tree!
+
+
+requires a total of      9.000
+
+steps in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       1   2   1   2   2   1            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+          1                1?011 0
+  1       2         no     ..... .
+  2    Gamma       maybe   .0... .
+  2       3        maybe   ...?? .
+  3       4         yes    001.. .
+  4    Epsilon     maybe   ...11 .
+  4    Delta        yes    ...00 1
+  3    Beta        maybe   .1.00 .
+  1    Alpha       maybe   .1... .
+
+
+
+
+
+     +--------Epsilon   
+  +--4  
+  !  !  +-----Gamma     
+  !  +--2  
+--1     !  +--Delta     
+  !     +--3  
+  !        +--Beta      
+  !  
+  +-----------Alpha     
+
+  remember: this is an unrooted tree!
+
+
+requires a total of      9.000
+
+steps in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       2   2   2   1   1   1            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+          1                1?011 0
+  1       4        maybe   .0... .
+  4    Epsilon      yes    0.1.. .
+  4       2         no     ..... .
+  2    Gamma        no     ..... .
+  2       3         yes    ...00 .
+  3    Delta        yes    0.1.. 1
+  3    Beta         yes    .1... .
+  1    Alpha       maybe   .1... .
+
+
+
+
+
+     +--------Gamma     
+  +--2  
+  !  !  +-----Epsilon   
+  !  +--4  
+--1     !  +--Delta     
+  !     +--3  
+  !        +--Beta      
+  !  
+  +-----------Alpha     
+
+  remember: this is an unrooted tree!
+
+
+requires a total of      9.000
+
+steps in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       2   2   2   1   1   1            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+          1                1?011 0
+  1       2        maybe   .0... .
+  2    Gamma        no     ..... .
+  2       4        maybe   ?.?.. .
+  4    Epsilon     maybe   0.1.. .
+  4       3         yes    ...00 .
+  3    Delta        yes    0.1.. 1
+  3    Beta         yes    110.. .
+  1    Alpha       maybe   .1... .
+
+

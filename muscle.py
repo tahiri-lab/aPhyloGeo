@@ -20,9 +20,16 @@ def changeNameSequences():
 def alignSequences():
     subprocess.run(["./muscle", "-in", "sequences.fasta", "-phyiout", "infile", "-maxiters", "1", "-diags"])
 
-# def createBoostrap
+def createBoostrap():
+    subprocess.run("./seqboot")
+    subprocess.run(["mv", "outfile", "infile"])
+
+def createDistanceMatrix():
+    subprocess.run("./dnadist")
+
 
 if __name__ == '__main__':
-    fetchingSequences()
-    changeNameSequences()
-    alignSequences()
+    # fetchingSequences()
+    # changeNameSequences()
+    # alignSequences()
+    createBoostrap()

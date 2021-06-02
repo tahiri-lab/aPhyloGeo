@@ -1,0 +1,12 @@
+
+Penny algorithm for Dollo or polymorphism parsimony, version 3.7a
+ branch-and-bound to find all most parsimonious trees
+
+Dollo parsimony method
+
+ 8 species,   6 characters
+
+Name         Characters
+----         ----------
+
+Alpha1       

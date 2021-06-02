@@ -1,0 +1,26 @@
+
+Protein sequence distance matrix, version 3.7a
+
+ 5 species,  13  positions
+
+
+  Jones-Taylor-Thornton model distance
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA CAT
+Beta         ..G..C.... ..C
+Gamma        C.GT.C.... ..A
+Delta        G.GA.TT..G .C.
+Epsilon      G.GA.CT..G .CC
+
+
+
+    5
+Alpha      0.000000 0.331834 0.628142 1.036660 1.365098
+Beta       0.331834 0.000000 0.377406 1.102689 0.682218
+Gamma      0.628142 0.377406 0.000000 0.979550 0.866781
+Delta      1.036660 1.102689 0.979550 0.000000 0.227515
+Epsilon    1.365098 0.682218 0.866781 0.227515 0.000000
+

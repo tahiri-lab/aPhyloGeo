@@ -1,0 +1,33 @@
+
+Nucleic acid sequence Distance Matrix program, version 3.7a
+
+ 5 species,  13  sites
+
+  F84 Distance
+
+Transition/transversion ratio =   2.000000
+
+Name            Sequences
+----            ---------
+
+Alpha        AACGTGGCCA CAT
+Beta         ..G..C.... ..C
+Gamma        C.GT.C.... ..A
+Delta        G.GA.TT..G .C.
+Epsilon      G.GA.CT..G .CC
+
+
+
+Empirical Base Frequencies:
+
+   A       0.24615
+   C       0.36923
+   G       0.21538
+  T(U)     0.16923
+    5
+Alpha      0.000000 0.303900 0.857544 1.158927 1.542899
+Beta       0.303900 0.000000 0.339727 0.913522 0.619671
+Gamma      0.857544 0.339727 0.000000 1.631729 1.293713
+Delta      1.158927 0.913522 1.631729 0.000000 0.165882
+Epsilon    1.542899 0.619671 1.293713 0.165882 0.000000
+

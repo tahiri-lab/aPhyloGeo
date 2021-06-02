@@ -1,0 +1,148 @@
+
+Penny algorithm for Dollo or polymorphism parsimony, version 3.7a
+ branch-and-bound to find all most parsimonious trees
+
+Dollo parsimony method
+
+ 7 species,   6 characters
+
+Name         Characters
+----         ----------
+
+Alpha1       11011 0
+Alpha2       11011 0
+Beta1        11000 0
+Beta2        11000 0
+Gamma1       10011 0
+Delta        00100 1
+Epsilon      00111 0
+
+
+
+requires a total of              3.000
+
+    3 trees in all found
+
+
+
+
+  +-----------------Delta     
+  !  
+--2  +--------------Epsilon   
+  !  !  
+  +--3  +-----------Gamma1    
+     !  !  
+     +--6  +--------Alpha2    
+        !  !  
+        +--1     +--Beta2     
+           !  +--5  
+           +--4  +--Beta1     
+              !  
+              +-----Alpha1    
+
+
+ reversions in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       0   0   1   1   1   0            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+root      2         yes    ..1.. .
+  2    Delta        yes    ..... 1
+  2       3         yes    ...11 .
+  3    Epsilon      no     ..... .
+  3       6         yes    1.0.. .
+  6    Gamma1       no     ..... .
+  6       1         yes    .1... .
+  1    Alpha2       no     ..... .
+  1       4         no     ..... .
+  4       5         yes    ...00 .
+  5    Beta2        no     ..... .
+  5    Beta1        no     ..... .
+  4    Alpha1       no     ..... .
+
+
+
+
+
+  +-----------------Delta     
+  !  
+--2  +--------------Epsilon   
+  !  !  
+  +--3  +-----------Gamma1    
+     !  !  
+     +--6        +--Beta2     
+        !  +-----5  
+        !  !     +--Beta1     
+        +--4  
+           !     +--Alpha2    
+           +-----1  
+                 +--Alpha1    
+
+
+ reversions in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       0   0   1   1   1   0            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+root      2         yes    ..1.. .
+  2    Delta        yes    ..... 1
+  2       3         yes    ...11 .
+  3    Epsilon      no     ..... .
+  3       6         yes    1.0.. .
+  6    Gamma1       no     ..... .
+  6       4         yes    .1... .
+  4       5         yes    ...00 .
+  5    Beta2        no     ..... .
+  5    Beta1        no     ..... .
+  4       1         no     ..... .
+  1    Alpha2       no     ..... .
+  1    Alpha1       no     ..... .
+
+
+
+
+
+  +-----------------Delta     
+  !  
+--2  +--------------Epsilon   
+  !  !  
+  +--3  +-----------Gamma1    
+     !  !  
+     !  !        +--Beta2     
+     +--6     +--5  
+        !  +--4  +--Beta1     
+        !  !  !  
+        +--1  +-----Alpha2    
+           !  
+           +--------Alpha1    
+
+
+ reversions in each character:
+         0   1   2   3   4   5   6   7   8   9
+     *-----------------------------------------
+    0!       0   0   1   1   1   0            
+
+From    To     Any Steps?    State at upper node
+                             ( . means same as in the node below it on tree)
+
+root      2         yes    ..1.. .
+  2    Delta        yes    ..... 1
+  2       3         yes    ...11 .
+  3    Epsilon      no     ..... .
+  3       6         yes    1.0.. .
+  6    Gamma1       no     ..... .
+  6       1         yes    .1... .
+  1       4         no     ..... .
+  4       5         yes    ...00 .
+  5    Beta2        no     ..... .
+  5    Beta1        no     ..... .
+  4    Alpha2       no     ..... .
+  1    Alpha1       no     ..... .
+
+
