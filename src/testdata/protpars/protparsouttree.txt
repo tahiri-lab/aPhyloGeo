@@ -1,3 +1,0 @@
-(Gamma,((Epsilon,Delta),Beta),Alpha)[0.3333];
-(((Epsilon,Delta),Gamma),Beta,Alpha)[0.3333];
-((Epsilon,Delta),(Gamma,Beta),Alpha)[0.3333];
