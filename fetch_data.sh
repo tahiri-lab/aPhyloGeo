@@ -12,5 +12,5 @@ if [ -f $filename ]; then
 fi
 
 # Create a new sequences.fasta file containing all the sequences in the data repo
-find data -name "*.fasta" -exec cat {} >> output/sequences.fasta \;
+find data/sequences -name "*.fasta" -exec cat {} >> output/sequences.fasta \;
 
