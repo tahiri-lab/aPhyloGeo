@@ -139,8 +139,25 @@ def getORF6Gene():
 
     new_file.close()
 
+def getORF7aGene():
+    sequences_file = open("output/reference/sequences.fasta", "r").read()
+    list_of_sequences = sequences_file.split(">")
+    # ici, presence de mutation dans les 10 premieres bases, d'ou la necessite de mettre des inconnus
+    s = 'ATGAAAATTAT(.*)GACAGAATGA'
+    new_file = open("output/ORF7a_gene/ORF7a_gene.fasta", "w")
+    for index in range(len(list_of_sequences)):
+        if list_of_sequences[index] == "":
+            continue
+        name = list_of_sequences[index].split("\n")[0]
+        gene_sequence = list_of_sequences[index].replace("\n", "")
+        gene_sequence = (re.search(s, gene_sequence).group())
+        new_file.writelines(">" + name + "\n")
+        new_file.writelines(gene_sequence + "\n")
+
+    new_file.close()
+
 
 if __name__ == '__main__':
 #    fetchingSequences()
 #    changeNameSequences()
-    getORF6Gene()
+    getORF7aGene()
