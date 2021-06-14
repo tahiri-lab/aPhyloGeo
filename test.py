@@ -1,3 +1,4 @@
+from os.path import join
 from Bio import SeqIO
 import subprocess
 import re
@@ -19,6 +20,26 @@ def changeNameSequences():
     sequences_file = open("output/sequences.fasta", "w")
     sequences_file.writelines(list_of_lines)
     sequences_file.close()
+
+def getGene(gene, pattern):
+    sequences_file = open("output/reference/sequences.fasta", "r").read()
+    list_of_sequences = sequences_file.split(">")
+    s = pattern
+    directory_name = gene + "_gene"
+    file_name = gene + "Gene.fasta"
+    path =  os.path.join("output", directory_name, file_name)
+    new_file = open(path, "w")
+    for index in range(len(list_of_sequences)):
+        if list_of_sequences[index] == "":
+            continue
+        name = list_of_sequences[index].split("\n")[0]
+        gene_sequence = list_of_sequences[index].replace("\n", "")
+        gene_sequence = (re.search(s, gene_sequence).group())
+        new_file.writelines(">" + name + "\n")
+        new_file.writelines(gene_sequence + "\n")
+
+    new_file.close()
+
 
 def getORF1abGene():
     sequences_file = open("output/reference/sequences.fasta", "r").read()
@@ -244,7 +265,25 @@ def getNGene():
     new_file.close()
 
 
+def getORF10Gene():
+    sequences_file = open("output/reference/sequences.fasta", "r").read()
+    list_of_sequences = sequences_file.split(">")
+    # ici, presence de mutation dans les 10 premieres bases, d'ou la necessite de mettre des inconnus
+    s = 'ATGGGCTATA(.*)TCTCACATAG'
+    new_file = open("output/ORF10_gene/ORF10_gene.fasta", "w")
+    for index in range(len(list_of_sequences)):
+        if list_of_sequences[index] == "":
+            continue
+        name = list_of_sequences[index].split("\n")[0]
+        gene_sequence = list_of_sequences[index].replace("\n", "")
+        gene_sequence = (re.search(s, gene_sequence).group())
+        new_file.writelines(">" + name + "\n")
+        new_file.writelines(gene_sequence + "\n")
+
+    new_file.close()
+
+
 if __name__ == '__main__':
 #    fetchingSequences()
 #    changeNameSequences()
-    getNGene()
+    getGene('ORF1a', 'ATGGAGAGCC(.*)TAACAACTAA')
