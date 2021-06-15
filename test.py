@@ -26,7 +26,7 @@ def getGene(gene, pattern):
     list_of_sequences = sequences_file.split(">")
     s = pattern
     directory_name = gene + "_gene"
-    file_name = gene + "Gene.fasta"
+    file_name = gene + "_gene.fasta"
     path =  os.path.join("output", directory_name, file_name)
     new_file = open(path, "w")
     for index in range(len(list_of_sequences)):
@@ -286,4 +286,4 @@ def getORF10Gene():
 if __name__ == '__main__':
 #    fetchingSequences()
 #    changeNameSequences()
-    getGene('ORF1a', 'ATGGAGAGCC(.*)TAACAACTAA')
+    getGene('ORF1ab', 'ATGGAGAGCC(.*)TAACAACTAA')
