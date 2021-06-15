@@ -1,5 +1,4 @@
 from os.path import join
-from Bio import SeqIO
 import subprocess
 import re
 from pipeline import *

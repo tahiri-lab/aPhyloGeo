@@ -2,8 +2,8 @@ from gene import *
 from pipeline import *
 
 if __name__ == '__main__':
-    gene = 'ORF1ab'
-    getGene(gene, 'ATGGAGAGCC(.*)TAACAACTAA')
+    gene = 'ORF3a'
+    getGene(gene, 'ATGGATTTGT(.*)GCCTTTGTAA')
     alignSequences(gene)
     createBoostrap(gene)
     createDistanceMatrix(gene)
