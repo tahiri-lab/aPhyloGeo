@@ -1,4 +1,3 @@
-from gene import *
 from pipeline import *
 
 if __name__ == '__main__':
