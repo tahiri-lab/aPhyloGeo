@@ -43,9 +43,19 @@ def test():
     f.close()
     
     # slide the window along the sequence
-    with open("out", "r") as f:
+    with open("out", "r") as f, open("outfile", "w") as out:
         for line in f:
-            print(line[0:10])
+            out.write(line[0:20] + "\n") # HERE, we should change the value corresponding to the steps
+
+        f.close()
+        out.close()
+    with open("out", "w") as f, open("outfile", "r") as out:
+        f.write(str(num_seq) + " " + str(longueur) + "\n")
+        for index, line in enumerate(out):
+            if line != "\n":
+                f.write(list_names[index] + "\t")
+                f.write(line)
+
         
 
 
