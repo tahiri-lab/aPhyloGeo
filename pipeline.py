@@ -1,6 +1,7 @@
 import subprocess
 import os
 import re
+import pandas as pd
 
 def changeNameSequences():
     sequences_file = open("output/reference_gene/reference_gene.fasta", "r")
@@ -49,6 +50,46 @@ def createBoostrap(gene):
     subprocess.call("./exec/seqboot")
     subprocess.call(["mv", "infile", input_file_path])
     subprocess.call(["mv", "outfile", "infile"])
+
+
+def getDissimilaritiesMatrix(column_to_search, outfile_name):
+    df = pd.read_csv("data/donnees.csv")
+    # creation d'une liste contenant les noms des specimens et les temperatures min
+    meteo_data = df[column_to_search].tolist()
+    nom_var = df['Nom du specimen'].tolist()
+    nbr_seq = len(nom_var)
+    with open(outfile_name, "w") as f:
+        f.write("   " + str(len(nom_var)) + "\n")
+        # premiere boucle qui permet de calculer une matrice pour chaque sequence
+        for e in range(nbr_seq):
+            f.write(nom_var[e])
+            # une liste qui va contenir toutes les distances avant normalisation
+            temp_list = []
+            # petite boucle pour imprimer le bon nbr d'espaces
+            for espace in range(11-len(nom_var[e])):
+                f.write(" ")
+            for i in range(nbr_seq):
+
+                # cas ou on est rendu a la derniere sequence de la liste
+                if i == (nbr_seq):
+                    maximum = max(float(meteo_data[0]), float(meteo_data[e]))
+                    minimum = min(float(meteo_data[0]), float(meteo_data[e]))
+                    distance = maximum - minimum
+                    temp_list.append(float("{:.6f}".format(distance)))
+
+                # pour tous les autres cas
+                else:
+                    maximum = max(float(meteo_data[e]), float(meteo_data[i]))
+                    minimum = min(float(meteo_data[e]), float(meteo_data[i]))
+                    distance = maximum - minimum
+                    temp_list.append(float("{:.6f}".format(distance)))
+
+            # petite boucle pour trouver la distance maximale afin de normaliser
+            max_distance = max(temp_list)
+            for k in range(nbr_seq):
+                temp_list[k] = temp_list[k]/max_distance
+                f.write("{:.6f}".format(temp_list[k]) + " ")
+            f.write("\n")
 
 
 def createDistanceMatrix(gene):
