@@ -30,6 +30,9 @@ def stepSizePrompt(size):
     print("The window size is: "+ str(size) +".")
     print("The step count is: " + str(count) + ".")
 
+
+
+
 if __name__ == "__main__":
     window_size = windowSizePrompt()
     stepSizePrompt(window_size)

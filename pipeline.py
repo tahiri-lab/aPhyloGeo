@@ -58,37 +58,43 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
     meteo_data = df[column_to_search].tolist()
     nom_var = df['Nom du specimen'].tolist()
     nbr_seq = len(nom_var)
+    # premiere boucle qui permet de calculer une matrice pour chaque sequence
+    temp_tab = []
+    max_value = 0 # sera utile pour la normalisation
+    for e in range(nbr_seq):
+        # une liste qui va contenir toutes les distances avant normalisation
+        temp_list = []
+        for i in range(nbr_seq):
+
+            # cas ou on est rendu a la derniere sequence de la liste
+            if i == (nbr_seq):
+                maximum = max(float(meteo_data[0]), float(meteo_data[e]))
+                minimum = min(float(meteo_data[0]), float(meteo_data[e]))
+                distance = maximum - minimum
+                temp_list.append(float("{:.6f}".format(distance)))
+
+            # pour tous les autres cas
+            else:
+                maximum = max(float(meteo_data[e]), float(meteo_data[i]))
+                minimum = min(float(meteo_data[e]), float(meteo_data[i]))
+                distance = maximum - minimum
+                temp_list.append(float("{:.6f}".format(distance)))
+
+        # permet de trouver la valeur maximale et ensuite d'ajouter la liste temporaire au tableau
+        if max_value < max(temp_list):
+            max_value = max(temp_list)
+        temp_tab.append(temp_list)
+    
+    # ecriture des matrices normalisees dans les fichiers respectifs
     with open(outfile_name, "w") as f:
         f.write("   " + str(len(nom_var)) + "\n")
-        # premiere boucle qui permet de calculer une matrice pour chaque sequence
-        for e in range(nbr_seq):
-            f.write(nom_var[e])
-            # une liste qui va contenir toutes les distances avant normalisation
-            temp_list = []
+        for j in range(nbr_seq):
+            f.write(nom_var[j])
             # petite boucle pour imprimer le bon nbr d'espaces
-            for espace in range(11-len(nom_var[e])):
+            for espace in range(11-len(nom_var[j])):
                 f.write(" ")
-            for i in range(nbr_seq):
-
-                # cas ou on est rendu a la derniere sequence de la liste
-                if i == (nbr_seq):
-                    maximum = max(float(meteo_data[0]), float(meteo_data[e]))
-                    minimum = min(float(meteo_data[0]), float(meteo_data[e]))
-                    distance = maximum - minimum
-                    temp_list.append(float("{:.6f}".format(distance)))
-
-                # pour tous les autres cas
-                else:
-                    maximum = max(float(meteo_data[e]), float(meteo_data[i]))
-                    minimum = min(float(meteo_data[e]), float(meteo_data[i]))
-                    distance = maximum - minimum
-                    temp_list.append(float("{:.6f}".format(distance)))
-
-            # petite boucle pour trouver la distance maximale afin de normaliser
-            max_distance = max(temp_list)
             for k in range(nbr_seq):
-                temp_list[k] = temp_list[k]/max_distance
-                f.write("{:.6f}".format(temp_list[k]) + " ")
+                f.write("{:.6f}".format((temp_tab[j][k])/max_value) + " ")
             f.write("\n")
 
 
