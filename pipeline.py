@@ -60,7 +60,6 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
     nbr_seq = len(nom_var)
     # premiere boucle qui permet de calculer une matrice pour chaque sequence
     temp_tab = []
-    max_value = 0 # sera utile pour la normalisation
     for e in range(nbr_seq):
         # une liste qui va contenir toutes les distances avant normalisation
         temp_list = []
@@ -80,9 +79,15 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
                 distance = maximum - minimum
                 temp_list.append(float("{:.6f}".format(distance)))
 
-        # permet de trouver la valeur maximale et ensuite d'ajouter la liste temporaire au tableau
+        # ces deux valeurs seront utiles pour la normalisation
+        first_value = temp_list[0]
+        max_value = first_value # est une valeur temporaire qui sera remplacee
+        min_value = first_value
+        # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
         if max_value < max(temp_list):
             max_value = max(temp_list)
+        if min_value > min(temp_list):
+            min_value = min(temp_list)
         temp_tab.append(temp_list)
     
     # ecriture des matrices normalisees dans les fichiers respectifs
@@ -94,7 +99,8 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
             for espace in range(11-len(nom_var[j])):
                 f.write(" ")
             for k in range(nbr_seq):
-                f.write("{:.6f}".format((temp_tab[j][k])/max_value) + " ")
+                # la normalisation se fait selon la formule suivante: (X - Xmin)/(Xmax - Xmin)
+                f.write("{:.6f}".format((temp_tab[j][k] - min_value)/(max_value - min_value)) + " ")
             f.write("\n")
 
 
