@@ -58,31 +58,21 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
     meteo_data = df[column_to_search].tolist()
     nom_var = df['Nom du specimen'].tolist()
     nbr_seq = len(nom_var)
+    # ces deux valeurs seront utiles pour la normalisation
+    max_value = 0  
+    min_value = 0
+
     # premiere boucle qui permet de calculer une matrice pour chaque sequence
     temp_tab = []
     for e in range(nbr_seq):
         # une liste qui va contenir toutes les distances avant normalisation
         temp_list = []
-        for i in range(nbr_seq):
+        for i in range(nbr_seq):        
+            maximum = max(float(meteo_data[e]), float(meteo_data[i]))
+            minimum = min(float(meteo_data[e]), float(meteo_data[i]))
+            distance = maximum - minimum
+            temp_list.append(float("{:.6f}".format(distance)))
 
-            # cas ou on est rendu a la derniere sequence de la liste
-            if i == (nbr_seq):
-                maximum = max(float(meteo_data[0]), float(meteo_data[e]))
-                minimum = min(float(meteo_data[0]), float(meteo_data[e]))
-                distance = maximum - minimum
-                temp_list.append(float("{:.6f}".format(distance)))
-
-            # pour tous les autres cas
-            else:
-                maximum = max(float(meteo_data[e]), float(meteo_data[i]))
-                minimum = min(float(meteo_data[e]), float(meteo_data[i]))
-                distance = maximum - minimum
-                temp_list.append(float("{:.6f}".format(distance)))
-
-        # ces deux valeurs seront utiles pour la normalisation
-        first_value = temp_list[0]
-        max_value = first_value # est une valeur temporaire qui sera remplacee
-        min_value = first_value
         # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
         if max_value < max(temp_list):
             max_value = max(temp_list)
