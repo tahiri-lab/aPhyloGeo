@@ -1,10 +1,10 @@
-from pipeline import *
+import pipeline
 
-if __name__ == '__main__':
+def getEGene():
     gene = 'E'
-    getGene(gene, 'ATGTACTCAT(.*)TCTGGTCTAA')
-    alignSequences(gene)
-    createBoostrap(gene)
-    createDistanceMatrix(gene)
-    createUnrootedTree(gene)
-    createConsensusTree(gene)
+    pipeline.getGene(gene, 'ATGTACTCAT(.*)TCTGGTCTAA')
+    pipeline.alignSequences(gene)
+    pipeline.createBoostrap(gene)
+    pipeline.createDistanceMatrix(gene)
+    pipeline.createUnrootedTree(gene)
+    pipeline.createConsensusTree(gene)

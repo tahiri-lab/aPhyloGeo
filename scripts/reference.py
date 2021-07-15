@@ -1,12 +1,13 @@
-from pipeline import *
+import pipeline
 
-def get_reference_tree():
+def getReferenceTree():
     gene = 'reference'
-    changeNameSequences()
-    alignSequences(gene)
-    createBoostrap(gene)
-    createDistanceMatrix(gene)
-    createUnrootedTree(gene)
-    createConsensusTree(gene)
+    pipeline.changeNameSequences()
+    pipeline.alignSequences(gene)
+    pipeline.createBoostrap(gene)
+    pipeline.createDistanceMatrix(gene)
+    pipeline.createUnrootedTree(gene)
+    pipeline.createConsensusTree(gene)
 
-    
+if __name__ == '__main__':
+    get_reference_tree()
