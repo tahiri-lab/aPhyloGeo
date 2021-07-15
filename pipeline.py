@@ -2,35 +2,73 @@ import subprocess
 import os
 import re
 import pandas as pd
-from scripts.reference import *
+from scripts import reference
+
+def menuGetTrees():
+    names = []
+    while True:
+        count = input("How many climatic data tree will be used?: ")
+        if not count.isnumeric():
+            print("This is not a number.")
+        elif int(count) < 1:
+            print("The number cannot be lower than 1.")
+        else:
+            # VALIDER LE FORMAT NEWICK??
+            for i in range(int(count)):
+                try:
+                    name = input("Name of the tree file (" + str(i+1) + "): " )
+                    f = open(name, "r")
+                    names.append(name)
+                except:
+                    print("This file does not exist or is empty.")
+            break
+    return names
+
+
+# def getBootstrapThreshold():
+
 
 
 def menu(option=0):
-    print('===============================================')
-    print('Please select an option among the following: ')
-    print('===============================================')
-    print('1. Use the whole DNA sequences')
-    print('2. Study specific genes of SARS-CoV-2')
+    names = menuGetTrees()
+    # print('===============================================')
+    # print('Please select an option among the following: ')
+    # print('===============================================')
+    # print('1. Use the whole DNA sequences')
+    # print('2. Study specific genes of SARS-CoV-2')
     
-    while option != '1' or option != '2':
-        option = input("Please enter 1 or 2 \n")
-        if option == '1':
-            option = input("Use a sliding window?[y/n]\n")
-            if option == 'Y' or 'y': # ici l'utilisateur choisit la fenetre coulissante
-                size = input('Window size:\n')
-                if int(size) > 0:
-                    print('Yes')
-                    break
-            elif option == 'n' or option == 'N': # ici, pas de fenetre coulissante on peut analyser toutes les sequences
-                get_reference_tree()
-                break
-        elif option == '2':
-            print("ok2")
-            break
-        else: 
-            print('This is not a valid number.')
-            option = input("Please enter 1 or 2 \n")
+    # while option != '1' or option != '2':
+    #     option = input("Please enter 1 or 2: ")
+    #     if option == '1':
+    #         # faire un loop ici au cas ou il rentre nimporte quoi
+    #         option = input("Use a sliding window?[y/n]\n")
+    #         while True:
+    #             if option == 'Y' or option =='y': # ici l'utilisateur choisit la fenetre coulissante
+    #                 size = input('Window size:\n')
+    #                 if int(size) > 0:
+    #                     print('Yes')
+    #                     break
+    #             elif option == 'n' or option == 'N': # ici, pas de fenetre coulissante on peut analyser toutes les sequences
+    #                 reference.getReferenceTree()
+    #                 break
+    #     elif option == '2':
+    #         print("ok2")
+    #         break
+    #     else: 
+    #         print('This is not a valid option.')
 
+
+def useWholeSequence(option=0):
+    option = input("Use a sliding window?[y/n]\n")
+    while True:
+        if option == 'Y' or option == 'y':  # ici l'utilisateur choisit la fenetre coulissante
+            size = input('Window size:\n')
+            if int(size) > 0:
+                print('Yes')
+                break
+        elif option == 'n' or option == 'N':  # ici, pas de fenetre coulissante on peut analyser toutes les sequences
+            reference.get_reference_tree()
+            break
 
 
 def changeNameSequences():
@@ -78,7 +116,7 @@ def createBoostrap(gene):
     directory_name = gene + '_gene'
     input_file_path = os.path.join('output', directory_name, aligned_gene_file_name)
     subprocess.call("./exec/seqboot")
-    subprocess.call(["mv", "infile", input_file_path])
+    # subprocess.call(["mv", "infile", input_file_path])
     subprocess.call(["mv", "outfile", "infile"])
 
 
@@ -130,7 +168,7 @@ def createDistanceMatrix(gene):
     directory_name = gene + '_gene'
     input_file_path = os.path.join('output', directory_name, bootstrap_file_name)
     subprocess.call("./exec/dnadist")
-    subprocess.call(["cp", "infile", input_file_path])
+    # subprocess.call(["cp", "infile", input_file_path])
     subprocess.call(["mv", "outfile", "infile"])
 
 def createUnrootedTree(gene):
@@ -141,9 +179,9 @@ def createUnrootedTree(gene):
     output_file_path = os.path.join(
         'output', directory_name, output_file_name)
     subprocess.call("./exec/neighbor")
-    subprocess.call(["mv", "infile", input_file_path])
+    # subprocess.call(["mv", "infile", input_file_path])
     subprocess.call(["mv", "outtree", "intree"])
-    subprocess.call(["mv", "outfile", output_file_path])
+    # subprocess.call(["mv", "outfile", output_file_path])
 
 
 def createConsensusTree(gene):
@@ -156,7 +194,7 @@ def createConsensusTree(gene):
     outtree_file_path = os.path.join('output', directory_name, outtree_file_name)
     output_file_path = os.path.join('output', directory_name, output_file_name)
     subprocess.call("./exec/consense")
-    subprocess.call(["mv", "intree", intree_file_path])
+    # subprocess.call(["mv", "intree", intree_file_path])
     subprocess.call(["mv", "outtree", output_file_path])
     subprocess.call(["mv", "outfile", outtree_file_path])
 
