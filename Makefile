@@ -1,7 +1,7 @@
 reference: data
-		python3 reference.py
+		python3 pipeline.py
 
-matrix: input_matrix.txt
+matrix: input_files/input.txt
 		python3 matrix.py
 
 data: fetch_data.sh
