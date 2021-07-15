@@ -2,25 +2,27 @@ import subprocess
 import os
 import re
 import pandas as pd
+from scripts.reference import *
 
-def menu():
+
+def menu(option=0):
     print('===============================================')
     print('Please select an option among the following: ')
-    print('1. Use the whole sequence')
-    print('2. Study a specific gene on SARS-CoV-2')
+    print('===============================================')
+    print('1. Use the whole DNA sequences')
+    print('2. Study specific genes of SARS-CoV-2')
     
-    option = input("Please enter 1 or 2 \n")
-
     while option != '1' or option != '2':
+        option = input("Please enter 1 or 2 \n")
         if option == '1':
-            option = input("Use a sliding window?[Y/N]\n")
-            if option == 'Y' or 'y':
+            option = input("Use a sliding window?[y/n]\n")
+            if option == 'Y' or 'y': # ici l'utilisateur choisit la fenetre coulissante
                 size = input('Window size:\n')
                 if int(size) > 0:
-                    print('No')
+                    print('Yes')
                     break
-            else:
-                print('ok, no sliding window.')
+            elif option == 'n' or option == 'N': # ici, pas de fenetre coulissante on peut analyser toutes les sequences
+                get_reference_tree()
                 break
         elif option == '2':
             print("ok2")
@@ -157,3 +159,7 @@ def createConsensusTree(gene):
     subprocess.call(["mv", "intree", intree_file_path])
     subprocess.call(["mv", "outtree", output_file_path])
     subprocess.call(["mv", "outfile", outtree_file_path])
+
+
+if __name__ == '__main__':
+    menu()
