@@ -3,6 +3,34 @@ import os
 import re
 import pandas as pd
 
+def menu():
+    print('===============================================')
+    print('Please select an option among the following: ')
+    print('1. Use the whole sequence')
+    print('2. Study a specific gene on SARS-CoV-2')
+    
+    option = input("Please enter 1 or 2 \n")
+
+    while option != '1' or option != '2':
+        if option == '1':
+            option = input("Use a sliding window?[Y/N]\n")
+            if option == 'Y' or 'y':
+                size = input('Window size:\n')
+                if int(size) > 0:
+                    print('No')
+                    break
+            else:
+                print('ok, no sliding window.')
+                break
+        elif option == '2':
+            print("ok2")
+            break
+        else: 
+            print('This is not a valid number.')
+            option = input("Please enter 1 or 2 \n")
+
+
+
 def changeNameSequences():
     sequences_file = open("output/reference_gene/reference_gene.fasta", "r")
     list_of_lines = sequences_file.readlines()
@@ -52,11 +80,11 @@ def createBoostrap(gene):
     subprocess.call(["mv", "outfile", "infile"])
 
 
-def getDissimilaritiesMatrix(column_to_search, outfile_name):
-    df = pd.read_csv("data/donnees.csv")
+def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
+    df = pd.read_csv(nom_fichier_csv)
     # creation d'une liste contenant les noms des specimens et les temperatures min
     meteo_data = df[column_to_search].tolist()
-    nom_var = df['Nom du specimen'].tolist()
+    nom_var = df[column_with_specimen_name].tolist()
     nbr_seq = len(nom_var)
     # ces deux valeurs seront utiles pour la normalisation
     max_value = 0  
@@ -92,6 +120,7 @@ def getDissimilaritiesMatrix(column_to_search, outfile_name):
                 # la normalisation se fait selon la formule suivante: (X - Xmin)/(Xmax - Xmin)
                 f.write("{:.6f}".format((temp_tab[j][k] - min_value)/(max_value - min_value)) + " ")
             f.write("\n")
+    subprocess.call(["rm", "outfile"]) # clean up
 
 
 def createDistanceMatrix(gene):
