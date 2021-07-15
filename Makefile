@@ -1,7 +1,7 @@
 reference: data
 		python3 reference.py
 
-matrix: 
+matrix: input_matrix.txt
 		python3 matrix.py
 
 data: fetch_data.sh
