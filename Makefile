@@ -10,4 +10,4 @@ data: fetch_data.sh
 .PHONY: clean
 
 clean: 
-		rm output/*
+		rm output/windows/*
