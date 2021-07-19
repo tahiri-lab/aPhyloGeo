@@ -21,7 +21,7 @@ def menuGetTrees():
                     names.append(name)
             except:
                     print("This file does not exist or is empty.")
-                    raise Exception
+                    continue
             break
     return names
 
@@ -45,7 +45,7 @@ def getRfThreshold():
         if not valide:
             print("Error, it must be a number between 1 and 100.")
         else:
-            return threshold
+            return int(threshold)
 
 
 def getSlidingWindowSize():
@@ -73,91 +73,95 @@ def getStepSize():
         if(count <= 0):
             print("The window size must be between greater than 0.")
         else:
-            break
+            return count
 
 
-def sliding_window(window_size=0, step=0):
+def slidingWindow(window_size=0, step=0):
     # Permet d'avoir le nombre de lignes totales dans le fichier
-    f = open("infile", "r")
-    line_count = -1
-    for line in f:
-        if line != "\n":
-            line_count += 1
-    f.close()
-    f = open("infile", "r").read()
-    # premier nombre de la premiere ligne du fichier represente le nbr de sequences
-    num_seq = int((f.split("\n")[0]).split(" ")[0])
-    # second nombre de la premiere ligne du fichier represente la longueur des sequences
-    longueur = int((f.split("\n")[0]).split(" ")[1])
-    # permet d'obtenir le nbr de lignes qui compose chaque sequence
-    no_line = int(line_count/num_seq)
+    try:
+        f = open("infile", "r")
+        line_count = -1
+        for line in f:
+            if line != "\n":
+                line_count += 1
+        f.close()
+        f = open("infile", "r").read()
+        # premier nombre de la premiere ligne du fichier represente le nbr de sequences
+        num_seq = int((f.split("\n")[0]).split(" ")[0])
+        # second nombre de la premiere ligne du fichier represente la longueur des sequences
+        longueur = int((f.split("\n")[0]).split(" ")[1])
+        # permet d'obtenir le nbr de lignes qui compose chaque sequence
+        no_line = int(line_count/num_seq)
 
-    # Recupere la sequence pour chaque variante
-    with open("outfile", "w") as out:
-        depart = 1
-        fin = depart + no_line
-        # on connait la longueur de chaque sequence, donc on va recuperer chaque sequence et le retranscrire sur un autre fichier separes par un \n entre chaque
-        for i in range(0, int(num_seq)):
-            f = open("infile", "r")
-            lines_to_read = range(depart, fin)
-            for position, line in enumerate(f):
-                if position in lines_to_read:
-                    out.write(line)
-            out.write("\n")
-            depart = fin
+        # Recupere la sequence pour chaque variante
+        with open("outfile", "w") as out:
+            depart = 1
             fin = depart + no_line
-    out.close()
+            # on connait la longueur de chaque sequence, donc on va recuperer chaque sequence et le retranscrire sur un autre fichier separes par un \n entre chaque
+            for i in range(0, int(num_seq)):
+                f = open("infile", "r")
+                lines_to_read = range(depart, fin)
+                for position, line in enumerate(f):
+                    if position in lines_to_read:
+                        out.write(line)
+                out.write("\n")
+                depart = fin
+                fin = depart + no_line
+        out.close()
 
-    # on cree un fichier out qui contient chaque sequence sans espaces et on enregistre dans une list le nom en ordre des sequences
-    with open("outfile", "r") as out, open("out", "w") as f:
-        sequences = out.read().split("\n\n")
-        list_names = []
-        for seq in sequences:
-            s = seq.replace("\n", " ").split(" ")
-            if s[0] != "":
-                list_names.append(s[0])
-            s_line = s[1:len(seq)]
-            for line in s_line:
-                if line != "":
-                    f.write(line)
-            f.write("\n")
-    out.close()
-    f.close()
-
-    # slide the window along the sequence
-    debut = 0
-    fin = debut + window_size
-    while fin <= longueur:
-        index = 0
-        with open("out", "r") as f, open("output/windows/" + str(debut), "w") as out:
-            out.write(str(num_seq) + " " + str(window_size) + "\n")
-            for line in f:
-                if line != "\n":
-                    espece = list_names[index]
-                    nbr_espaces = 11 - len(espece)
-                    out.write(espece)
-                    for i in range(nbr_espaces):
-                        out.write(" ")
-                    out.write(line[debut:fin] + "\n")
-                    index = index + 1
+        # on cree un fichier out qui contient chaque sequence sans espaces et on enregistre dans une list le nom en ordre des sequences
+        with open("outfile", "r") as out, open("out", "w") as f:
+            sequences = out.read().split("\n\n")
+            list_names = []
+            for seq in sequences:
+                s = seq.replace("\n", " ").split(" ")
+                if s[0] != "":
+                    list_names.append(s[0])
+                s_line = s[1:len(seq)]
+                for line in s_line:
+                    if line != "":
+                        f.write(line)
+                f.write("\n")
         out.close()
         f.close()
-        debut = debut + step
-        fin = fin + step
+
+        # slide the window along the sequence
+        debut = 0
+        fin = debut + window_size
+        while fin <= longueur:
+            index = 0 # YA MOYEN ICI DE LE OUTPUT DANS LE BON DOSSIER
+            with open("out", "r") as f, open("output/windows/" + str(debut) + "_" + str(fin), "w") as out:
+                out.write(str(num_seq) + " " + str(window_size) + "\n")
+                for line in f:
+                    if line != "\n":
+                        espece = list_names[index]
+                        nbr_espaces = 11 - len(espece)
+                        out.write(espece)
+                        for i in range(nbr_espaces):
+                            out.write(" ")
+                        out.write(line[debut:fin] + "\n")
+                        index = index + 1
+            out.close()
+            f.close()
+            debut = debut + step
+            fin = fin + step
+    except:
+        print("An error occurred.")
+
+    # clean up
+    os.system("rm out outfile infile")
 
 
-def printOptionMenu():
+def validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
     print('===============================================')
     print('Please select an option among the following: ')
     print('===============================================')
     print('1. Use the whole DNA sequences')
     print('2. Study specific genes of SARS-CoV-2')
-
-def validateOptionMenu(window_size, step_size):
-    while option != '1' or option != '2':
+    while True:
         option = input("Please enter 1 or 2: ")
         if option == '1':
-            reference.getReferenceTree()
+            reference.getReferenceTree(window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
             break
         elif option == '2':
             print("ok2")
@@ -166,29 +170,16 @@ def validateOptionMenu(window_size, step_size):
             print('This is not a valid option.')
 
 
-def menu(option=0):
-    try:
+def menu():
+    # try:
         names = menuGetTrees()
         bootstrap_threshold = getBootstrapThreshold()
         rf_threshold = getRfThreshold()
         window_size = getSlidingWindowSize()
         step_size = getStepSize()
-        printOptionMenu()
-    except:
-        return
-
-
-def useWholeSequence(option=0):
-    option = input("Use a sliding window?[y/n]\n")
-    while True:
-        if option == 'Y' or option == 'y':  # ici l'utilisateur choisit la fenetre coulissante
-            size = input('Window size:\n')
-            if int(size) > 0:
-                print('Yes')
-                break
-        elif option == 'n' or option == 'N':  # ici, pas de fenetre coulissante on peut analyser toutes les sequences
-            reference.get_reference_tree()
-            break
+        validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, names)
+    # except:
+    #     print("An error has occured.")
 
 
 def changeNameSequences():
@@ -229,14 +220,13 @@ def alignSequences(gene):
     directory_name = gene + '_gene'
     file_path = os.path.join('output', directory_name, sequences_file_name)
     subprocess.call(["./exec/muscle", "-in", file_path, "-physout", "infile", "-maxiters", "1", "-diags"])
+    f = open("infile", "r").read()
+    number_seq = int(f.split()[0])
+    return number_seq
 
 
 def createBoostrap(gene):
-    aligned_gene_file_name = 'aligned_' + gene + '_gene'
-    directory_name = gene + '_gene'
-    input_file_path = os.path.join('output', directory_name, aligned_gene_file_name)
-    subprocess.call("./exec/seqboot")
-    # subprocess.call(["mv", "infile", input_file_path])
+    os.system("./exec/seqboot < input_files/bootstrap_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 
@@ -284,39 +274,58 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
 
 
 def createDistanceMatrix(gene):
-    bootstrap_file_name = 'bootstrap_' + gene + '_gene'
-    directory_name = gene + '_gene'
-    input_file_path = os.path.join('output', directory_name, bootstrap_file_name)
-    subprocess.call("./exec/dnadist")
-    # subprocess.call(["cp", "infile", input_file_path])
+    os.system("./exec/dnadist < input_files/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 def createUnrootedTree(gene):
-    distance_matrix_file_name = 'distance_matrix_' + gene + '_gene'
-    directory_name = gene + '_gene'
-    output_file_name = 'unrooted_tree_'+ gene + '_gene'
-    input_file_path = os.path.join('output', directory_name, distance_matrix_file_name)
-    output_file_path = os.path.join(
-        'output', directory_name, output_file_name)
-    subprocess.call("./exec/neighbor")
-    # subprocess.call(["mv", "infile", input_file_path])
+    os.system("./exec/neighbor < input_files/neighbor_input.txt")
+    subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
-    # subprocess.call(["mv", "outfile", output_file_path])
 
 
 def createConsensusTree(gene):
-    unrooted_tree_data_file_name = 'unrooted_tree_data_'+ gene + '_gene'
-    outtree_file_name = 'consensus_tree_' + gene + '_gene'
-    output_file_name = 'consensus_tree_data_' + gene + '_gene'
-    directory_name = gene + '_gene'
-    intree_file_path = os.path.join(
-        'output', directory_name, unrooted_tree_data_file_name)
-    outtree_file_path = os.path.join('output', directory_name, outtree_file_name)
-    output_file_path = os.path.join('output', directory_name, output_file_name)
-    subprocess.call("./exec/consense")
-    # subprocess.call(["mv", "intree", intree_file_path])
-    subprocess.call(["mv", "outtree", output_file_path])
-    subprocess.call(["mv", "outfile", outtree_file_path])
+    os.system("./exec/consense < input_files/input.txt")
+    subprocess.call(["rm", "intree", "outfile"])
+
+def calculateAverageBootstrap():
+    total = 0
+    f = open("outtree", "r").read()
+    numbers = re.findall(r'\d+[.]\d+', f)
+    for number in numbers:
+        total = total + float(number)
+    average = total / len(numbers)
+    return average
+
+def calculateRfDistance(weather_data_trees):
+    for tree in weather_data_trees:
+        os.system("cat " + tree +" >> infile && cat outtree >> infile")
+        os.system("./exec/rf infile outfile tmp matrix")
+
+def standardizedRfDistance(number_seq):
+    # clean up the repository
+    os.system("rm infile matrix outtree tmp")
+    # find the rf
+    f = open("outfile", "r").read()
+    words = re.split(r'[ \n]', f)
+    for i in range(len(words)):
+        if words[i] == "=":
+            rf = int(words[i+1])
+            normalized_rf = (rf/((2*number_seq-6)))*100
+            return normalized_rf
+
+
+def runRaxML(aligned_file, gene):
+    # clean up 
+    os.system("rm outfile")
+    current_dir = os.getcwd()
+    file_name = os.path.basename(aligned_file)
+    input_path = os.path.join(current_dir, "output", "windows", aligned_file)
+    output_path = os.path.join(current_dir, "output", gene + "_gene")
+    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -w " + output_path + " -N autoMRE -m GTRGAMMA -x 123 -f a -p 123")
+    subprocess.call(["rm", "-r ", output_path, "/RAxML_info.*"])
+    subprocess.call(["rm", "-r ", output_path, "/RAxML_bootstrap.*"])
+
+    
 
 
 if __name__ == '__main__':
