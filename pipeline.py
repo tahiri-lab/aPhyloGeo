@@ -5,7 +5,6 @@ import pandas as pd
 from scripts import reference
 
 def menuGetTrees():
-    names = []
     while True:
         count = input("How many climatic data tree will be used?: ")
         if not count.isnumeric():
@@ -15,6 +14,7 @@ def menuGetTrees():
         else:
             # VALIDER LE FORMAT NEWICK??
             try:
+                names = []
                 for i in range(int(count)):
                     name = input("Name of the tree file (" + str(i+1) + "): " )
                     open(name, "r")
@@ -294,38 +294,41 @@ def calculateAverageBootstrap():
     for number in numbers:
         total = total + float(number)
     average = total / len(numbers)
+    print("Bootstrap done.")
     return average
 
-def calculateRfDistance(weather_data_trees):
-    for tree in weather_data_trees:
-        os.system("cat " + tree +" >> infile && cat outtree >> infile")
-        os.system("./exec/rf infile outfile tmp matrix")
+def calculateRfDistance(tree):
+    os.system("cat " + tree +" >> infile && cat outtree >> infile")
+    os.system("./exec/rf infile outfile tmp matrix")
 
 def standardizedRfDistance(number_seq):
     # clean up the repository
-    os.system("rm infile matrix outtree tmp")
+    subprocess.call(["rm", "infile", "matrix", "outtree", "tmp"])
     # find the rf
     f = open("outfile", "r").read()
     words = re.split(r'[ \n]', f)
     for i in range(len(words)):
         if words[i] == "=":
             rf = int(words[i+1])
-            normalized_rf = (rf/((2*number_seq-6)))*100
+            normalized_rf = (rf/(2*number_seq-6))*100
+            print("rf done.")
             return normalized_rf
 
 
-def runRaxML(aligned_file, gene):
-    # clean up 
-    os.system("rm outfile")
+def runRaxML(aligned_file, gene, tree):
     current_dir = os.getcwd()
-    file_name = os.path.basename(aligned_file)
+    file_name = os.path.basename(aligned_file + "_" + tree)
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
     output_path = os.path.join(current_dir, "output", gene + "_gene")
     os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -w " + output_path + " -N autoMRE -m GTRGAMMA -x 123 -f a -p 123")
-    subprocess.call(["rm", "-r ", output_path, "/RAxML_info.*"])
-    subprocess.call(["rm", "-r ", output_path, "/RAxML_bootstrap.*"])
+    # clean up
+    subprocess.call(["rm", output_path, "/RAxML_info.*"])
+    subprocess.call(["rm", output_path, "/RAxML_bootstrap.*"])
+    os.system("rm outfile")
 
-    
+
+# def addToCsv():
+
 
 
 if __name__ == '__main__':
