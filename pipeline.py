@@ -247,20 +247,6 @@ def menu():
     #     print("An error has occured.")
 
 
-def changeNameSequences():
-    sequences_file = open("output/reference_gene/reference_gene.fasta", "r")
-    list_of_lines = sequences_file.readlines()
-    for index in range(len(list_of_lines)):
-        if list_of_lines[index].startswith(">"):
-            splitted_line = list_of_lines[index].split("/")
-            name = ">" + splitted_line[2] + "\n"
-            list_of_lines[index] = name
-
-    sequences_file = open("output/reference_gene/reference_gene.fasta", "w")
-    sequences_file.writelines(list_of_lines)
-    sequences_file.close()
-
-
 def getGene(gene, pattern): 
     sequences_file = open("output/reference_gene/reference_gene.fasta", "r").read()
     list_of_sequences = sequences_file.split(">")
@@ -300,7 +286,7 @@ def createReferencePhylogeneticTree(window_size, step_size, bootstrap_threshold,
         else: 
             for tree in data_names:
                 calculateRfDistance(tree)
-                rfn = standardizedRfDistance(18)
+                rfn = standardizedRfDistance(number_seq)
                 if rfn <= rf_threshold:
                     # dans ce cas, on cree les arbres par raxml
                     runRaxML(file, gene, tree)

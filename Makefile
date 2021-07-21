@@ -1,5 +1,6 @@
-reference: fetch_data.sh pipeline.py
-		./fetch_data.sh
+reference: scripts/fetch_data.sh scripts/names.py pipeline.py
+		./scripts/fetch_data.sh
+		python3 scripts/names.py
 		python3 pipeline.py
 
 matrix: input_files/input.txt
