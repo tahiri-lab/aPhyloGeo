@@ -2,6 +2,7 @@ import subprocess
 import os
 import re
 import pandas as pd
+from csv import writer
 
 def menuGetTrees():
     while True:
@@ -128,7 +129,7 @@ def slidingWindow(window_size=0, step=0):
         debut = 0
         fin = debut + window_size
         while fin <= longueur:
-            index = 0 # YA MOYEN ICI DE LE OUTPUT DANS LE BON DOSSIER
+            index = 0 
             with open("out", "r") as f, open("output/windows/" + str(debut) + "_" + str(fin), "w") as out:
                 out.write(str(num_seq) + " " + str(window_size) + "\n")
                 for line in f:
@@ -160,7 +161,8 @@ def validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold
     while True:
         option = input("Please enter 1 or 2: ")
         if option == '1':
-            createReferencePhylogeneticTree(window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+            gene = 'reference'
+            createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
             break
         elif option == '2':
             displayGenesOption(window_size, step_size,
@@ -192,63 +194,32 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
             else:
                 valides = True
         if valides:
+            genes = {
+                    'ORF1ab': 'ATGGAGAGCC(.*)TAACAACTAA', 'S': 'ATGTTTGTTT(.*)TTACACATAA', 'ORF3a': 'ATGGATTTGT(.*)GCCTTTGTAA', 'ORF3b': 'ATGAGGCTTT(.*)GCCTTTGTAA',
+                    'E': 'ATGTACTCAT(.*)TCTGGTCTAA', 'M': 'ATG[GT]CAGATT(.*)TGTACAGTAA', 'ORF6': 'ATGTTTCATC(.*)GATTGA[CT]TAA', 'ORF7a': 'ATGAAAATTAT(.*)GACAGAATGA',
+                    'ORF7b': 'ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAA',
+                    'ORF8': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA', 'N': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA', 'ORF10': 'ATGGGCTATA(.*)TCTCACATAG'}
             for value in values:
-                option = options.get(value)
-                if option == "ORF1ab":
-                    createPhylogeneticTree(option, 'ATGGAGAGCC(.*)TAACAACTAA', 
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "S":
-                    createPhylogeneticTree(option, 'ATGTTTGTTT(.*)TTACACATAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF3a":
-                    createPhylogeneticTree(option, 'ATGGATTTGT(.*)GCCTTTGTAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF3b":
-                    createPhylogeneticTree(option, 'ATGAGGCTTT(.*)GCCTTTGTAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "E":
-                    createPhylogeneticTree(option, 'ATGTACTCAT(.*)TCTGGTCTAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "M":
-                    createPhylogeneticTree(option, 'ATG[GT]CAGATT(.*)TGTACAGTAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF6":
-                    createPhylogeneticTree(option, 'ATGTTTCATC(.*)GATTGA[CT]TAA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF7a":
-                    createPhylogeneticTree(option, 'ATGAAAATTAT(.*)GACAGAATGA',
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF7b":
-                    createPhylogeneticTree(
-                        option, 'ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAA',
-                                window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "ORF8":
-                    createPhylogeneticTree(
-                        option, 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA',
-                                window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                if option == "N":
-                    createPhylogeneticTree(
-                        option, 'ATGTCT[CG][AT][TA]AAT(.*)TCAGGCCTAA',
-                                window_size, step_size, bootstrap_threshold, rf_threshold)
-                if option == "ORF10":
-                    createPhylogeneticTree(option, 'ATGGGCTATA(.*)TCTCACATAG', 
-                            window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+                gene = options.get(value)
+                pattern = genes.get(gene)
+                getGene(gene, pattern)
+                createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
             break
 
 def menu():
-    # try:
+    try:
         names = menuGetTrees()
         bootstrap_threshold = getBootstrapThreshold()
         rf_threshold = getRfThreshold()
         window_size = getSlidingWindowSize()
         step_size = getStepSize()
         validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, names)
-    # except:
-    #     print("An error has occured.")
+    except:
+        print("An error has occured.")
 
 
 def getGene(gene, pattern): 
-    sequences_file = open("output/reference_gene/reference_gene.fasta", "r").read()
+    sequences_file = open("output/reference_gene.fasta", "r").read()
     list_of_sequences = sequences_file.split(">")
     s = pattern
     directory_name = gene + "_gene"
@@ -267,59 +238,30 @@ def getGene(gene, pattern):
     new_file.close()
 
 
-def createReferencePhylogeneticTree(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    gene = 'reference'
-    changeNameSequences()
+def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
     number_seq = alignSequences(gene)
     slidingWindow(window_size, step_size)
     files = os.listdir("output/windows")
     for file in files:
         os.system("cp output/windows/" + file + " infile")
-        createBoostrap(gene)
-        createDistanceMatrix(gene)
-        createUnrootedTree(gene)
-        createConsensusTree(gene)
+        createBoostrap()
+        createDistanceMatrix()
+        createUnrootedTree()
+        createConsensusTree()
         bootstrap_average = calculateAverageBootstrap()
-        # on ne tient pas en consideration l'arbre cree, on le supprime
-        if bootstrap_average < float(bootstrap_threshold):
-            subprocess.call(["rm", "outtree"])
-        else: 
-            for tree in data_names:
-                calculateRfDistance(tree)
-                rfn = standardizedRfDistance(number_seq)
-                if rfn <= rf_threshold:
-                    # dans ce cas, on cree les arbres par raxml
-                    runRaxML(file, gene, tree)
-                else:
-                    os.system("rm outfile")
-
-
-def createPhylogeneticTree(gene, pattern, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    gene = gene
-    changeNameSequences()
-    getGene(gene, pattern)
-    number_seq = alignSequences(gene)
-    slidingWindow(window_size, step_size)
-    files = os.listdir("output/windows")
-    for file in files:
-        os.system("cp output/windows/" + file + " infile")
-        createBoostrap(gene)
-        createDistanceMatrix(gene)
-        createUnrootedTree(gene)
-        createConsensusTree(gene)
-        bootstrap_average = calculateAverageBootstrap()
-        # on ne tient pas en consideration l'arbre cree, on le supprime
         if bootstrap_average < float(bootstrap_threshold):
             subprocess.call(["rm", "outtree"])
         else:
-            for tree in data_names:
+            for tree in data_names: 
                 calculateRfDistance(tree)
-                rfn = standardizedRfDistance(18)
+                rfn = standardizedRfDistance(number_seq)
                 if rfn <= rf_threshold:
-                    # dans ce cas, on cree les arbres par raxml
                     runRaxML(file, gene, tree)
+                    addToCsv(gene, tree, file, bootstrap_average, rfn)
                 else:
                     os.system("rm outfile")
+    subprocess.call(["make", "clean"])
+
 
 def alignSequences(gene):
     sequences_file_name = gene + '_gene.fasta'
@@ -331,7 +273,7 @@ def alignSequences(gene):
     return number_seq
 
 
-def createBoostrap(gene):
+def createBoostrap():
     os.system("./exec/seqboot < input_files/bootstrap_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
@@ -379,17 +321,17 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
     subprocess.call(["rm", "outfile"]) # clean up
 
 
-def createDistanceMatrix(gene):
+def createDistanceMatrix():
     os.system("./exec/dnadist < input_files/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
-def createUnrootedTree(gene):
+def createUnrootedTree():
     os.system("./exec/neighbor < input_files/neighbor_input.txt")
     subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
 
 
-def createConsensusTree(gene):
+def createConsensusTree():
     os.system("./exec/consense < input_files/input.txt")
     subprocess.call(["rm", "intree", "outfile"])
 
@@ -403,12 +345,13 @@ def calculateAverageBootstrap():
     return average
 
 def calculateRfDistance(tree):
-    os.system("cat " + tree +" >> infile && cat outtree >> infile")
+    os.system("cat " + tree + " >> infile")
+    os.system("cat outtree >> infile")
     os.system("./exec/rf infile outfile tmp matrix")
 
 def standardizedRfDistance(number_seq):
     # clean up the repository
-    subprocess.call(["rm", "infile", "matrix", "outtree", "tmp"])
+    subprocess.call(["rm", "infile", "matrix", "tmp"])
     # find the rf
     f = open("outfile", "r").read()
     words = re.split(r'[ \n]', f)
@@ -425,15 +368,16 @@ def runRaxML(aligned_file, gene, tree):
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
     output_path = os.path.join(current_dir, "output", gene + "_gene")
     os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -w " + output_path + " -N autoMRE -m GTRGAMMA -x 123 -f a -p 123")
-    # clean up
-    subprocess.call(["rm", output_path + "RAxML_info.*"])
-    subprocess.call(["rm", output_path + "RAxML_bootstrap.*"])
-    subprocess.call(["make", "clean"])
+    output_path = os.path.join(output_path, file_name)
+    subprocess.call(["cp", input_path, output_path])
 
 
-# def addToCsv():
-
-
+def addToCsv(gene, tree, file, bootstrap_average, rfn):
+    list = [gene, tree, file, bootstrap_average, rfn]
+    with open('output.csv', 'a') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(list)
+        f_object.close()
 
 if __name__ == '__main__':
     menu()

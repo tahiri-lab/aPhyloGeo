@@ -8,5 +8,6 @@ matrix: input_files/input.txt
 
 .PHONY: clean
 
-clean: 
+clean:
+		rm output/reference_gene.fasta
 		rm output/windows/*
