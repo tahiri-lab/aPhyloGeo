@@ -247,20 +247,20 @@ def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf
         createBoostrap()
         createDistanceMatrix()
         createUnrootedTree()
-        createConsensusTree()
-        bootstrap_average = calculateAverageBootstrap()
-        if bootstrap_average < float(bootstrap_threshold):
-            subprocess.call(["rm", "outtree"])
-        else:
-            for tree in data_names: 
-                calculateRfDistance(tree)
-                rfn = standardizedRfDistance(number_seq)
-                if rfn <= rf_threshold:
-                    runRaxML(file, gene, tree)
-                    addToCsv(gene, tree, file, bootstrap_average, rfn)
-                else:
-                    os.system("rm outfile")
-    subprocess.call(["make", "clean"])
+        createConsensusTree(file) # a modifier dans la fonction
+    #     bootstrap_average = calculateAverageBootstrap()
+    #     if bootstrap_average < float(bootstrap_threshold):
+    #         subprocess.call(["rm", "outtree"])
+    #     else:
+    #         for tree in data_names: 
+    #             calculateRfDistance(tree)
+    #             rfn = standardizedRfDistance(number_seq)
+    #             if rfn <= rf_threshold:
+    #                 runRaxML(file, gene, tree)
+    #                 addToCsv(gene, tree, file, bootstrap_average, rfn)
+    #             else:
+    #                 os.system("rm outfile")
+    # subprocess.call(["make", "clean"])
 
 
 def alignSequences(gene):
@@ -331,16 +331,19 @@ def createUnrootedTree():
     subprocess.call(["mv", "outtree", "intree"])
 
 
-def createConsensusTree():
+def createConsensusTree(file):
     os.system("./exec/consense < input_files/input.txt")
-    subprocess.call(["rm", "intree", "outfile"])
+    subprocess.call(["mv", "outtree", file])
+    # subprocess.call(["rm", "intree", "outfile"])
+
 
 def calculateAverageBootstrap():
     total = 0
     f = open("outtree", "r").read()
-    numbers = re.findall(r'\d+[.]\d+', f)
+    numbers = re.findall(r'[)][:]\d+[.]\d+', f)
     for number in numbers:
-        total = total + float(number)
+        total = total + float(number[2:])
+        print(total)
     average = total / len(numbers)
     return average
 
