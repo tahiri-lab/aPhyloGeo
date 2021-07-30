@@ -30,7 +30,7 @@ def getBootstrapThreshold():
     valide = False
     while not valide:
         threshold = input("Enter the bootstrap value threshold between 0 and 100%: ")
-        valide = threshold.isnumeric() and int(threshold) < 100 and int(threshold) > 0
+        valide = threshold.isnumeric() and int(threshold) <= 100 and int(threshold) >= 0
         if not valide:
             print("Error, it must be a number between 1 and 100.")
         else:
@@ -41,7 +41,7 @@ def getRfThreshold():
     valide = False
     while not valide:
         threshold = input("Enter the Robinson and Foulds distance threshold between 0 and 100%: ")
-        valide = threshold.isnumeric() and int(threshold) < 100 and int(threshold) > 0
+        valide = threshold.isnumeric() and int(threshold) <= 100 and int(threshold) >= 0
         if not valide:
             print("Error, it must be a number between 1 and 100.")
         else:
@@ -207,15 +207,15 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
             break
 
 def menu():
-    try:
-        names = menuGetTrees()
-        bootstrap_threshold = getBootstrapThreshold()
-        rf_threshold = getRfThreshold()
-        window_size = getSlidingWindowSize()
-        step_size = getStepSize()
-        validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, names)
-    except:
-        print("An error has occured.")
+    # try:
+    names = menuGetTrees()
+    bootstrap_threshold = getBootstrapThreshold()
+    rf_threshold = getRfThreshold()
+    window_size = getSlidingWindowSize()
+    step_size = getStepSize()
+    validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, names)
+    # except:
+    #     print("An error has occured.")
 
 
 def getGene(gene, pattern): 
@@ -247,20 +247,10 @@ def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf
         createBoostrap()
         createDistanceMatrix()
         createUnrootedTree()
-        createConsensusTree(file) # a modifier dans la fonction
-    #     bootstrap_average = calculateAverageBootstrap()
-    #     if bootstrap_average < float(bootstrap_threshold):
-    #         subprocess.call(["rm", "outtree"])
-    #     else:
-    #         for tree in data_names: 
-    #             calculateRfDistance(tree)
-    #             rfn = standardizedRfDistance(number_seq)
-    #             if rfn <= rf_threshold:
-    #                 runRaxML(file, gene, tree)
-    #                 addToCsv(gene, tree, file, bootstrap_average, rfn)
-    #             else:
-    #                 os.system("rm outfile")
-    # subprocess.call(["make", "clean"])
+        createConsensusTree() # a modifier dans la fonction
+        filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
+    subprocess.call(["make", "clean"])
+    
 
 
 def alignSequences(gene):
@@ -268,6 +258,8 @@ def alignSequences(gene):
     directory_name = gene + '_gene'
     file_path = os.path.join('output', directory_name, sequences_file_name)
     subprocess.call(["./exec/muscle", "-in", file_path, "-physout", "infile", "-maxiters", "1", "-diags"])
+    file_path =os.path.join('output', directory_name)
+    subprocess.call(["cp", "infile", file_path])
     f = open("infile", "r").read()
     number_seq = int(f.split()[0])
     return number_seq
@@ -331,10 +323,10 @@ def createUnrootedTree():
     subprocess.call(["mv", "outtree", "intree"])
 
 
-def createConsensusTree(file):
+def createConsensusTree():
     os.system("./exec/consense < input_files/input.txt")
-    subprocess.call(["mv", "outtree", file])
-    # subprocess.call(["rm", "intree", "outfile"])
+    # subprocess.call(["mv", "outtree", file])
+    subprocess.call(["rm", "intree", "outfile"])
 
 
 def calculateAverageBootstrap():
@@ -343,9 +335,23 @@ def calculateAverageBootstrap():
     numbers = re.findall(r'[)][:]\d+[.]\d+', f)
     for number in numbers:
         total = total + float(number[2:])
-        print(total)
     average = total / len(numbers)
+    print("Bootstrap du filtrage")
+    print(average)
     return average
+
+
+def calculateAverageBootstrapRax():
+    total = 0
+    f = open("outtree", "r").read()
+    numbers = re.findall(r'[\[]\d+[\]]', f)
+    for number in numbers:
+        total = total + float(number[1:(len(number)-1)])
+    average = total / len(numbers)
+    print("Bootstrap de rax")
+    print(average)
+    return average
+
 
 def calculateRfDistance(tree):
     os.system("cat " + tree + " >> infile")
@@ -362,6 +368,7 @@ def standardizedRfDistance(number_seq):
         if words[i] == "=":
             rf = int(words[i+1])
             normalized_rf = (rf/(2*number_seq-6))*100
+            subprocess.call(["rm", "outfile"])
             return normalized_rf
 
 
@@ -369,10 +376,45 @@ def runRaxML(aligned_file, gene, tree):
     current_dir = os.getcwd()
     file_name = os.path.basename(aligned_file + "_" + tree)
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
+    # output_path = os.path.join(current_dir, "output", gene + "_gene")
+    # IL FAUT CHANGER LE MODELE SELON LE GENE CHOISI
+    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -N 100 -m GTRGAMMA -x 123 -f a -p 123")
+    # output_path = os.path.join(output_path, file_name)
+    # subprocess.call(["cp", input_path, output_path])
+
+
+def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file):
+    bootstrap_average = calculateAverageBootstrap()
+    if bootstrap_average < float(bootstrap_threshold):
+        subprocess.call(["rm", "outtree"])
+    else:
+        for tree in data_names:
+            calculateRfDistance(tree)
+            rfn = standardizedRfDistance(number_seq)
+            if rfn <= rf_threshold:
+                runRaxML(file, gene, tree)
+                cleanUp(gene, file, tree)
+                bootstrap_rax = calculateAverageBootstrapRax()
+                if bootstrap_rax < float(bootstrap_threshold):
+                    subprocess.call(["rm", "outtree"])
+                else:
+                    calculateRfDistance(tree)
+                    rfn_rax = standardizedRfDistance(number_seq)
+                    if rfn_rax <= rf_threshold:
+                        addToCsv(gene, tree, file, bootstrap_rax, rfn_rax)
+                        keepFiles()
+                    else:
+                        print("Pass...")
+        
+
+def keepFiles(gene, aligned_file, tree):
+    current_dir = os.getcwd()
+    file_name = os.path.basename(aligned_file + "_" + tree + "_tree")
+    input_path = os.path.join(current_dir, "output", "windows", aligned_file)
     output_path = os.path.join(current_dir, "output", gene + "_gene")
-    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -w " + output_path + " -N autoMRE -m GTRGAMMA -x 123 -f a -p 123")
-    output_path = os.path.join(output_path, file_name)
-    subprocess.call(["cp", input_path, output_path])
+    tree_path = os.path.join(output_path, file_name)
+    subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
+    subprocess.call(["mv", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
 
 
 def addToCsv(gene, tree, file, bootstrap_average, rfn):
@@ -381,6 +423,16 @@ def addToCsv(gene, tree, file, bootstrap_average, rfn):
         writer_object = writer(f_object)
         writer_object.writerow(list)
         f_object.close()
+
+
+def cleanUp(gene, file, tree):
+    print("Cleaning up ...")
+    file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
+    # directory = os.path.join("output", gene + "_gene", file)
+    subprocess.call(["mv", file, "outtree"])
+    files_to_delete = ['*bipartitions.*', '*bootstrap*', '*info*', '*bestTree*']
+    for file in files_to_delete:
+        os.system("rm -rf " +file)
 
 if __name__ == '__main__':
     menu()
