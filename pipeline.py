@@ -204,6 +204,7 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
                 pattern = genes.get(gene)
                 getGene(gene, pattern)
                 createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+                subprocess.call(["make", "clean"])
             break
 
 def menu():
@@ -249,7 +250,6 @@ def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf
         createUnrootedTree()
         createConsensusTree() # a modifier dans la fonction
         filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
-    subprocess.call(["make", "clean"])
     
 
 
@@ -259,7 +259,7 @@ def alignSequences(gene):
     file_path = os.path.join('output', directory_name, sequences_file_name)
     subprocess.call(["./exec/muscle", "-in", file_path, "-physout", "infile", "-maxiters", "1", "-diags"])
     file_path =os.path.join('output', directory_name)
-    subprocess.call(["cp", "infile", file_path])
+    # subprocess.call(["cp", "infile", file_path])
     f = open("infile", "r").read()
     number_seq = int(f.split()[0])
     return number_seq
@@ -336,8 +336,6 @@ def calculateAverageBootstrap():
     for number in numbers:
         total = total + float(number[2:])
     average = total / len(numbers)
-    print("Bootstrap du filtrage")
-    print(average)
     return average
 
 
@@ -348,8 +346,6 @@ def calculateAverageBootstrapRax():
     for number in numbers:
         total = total + float(number[1:(len(number)-1)])
     average = total / len(numbers)
-    print("Bootstrap de rax")
-    print(average)
     return average
 
 
@@ -383,29 +379,30 @@ def runRaxML(aligned_file, gene, tree):
     # subprocess.call(["cp", input_path, output_path])
 
 
-def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file):
+def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, aligned_file):
     bootstrap_average = calculateAverageBootstrap()
     if bootstrap_average < float(bootstrap_threshold):
         subprocess.call(["rm", "outtree"])
     else:
         for tree in data_names:
+            print(tree)
             calculateRfDistance(tree)
             rfn = standardizedRfDistance(number_seq)
             if rfn <= rf_threshold:
-                runRaxML(file, gene, tree)
-                cleanUp(gene, file, tree)
+                runRaxML(aligned_file, gene, tree)
+                cleanUp(aligned_file, tree)
                 bootstrap_rax = calculateAverageBootstrapRax()
                 if bootstrap_rax < float(bootstrap_threshold):
-                    subprocess.call(["rm", "outtree"])
+                    continue
                 else:
                     calculateRfDistance(tree)
                     rfn_rax = standardizedRfDistance(number_seq)
                     if rfn_rax <= rf_threshold:
-                        addToCsv(gene, tree, file, bootstrap_rax, rfn_rax)
-                        keepFiles()
-                    else:
-                        print("Pass...")
-        
+                        addToCsv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
+                        keepFiles(gene, aligned_file, tree)
+                        # a verifier ici
+        subprocess.call(["rm", "outtree"])
+
 
 def keepFiles(gene, aligned_file, tree):
     current_dir = os.getcwd()
@@ -414,7 +411,8 @@ def keepFiles(gene, aligned_file, tree):
     output_path = os.path.join(current_dir, "output", gene + "_gene")
     tree_path = os.path.join(output_path, file_name)
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
-    subprocess.call(["mv", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
+    subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
+    subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
 
 
 def addToCsv(gene, tree, file, bootstrap_average, rfn):
@@ -425,8 +423,7 @@ def addToCsv(gene, tree, file, bootstrap_average, rfn):
         f_object.close()
 
 
-def cleanUp(gene, file, tree):
-    print("Cleaning up ...")
+def cleanUp(file, tree):
     file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
     # directory = os.path.join("output", gene + "_gene", file)
     subprocess.call(["mv", file, "outtree"])
