@@ -10,7 +10,7 @@ def print_menu():
 
 def get_csv_file_name(correct = False):
     while not correct:
-        file_name = input("Please enter the name of the csv file: ")
+        file_name = input("Please enter the name of the csv file (this is a relative path): ")
         # valide que le nom existe vraiment
         try:
             pd.read_csv(file_name)
@@ -50,10 +50,10 @@ def get_columns_names(file_name):
 def create_tree(file_name, names):
     for i in range(1, len(names)):
         getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
-        os.system("./exec/neighbor < input_files/neighbor_input.txt")
+        os.system("./exec/neighbor < input/neighbor_input.txt")
         subprocess.call(["mv", "outtree", "intree"])
         subprocess.call(["rm", "infile", "outfile"])
-        os.system("./exec/consense < input_files/input.txt" )
+        os.system("./exec/consense < input/input.txt" )
         newick_file = names[i] + "_newick"
         subprocess.call(["rm", "outfile"])
         subprocess.call(["mv", "outtree", newick_file])
