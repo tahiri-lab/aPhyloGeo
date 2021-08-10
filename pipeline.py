@@ -266,7 +266,7 @@ def alignSequences(gene):
 
 
 def createBoostrap():
-    os.system("./exec/seqboot < input_files/bootstrap_input.txt")
+    os.system("./exec/seqboot < input/bootstrap_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 
@@ -314,17 +314,17 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
 
 
 def createDistanceMatrix():
-    os.system("./exec/dnadist < input_files/dnadist_input.txt")
+    os.system("./exec/dnadist < input/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 def createUnrootedTree():
-    os.system("./exec/neighbor < input_files/neighbor_input.txt")
+    os.system("./exec/neighbor < input/neighbor_input.txt")
     subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
 
 
 def createConsensusTree():
-    os.system("./exec/consense < input_files/input.txt")
+    os.system("./exec/consense < input/input.txt")
     # subprocess.call(["mv", "outtree", file])
     subprocess.call(["rm", "intree", "outfile"])
 
