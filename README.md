@@ -96,7 +96,7 @@ Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance 
 
 ### Potentiels problèmes rencontrés
 
-+ Pour les utilisateurs de mac, il est probable que votre ordinateur bloque l'accès au programme ```muscle```. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
++ Pour les utilisateurs de ```macOS```, il est probable que votre ordinateur bloque l'accès au programme ```muscle```. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
 
 ### Références
 Plusieurs programmes externes ont été utilisé dans l'élaboration de ce pipeline :
