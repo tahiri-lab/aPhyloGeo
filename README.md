@@ -94,6 +94,10 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance ```rf``` seuil, les arbres phylogénétiques d'intérêts avec leur ASM (alignement de séquence multiple) correspondant seront gardés dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée. Finalement, le fichier [output.csv](output.csv) contiendra tous les ASM significatifs retenus avec leur gène en question, leur position sur la séquence, leur valeur de ```bootstrap``` et sa distance ```rf```.
 
 
+### Potentiels problèmes rencontrés
+
++ Pour les utilisateurs de mac, il est probable que votre ordinateur bloque l'accès au programme ```muscle```. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
+
 
 
 
