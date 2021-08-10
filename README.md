@@ -48,7 +48,20 @@ Please enter the name of the column to analyze in your csv file (5): Pression en
 
 ```Assurez-vous que les noms des colonnes soient identiques à celles que vous avez saisies pour que le programme puisse les retrouvés! Les noms des séquences à étudier ainsi que les noms des spécimens dans ce fichier doivent également correspondre exactement.```
 
+### Création des arbres phylogénétiques et analyses phylogéographiques
 
+<p>
+1. Les fichiers des séquences à analyser (.fasta) doivent être mis dans le dossier [data](./data). À noter que l'entête des fichiers de séquences doivent respecter ce format :
+
+```>hCoV-19/Nigeria/S38/2020|EPI_ISL_2399462|2020-10-12```
+
+Afin de pouvoir différencier chaque séquence avec un nom différent, cet outil va isoler le 3e mot rencontré dans l'entête. Dans cet exemple, la séquence sera alors nommée ```S38```. Dans le cas où ce mot serait plus long que 10 caractères, le programme ne prendra que les 10 premiers. Par exemple, si nous avons ceci comme entête:
+
+```>hCoV-19/India/GJ-GBRC560b/2021|EPI_ISL_1677798|2021-01-12```
+
+Dans ce cas, le nom de la séquence sera seulement ```GJ-GBRC560``` puisqu'il est composé d'exactement 10 caractères. Ceci est important à comprendre, surtout pour les noms que vous donnerez aux séquences dans le fichier ```csv``` qui doivent être identiques à ces noms en question.
+
+</p>
 
 
 
