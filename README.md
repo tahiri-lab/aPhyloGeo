@@ -108,7 +108,7 @@ Plusieurs programmes externes ont été utilisé dans l'élaboration de ce pipel
     doi:10.1186/1471-2105-5-113
 
 2. Programmes pour filtrer initialement les séquences: ```Seqboot```, ```DNADist```, ```Neighbor```, ```Consense```
-[J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
+    + [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
 
 3. Calcul de la distance de ```Robinson et Foulds``` : [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 
