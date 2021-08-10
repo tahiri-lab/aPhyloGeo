@@ -1,5 +1,5 @@
 # Phylotree
-
+Alors que le combat contre la SARS-CoV-2 fait encore rage, les bioinformaticiens travaillent tous de concert afin de mettre en place des outils pouvant faciliter la rechercher dans 
 Cet outil est un pipeline bioinformatique dédié à l'analyse du SARS-CoV-2. Dans un premier temps, il permet d'obtenir des arbres phylogéographiques à partir des données météorologiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. Dans un deuxième temps, cet outil permet de comparer des arbres phylogénétiques obtenus à partir d'alignements de séquences multiples (ASM) des variantes du SARS-CoV-2 avec les arbres phylogéographiques afin de conserver les régions des séquences qui présentent une ressemblance topologique avec l'arbre phylogéographique, et donc, qui pourrait potentiellement être corrélé avec cette variable météorologique.
 
 ## Workflow
@@ -98,7 +98,21 @@ Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance 
 
 + Pour les utilisateurs de mac, il est probable que votre ordinateur bloque l'accès au programme ```muscle```. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
 
+### Références
+Plusieurs programmes externes ont été utilisé dans l'élaboration de ce pipeline :
 
+1. Programme pour l'alignement des séquences: ```MUSCLE``` 
+    + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
+    doi:10.1093/nar/gkh340]
+    + [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
+    doi:10.1186/1471-2105-5-113
 
+2. Programmes pour filtrer initialement les séquences: ```Seqboot```, ```DNADist```, ```Neighbor```, ```Consense```
+[J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
+
+3. Calcul de la distance de ```Robinson et Foulds``` : [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+
+4. Outil pour les analyses phylogénétiques : ```RAxML```
+    + [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
 
 
