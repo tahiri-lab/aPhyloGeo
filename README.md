@@ -91,7 +91,7 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 12 : ORF10
 7
 ```
-Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance ```rf``` que vous avez saisies, les arbres phylogénétiques d'intérêts seront garder dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée.
+Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance ```rf``` seuil, les arbres phylogénétiques d'intérêts avec leur ASM (alignement de séquence multiple) correspondant seront gardés dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée. Finalement, le fichier [output.csv](output.csv) contiendra tous les ASM significatifs retenus avec leur gène en question, leur position sur la séquence, leur valeur de ```bootstrap``` et sa distance ```rf```.
 
 
 
