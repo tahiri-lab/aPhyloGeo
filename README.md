@@ -59,7 +59,7 @@ Afin de pouvoir différencier chaque séquence avec un nom différent, cet outil
 
 Dans ce cas, le nom de la séquence sera seulement ```GJ-GBRC560``` puisqu'il est composé d'exactement 10 caractères. Ceci est important à comprendre, surtout pour les noms que vous donnerez aux séquences dans le fichier ```csv``` qui doivent être identiques à ces noms isolés en question.
 
-2. Une fois les séquences bien placées dans le dossier [data](./data), il suffit maintenant de lancer le programme avec la commande ```make```. Voici un exemple de ce qui devrait apparaître sur le terminal ainsi que les saisies : 
+2. Une fois les séquences bien placées dans le dossier [data](./data), il suffit maintenant de lancer le programme avec la commande ```make```. Voici un exemple de ce qui devrait apparaître sur le terminal ainsi qu'un exemple des saisies : 
 
 ```
 How many climatic data tree will be used?: 1
@@ -91,6 +91,8 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 12 : ORF10
 7
 ```
+Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance ```rf``` que vous avez saisies, les arbres phylogénétiques d'intérêts seront garder dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée.
+
 
 
 
