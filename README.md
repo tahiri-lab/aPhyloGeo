@@ -63,7 +63,7 @@ Dans ce cas, le nom de la séquence sera seulement ```GJ-GBRC560``` puisqu'il es
 
 ```
 How many climatic data tree will be used?: 1
-Name of the tree file (1): T_max_à_2m_(C)_newick
+Name of the tree file (1): T_max_à_2m_C_newick
 Enter the bootstrap value threshold between 0 and 100%: 10
 Enter the Robinson and Foulds distance threshold between 0 and 100%: 100
 Sliding window size: 100
