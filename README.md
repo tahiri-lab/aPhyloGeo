@@ -98,7 +98,7 @@ Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance 
 
 + Pour les utilisateurs de ```macOS```, il est probable que votre ordinateur bloque l'accès au programme ```muscle```. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
 
-### Références
+## Références
 Plusieurs programmes externes ont été utilisé dans l'élaboration de ce pipeline :
 
 1. Programme pour l'alignement des séquences: ```MUSCLE``` 
