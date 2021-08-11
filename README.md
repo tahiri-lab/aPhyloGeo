@@ -1,6 +1,6 @@
 # Phylotree
-Alors que le combat contre la SARS-CoV-2 fait encore rage, plus que jamais les outils bioinformatiques s'avèrent être essentiels aux chercheurs. Cette outil 
-```Phylotree``` est un pipeline bioinformatique dédié à l'analyse du SARS-CoV-2. Dans un premier temps, il permet d'obtenir des arbres phylogéographiques à partir des données météorologiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. Dans un deuxième temps, cet outil permet de comparer des arbres phylogénétiques obtenus à partir d'alignements de séquences multiples (ASM) des variantes du SARS-CoV-2 avec les arbres phylogéographiques afin de conserver les régions des séquences qui présentent une ressemblance topologique avec l'arbre phylogéographique, et donc, qui pourrait potentiellement être corrélé avec cette variable météorologique.
+
+```Phylotree``` est un pipeline bioinformatique dédié à l'analyse du SARS-CoV-2. D'une part, il permet d'obtenir des arbres issus de données métérologiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques issus des alignements de séquences multiples (ASM) aux arbres issus des données météo à l'aide du calcul de la [distance de Robinson et Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM qui donnent des arbres avec une valeur ```RF``` significative sont conservés dans des dossiers avec l'alignement et l'arbre en question.
 
 ## Workflow
 ![](./img/workflow.jpeg)
