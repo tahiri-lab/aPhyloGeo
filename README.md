@@ -1,6 +1,6 @@
 # Phylotree
 
-```Phylotree``` is a bioinformatics pipeline dedicated to the analysis of ```SARS-CoV-2```. On the one hand, it allows to obtain trees from meteorological data of the regions where ```SARS-CoV-2``` samples have been collected. On the other hand, this tool allows topological comparison of phylogenetic trees from multiple sequence alignments (MSAs) with trees from weather data using the [Robinson and Foulds (RF) distance] calculation(https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). ASMs that yield trees with a significant ```RF``` value are stored in folders with the alignment and tree in question.
+```Phylotree``` is a bioinformatics pipeline dedicated to the analysis of ```SARS-CoV-2```. On the one hand, it allows to obtain trees from meteorological data of the regions where ```SARS-CoV-2``` samples have been collected. On the other hand, this tool allows topological comparison of phylogenetic trees from multiple sequence alignments (MSAs) with trees from weather data using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). ASMs that yield trees with a significant ```RF``` value are stored in folders with the alignment and tree in question.
 
 ## Workflow
 
