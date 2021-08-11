@@ -54,7 +54,7 @@ def create_tree(file_name, names):
         subprocess.call(["mv", "outtree", "intree"])
         subprocess.call(["rm", "infile", "outfile"])
         os.system("./exec/consense < input/input.txt" )
-        newick_file = names[i] + "_newick"
+        newick_file = names[i].replace(" ", "_") + "_newick"
         subprocess.call(["rm", "outfile"])
         subprocess.call(["mv", "outtree", newick_file])
 
