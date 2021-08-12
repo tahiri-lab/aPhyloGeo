@@ -124,7 +124,7 @@ Once the program is run, depending on the bootstrap value and the threshold dist
 ```Phylotree``` est un pipeline bioinformatique dédié à l'analyse du ```SARS-CoV-2```. D'une part, il permet d'obtenir des arbres issus de données métérologiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques issus des alignements de séquences multiples (ASM) aux arbres issus des données météo à l'aide du calcul de la [distance de Robinson et Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM qui donnent des arbres avec une valeur ```RF``` significative sont conservés dans des dossiers avec l'alignement et l'arbre en question.
 
 ## Workflow
-![](./img/workflow.jpeg)
+![](./img/workflow_fr.jpeg)
 
 ## Comment l'utiliser?
 
