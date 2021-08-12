@@ -1,6 +1,6 @@
 # Phylotree
 
-```Phylotree``` is a bioinformatics pipeline dedicated to the analysis of ```SARS-CoV-2```. On the one hand, it allows to obtain trees from meteorological data of the regions where ```SARS-CoV-2``` samples have been collected. On the other hand, this tool allows topological comparison of phylogenetic trees from multiple sequence alignments (MSAs) with trees from weather data using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). ASMs that yield trees with a significant ```RF``` value are stored in folders with the alignment and tree in question.
+`Phylotree` is a bioinformatics pipeline dedicated to the analysis of `SARS-CoV-2`. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
 
 ## Workflow
 
@@ -15,13 +15,13 @@ Before using this program, make sure that you have installed all the necessary l
 pip install -r requirements.txt
 ```
 
-### Creation of phylogeographic trees
+### Creation of climatic trees
 
-In order to obtain the phylogeographic trees, you need to create a csv file containing the data of interest (see the example [data.csv](./data/data.csv))
+In order to obtain the climatic data trees, you need to create a csv file containing the data to study ( see the example [data.csv](./data/data.csv) ).
 
-This file should have a structure similar to the example file. A column containing the names of the specimens should be present since the name of this column will be requested when the program is launched. **The column names should not contain parentheses!
+This file should have a structure similar to the example file. A column containing the names of the specimens should be present since the name of this column will be requested when the program is launched. **The column names should not contain parentheses**!
 
-Then the other columns should contain the meteorological variables that are to be studied. The values must be **numeric** for the program to work properly.
+The other columns should contain the climatic variables that are to be studied. The values must be **numeric** for the program to work properly.
 
 Once the file is created with the data, it is now time to create the trees with this command: 
 
@@ -45,24 +45,24 @@ Please enter the name of the column to analyze in your csv file (4): Précipitat
 Please enter the name of the column to analyze in your csv file (5): Pression en surface kpa
 ```
 
-Make sure that the column names are identical to the ones you entered so that the program can find them! The names of the sequences to be studied and the names of the specimens in this file must also match exactly.
+Make sure that the column names are identical to the ones you entered so that the program can find them. The names of the sequences to be studied and the names of the specimens in this file must also match exactly.
 
-The phylogeographic trees should then be created in the current folder with the column names followed by ``newick`` (e.g. ``T_max_to_2m_C_newick``). 
+The climatic trees should then be created in the current folder with the column names followed by ``newick`` (e.g. ``T_max_to_2m_C_newick``). 
 
 
-### Creating phylogenetic trees and phylogeographic analyses
+### Creating phylogenetic trees and phylogeographic analysis
 
-1. The files of the sequences to be analyzed (.fasta) must be put in the folder [data](./data). Note that the header of the sequence files must respect this format (the sequences obtained on [GISAID](https://www.gisaid.org) all respect this format):
+1. The `.fasta` sequence files must be put in the folder [data](./data). Note that the header of the sequence file must respect this format ( the sequences obtained on [GISAID](https://www.gisaid.org) all respect this format ):
 
 ```>hCoV-19/Nigeria/S38/2020|EPI_ISL_2399462|2020-10-12```
 
-In order to be able to differentiate each sequence with a different name, this tool will isolate the 3rd word encountered in the header. In this example, the sequence will be named "S38". In case this word is longer than 10 characters, the program will only take the first 10. For example, if we have this as a header:
+In order to be able to differentiate each sequence with a different name, this tool will isolate the 3rd word encountered in the header. In this example, the sequence will be named `S38`. In case this word is longer than 10 characters, the program will only take the first ten : 
 
 ```>hCoV-19/India/GJ-GBRC560b/2021|EPI_ISL_1677798|2021-01-12```
 
-In this case, the sequence name will only be ``GJ-GBRC560`` since it is exactly 10 characters long. This is important to understand, especially for the names you will give to the sequences in the ``csv`` file, which must be identical to the single names in question.
+In this case, the sequence name will only be `GJ-GBRC560` since it is exactly 10 characters long. This is important to understand, especially for the names you will give to the sequences in the `csv` climatic data file, which must be identical to the single names.
 
-2. Once the sequences have been placed in the [data] folder (./data), all you have to do is run the program with the command ``make''. Here is an example of what should appear on the terminal and an example of the entries:
+2. Once the sequences have been placed in the [data](./data) folder, all you have to do is run the program with `make` command. Here is an example of what should appear on the terminal and an example of the entries:
 
 ```
 How many climatic data tree will be used?: 1
@@ -94,12 +94,12 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 12 : ORF10
 7
 ```
-Once the program is run, depending on the bootstrap value and the threshold distance, the phylogenetic trees of interest with their corresponding ASM (multiple sequence alignment) will be kept in the folders of each selected [gene](./output) or in the [reference] folder (./output/reference_gene) if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant ASMs selected with their gene in question, their position on the sequence, their bootstrap value and its rf distance.
+Once the program is running, depending on the bootstrap value and the `Robinson-Fould metric` found for each MSA ( Multiple Sequence Alignment ), the climatic tree of interest with their corresponding MSA (Multiple Sequence Alignment) will be kept in the folders of each selected [gene](./output) or in the [reference](./output/reference_gene) folder if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant MSAs and their related informations such as their position on the sequence, the gene related to this position, their bootstrap value and their `RF metric`.
 
 
 ## Potential problems encountered
 
-+ For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, simply go to the privacy settings on your machine and give the program access
++ For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access
 
 ## References
 
