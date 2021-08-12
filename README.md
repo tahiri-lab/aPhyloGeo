@@ -4,7 +4,7 @@
 
 ## Workflow
 
-(ajouter workflow en anglais)
+![](./img/workflow_en.jpeg)
 
 ## How to use?
 
