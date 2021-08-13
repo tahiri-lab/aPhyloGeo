@@ -1,3 +1,4 @@
+from posix import listdir
 import subprocess
 import os
 import re
@@ -12,18 +13,14 @@ def menuGetTrees():
         elif int(count) < 1:
             print("The number cannot be lower than 1.")
         else:
-            # VALIDER LE FORMAT NEWICK??
-            try:
-                names = []
-                for i in range(int(count)):
-                    name = input("Name of the tree file (" + str(i+1) + "): " )
-                    open(name, "r")
-                    names.append(name)
-            except:
+            names = []
+            for i in range(int(count)):
+                name = input("Name of the tree file (" + str(i+1) + "): " )
+                while name not in os.listdir("."):
                     print("This file does not exist or is empty.")
-                    continue
-            break
-    return names
+                    name = input("Name of the tree file (" + str(i+1) + "): " )
+                names.append(name)
+        return names
 
 
 def getBootstrapThreshold():
