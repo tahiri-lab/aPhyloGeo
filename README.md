@@ -52,7 +52,7 @@ The climatic trees should then be created in the current folder with the column 
 
 ### Creating phylogenetic trees and phylogeographic analysis
 
-1. The `.fasta` sequence files must be put in the folder [data](./data). Note that the header of the sequence file must respect this format ( the sequences obtained on [GISAID](https://www.gisaid.org) all respect this format ):
+1. The `.fasta` sequence files must be put in the folder [data](./data). Note that the header of the sequence file must respect this format (Note: The sequences obtained on [GISAID](https://www.gisaid.org) all respect this format):
 
 ```>hCoV-19/Nigeria/S38/2020|EPI_ISL_2399462|2020-10-12```
 
@@ -94,7 +94,7 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 12 : ORF10
 7
 ```
-Once the program is running, depending on the bootstrap value and the `Robinson-Fould metric` found for each MSA ( Multiple Sequence Alignment ), the climatic tree of interest with their corresponding MSA (Multiple Sequence Alignment) will be kept in the folders of each selected [gene](./output) or in the [reference](./output/reference_gene) folder if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant MSAs and their related informations such as their position on the sequence, the gene related to this position, their bootstrap value and their `RF metric`.
+Depending on the bootstrap value and the `Robinson-Fould metric` found for each MSA ( Multiple Sequence Alignment ), the climatic tree of interest with their corresponding MSA will be kept in the folders of each selected [gene](./output) or in the [reference](./output/reference_gene) folder if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant MSAs and their related informations such as their position on the sequence, the gene related to this position, their bootstrap value and their `RF metric`.
 
 
 ## Potential problems encountered
@@ -104,24 +104,24 @@ Once the program is running, depending on the bootstrap value and the `Robinson-
 ## References
 
 1. Sequence alignment tool : `MUSCLE`
-    + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
-    doi:10.1093/nar/gkh340]
-    + [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
-    doi:10.1186/1471-2105-5-113
++ [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
+doi:10.1093/nar/gkh340]
++ [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
+doi:10.1186/1471-2105-5-113
 
 2. Phylip Package: `Seqboot`, `DNADist`, `Neighbor`, `Consense`
-    + [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
+    [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
 
-3. Robinson-Foulds metric:
-    + [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+3. Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
+    [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 
 4. Phylogenetic analysis: `RAxML`
-    + [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
+    [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
 
 
 ------
 
-```Phylotree``` est un pipeline bioinformatique dédié à l'analyse du ```SARS-CoV-2```. D'une part, il permet d'obtenir des arbres issus de données métérologiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques issus des alignements de séquences multiples (ASM) aux arbres issus des données météo à l'aide du calcul de la [distance de Robinson et Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM qui donnent des arbres avec une valeur ```RF``` significative sont conservés dans des dossiers avec l'alignement et l'arbre en question.
+`Phylotree` est un pipeline bioinformatique dédié à l'analyse du `SARS-CoV-2`. D'une part, il permet d'obtenir des arbres issus de données climatiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques aux arbres issus des données climatiques à l'aide du calcul de la [distance de Robinson-Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM (Alignement de Séquences Multiples) qui donnent des arbres avec une valeur `RF` significative sont conservés dans des dossiers avec leur arbre phylogénétique. Le fichier `output.csv` servira à conserver tous les ASM avec les informations pertinentes.
 
 ## Workflow
 ![](./img/workflow_fr.jpeg)
@@ -134,13 +134,13 @@ Avant d'utiliser ce programme, assurez-vous d'avoir installé toutes les librair
 ```
 pip install -r requirements.txt
 ```
-### Création des arbres phylogéographiques
+### Création des arbres issus des données climatiques
 
-Afin d'obtenir les arbres phylogéographiques, il faut créer un fichier csv contenant les données d'intérêt (voir l'exemple [donnees.csv](./data/donnees.csv))
+Afin d'obtenir les arbres phylogéographiques, il faut créer un fichier csv contenant les données à l'étude (voir l'exemple [donnees.csv](./data/donnees.csv)).
 
 Ce fichier devrait avoir une structure similaire au fichier exemple. Une colonne contenant les noms des spécimens devrait être présente puisque le nom de cette colonne sera demandé au lancement du programme. **Les noms des colonnes ne doivent pas contenir de parenthèses!**
 
-Ensuite, les autres colonnes devraient contenir les variables métérologiques qui sont à étudier. Les valeurs doivent être **numériques** pour que le programme puisse fonctionner correctement.
+Ensuite, les autres colonnes devraient contenir les données climatiques qui sont à étudier. Les valeurs doivent être **numériques** pour que le programme puisse fonctionner correctement.
 
 Une fois le fichier créé avec les données, il est maintenant temps de créer les arbres avec cette commande : 
 
@@ -163,14 +163,14 @@ Please enter the name of the column to analyze in your csv file (4): Précipitat
 Please enter the name of the column to analyze in your csv file (5): Pression en surface kpa
 ```
 
-```Assurez-vous que les noms des colonnes soient identiques à celles que vous avez saisies pour que le programme puisse les retrouvés! Les noms des séquences à étudier ainsi que les noms des spécimens dans ce fichier doivent également correspondre exactement.```
+Assurez-vous que les noms des colonnes soient **identiques** à celles que vous avez saisies pour que le programme puisse les retrouvés! Les noms des séquences à étudier ainsi que les noms des spécimens dans ce fichier doivent également correspondre exactement.
 
-Les arbres phylogéographiques devraient alors être créés dans le dossier courant avec le nom des colonnes suivi de ```_newick``` (ex: ```T_max_à_2m_C_newick```). 
+Les arbres phylogéographiques seront alors créés dans le dossier courant avec le nom des colonnes suivi de ```_newick``` (ex: ```T_max_à_2m_C_newick```). 
 
 
 ### Création des arbres phylogénétiques et analyses phylogéographiques
 
-1. Les fichiers des séquences à analyser (.fasta) doivent être mis dans le dossier [data](./data). À noter que l'entête des fichiers de séquences doivent respecter ce format ( les séquences obtenues sur [GISAID](https://www.gisaid.org) respectent tous ce format ) :
+1. Les fichiers `.fasta` à analyser doivent être mis dans le dossier [data](./data). À noter que l'entête des fichiers de séquences doivent respecter ce format ( les séquences obtenues sur [GISAID](https://www.gisaid.org) respectent tous ce format ) :
 
 ```>hCoV-19/Nigeria/S38/2020|EPI_ISL_2399462|2020-10-12```
 
@@ -212,28 +212,28 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 12 : ORF10
 7
 ```
-Une fois le programme lancé, selon la valeur de ```bootstrap``` et la distance ```rf``` seuil, les arbres phylogénétiques d'intérêts avec leur ASM (alignement de séquence multiple) correspondant seront gardés dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée. Finalement, le fichier [output.csv](output.csv) contiendra tous les ASM significatifs retenus avec leur gène en question, leur position sur la séquence, leur valeur de ```bootstrap``` et sa distance ```rf```.
+Une fois le programme lancé, selon la valeur `bootstrap` calculée et la distance ```rf``` seuil, les arbres phylogénétiques d'intérêts avec leur ASM correspondant seront gardés dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée. Finalement, le fichier [output.csv](output.csv) contiendra tous les ASM significatifs retenus avec la position de l'ASM, le gène en question, l'arbre climatique avec lequel cet arbre à été comparé, la valeur bootstrap de l'arbre ainsi que la distance `RF` calculée entre les deux arbres. 
 
 
 ## Potentiels problèmes rencontrés
 
-+ Pour les utilisateurs de ```macOS```, il est probable que votre ordinateur bloque l'accès au programme `MUSCLE`. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
++ Pour les utilisateurs de `macOS`, il est probable que votre ordinateur bloque l'accès au programme `MUSCLE`. Si c'est le cas, simplement aller dans les paramètres de confidentialité de votre machine et donner l'accès au programme.
 
 ## Références
-Plusieurs programmes externes ont été utilisé dans l'élaboration de ce pipeline :
 
-1. Programme pour l'alignement des séquences: ```MUSCLE``` 
-    + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
-    doi:10.1093/nar/gkh340]
-    + [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
-    doi:10.1186/1471-2105-5-113
+1. Programme pour l'alignement des séquences: `MUSCLE` 
++ [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
+doi:10.1093/nar/gkh340]
++ [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
+doi:10.1186/1471-2105-5-113
 
 2. Paquet Phylip: ```Seqboot```, ```DNADist```, ```Neighbor```, ```Consense```
-    + [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
+    [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
 
-3. Calcul de la distance de ```Robinson et Foulds``` : [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+3. Calcul de la distance topologique entre les arbres: `Distance de Robinson-Foulds` 
+[Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 
-4. Outil pour les analyses phylogénétiques : ```RAxML```
-    + [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
+4. Outil pour les analyses phylogénétiques : `RAxML`
+    [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
 
 
