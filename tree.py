@@ -24,28 +24,32 @@ def get_columns_names(file_name):
     columns = pd.read_csv(file_name).columns
     names = [] # liste qui va contenir les noms des colonnes a traiter
     while True:
-        number = input("Number of trees to create: \n")
-        number = int(number)
-        if number < 1:
-            print("Error, the number of trees cannot be below 1.")
-            continue
-        else:
-            specimen = input("Please enter the name of the colum containing the specimens names: ")
-            valide = specimen in columns
-            while not valide:
-                print("Error, this column name does not exist.")
-                name = input("Please enter the name of the colum containing the specimens names: ")
-                valide = name in columns
-            names.append(specimen)
-            for i in range(number):
-                name = input("Please enter the name of the column to analyze in your csv file (" + str(i+1) + "): ")
-                valide = name in columns
+        try:
+            number = input("Number of trees to create: \n")
+            number = int(number)
+            if number < 1:
+                print("Error, the number of trees cannot be below 1.")
+                continue
+            else:
+                specimen = input("Please enter the name of the colum containing the specimens names: ")
+                valide = specimen in columns
                 while not valide:
                     print("Error, this column name does not exist.")
+                    name = input("Please enter the name of the colum containing the specimens names: ")
+                    valide = name in columns
+                names.append(specimen)
+                for i in range(number):
                     name = input("Please enter the name of the column to analyze in your csv file (" + str(i+1) + "): ")
                     valide = name in columns
-                names.append(name)
-            return names
+                    while not valide:
+                        print("Error, this column name does not exist.")
+                        name = input("Please enter the name of the column to analyze in your csv file (" + str(i+1) + "): ")
+                        valide = name in columns
+                    names.append(name)
+                return names
+        except Exception:
+            print("Error, you must enter a number.")
+            continue
 
 def create_tree(file_name, names):
     for i in range(1, len(names)):
