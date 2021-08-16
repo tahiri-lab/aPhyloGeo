@@ -201,8 +201,9 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
                 pattern = genes.get(gene)
                 getGene(gene, pattern)
                 createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-                subprocess.call(["make", "clean"])
+            subprocess.call(["make", "clean"])
             break
+    
 
 def menu():
     # try:
@@ -247,6 +248,7 @@ def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf
         createUnrootedTree()
         createConsensusTree() # a modifier dans la fonction
         filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
+        subprocess.call(["rm", "output/windows/"+file])
     
 
 
@@ -382,7 +384,6 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
         subprocess.call(["rm", "outtree"])
     else:
         for tree in data_names:
-            print(tree)
             calculateRfDistance(tree)
             rfn = standardizedRfDistance(number_seq)
             if rfn <= rf_threshold:
@@ -409,7 +410,6 @@ def keepFiles(gene, aligned_file, tree):
     tree_path = os.path.join(output_path, file_name)
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
-    subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
 
 
 def addToCsv(gene, tree, file, bootstrap_average, rfn):
@@ -421,12 +421,14 @@ def addToCsv(gene, tree, file, bootstrap_average, rfn):
 
 
 def cleanUp(file, tree):
+    reduced_file = file+".reduced"
     file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
     # directory = os.path.join("output", gene + "_gene", file)
     subprocess.call(["mv", file, "outtree"])
     files_to_delete = ['*bipartitions.*', '*bootstrap*', '*info*', '*bestTree*']
     for file in files_to_delete:
         os.system("rm -rf " +file)
+    subprocess.call(["rm", "output/windows/"+reduced_file])
 
 if __name__ == '__main__':
     menu()
