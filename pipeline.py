@@ -61,14 +61,14 @@ def getSlidingWindowSize():
 
 def getStepSize():
     while True:
-        count = input("Step count: ")
+        count = input("Step size: ")
         try:
             count = int(count)
         except Exception:
-            print("The step count must be a number.")
+            print("The step size must be a number.")
             continue
         if(count <= 0):
-            print("The window size must be between greater than 0.")
+            print("The step size must be between greater than 0.")
         else:
             return count
 
