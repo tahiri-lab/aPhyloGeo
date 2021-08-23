@@ -120,6 +120,17 @@ doi:10.1186/1471-2105-5-113
 
 
 ------
+Alors que la pandémie mondiale causée par le SARS-CoV-2 bat encore son plein, les efforts concertés des chercheurs nous permettent d’en apprendre davantage sur ce virus quotidiennement. Sur la base de données GISAID, plus d’un million de séquences sont rendus disponibles afin d’accélérer les recherches. Plus que jamais, les outils bioinformatiques mis à la disposition des chercheurs sont cruciaux à l'analyse de cette masse de données. 
+
+La phylogénie est l’études des relations qui existent entre des espèces apparentées. Elle permet de retracer un ancêtre commun aux espèces et de les classer selon les liens de parenté qui les relient ensemble. La phylogénie permet donc d’étudier l’évolution des espèces et de proposer des modèles qui tentent d’expliquer la biodiversité actuelle. Les analyses phylogénétiques peuvent s’appuyer sur des données diverses :  
+
+Des données morphologiques, c’est-à-dire des caractéristiques physiques observables chez les espèces. 
+
+Des données macromoléculaires comme les acides nucléiques qui sont à la base de l’ADN et de l’ARN et les protéines qui occupent un rôle central au fonctionnement des vivants. 
+
+L’outil le plus utilisé pour représenter les relations et les ancêtres communs des organismes sont les arbres phylogénétiques.  
+
+D’un côté, la phylogénie étudie les relations entre les espèces en observant les différences au niveau de macromolécules tel que l’ADN. Néanmoins, ces observations offrent souvent une image incomplète de l’évolution de ces espèces. C’est là que la phylogéographie s’avère intéressante puisqu’elle offre une explication à l’évolution des espèces. Comme la phylogénie, la phylogéographie a pour but de distinguer les relations qui relient les espèces entre elles. Par contre, cette discipline va plutôt s’intéresser à la distribution spatiale des espèces et aux données géographiques et climatiques afin d’en inférer des corrélations pouvant expliquer la biodiversité locale.  
 
 `Phylotree` est un pipeline bioinformatique dédié à l'analyse du `SARS-CoV-2`. D'une part, il permet d'obtenir des arbres issus de données climatiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques aux arbres issus des données climatiques à l'aide du calcul de la [distance de Robinson-Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM (Alignement de Séquences Multiples) qui donnent des arbres avec une valeur `RF` significative sont conservés dans des dossiers avec leur arbre phylogénétique. Le fichier `output.csv` servira à conserver tous les ASM avec les informations pertinentes.
 
