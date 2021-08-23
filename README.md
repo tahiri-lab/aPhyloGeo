@@ -124,11 +124,13 @@ Alors que la pandémie mondiale causée par le SARS-CoV-2 bat encore son plein, 
 
 La phylogénie est l’études des relations qui existent entre des espèces apparentées. Elle permet de retracer un ancêtre commun aux espèces et de les classer selon les liens de parenté qui les relient ensemble. La phylogénie permet donc d’étudier l’évolution des espèces et de proposer des modèles qui tentent d’expliquer la biodiversité actuelle. Les analyses phylogénétiques peuvent s’appuyer sur des données diverses :  
 
-Des données morphologiques, c’est-à-dire des caractéristiques physiques observables chez les espèces. 
++ Des données morphologiques, c’est-à-dire des caractéristiques physiques observables chez les espèces. 
 
-Des données macromoléculaires comme les acides nucléiques qui sont à la base de l’ADN et de l’ARN et les protéines qui occupent un rôle central au fonctionnement des vivants. 
++ Des données macromoléculaires comme les acides nucléiques qui sont à la base de l’ADN et de l’ARN et les protéines qui occupent un rôle central au fonctionnement des vivants. 
 
 L’outil le plus utilisé pour représenter les relations et les ancêtres communs des organismes sont les arbres phylogénétiques.  
+
+![](./img/ex_newick.jpeg)
 
 D’un côté, la phylogénie étudie les relations entre les espèces en observant les différences au niveau de macromolécules tel que l’ADN. Néanmoins, ces observations offrent souvent une image incomplète de l’évolution de ces espèces. C’est là que la phylogéographie s’avère intéressante puisqu’elle offre une explication à l’évolution des espèces. Comme la phylogénie, la phylogéographie a pour but de distinguer les relations qui relient les espèces entre elles. Par contre, cette discipline va plutôt s’intéresser à la distribution spatiale des espèces et aux données géographiques et climatiques afin d’en inférer des corrélations pouvant expliquer la biodiversité locale.  
 
