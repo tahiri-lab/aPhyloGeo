@@ -387,7 +387,7 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
             calculateRfDistance(tree)
             rfn = standardizedRfDistance(number_seq)
             if rfn == None:      #'<=' not supported between instances of 'NoneType' and 'int'
-                rfn = 0         #fix it 
+                rfn = 100         #fix it 
             if rfn <= rf_threshold:
                 runRaxML(aligned_file, gene, tree)
                 cleanUp(aligned_file, tree)
@@ -398,7 +398,7 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
                     calculateRfDistance(tree)
                     rfn_rax = standardizedRfDistance(number_seq)
                     if rfn_rax == None:         #'<=' not supported between instances of 'NoneType' and 'int'
-                        rfn_rax = 0             #fix it
+                        rfn_rax = 100             #fix it
                     if rfn_rax <= rf_threshold:
                         addToCsv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
                         keepFiles(gene, aligned_file, tree)
