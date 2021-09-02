@@ -255,7 +255,10 @@ def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf
 def alignSequences(gene):
     sequences_file_name = gene + '_gene.fasta'
     directory_name = gene + '_gene'
-    file_path = os.path.join('output', directory_name, sequences_file_name)
+    if gene == 'reference':
+        file_path = os.path.join('output', sequences_file_name)
+    else:
+        file_path = os.path.join('output', directory_name, sequences_file_name)
     subprocess.call(["./exec/muscle", "-in", file_path, "-physout", "infile", "-maxiters", "1", "-diags"])
     file_path =os.path.join('output', directory_name)
     # subprocess.call(["cp", "infile", file_path])
