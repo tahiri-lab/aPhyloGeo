@@ -9,7 +9,7 @@ from csv import writer
 def main():
     try:
         names = menu_get_trees()
-        bootstrap_threshold = getBootstrapThreshold()
+        bootstrap_threshold = get_bootstrap_threshold()
         rf_threshold = get_rf_threshold()
         window_size = get_sliding_window_size()
         step_size = get_step_size()
@@ -39,7 +39,7 @@ def menu_get_trees():
         return names
 
 
-def getBootstrapThreshold():
+def get_bootstrap_threshold():
     valide = False
     while not valide:
         threshold = input("Enter the bootstrap value threshold between 0 and 100%: ")
