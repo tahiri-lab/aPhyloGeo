@@ -2,10 +2,26 @@ from posix import listdir
 import subprocess
 import os
 import re
+import psutil
 import pandas as pd
 from csv import writer
 
-def menuGetTrees():
+def main():
+    try:
+        names = menu_get_trees()
+        bootstrap_threshold = getBootstrapThreshold()
+        rf_threshold = get_rf_threshold()
+        window_size = get_sliding_window_size()
+        step_size = get_step_size()
+        validation_option_menu(window_size, step_size,
+                           bootstrap_threshold, rf_threshold, names)
+    except Exception as error:
+        print(f'This error was caught: {error}.')
+        # clean up all the windows even when an exception occured.
+        # subprocess.call(["rm", "output/windows/*"])
+
+
+def menu_get_trees():
     while True:
         count = input("How many climatic data tree will be used?: ")
         if not count.isnumeric():
@@ -15,10 +31,10 @@ def menuGetTrees():
         else:
             names = []
             for i in range(int(count)):
-                name = input("Name of the tree file (" + str(i+1) + "): " )
+                name = input(f"Name of the tree file ({str(i+1)}): " )
                 while name not in os.listdir("."):
                     print("This file does not exist or is empty.")
-                    name = input("Name of the tree file (" + str(i+1) + "): " )
+                    name = input(f"Name of the tree file ({str(i+1)}): " )
                 names.append(name)
         return names
 
@@ -34,7 +50,7 @@ def getBootstrapThreshold():
             return threshold
 
 
-def getRfThreshold():
+def get_rf_threshold():
     valide = False
     while not valide:
         threshold = input("Enter the Robinson and Foulds distance threshold between 0 and 100%: ")
@@ -45,7 +61,7 @@ def getRfThreshold():
             return int(threshold)
 
 
-def getSlidingWindowSize():
+def get_sliding_window_size():
     while True:
         size = input("Sliding window size: ")
         try:
@@ -59,7 +75,7 @@ def getSlidingWindowSize():
             break
     return size
 
-def getStepSize():
+def get_step_size():
     while True:
         count = input("Step size: ")
         try:
@@ -73,7 +89,7 @@ def getStepSize():
             return count
 
 
-def slidingWindow(window_size=0, step=0):
+def sliding_window(window_size=0, step=0):
     # Permet d'avoir le nombre de lignes totales dans le fichier
     try:
         f = open("infile", "r")
@@ -94,7 +110,9 @@ def slidingWindow(window_size=0, step=0):
         with open("outfile", "w") as out:
             depart = 1
             fin = depart + no_line
-            # on connait la longueur de chaque sequence, donc on va recuperer chaque sequence et le retranscrire sur un autre fichier separes par un \n entre chaque
+            # on connait la longueur de chaque sequence, donc on va recuperer
+            #  chaque sequence et le retranscrire sur un autre fichier separes
+            #  par un \n entre chaque
             for i in range(0, int(num_seq)):
                 f = open("infile", "r")
                 lines_to_read = range(depart, fin)
@@ -106,7 +124,8 @@ def slidingWindow(window_size=0, step=0):
                 fin = depart + no_line
         out.close()
 
-        # on cree un fichier out qui contient chaque sequence sans espaces et on enregistre dans une list le nom en ordre des sequences
+        # on cree un fichier out qui contient chaque sequence sans espaces
+        #  et on enregistre dans une list le nom en ordre des sequences
         with open("outfile", "r") as out, open("out", "w") as f:
             sequences = out.read().split("\n\n")
             list_names = []
@@ -127,7 +146,7 @@ def slidingWindow(window_size=0, step=0):
         fin = debut + window_size
         while fin <= longueur:
             index = 0 
-            with open("out", "r") as f, open("output/windows/" + str(debut) + "_" + str(fin), "w") as out:
+            with open("out", "r") as f, open(f"output/windows/{str(debut)}_{str(fin)}", "w") as out:
                 out.write(str(num_seq) + " " + str(window_size) + "\n")
                 for line in f:
                     if line != "\n":
@@ -149,33 +168,42 @@ def slidingWindow(window_size=0, step=0):
     os.system("rm out outfile infile")
 
 
-def validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    print('===============================================')
-    print('Please select an option among the following: ')
-    print('===============================================')
-    print('1. Use the whole DNA sequences')
-    print('2. Study specific genes of SARS-CoV-2')
+def validation_option_menu(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
+    print('''
+    ===============================================
+    Please select an option among the following:
+    ===============================================
+    1. Use the whole DNA sequences
+    2. Study specific genes of SARS-CoV-2'''
+    )
     while True:
         option = input("Please enter 1 or 2: ")
         if option == '1':
             gene = 'reference'
-            createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+            create_phylo_tree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
             break
         elif option == '2':
-            displayGenesOption(window_size, step_size,
+            display_gene_options(window_size, step_size,
                                bootstrap_threshold, rf_threshold, data_names)
             break
         else:
             print('This is not a valid option.')
 
 
-def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    options = {"1": "ORF1ab", "2": "S", "3": "ORF3a", "4": "ORF3b", "5": "E", "6": "M",
-               "7": "ORF6", "8": "ORF7a", "9": "ORF7b", "10": "ORF8", "11": "N", "12": "ORF10"}
+def display_gene_options(window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
+    options = {
+             "1": "ORF1ab","2": "S",
+             "3": "ORF3a", "4": "ORF3b",
+             "5": "E", "6": "M",
+             "7": "ORF6", "8": "ORF7a",
+             "9": "ORF7b", "10": "ORF8",
+             "11": "N", "12": "ORF10"
+             }
 
-    print("================================================================================")
-    print("Choose among the following genes to analyze seperated by spaces (ex: 1 8 11): ")
-    print("================================================================================")
+    print(
+        '''================================================================================
+           Choose among the following genes to analyze seperated by spaces (ex: 1 8 11): 
+           ================================================================================''')
     for number, gene in options.items():
         print(number, ":", gene)
     while True:
@@ -192,32 +220,28 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
                 valides = True
         if valides:
             genes = {
-                    'ORF1ab': 'ATGGAGAGCC(.*)TAACAACTAA', 'S': 'ATGTTTGTTT(.*)TTACACATAA', 'ORF3a': 'ATGGATTTGT(.*)GCCTTTGTAA', 'ORF3b': 'ATGAGGCTTT(.*)GCCTTTGTAA',
-                    'E': 'ATGTACTCAT(.*)TCTGGTCTAA', 'M': 'ATG[GT]CAGATT(.*)TGTACAGTAA', 'ORF6': 'ATGTTTCATC(.*)GATTGA[CT]TAA', 'ORF7a': 'ATGAAAATTAT(.*)GACAGAATGA',
+                    'ORF1ab': 'ATGGAGAGCC(.*)TAACAACTAA',
+                    'S': 'ATGTTTGTTT(.*)TTACACATAA',
+                    'ORF3a': 'ATGGATTTGT(.*)GCCTTTGTAA',
+                    'ORF3b': 'ATGAGGCTTT(.*)GCCTTTGTAA',
+                    'E': 'ATGTACTCAT(.*)TCTGGTCTAA',
+                    'M': 'ATG[GT]CAGATT(.*)TGTACAGTAA',
+                    'ORF6': 'ATGTTTCATC(.*)GATTGA[CT]TAA',
+                    'ORF7a': 'ATGAAAATTAT(.*)GACAGAATGA',
                     'ORF7b': 'ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAA',
-                    'ORF8': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA', 'N': 'ATGTCT[CG][AT][TA]AAT(.*)TCAGGCCTAA', 'ORF10': 'ATGGGCTATA(.*)TCTCACATAG'}
+                    'ORF8': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA',
+                    'N': 'ATGTCT[CG][AT][TA]AAT(.*)TCAGGCCTAA',
+                    'ORF10': 'ATGGGCTATA(.*)TCTCACATAG'}
             for value in values:
                 gene = options.get(value)
                 pattern = genes.get(gene)
-                getGene(gene, pattern)
-                createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+                get_gene(gene, pattern)
+                create_phylo_tree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
             subprocess.call(["make", "clean"])
             break
-    
-
-def menu():
-    # try:
-    names = menuGetTrees()
-    bootstrap_threshold = getBootstrapThreshold()
-    rf_threshold = getRfThreshold()
-    window_size = getSlidingWindowSize()
-    step_size = getStepSize()
-    validateOptionMenu(window_size, step_size, bootstrap_threshold, rf_threshold, names)
-    # except:
-    #     print("An error has occured.")
 
 
-def getGene(gene, pattern): 
+def get_gene(gene, pattern): 
     sequences_file = open("output/reference_gene.fasta", "r").read()
     list_of_sequences = sequences_file.split(">")
     s = pattern
@@ -237,22 +261,23 @@ def getGene(gene, pattern):
     new_file.close()
 
 
-def createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    number_seq = alignSequences(gene)
-    slidingWindow(window_size, step_size)
+def create_phylo_tree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
+    number_seq = align_sequence(gene)
+    sliding_window(window_size, step_size)
     files = os.listdir("output/windows")
     for file in files:
-        os.system("cp output/windows/" + file + " infile")
-        createBoostrap()
-        createDistanceMatrix()
-        createUnrootedTree()
-        createConsensusTree() # a modifier dans la fonction
-        filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
-        subprocess.call(["rm", "output/windows/"+file])
-    
+        try:
+            os.system("cp output/windows/" + file + " infile")
+            create_bootstrap()
+            run_dnadist()
+            run_neighbor()
+            run_consense() # a modifier dans la fonction
+            filter_results(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
+            subprocess.call(["rm", "output/windows/"+file])
+        except Exception as error:
+            raise error
 
-
-def alignSequences(gene):
+def align_sequence(gene):
     sequences_file_name = gene + '_gene.fasta'
     directory_name = gene + '_gene'
     if gene == 'reference':
@@ -267,12 +292,20 @@ def alignSequences(gene):
     return number_seq
 
 
-def createBoostrap():
+def create_bootstrap():
+    filesize = os.path.getsize("infile")
+    if filesize == 0:
+        raise Exception("Infile for bootstrap was empty.")
     os.system("./exec/seqboot < input/bootstrap_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
+    # check if the bootstrap file is empty
+    filesize = os.path.getsize("infile")
+    if filesize == 0:
+        raise Exception("Bootstrap file is empty.")
 
-def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
+
+def create_matrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
     df = pd.read_csv(nom_fichier_csv)
     # creation d'une liste contenant les noms des specimens et les temperatures min
     meteo_data = df[column_to_search].tolist()
@@ -293,7 +326,8 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
             distance = maximum - minimum
             temp_list.append(float("{:.6f}".format(distance)))
 
-        # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
+        # permet de trouver la valeur maximale et minimale pour la donnee meteo
+        #  et ensuite d'ajouter la liste temporaire a un tableau
         if max_value < max(temp_list):
             max_value = max(temp_list)
         if min_value > min(temp_list):
@@ -315,23 +349,41 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
     subprocess.call(["rm", "outfile"]) # clean up
 
 
-def createDistanceMatrix():
+def run_dnadist():
+    filesize = os.path.getsize("infile")
+    if filesize == 0:
+        raise Exception("Infile for distance was empty.")
     os.system("./exec/dnadist < input/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
+    filesize = os.path.getsize("infile")
+    if filesize == 0:
+        raise Exception("Something went wrong with distance file.")
 
-def createUnrootedTree():
+    
+
+
+def run_neighbor():
+    filesize = os.path.getsize("infile")
+    if filesize == 0:
+        raise Exception("Infile for unrooted tree was empty.")
     os.system("./exec/neighbor < input/neighbor_input.txt")
     subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
+    filesize = os.path.getsize("intree")
+    if filesize == 0:
+        raise Exception("Something went wrong with neighbor file.")
 
 
-def createConsensusTree():
+def run_consense():
+    filesize = os.path.getsize("intree")
+    if filesize == 0:
+        raise Exception("Intree for consense was empty.")
     os.system("./exec/consense < input/input.txt")
     # subprocess.call(["mv", "outtree", file])
     subprocess.call(["rm", "intree", "outfile"])
 
 
-def calculateAverageBootstrap():
+def calculate_average_bootstrap():
     total = 0
     f = open("outtree", "r").read()
     numbers = re.findall(r'[)][:]\d+[.]\d+', f)
@@ -341,7 +393,7 @@ def calculateAverageBootstrap():
     return average
 
 
-def calculateAverageBootstrapRax():
+def calculate_average_bootstrap_rax():
     total = 0
     f = open("outtree", "r").read()
     numbers = re.findall(r'[\[]\d+[\]]', f)
@@ -351,12 +403,15 @@ def calculateAverageBootstrapRax():
     return average
 
 
-def calculateRfDistance(tree):
-    os.system("cat " + tree + " >> infile")
+def calculate_rf_distance(tree):
+    filesize = os.path.getsize('outtree')
+    if filesize == 0:
+        raise Exception('Outree pour le calcul de distance est vide.')
+    os.system(f"cat {tree} >> infile")
     os.system("cat outtree >> infile")
     os.system("./exec/rf infile outfile tmp matrix")
 
-def standardizedRfDistance(number_seq):
+def standardized_rf_distance(number_seq):
     # clean up the repository
     subprocess.call(["rm", "infile", "matrix", "tmp"])
     # find the rf
@@ -370,48 +425,54 @@ def standardizedRfDistance(number_seq):
             return normalized_rf
 
 
-def runRaxML(aligned_file, gene, tree):
+def run_raxml(aligned_file, tree):
     current_dir = os.getcwd()
-    file_name = os.path.basename(aligned_file + "_" + tree)
+    file_name = os.path.basename(f"{aligned_file}_{tree}")
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
-    # output_path = os.path.join(current_dir, "output", gene + "_gene")
-    # IL FAUT CHANGER LE MODELE SELON LE GENE CHOISI
-    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -N 100 -m GTRGAMMA -x 123 -f a -p 123")
+    # trouver le nombre de cpu de la machine
+    nbr_cpu = psutil.cpu_count(logical = False)
+    # n'a pas pu trouver le nbr de cpu, on roule la version sequentielle de raxML
+    if nbr_cpu == None: 
+        os.system(
+            f"./exec/raxmlHPC -s {input_path}  -n {file_name}  -N 100 -m GTRGAMMA -x 123 -f a -p 123")
+    else: # on roule la version PTHREAD en specifiant le nombre de cpu
+        os.system(
+            f"./exec/raxmlHPC-PTHREADS -s {input_path} -n {file_name} -N 100 -m GTRGAMMA -x 123 -f a -p 123 -T {nbr_cpu}")
     # output_path = os.path.join(output_path, file_name)
     # subprocess.call(["cp", input_path, output_path])
 
 
-def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, aligned_file):
-    bootstrap_average = calculateAverageBootstrap()
-    if bootstrap_average < float(bootstrap_threshold):
-        subprocess.call(["rm", "outtree"])
-    else:
-        for tree in data_names:
-            calculateRfDistance(tree)
-            rfn = standardizedRfDistance(number_seq)
-            if rfn == None:      #'<=' not supported between instances of 'NoneType' and 'int'
-                rfn = 100         #fix it 
-            if rfn <= rf_threshold:
-                runRaxML(aligned_file, gene, tree)
-                cleanUp(aligned_file, tree)
-                bootstrap_rax = calculateAverageBootstrapRax()
-                if bootstrap_rax < float(bootstrap_threshold):
-                    continue
-                else:
-                    calculateRfDistance(tree)
-                    rfn_rax = standardizedRfDistance(number_seq)
-                    if rfn_rax == None:         #'<=' not supported between instances of 'NoneType' and 'int'
-                        rfn_rax = 100             #fix it
-                    if rfn_rax <= rf_threshold:
-                        addToCsv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
-                        keepFiles(gene, aligned_file, tree)
-                        # a verifier ici
-        subprocess.call(["rm", "outtree"])
+def filter_results(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, aligned_file):
+        bootstrap_average = calculate_average_bootstrap()
+        if bootstrap_average < float(bootstrap_threshold):
+            subprocess.call(["rm", "outtree"])
+        else:
+            for tree in data_names:
+                calculate_rf_distance(tree)
+                rfn = standardized_rf_distance(number_seq)
+                if rfn == None:      #'<=' not supported between instances of 'NoneType' and 'int'
+                    raise Exception(f'La distance RF n\'est pas calculable pour {aligned_file}.')     #fix it 
+                if rfn <= rf_threshold:
+                    run_raxml(aligned_file, tree)
+                    clean_up(aligned_file, tree)
+                    bootstrap_rax = calculate_average_bootstrap_rax()
+                    if bootstrap_rax < float(bootstrap_threshold):
+                        continue
+                    else:
+                        calculate_rf_distance(tree)
+                        rfn_rax = standardized_rf_distance(number_seq)
+                        if rfn_rax == None:         #'<=' not supported between instances of 'NoneType' and 'int'
+                            raise Exception(f'La distance RF pour Rax n\'est pas calculable pour {aligned_file}.')  # fix it
+                        if rfn_rax <= rf_threshold:
+                            add_to_csv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
+                            keep_files(gene, aligned_file, tree)
+                            # a verifier ici
+            subprocess.call(["rm", "outtree"])
 
 
-def keepFiles(gene, aligned_file, tree):
+def keep_files(gene, aligned_file, tree):
     current_dir = os.getcwd()
-    file_name = os.path.basename(aligned_file + "_" + tree + "_tree")
+    file_name = os.path.basename(f"{aligned_file}_{tree}_tree")
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
     output_path = os.path.join(current_dir, "output", gene + "_gene")
     tree_path = os.path.join(output_path, file_name)
@@ -419,7 +480,7 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
 
 
-def addToCsv(gene, tree, file, bootstrap_average, rfn):
+def add_to_csv(gene, tree, file, bootstrap_average, rfn):
     list = [gene, tree, file, bootstrap_average, rfn]
     with open('output.csv', 'a') as f_object:
         writer_object = writer(f_object)
@@ -427,15 +488,18 @@ def addToCsv(gene, tree, file, bootstrap_average, rfn):
         f_object.close()
 
 
-def cleanUp(file, tree):
-    reduced_file = file+".reduced"
-    file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
+def clean_up(file, tree):
+    reduced_file = f"{file}.reduced"
+    file = f"RAxML_bipartitionsBranchLabels.{file}_{tree}"
     # directory = os.path.join("output", gene + "_gene", file)
     subprocess.call(["mv", file, "outtree"])
-    files_to_delete = ['*bipartitions.*', '*bootstrap*', '*info*', '*bestTree*']
+    files_to_delete = ['*bipartitions.*',
+                       '*bootstrap*',
+                       '*bestTree*',
+                       '*info*']
     for file in files_to_delete:
         os.system("rm -rf " +file)
-    subprocess.call(["rm", "output/windows/"+reduced_file])
+    subprocess.call(["rm", f"output/windows/{reduced_file}"])
 
 if __name__ == '__main__':
-    menu()
+    main()
