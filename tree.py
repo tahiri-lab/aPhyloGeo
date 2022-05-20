@@ -1,7 +1,7 @@
 import subprocess
 import pandas as pd
 import os
-from pipeline import getDissimilaritiesMatrix
+from pipeline import create_matrix
 
 def print_menu():
     print('====================================================================================================================')
@@ -53,7 +53,7 @@ def get_columns_names(file_name):
 
 def create_tree(file_name, names):
     for i in range(1, len(names)):
-        getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
+        create_matrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
         os.system("./exec/neighbor < input/input.txt")
         subprocess.call(["mv", "outtree", "intree"])
         subprocess.call(["rm", "infile", "outfile"])
