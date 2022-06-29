@@ -1,4 +1,4 @@
-# Phylotree
+# aPhylogeo
 
 Link to the French version: [French version](https://github.com/tahiri-lab/aPhylogeo/blob/main/README_fr.md)
 
