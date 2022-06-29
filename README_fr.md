@@ -110,6 +110,7 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 ```
 Une fois le programme lancé, selon la valeur `bootstrap` calculée et la distance ```rf``` seuil, les arbres phylogénétiques d'intérêts avec leur ASM correspondant seront gardés dans les dossiers de chaque [gène](./output) sélectionnés ou dans le dossier [référence](./output/reference_gene) si la séquence complète a été étudiée. Finalement, le fichier [output.csv](output.csv) contiendra tous les ASM significatifs retenus avec la position de l'ASM, le gène en question, l'arbre climatique avec lequel cet arbre à été comparé, la valeur bootstrap de l'arbre ainsi que la distance `RF` calculée entre les deux arbres. 
 
+Dans ce projet, nous avons utilisé des logiciels des versions suivantes : MUSCLE version 3.18 (GNU GENERAL PUBLIC LICENSE), PHYLIP version 3.18 (licence open source), RAxML version 8.2.12 (GNU GENERAL PUBLIC LICENSE).
 
 ## Potentiels problèmes rencontrés
 
