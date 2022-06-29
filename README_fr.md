@@ -1,4 +1,4 @@
-# Phylotree
+# aPhylogeo
 
 Link to the English version: [README](https://github.com/tahiri-lab/aPhylogeo/blob/main/README.md)
 
