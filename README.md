@@ -6,7 +6,7 @@ Link to the French version: [French version](https://github.com/tahiri-lab/aPhyl
 
 ## Workflow
 
-![](./img/workflow_en.jpeg)
+![](./img/workflow_en.png)
 
 ## How to use?
 
@@ -98,6 +98,7 @@ Choose among the following genes to analyze seperated by spaces (ex: 1 8 11):
 ```
 Depending on the bootstrap value and the `Robinson-Fould metric` found for each MSA ( Multiple Sequence Alignment ), the climatic tree of interest with their corresponding MSA will be kept in the folders of each selected [gene](./output) or in the [reference](./output/reference_gene) folder if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant MSAs and their related informations such as their position on the sequence, the gene related to this position, their bootstrap value and their `RF metric`.
 
+In this work, we applied software packages of the following versions: MUSCLE version 3.18 (GNU GENERAL PUBLIC LICENSE), PHYLIP version 3.18 (open source license), RAxML version 8.2.12 (GNU GENERAL PUBLIC LICENSE).
 
 ## Potential problems encountered
 
