@@ -10,7 +10,7 @@ def print_menu():
 
 def get_csv_file_name(correct = False):
     while not correct:
-        file_name = input("Please enter the name of the csv file (this is a relative path): ")
+        file_name = "data/" + input("Please enter the name of the csv file (this is a relative path): ")
         # valide que le nom existe vraiment
         try:
             pd.read_csv(file_name)
@@ -25,7 +25,7 @@ def get_columns_names(file_name):
     names = [] # liste qui va contenir les noms des colonnes a traiter
     while True:
         try:
-            number = input("Number of trees to create: \n")
+            number = input("Number of trees to create: ")
             number = int(number)
             if number < 1:
                 print("Error, the number of trees cannot be below 1.")
