@@ -1,7 +1,6 @@
 import subprocess
 import pandas as pd
 import os
-import pathlib
 
 '''
 file_name = 'donnees.csv'

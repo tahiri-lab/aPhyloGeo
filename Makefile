@@ -1,12 +1,9 @@
-reference: scripts/fetch_data.sh scripts/names.py pipeline.py
-		./scripts/fetch_data.sh
-		python3 scripts/names.py
-		python3 pipeline.py 
-
-tree: input/input.txt
-		python3 tree.py
+aPhylogeo: 
+	python3 tree.py
+	python3 pipeline.py
 
 .PHONY: clean
 
 clean:
-		rm output/reference_gene.fasta
+	rm -rf output/*
+	rm *_newick

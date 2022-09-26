@@ -4,7 +4,6 @@ import re
 import pandas as pd
 from csv import writer
 import shutil
-#import multiprocessing
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
 '''
