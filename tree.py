@@ -1,6 +1,7 @@
 import subprocess
 import pandas as pd
 import os
+import params
 
 '''
 file_name = 'donnees.csv'
@@ -23,12 +24,11 @@ names = ['Accession','new_cases_smoothed_per_million',
        'male_smokers', 'hospital_beds_per_thousand']
 '''
 #file_name = 'The_37_climate.csv'
-file_name = '5seq/geo.csv'
+file_name = params.file_name
 
-specimen = 'id'   #"Please enter the name of the colum containing the specimens names: "
+specimen = params.specimen   #"Please enter the name of the colum containing the specimens names: "
 
-names = ['id', 'ALLSKY_SFC_SW_DWN', 'T2M', 'PRECTOTCORR', 'QV2M',
-       'WS10M']
+names = params.names
 
 
 #-----------------------------------------------------
