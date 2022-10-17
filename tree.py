@@ -2,6 +2,12 @@ import subprocess
 import pandas as pd
 import os
 import params
+from Bio import Phylo
+from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
+from Bio.Phylo.TreeConstruction import _DistanceMatrix
+import re
+from ete3 import Tree
+
 
 '''
 file_name = 'donnees.csv'
@@ -76,39 +82,54 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
             min_value = min(temp_list)
         temp_tab.append(temp_list)
 
-    # ecriture des matrices normalisees dans les fichiers respectifs
-    with open(outfile_name, "w") as f:
-        f.write("   " + str(len(nom_var)) + "\n")
-        for j in range(nbr_seq):
-            f.write(str(nom_var[j]))
-            # petite boucle pour imprimer le bon nbr d'espaces
-            for espace in range(11-len(str(nom_var[j]))):
-                f.write(" ")
-            for k in range(nbr_seq):
-                # la normalisation se fait selon la formule suivante: (X - Xmin)/(Xmax - Xmin)
-                f.write("{:.6f}".format(
-                    (temp_tab[j][k] - min_value)/(max_value - min_value)) + " ")
-            f.write("\n")
-    subprocess.call(["rm", "outfile"])  # clean up
+    # calculate des matrices normalisees 
+    tab_df = pd.DataFrame(temp_tab)
+    dm_df = (tab_df - min_value)/(max_value - min_value)
+    dm_df = dm_df.round(6)
+
+    matrix = [dm_df.iloc[i,:i+1].tolist() for i in range(len(dm_df))]
+    dm = _DistanceMatrix(nom_var, matrix)
+    constructor = DistanceTreeConstructor()
+    tree = constructor.nj(dm)
+    print(tree)
+    #Phylo.write(tree, outfile_name, "newick")
+    #tree = Phylo.read(outfile_name, "newick")
+    #print(type(tree))
+    return tree
 
 #-----------------------------------------
 
+
 def create_tree(file_name, names):
     prepareDirectory()
+    trees = {}
     for i in range(1, len(names)):
-        getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
-        os.system("./exec/neighbor < input/input.txt")
-        subprocess.call(["mv", "outtree", "intree"])
-        subprocess.call(["rm", "infile", "outfile"])
-        os.system("./exec/consense < input/input.txt" )
-        newick_file = names[i].replace(" ", "_") + "_newick"
-        subprocess.call(["rm", "outfile"])
-        subprocess.call(["mv", "outtree", newick_file])
-    subprocess.call(["rm", "intree"])
+        trees[names[i]] = getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
+        print(trees[names[i]].count_terminals())
+        leaves = trees[names[i]].get_terminals()
+        print(leaves[0])
+        print(leaves[1])
+        print(trees[names[i]].distance(leaves[0], leaves[1]))
+        #print(trees[names[i]])
+        if i == 1:
+            tree1 = trees[names[i]]
+        if i == 2:
+            tree2 = trees[names[i]]   
 
+        #os.system("./exec/neighbor < input/input.txt")
+        #subprocess.call(["mv", "outtree", "intree"])
+        #subprocess.call(["rm", "infile", "outfile"])
+        #os.system("./exec/consense < input/input.txt" )
+        #newick_file = names[i].replace(" ", "_") + "_newick"
+        #subprocess.call(["rm", "outfile"])
+        #subprocess.call(["mv", "outtree", newick_file])
+    #subprocess.call(["rm", "intree"])
+
+    #print(tree1.robinson_foulds(tree2))
 
 
 
 create_tree(file_name, names)
 
 #prepareDirectory()
+
