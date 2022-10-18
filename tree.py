@@ -6,7 +6,7 @@ from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
-from ete3 import Tree
+#from ete3 import Tree
 
 
 '''
@@ -52,7 +52,7 @@ def prepareDirectory():
     if os.path.exists("output/upload_gene.fasta") :
         os.remove("output/upload_gene.fasta")
 
-#-----------------------------------------
+#-----------------------------------------leaf
 
 def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_to_search, outfile_name):
     df = pd.read_csv('datasets/' + nom_fichier_csv)
@@ -91,7 +91,7 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
     dm = _DistanceMatrix(nom_var, matrix)
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
-    print(tree)
+    ##print(tree)
     #Phylo.write(tree, outfile_name, "newick")
     #tree = Phylo.read(outfile_name, "newick")
     #print(type(tree))
@@ -99,17 +99,43 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
 
 #-----------------------------------------
 
+def leastSquare(tree1, tree2):
+    result = 0.00
+    leaves1 = tree1.get_terminals()
+    
+    leavesName = []
+    for leave in leaves1:
+        print(leaves1)
+        leavesName.append(leave.name)
+
+    print(leavesName)
+    leavesNameTemp = leavesName
+
+    for i in leavesName:
+        leavesNameTemp.pop(0)
+        print("------------------")
+        for j in leavesNameTemp:
+            result1=(tree1.distance(tree1.find_any(i), tree1.find_any(j)))
+            result2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
+            print(abs(result1-result2))
+            result+=(abs(result1-result2))
+            
+    print("************************")
+
+    print(result)
+    return result
+
 
 def create_tree(file_name, names):
-    prepareDirectory()
+    #prepareDirectory()
     trees = {}
     for i in range(1, len(names)):
         trees[names[i]] = getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
-        print(trees[names[i]].count_terminals())
+        ##print(trees[names[i]].count_terminals())
         leaves = trees[names[i]].get_terminals()
-        print(leaves[0])
-        print(leaves[1])
-        print(trees[names[i]].distance(leaves[0], leaves[1]))
+        ##print(leaves[0])
+        ##print(leaves[1])
+        ##print(trees[names[i]].distance(leaves[0], leaves[1]))
         #print(trees[names[i]])
         if i == 1:
             tree1 = trees[names[i]]
@@ -125,11 +151,9 @@ def create_tree(file_name, names):
         #subprocess.call(["mv", "outtree", newick_file])
     #subprocess.call(["rm", "intree"])
 
+    leastSquare(trees[names[1]],trees[names[2]])
     #print(tree1.robinson_foulds(tree2))
-
-
 
 create_tree(file_name, names)
 
 #prepareDirectory()
-
