@@ -6,7 +6,12 @@ from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
+from codetiming import Timer
 #from ete3 import Tree
+
+"""
+Class description
+"""
 
 '''
 file_name = 'donnees.csv'
@@ -99,27 +104,37 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
 #-----------------------------------------
 
 def leastSquare(tree1, tree2):
-    result = 0.00
-    leaves1 = tree1.get_terminals()
+    """
+    Method that calculates the least square distance between two trees.
+    Trees must have the same number of leaves.
+    Leaves must all have a twin in each tree.
+    A tree must not have duplicate leaves
+     x   x
+    ╓╫╖ ╓╫╖
+    123 312
+ 
+    Args:
+        tree1 (distanceTree object from biopython)
+        tree2 (distanceTree object from biopython)
     
-    leavesName = []
-    for leave in leaves1:
-        print(leaves1)
-        leavesName.append(leave.name)
+    Return:
+        retrun result (double) the final distance between the two trees
+    """
+    result = 0.00
+    leaves1 = tree1.get_terminals() #Produces a list of leaves from a tree
+    
 
-    print(leavesName)
+
+    leavesName= list(map(lambda l: l.name,leaves1))
+ 
     leavesNameTemp = leavesName
 
     for i in leavesName:
         leavesNameTemp.pop(0)
-        print("------------------")
         for j in leavesNameTemp:
             result1=(tree1.distance(tree1.find_any(i), tree1.find_any(j)))
             result2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
-            print(abs(result1-result2))
             result+=(abs(result1-result2))
-            
-    print("************************")
 
     print(result)
     return result
