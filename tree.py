@@ -6,6 +6,7 @@ from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
+from codetiming import Timer
 #from ete3 import Tree
 
 """
@@ -130,24 +131,18 @@ def leastSquare(tree1, tree2):
     result = 0.00
     leaves1 = tree1.get_terminals()
     
-    leavesName = []
-    for leave in leaves1:
-        print(leaves1)
-        leavesName.append(leave.name)
 
-    print(leavesName)
+
+    leavesName= list(map(lambda l: l.name,leaves1))
+ 
     leavesNameTemp = leavesName
 
     for i in leavesName:
         leavesNameTemp.pop(0)
-        print("------------------")
         for j in leavesNameTemp:
             result1=(tree1.distance(tree1.find_any(i), tree1.find_any(j)))
             result2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
-            print(abs(result1-result2))
             result+=(abs(result1-result2))
-            
-    print("************************")
 
     print(result)
     return result
