@@ -1,7 +1,7 @@
-import subprocess
 import pandas as pd
 import os
-import params
+import yaml
+from yaml.loader import SafeLoader
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
@@ -14,7 +14,8 @@ Class description
 
 '''
 file_name = 'donnees.csv'
-specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
+specimen = 'Nom du specimen'   #"Please enter the name of the colum containing 
+            the specimens names: "
 names = ['Nom du specimen','T min à 2m C',
         'T max à 2m C',
         'Humidité relative à 2m %']
@@ -23,7 +24,8 @@ names = ['Nom du specimen','T min à 2m C',
 
 '''
 file_name = 'Final_owid.csv'
-specimen = 'Accession'   #"Please enter the name of the colum containing the specimens names: "
+specimen = 'Accession'   #"Please enter the name of the colum containing the 
+            specimens names: "
 names = ['Accession','new_cases_smoothed_per_million',
        'new_deaths_smoothed_per_million', 'stringency_index',
        'reproduction_rate', 'people_vaccinated_per_hundred',
@@ -33,19 +35,26 @@ names = ['Accession','new_cases_smoothed_per_million',
        'male_smokers', 'hospital_beds_per_thousand']
 '''
 #file_name = 'The_37_climate.csv'
-file_name = params.file_name
 
-specimen = params.specimen   #"Please enter the name of the colum containing the specimens names: "
+# We open the params.yaml file and put it in the params variable
+with open('params.yaml') as f:
+    params = yaml.load(f, Loader=SafeLoader)
+    print(params)
 
-names = params.names
+# Create variables from the yaml file content
+file_name = params["file_name"]
 
+specimen = params["specimen"]
 
-#-----------------------------------------------------
+names = params["names"]
+
+#-------------------------------------------------------------------------------
+
 def prepareDirectory():
-    # delete the results of last analysis, if we have    ???
+    # Delete the results of last analysis
     with open("intree", "w"):
         pass
-    # remove old newick files
+
     delete_path = os.listdir()
 
     for item in delete_path:
@@ -55,22 +64,23 @@ def prepareDirectory():
     if os.path.exists("output/upload_gene.fasta") :
         os.remove("output/upload_gene.fasta")
 
-#-----------------------------------------leaf
+#-------------------------------------------------------------------------------
 
-def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_to_search, outfile_name):
+def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, 
+                            column_to_search):
     df = pd.read_csv('datasets/' + nom_fichier_csv)
-    # creation d'une liste contenant les noms des specimens et les temperatures min
+    # Creation of a list containing the names of specimens and minimums 
+    # tempratures
     meteo_data = df[column_to_search].tolist()
     nom_var = df[column_with_specimen_name].tolist()
     nbr_seq = len(nom_var)
-    # ces deux valeurs seront utiles pour la normalisation
     max_value = 0
     min_value = 0
 
-    # premiere boucle qui permet de calculer une matrice pour chaque sequence
+    # First loop that allow us to calculate a matrix for each sequence
     temp_tab = []
     for e in range(nbr_seq):
-        # une liste qui va contenir toutes les distances avant normalisation
+        # A list that will contain every distances before normalisation
         temp_list = []
         for i in range(nbr_seq):
             maximum = max(float(meteo_data[e]), float(meteo_data[i]))
@@ -78,14 +88,15 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
             distance = maximum - minimum
             temp_list.append(float("{:.6f}".format(distance)))
 
-        # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
+        # Allow to find the maximum and minimum value for the weather value and 
+        # then to add the temporary list in an array   
         if max_value < max(temp_list):
             max_value = max(temp_list)
         if min_value > min(temp_list):
             min_value = min(temp_list)
         temp_tab.append(temp_list)
 
-    # calculate des matrices normalisees 
+    # Calculate normalised matrix
     tab_df = pd.DataFrame(temp_tab)
     dm_df = (tab_df - min_value)/(max_value - min_value)
     dm_df = dm_df.round(6)
@@ -94,13 +105,10 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
     dm = _DistanceMatrix(nom_var, matrix)
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
-    ##print(tree)
-    #Phylo.write(tree, outfile_name, "newick")
-    #tree = Phylo.read(outfile_name, "newick")
-    #print(type(tree))
+
     return tree
 
-#-----------------------------------------
+#-------------------------------------------------------------------------------
 
 def leastSquare(tree1, tree2):
     """
@@ -133,35 +141,20 @@ def leastSquare(tree1, tree2):
     print (result)
     return result
 
+#-------------------------------------------------------------------------------
 
 def create_tree(file_name, names):
-    #prepareDirectory()
     trees = {}
     for i in range(1, len(names)):
-        trees[names[i]] = getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
-        ##print(trees[names[i]].count_terminals())
+        trees[names[i]] = getDissimilaritiesMatrix(file_name, names[0], names[i])
         leaves = trees[names[i]].get_terminals()
-        ##print(leaves[0])
-        ##print(leaves[1])
-        ##print(trees[names[i]].distance(leaves[0], leaves[1]))
-        #print(trees[names[i]])
         if i == 1:
             tree1 = trees[names[i]]
         if i == 2:
             tree2 = trees[names[i]]   
 
-        #os.system("./exec/neighbor < input/input.txt")
-        #subprocess.call(["mv", "outtree", "intree"])
-        #subprocess.call(["rm", "infile", "outfile"])
-        #os.system("./exec/consense < input/input.txt" )
-        #newick_file = names[i].replace(" ", "_") + "_newick"
-        #subprocess.call(["rm", "outfile"])
-        #subprocess.call(["mv", "outtree", newick_file])
-    #subprocess.call(["rm", "intree"])
-
     leastSquare(trees[names[1]],trees[names[2]])
-    #print(tree1.robinson_foulds(tree2))
+
+#-------------------------------------------------------------------------------
 
 create_tree(file_name, names)
-
-#prepareDirectory()
