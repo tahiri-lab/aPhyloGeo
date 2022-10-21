@@ -1,7 +1,7 @@
 import subprocess
 import pandas as pd
 import os
-import params
+import params #TODO : Migrate to .yaml format
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
