@@ -14,7 +14,7 @@
 
 Link to the French version: [French version](https://github.com/tahiri-lab/aPhylogeo/blob/main/README_fr.md)
 
-`aPhylogeo` is a bioinformatics pipeline dedicated to the analysis of `SARS-CoV-2`. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
+`aPhylogeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
 
 ## Workflow
 
