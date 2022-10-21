@@ -38,6 +38,7 @@ names = params.names
 
 
 #-----------------------------------------------------
+#! Deprecated function with Biopython integration, to remove
 def prepareDirectory():
     # delete the results of last analysis, if we have    ???
     with open("intree", "w"):
