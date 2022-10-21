@@ -122,21 +122,16 @@ def leastSquare(tree1, tree2):
     """
     result = 0.00
     leaves1 = tree1.get_terminals() #Produces a list of leaves from a tree
-    
-
-
-    leavesName= list(map(lambda l: l.name,leaves1))
+  
+    leavesName = list(map(lambda l: l.name,leaves1))
  
-    leavesNameTemp = leavesName
-
     for i in leavesName:
-        leavesNameTemp.pop(0)
-        for j in leavesNameTemp:
+        leavesName.pop(0)
+        for j in leavesName:
             result1=(tree1.distance(tree1.find_any(i), tree1.find_any(j)))
             result2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
             result+=(abs(result1-result2))
-
-    print(result)
+    print (result)
     return result
 
 
