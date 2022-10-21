@@ -6,7 +6,6 @@ from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
-from codetiming import Timer
 #from ete3 import Tree
 
 """
