@@ -10,7 +10,7 @@
 <h2  align="center">Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
 
 
-# aPhylogeo
+# aPhyloGeo
 
 Link to the French version: [French version](https://github.com/tahiri-lab/aPhylogeo/blob/main/README_fr.md)
 
