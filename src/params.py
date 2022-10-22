@@ -1,5 +1,5 @@
 #file_name = 'The_37_climate.csv'
-file_name = 'datasets/5seq/geo.csv'
+file_name = '../datasets/5seq/geo.csv'
 
 specimen = 'id'   #"Please enter the name of the colum containing the specimens names: "
 
@@ -13,4 +13,4 @@ data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTC
 
 #reference_gene_file = 'datasets/The_37seq.fasta'
 
-reference_gene_file = 'datasets/5seq/seq.fasta'
+reference_gene_file = '../datasets/5seq/seq.fasta'
