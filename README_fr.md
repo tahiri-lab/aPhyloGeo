@@ -20,7 +20,7 @@ D’un côté, la phylogénie étudie les relations entre les espèces en observ
 `Phylotree` est un pipeline bioinformatique dédié à l'analyse du `SARS-CoV-2`. D'une part, il permet d'obtenir des arbres issus de données climatiques des régions où les échantillons du SARS-CoV-2 ont été récoltés. D'autre part, cet outil permet de comparer topologiquement des arbres phylogénétiques aux arbres issus des données climatiques à l'aide du calcul de la [distance de Robinson-Foulds (RF)](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). Les ASM (Alignement de Séquences Multiples) qui donnent des arbres avec une valeur `RF` significative sont conservés dans des dossiers avec leur arbre phylogénétique. Le fichier `output.csv` servira à conserver tous les ASM avec les informations pertinentes.
 
 ## Workflow
-![](./img/workflow_fr.jpeg)
+![](./img/workflow_fr.jpg)
 
 ## Comment l'utiliser?
 
