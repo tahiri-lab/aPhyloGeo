@@ -99,10 +99,11 @@ def alignSequences(reference_gene_file):
     with open(reference_gene_file) as sequencesFile:
         for sequence in SeqIO.parse(sequencesFile,"fasta"):
             sequences[sequence.id] = sequence.seq
+            print(sequences)
         #print(sequences['ON129429'])
         #print(sequences['ON134852'])
-    alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
-    print(alignments)
+    #alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
+    #print(alignments)
     #print(type(alignment))
     
     #subprocess.call(["./exec/muscle", "-in", reference_gene_file, "-physout", "infile", "-maxiters", "1", "-diags"])

@@ -1,11 +1,52 @@
-﻿import subprocess
+﻿import subprocess   #! Deprecated import with BioPython integration
 import pandas as pd
 import os
-import params
+import params #TODO : Migrate to .yaml format
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
+from csv import writer
+import shutil
+import Bio as Bio 
+from Bio import SeqIO
+from Bio import pairwise2
+
+# ATTENTION AUX NOMS DES FICHIERS AVEC LES _
+'''
+bootstrap_threshold = 0
+rf_threshold = 100
+window_size = 5000
+step_size = 500
+data_names = ["T_min_à_2m_C_newick",
+              "T_max_à_2m_C_newick"]
+reference_gene_file = 'datasets/reference_gene.fasta'
+'''
+'''
+bootstrap_threshold = 0
+rf_threshold = 100
+window_size = 10
+step_size = 50
+data_names = ['new_cases_smoothed_per_million_newick',
+       'new_deaths_smoothed_per_million_newick', 'stringency_index_newick',
+       'reproduction_rate_newick', 'people_vaccinated_per_hundred_newick',
+       'people_fully_vaccinated_per_hundred_newick', 'population_density_newick',
+       'median_age_newick', 'aged_65_older_newick', 'gdp_per_capita_newick',
+       'cardiovasc_death_rate_newick', 'diabetes_prevalence_newick', 'female_smokers_newick',
+       'male_smokers_newick', 'hospital_beds_per_thousand_newick'
+    ]37
+reference_gene_file = 'datasets/The_owid_final.fasta'
+'''
+
+bootstrap_threshold = params.bootstrap_threshold
+rf_threshold = params.rf_threshold 
+window_size = params.window_size
+step_size = params.step_size
+data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
+
+#reference_gene_file = 'datasets/The_37seq.fasta'
+
+reference_gene_file = params.reference_gene_file
 
 
 '''
@@ -28,7 +69,7 @@ names = ['Accession','new_cases_smoothed_per_million',
        'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
        'male_smokers', 'hospital_beds_per_thousand']
 '''
-#file_name = 'The_37_climate.csv'
+
 file_name = params.file_name
 
 specimen = params.specimen   #"Please enter the name of the colum containing the specimens names: "
@@ -36,25 +77,25 @@ specimen = params.specimen   #"Please enter the name of the colum containing the
 names = params.names
 
 
-#-----------------------------------------------------
-def prepareDirectory():
-    # delete the results of last analysis, if we have    ???
-    with open("intree", "w"):
-        pass
-    # remove old newick files
-    delete_path = os.listdir()
 
-    for item in delete_path:
-        if item.endswith("_newick"):
-            os.remove(item)
+def leastSquare(tree1, tree2):
+    ls = 0.00
+    # get all the terminal clades of the first tree (as example)
+    specie_names = [specie.name for specie in tree1.get_terminals()]
 
-    if os.path.exists("output/upload_gene.fasta") :
-        os.remove("output/upload_gene.fasta")
+    for i in range(tree1.count_terminals()-1):
+        for j in range(i+1,tree1.count_terminals()):
+            d1=(tree1.distance(tree1.find_any(specie_names[i]), tree1.find_any(specie_names[j])))
+            d2=(tree2.distance(tree2.find_any(specie_names[i]), tree2.find_any(specie_names[j])))
+            ls+=(abs(d1-d2))
+    print(ls)
+    return ls
 
-#-----------------------------------------
+def openCSV(nom_fichier_csv):
+    df = pd.read_csv(nom_fichier_csv)
+    return df
 
-def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_to_search, outfile_name):
-    df = pd.read_csv('datasets/' + nom_fichier_csv)
+def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
     # creation d'une liste contenant les noms des specimens et les temperatures min
     meteo_data = df[column_to_search].tolist()
     nom_var = df[column_with_specimen_name].tolist()
@@ -88,81 +129,113 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
 
     matrix = [dm_df.iloc[i,:i+1].tolist() for i in range(len(dm_df))]
     dm = _DistanceMatrix(nom_var, matrix)
+    return dm
+
+def createTree(dm):
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
-    #Phylo.write(tree, outfile_name, "newick")
-    #tree = Phylo.read(outfile_name, "newick")
-    #print(type(tree))
     return tree
 
-#-----------------------------------------
 
-
-def create_tree(file_name, names):
-    prepareDirectory()
+def climaticPipeline(file_name, names):
     trees = {}
+    df = openCSV(file_name)
     for i in range(1, len(names)):
-        trees[names[i]] = getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
-        print(trees[names[i]])
+        dm = getDissimilaritiesMatrix(df, names[0], names[i]) # liste a la position 0 contient les noms des specimens
+        trees[names[i]] = createTree(dm)
 
-        #os.system("./exec/neighbor < input/input.txt")
-        #subprocess.call(["mv", "outtree", "intree"])
-        #subprocess.call(["rm", "infile", "outfile"])
-        #os.system("./exec/consense < input/input.txt" )
-        #newick_file = names[i].replace(" ", "_") + "_newick"
-        #subprocess.call(["rm", "outfile"])
-        #subprocess.call(["mv", "outtree", newick_file])
-    #subprocess.call(["rm", "intree"])
+    leastSquare(trees[names[1]],trees[names[2]])
+
+climaticPipeline(file_name, names)
 
 
 
 
+def openFastaFile(reference_gene_file):
+    sequences = {}
+    with open(reference_gene_file) as sequencesFile:
+        for sequence in SeqIO.parse(sequencesFile,"fasta"):
+            sequences[sequence.id] = sequence.seq
+    return sequences
 
-create_tree(file_name, names)
-
-#prepareDirectory()
 
 
 
-import re
-from csv import writer
-import shutil
 
-# ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 5000
-step_size = 500
-data_names = ["T_min_à_2m_C_newick",
-              "T_max_à_2m_C_newick"]
-reference_gene_file = 'datasets/reference_gene.fasta'
-'''
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 10
-step_size = 50
-data_names = ['new_cases_smoothed_per_million_newick',
-       'new_deaths_smoothed_per_million_newick', 'stringency_index_newick',
-       'reproduction_rate_newick', 'people_vaccinated_per_hundred_newick',
-       'people_fully_vaccinated_per_hundred_newick', 'population_density_newick',
-       'median_age_newick', 'aged_65_older_newick', 'gdp_per_capita_newick',
-       'cardiovasc_death_rate_newick', 'diabetes_prevalence_newick', 'female_smokers_newick',
-       'male_smokers_newick', 'hospital_beds_per_thousand_newick'
-    ]37
-reference_gene_file = 'datasets/The_owid_final.fasta'
-'''
 
-bootstrap_threshold = params.bootstrap_threshold
-rf_threshold = params.rf_threshold
-window_size = params.window_size
-step_size = params.step_size
-data_names = params.data_names
+def alignSequences(reference_gene_file):
+    sequences = {}
+    with open(reference_gene_file) as sequencesFile:
+        for sequence in SeqIO.parse(sequencesFile,"fasta"):
+            sequences[sequence.id] = sequence.seq
+        #print(sequences['ON129429'])
+        #print(sequences['ON134852'])
+    alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
+    print(alignments)
+    #print(type(alignment))
+    
+    #subprocess.call(["./exec/muscle", "-in", reference_gene_file, "-physout", "infile", "-maxiters", "1", "-diags"])
+    #f = open("infile", "r").read()
+    #number_seq = int(f.split()[0])
+    #subprocess.call(["cp", "infile", "alignment_result"])
+    #return number_seq
 
-#reference_gene_file = 'datasets/The_37seq.fasta'
 
-reference_gene_file = params.reference_gene_file
+
+def createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
+    #prepareDirectory()
+    sequences = openFastaFile(reference_gene_file)
+    print(sequences)
+    #number_seq = alignSequences(sequences)
+    #slidingWindow(window_size, step_size)
+    #files = os.listdir("output/windows")
+    #for file in files:
+    #    os.system("cp output/windows/" + file + " infile")
+    #    createBoostrap()
+    #    createDistanceMatrix()
+    #    createUnrootedTree()
+    #    createConsensusTree() # a modifier dans la fonction
+    #    filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
+    
+
+createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------
+#! Deprecated function with Biopython integration, to remove
+def prepareDirectory():
+    # delete the results of last analysis, if we have    ???
+    with open("intree", "w"):
+        pass
+    # remove old newick files
+    delete_path = os.listdir()
+
+    for item in delete_path:
+        if item.endswith("_newick"):
+            os.remove(item)
+
+    if os.path.exists("output/upload_gene.fasta") :
+        os.remove("output/upload_gene.fasta")
+
+#-----------------------------------------leaf
+
+
+
+
+
 
 
 #-----------------------------------------  
@@ -200,27 +273,10 @@ def prepareDirectory():
 
 # main function
 
-def createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    prepareDirectory()
-    number_seq = alignSequences(reference_gene_file)
-    slidingWindow(window_size, step_size)
-    files = os.listdir("output/windows")
-    for file in files:
-        os.system("cp output/windows/" + file + " infile")
-        createBoostrap()
-        createDistanceMatrix()
-        createUnrootedTree()
-        createConsensusTree() # a modifier dans la fonction
-        filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
-    
-#-----------------------------------
-def alignSequences(reference_gene_file):
-    subprocess.call(["./exec/muscle", "-in", reference_gene_file, "-physout", "infile", "-maxiters", "1", "-diags"])
-    f = open("infile", "r").read()
-    number_seq = int(f.split()[0])
-    return number_seq
 
+# number_seq = alignSequences(reference_gene_file)
 
+# print(number_seq)
 
 #-------------------------------------------------
 
@@ -312,10 +368,10 @@ def createDistanceMatrix():
     os.system("./exec/dnadist < input/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
-def createUnrootedTree(dm):
-    constructor = DistanceTreeConstructor()
-    tree = constructor.nj(dm)
-    return tree
+def createUnrootedTree():
+    os.system("./exec/neighbor < input/neighbor_input.txt")
+    subprocess.call(["rm", "infile", "outfile"])
+    subprocess.call(["mv", "outtree", "intree"])
 
 
 def createConsensusTree():
@@ -430,6 +486,6 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
 
 
-createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
