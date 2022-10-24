@@ -163,13 +163,10 @@ def openFastaFile(reference_gene_file):
 
 
 
-def alignSequences(reference_gene_file):
-    sequences = {}
-    with open(reference_gene_file) as sequencesFile:
-        for sequence in SeqIO.parse(sequencesFile,"fasta"):
-            sequences[sequence.id] = sequence.seq
+def alignSequences(sequences):
         #print(sequences['ON129429'])
         #print(sequences['ON134852'])
+    
     alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
     print(alignments)
     #print(type(alignment))
@@ -178,7 +175,7 @@ def alignSequences(reference_gene_file):
     #f = open("infile", "r").read()
     #number_seq = int(f.split()[0])
     #subprocess.call(["cp", "infile", "alignment_result"])
-    #return number_seq
+    return 3
 
 
 
@@ -186,7 +183,7 @@ def createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstra
     #prepareDirectory()
     sequences = openFastaFile(reference_gene_file)
     print(sequences)
-    #number_seq = alignSequences(sequences)
+    number_seq = alignSequences(sequences)
     #slidingWindow(window_size, step_size)
     #files = os.listdir("output/windows")
     #for file in files:
