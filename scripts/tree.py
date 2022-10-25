@@ -6,7 +6,8 @@ from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
-#from ete3 import Tree
+import toytree
+import random
 
 """
 Class description
