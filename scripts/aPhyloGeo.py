@@ -1,7 +1,9 @@
-﻿import subprocess   #! Deprecated import with BioPython integration
+﻿import subprocess
+import time   #! Deprecated import with BioPython integration
 import pandas as pd
 import os
-import params #TODO : Migrate to .yaml format
+import yaml
+from yaml.loader import SafeLoader
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
@@ -11,8 +13,14 @@ import shutil
 import Bio as Bio 
 from Bio import SeqIO
 from Bio import pairwise2
+from multiprocess import Process, Manager
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
+
+# We open the params.yaml file and put it in the params variable
+with open('./scripts/params.yaml') as f:
+    params = yaml.load(f, Loader=SafeLoader)
+    print(params)
 '''
 bootstrap_threshold = 0
 rf_threshold = 100
@@ -38,15 +46,15 @@ data_names = ['new_cases_smoothed_per_million_newick',
 reference_gene_file = 'datasets/The_owid_final.fasta'
 '''
 
-bootstrap_threshold = params.bootstrap_threshold
-rf_threshold = params.rf_threshold 
-window_size = params.window_size
-step_size = params.step_size
+bootstrap_threshold = params["bootstrap_threshold"]
+rf_threshold = params["rf_threshold"]
+window_size = params["window_size"]
+step_size = params["step_size"]
 data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
 
 #reference_gene_file = 'datasets/The_37seq.fasta'
 
-reference_gene_file = params.reference_gene_file
+reference_gene_file = params["reference_gene_file"]
 
 
 '''
@@ -70,11 +78,11 @@ names = ['Accession','new_cases_smoothed_per_million',
        'male_smokers', 'hospital_beds_per_thousand']
 '''
 
-file_name = params.file_name
+file_name = params["file_name"]
 
-specimen = params.specimen   #"Please enter the name of the colum containing the specimens names: "
+specimen = params["specimen"]   #"Please enter the name of the colum containing the specimens names: "
 
-names = params.names
+names = params["names"]
 
 
 
@@ -158,23 +166,29 @@ def openFastaFile(reference_gene_file):
             sequences[sequence.id] = sequence.seq
     return sequences
 
-
-
-
-
+def alignSingle(original,next,resultList):
+    alignments = pairwise2.align.globalxx(original, next)
+    resultList.append(alignments)
+    return 0
 
 def alignSequences(sequences):
-        #print(sequences['ON129429'])
-        #print(sequences['ON134852'])
+    manager = Manager()
+    resultList= manager.list()
+    processlist=[]
+
+    first= sequences.pop(list(sequences.keys())[0])
+    for sequence in sequences:
+        p = Process(target=alignSingle, args=(first,sequence,resultList))
     
-    alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
-    print(alignments)
-    #print(type(alignment))
+        p.start()
+        processlist.append(p)
+
+    for p in processlist:
+        p.join()
+
+    print(len(resultList))
+    #il reste a combiner les resultats
     
-    #subprocess.call(["./exec/muscle", "-in", reference_gene_file, "-physout", "infile", "-maxiters", "1", "-diags"])
-    #f = open("infile", "r").read()
-    #number_seq = int(f.split()[0])
-    #subprocess.call(["cp", "infile", "alignment_result"])
     return 3
 
 
