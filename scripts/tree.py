@@ -8,6 +8,7 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
 import toytree
 import random
+import toyplot.pdf
 
 """
 Class description
@@ -41,7 +42,7 @@ names = ['Accession','new_cases_smoothed_per_million',
 with open('params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
     print(params)
-
+    
 # Create variables from the yaml file content
 file_name = params["file_name"]
 
@@ -144,6 +145,34 @@ def leastSquare(tree1, tree2):
 
 #-------------------------------------------------------------------------------
 
+def draw_trees(trees):
+    trees_newick= {}
+    toytrees = []
+    # Creating a multitree object from list of climatic trees
+    for k,v in trees.items():
+        trees_newick[k] = v.format('newick')
+        ttree = toytree.tree(trees_newick[k], tree_format=1)
+        toytrees.append(ttree)
+    mtree = toytree.mtree(toytrees)
+
+    # Setting up the stylings for nodes
+    for tree in mtree.treelist:
+        tree.style.edge_align_style={'stroke':'black','stroke-width':1}
+        for node in tree.treenode.traverse():
+            if node.is_leaf():
+                node.add_feature('color', toytree.colors[7])  # terminals = grey
+            else:
+                node.add_feature('color', toytree.colors[1])  # internals/common = orange
+    colors = tree.get_node_values('color', show_root=1, show_tips=1) 
+
+    # Draw the climatic trees
+    canvas, axes, mark = mtree.draw(nrows = round(len(mtree)/5), ncols=len(mtree), height=400, width=1000,node_sizes=8, node_colors=colors, tip_labels_align=True);
+    for i in range(len(mtree)):
+        rand_color = "#%03x" % random.randint(0, 0xFFF)
+        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,'font-size':'10px', 'font-weight':'bold'});
+    toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
+#-------------------------------------------------------------------------------
+
 def create_tree(file_name, names):
     trees = {}
     for i in range(1, len(names)):
@@ -153,8 +182,8 @@ def create_tree(file_name, names):
             tree1 = trees[names[i]]
         if i == 2:
             tree2 = trees[names[i]]   
-
     leastSquare(trees[names[1]],trees[names[2]])
+    draw_trees(trees)
 
 #-------------------------------------------------------------------------------
 
