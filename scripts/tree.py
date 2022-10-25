@@ -146,6 +146,14 @@ def leastSquare(tree1, tree2):
 #-------------------------------------------------------------------------------
 
 def draw_trees(trees):
+    """
+    Function that will draw the trees for each climatic variable.
+    The DistanceTreeConstructor object is transformed to Newick format and loaded as a toytree MulTitree object.
+    Some stylings are applied and the resulting trees are drawed into a .pdf in the viz/ dir.
+    
+    Parameters:
+    trees (dict): Dictionnary of DistanceTreeConstructor object with climatic variable for keys 
+    """
     trees_newick= {}
     toytrees = []
     # Creating a multitree object from list of climatic trees
