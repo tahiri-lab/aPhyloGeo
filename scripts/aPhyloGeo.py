@@ -15,77 +15,97 @@ from Bio import SeqIO
 from Bio import pairwise2
 from multiprocess import Process, Manager
 
-# ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-
 # We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
+with open('../scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
     print(params)
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 5000
-step_size = 500
-data_names = ["T_min_à_2m_C_newick",
-              "T_max_à_2m_C_newick"]
-reference_gene_file = 'datasets/reference_gene.fasta'
-'''
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 10
-step_size = 50
-data_names = ['new_cases_smoothed_per_million_newick',
-       'new_deaths_smoothed_per_million_newick', 'stringency_index_newick',
-       'reproduction_rate_newick', 'people_vaccinated_per_hundred_newick',
-       'people_fully_vaccinated_per_hundred_newick', 'population_density_newick',
-       'median_age_newick', 'aged_65_older_newick', 'gdp_per_capita_newick',
-       'cardiovasc_death_rate_newick', 'diabetes_prevalence_newick', 'female_smokers_newick',
-       'male_smokers_newick', 'hospital_beds_per_thousand_newick'
-    ]37
-reference_gene_file = 'datasets/The_owid_final.fasta'
-'''
 
 bootstrap_threshold = params["bootstrap_threshold"]
 rf_threshold = params["rf_threshold"]
 window_size = params["window_size"]
 step_size = params["step_size"]
 data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
-
-#reference_gene_file = 'datasets/The_37seq.fasta'
-
 reference_gene_file = params["reference_gene_file"]
-
-
-'''
-file_name = 'donnees.csv'
-specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
-names = ['Nom du specimen','T min à 2m C',
-        'T max à 2m C',
-        'Humidité relative à 2m %']
-'''
-
-
-'''
-file_name = 'Final_owid.csv'
-specimen = 'Accession'   #"Please enter the name of the colum containing the specimens names: "
-names = ['Accession','new_cases_smoothed_per_million',
-       'new_deaths_smoothed_per_million', 'stringency_index',
-       'reproduction_rate', 'people_vaccinated_per_hundred',
-       'people_fully_vaccinated_per_hundred', 'population_density',
-       'median_age', 'aged_65_older', 'gdp_per_capita',
-       'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
-       'male_smokers', 'hospital_beds_per_thousand']
-'''
-
 file_name = params["file_name"]
-
 specimen = params["specimen"]   #"Please enter the name of the colum containing the specimens names: "
-
 names = params["names"]
 
+def openCSV(nom_fichier_csv):
+    df = pd.read_csv(nom_fichier_csv)
+    return df
 
+#-------------------------------------------------------------------------------
 
+def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
+    # Creation of a list containing the names of specimens and minimums 
+    # tempratures
+    meteo_data = df[column_to_search].tolist()
+    nom_var = df[column_with_specimen_name].tolist()
+    nbr_seq = len(nom_var)
+    max_value = 0
+    min_value = 0
+
+    # First loop that allow us to calculate a matrix for each sequence
+    temp_tab = []
+    for e in range(nbr_seq):
+        # A list that will contain every distances before normalisation
+        temp_list = []
+        for i in range(nbr_seq):
+            maximum = max(float(meteo_data[e]), float(meteo_data[i]))
+            minimum = min(float(meteo_data[e]), float(meteo_data[i]))
+            distance = maximum - minimum
+            temp_list.append(float("{:.6f}".format(distance)))
+
+        # Allow to find the maximum and minimum value for the weather value and 
+        # then to add the temporary list in an array   
+        if max_value < max(temp_list):
+            max_value = max(temp_list)
+        if min_value > min(temp_list):
+            min_value = min(temp_list)
+        temp_tab.append(temp_list)
+
+    # Calculate normalised matrix
+    tab_df = pd.DataFrame(temp_tab)
+    dm_df = (tab_df - min_value)/(max_value - min_value)
+    dm_df = dm_df.round(6)
+
+    matrix = [dm_df.iloc[i,:i+1].tolist() for i in range(len(dm_df))]
+    dm = _DistanceMatrix(nom_var, matrix)
+    return dm
+
+#-------------------------------------------------------------------------------
+
+def leastSquare(tree1, tree2):
+    """
+    Method that calculates the least square distance between two trees.
+    Trees must have the same number of leaves.
+    Leaves must all have a twin in each tree.
+    A tree must not have duplicate leaves
+     x   x
+    ╓╫╖ ╓╫╖
+    123 312
+ 
+    Args:
+        tree1 (distanceTree object from biopython)
+        tree2 (distanceTree object from biopython)
+    
+    Return:
+        return result (double) the final distance between the two trees
+    """
+    ls = 0.00
+    leaves1 = tree1.get_terminals() #Produces a list of leaves from a tree
+  
+    leavesName = list(map(lambda l: l.name,leaves1))
+ 
+    for i in leavesName:
+        leavesName.pop(0)
+        for j in leavesName:
+            d1=(tree1.distance(tree1.find_any(i), tree1.find_any(j)))
+            d2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
+            ls+=(abs(d1-d2))
+    return ls
+
+"""
 def leastSquare(tree1, tree2):
     ls = 0.00
     # get all the terminal clades of the first tree (as example)
@@ -96,48 +116,45 @@ def leastSquare(tree1, tree2):
             d1=(tree1.distance(tree1.find_any(specie_names[i]), tree1.find_any(specie_names[j])))
             d2=(tree2.distance(tree2.find_any(specie_names[i]), tree2.find_any(specie_names[j])))
             ls+=(abs(d1-d2))
-    print(ls)
     return ls
+"""
+#-------------------------------------------------------------------------------
 
-def openCSV(nom_fichier_csv):
-    df = pd.read_csv(nom_fichier_csv)
-    return df
+def draw_trees(trees):
+    """
+    Function that will draw the trees for each climatic variable.
+    The DistanceTreeConstructor object is transformed to Newick format and loaded as a toytree MulTitree object.
+    Some stylings are applied and the resulting trees are drawed into a .pdf in the viz/ dir.
+    
+    Parameters:
+    trees (dict): Dictionnary of DistanceTreeConstructor object with climatic variable for keys 
+    """
+    trees_newick= {}
+    toytrees = []
+    # Creating a multitree object from list of climatic trees
+    for k,v in trees.items():
+        trees_newick[k] = v.format('newick')
+        ttree = toytree.tree(trees_newick[k], tree_format=1)
+        toytrees.append(ttree)
+    mtree = toytree.mtree(toytrees)
 
-def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
-    # creation d'une liste contenant les noms des specimens et les temperatures min
-    meteo_data = df[column_to_search].tolist()
-    nom_var = df[column_with_specimen_name].tolist()
-    nbr_seq = len(nom_var)
-    # ces deux valeurs seront utiles pour la normalisation
-    max_value = 0
-    min_value = 0
+    # Setting up the stylings for nodes
+    for tree in mtree.treelist:
+        tree.style.edge_align_style={'stroke':'black','stroke-width':1}
+        for node in tree.treenode.traverse():
+            if node.is_leaf():
+                node.add_feature('color', toytree.colors[7])  # terminals = grey
+            else:
+                node.add_feature('color', toytree.colors[1])  # internals/common = orange
+    colors = tree.get_node_values('color', show_root=1, show_tips=1) 
 
-    # premiere boucle qui permet de calculer une matrice pour chaque sequence
-    temp_tab = []
-    for e in range(nbr_seq):
-        # une liste qui va contenir toutes les distances avant normalisation
-        temp_list = []
-        for i in range(nbr_seq):
-            maximum = max(float(meteo_data[e]), float(meteo_data[i]))
-            minimum = min(float(meteo_data[e]), float(meteo_data[i]))
-            distance = maximum - minimum
-            temp_list.append(float("{:.6f}".format(distance)))
-
-        # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
-        if max_value < max(temp_list):
-            max_value = max(temp_list)
-        if min_value > min(temp_list):
-            min_value = min(temp_list)
-        temp_tab.append(temp_list)
-
-    # calculate des matrices normalisees 
-    tab_df = pd.DataFrame(temp_tab)
-    dm_df = (tab_df - min_value)/(max_value - min_value)
-    dm_df = dm_df.round(6)
-
-    matrix = [dm_df.iloc[i,:i+1].tolist() for i in range(len(dm_df))]
-    dm = _DistanceMatrix(nom_var, matrix)
-    return dm
+    # Draw the climatic trees
+    canvas, axes, mark = mtree.draw(nrows = round(len(mtree)/5), ncols=len(mtree), height=400, width=1000,node_sizes=8, node_colors=colors, tip_labels_align=True);
+    for i in range(len(mtree)):
+        rand_color = "#%03x" % random.randint(0, 0xFFF)
+        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,'font-size':'10px', 'font-weight':'bold'});
+    toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
+#-------------------------------------------------------------------------------
 
 def createTree(dm):
     constructor = DistanceTreeConstructor()
@@ -186,10 +203,9 @@ def alignSequences(sequences):
     for p in processlist:
         p.join()
 
-    print(len(resultList))
     #il reste a combiner les resultats
     
-    return 3
+    return len(resultList)
 
 
 
