@@ -1,7 +1,8 @@
 ﻿import subprocess   #! Deprecated import with BioPython integration
 import pandas as pd
 import os
-import params #TODO : Migrate to .yaml format
+import yaml
+from yaml.loader import SafeLoader
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
@@ -11,71 +12,25 @@ import shutil
 import Bio as Bio 
 from Bio import SeqIO
 from Bio import pairwise2
+from multiprocess import Process, Manager
 
-# ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 5000
-step_size = 500
-data_names = ["T_min_à_2m_C_newick",
-              "T_max_à_2m_C_newick"]
-reference_gene_file = 'datasets/reference_gene.fasta'
-'''
-'''
-bootstrap_threshold = 0
-rf_threshold = 100
-window_size = 10
-step_size = 50
-data_names = ['new_cases_smoothed_per_million_newick',
-       'new_deaths_smoothed_per_million_newick', 'stringency_index_newick',
-       'reproduction_rate_newick', 'people_vaccinated_per_hundred_newick',
-       'people_fully_vaccinated_per_hundred_newick', 'population_density_newick',
-       'median_age_newick', 'aged_65_older_newick', 'gdp_per_capita_newick',
-       'cardiovasc_death_rate_newick', 'diabetes_prevalence_newick', 'female_smokers_newick',
-       'male_smokers_newick', 'hospital_beds_per_thousand_newick'
-    ]37
-reference_gene_file = 'datasets/The_owid_final.fasta'
-'''
 
-bootstrap_threshold = params.bootstrap_threshold
-rf_threshold = params.rf_threshold 
-window_size = params.window_size
-step_size = params.step_size
+# We open the params.yaml file and put it in the params variable
+with open('params.yaml') as f:
+    params = yaml.load(f, Loader=SafeLoader)
+    print(params)
+
+
+# Create variables from the yaml file content
+file_name = params["file_name"]
+specimen = params["specimen"]
+names = params["names"]
+bootstrap_threshold = params["bootstrap_threshold"]
+rf_threshold = params["rf_threshold"]
+window_size = params["window_size"]
+step_size = params["step_size"]
 data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
-
-#reference_gene_file = 'datasets/The_37seq.fasta'
-
-reference_gene_file = params.reference_gene_file
-
-
-'''
-file_name = 'donnees.csv'
-specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
-names = ['Nom du specimen','T min à 2m C',
-        'T max à 2m C',
-        'Humidité relative à 2m %']
-'''
-
-
-'''
-file_name = 'Final_owid.csv'
-specimen = 'Accession'   #"Please enter the name of the colum containing the specimens names: "
-names = ['Accession','new_cases_smoothed_per_million',
-       'new_deaths_smoothed_per_million', 'stringency_index',
-       'reproduction_rate', 'people_vaccinated_per_hundred',
-       'people_fully_vaccinated_per_hundred', 'population_density',
-       'median_age', 'aged_65_older', 'gdp_per_capita',
-       'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
-       'male_smokers', 'hospital_beds_per_thousand']
-'''
-
-file_name = params.file_name
-
-specimen = params.specimen   #"Please enter the name of the colum containing the specimens names: "
-
-names = params.names
-
+reference_gene_file = params["reference_gene_file"]
 
 
 def leastSquare(tree1, tree2):
@@ -94,6 +49,7 @@ def leastSquare(tree1, tree2):
 def openCSV(nom_fichier_csv):
     df = pd.read_csv(nom_fichier_csv)
     return df
+    
 
 def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
     # creation d'une liste contenant les noms des specimens et les temperatures min
@@ -163,19 +119,37 @@ def openFastaFile(reference_gene_file):
 
 
 
+def openFastaFile(reference_gene_file):
+    sequences = {}
+    with open(reference_gene_file) as sequencesFile:
+        for sequence in SeqIO.parse(sequencesFile,"fasta"):
+            sequences[sequence.id] = sequence.seq
+    return sequences
+
+def alignSingle(original,next,resultList):
+    alignments = pairwise2.align.globalxx(original, next)
+    resultList.append(alignments)
+    return 0
+
 def alignSequences(sequences):
-        #print(sequences['ON129429'])
-        #print(sequences['ON134852'])
+    manager = Manager()
+    resultList= manager.list()
+    processlist=[]
+
+    first= sequences.pop(list(sequences.keys())[0])
+    for sequence in sequences:
+        p = Process(target=alignSingle, args=(first,sequence,resultList))
     
-    alignments = pairwise2.align.globalxx(sequences['ON129429'], sequences['ON134852'])
-    print(alignments)
-    #print(type(alignment))
+        p.start()
+        processlist.append(p)
+
+    for p in processlist:
+        p.join()
+
+    len(resultList)
+    #il reste a combiner les resultats
     
-    #subprocess.call(["./exec/muscle", "-in", reference_gene_file, "-physout", "infile", "-maxiters", "1", "-diags"])
-    #f = open("infile", "r").read()
-    #number_seq = int(f.split()[0])
-    #subprocess.call(["cp", "infile", "alignment_result"])
-    return 3
+    return len(resultList)
 
 
 
