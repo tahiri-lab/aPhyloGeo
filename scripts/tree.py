@@ -50,7 +50,7 @@ specimen = params["specimen"]
 names = params["names"]
 
 #-------------------------------------------------------------------------------
-
+#! Deprecated function, to remove
 def prepareDirectory():
     # Delete the results of last analysis
     with open("intree", "w"):
