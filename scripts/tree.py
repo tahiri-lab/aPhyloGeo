@@ -125,7 +125,7 @@ def leastSquare(tree1, tree2):
         tree2 (distanceTree object from biopython)
     
     Return:
-        retrun result (double) the final distance between the two trees
+        return result (double) the final distance between the two trees
     """
     result = 0.00
     leaves1 = tree1.get_terminals() #Produces a list of leaves from a tree
