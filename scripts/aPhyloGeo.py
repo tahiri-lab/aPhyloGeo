@@ -193,7 +193,7 @@ def alignSequences(sequences):
     resultList= manager.list()
     processlist=[]
 
-    first= sequences.pop(list(sequences.keys())[0])
+    first = sequences.pop(list(sequences.keys())[0])
     for sequence in sequences:
         p = Process(target=alignSingle, args=(first,sequence,resultList))
     
@@ -204,16 +204,17 @@ def alignSequences(sequences):
         p.join()
 
     #il reste a combiner les resultats
+    print(resultList[0][0].seqB)
     
     return len(resultList)
 
 
 
-def createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
+def geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
     #prepareDirectory()
     sequences = openFastaFile(reference_gene_file)
-    print(sequences)
     number_seq = alignSequences(sequences)
+    print(number_seq)
     #slidingWindow(window_size, step_size)
     #files = os.listdir("output/windows")
     #for file in files:
@@ -225,7 +226,7 @@ def createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstra
     #    filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
     
 
-createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 
 
