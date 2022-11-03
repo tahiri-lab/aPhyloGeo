@@ -13,10 +13,14 @@ import shutil
 import Bio as Bio 
 from Bio import SeqIO
 from Bio import pairwise2
+from Bio.pairwise2 import format_alignment
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
 from multiprocess import Process, Manager
 
 # We open the params.yaml file and put it in the params variable
-with open('../scripts/params.yaml') as f:
+with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
     print(params)
 
@@ -183,30 +187,68 @@ def openFastaFile(reference_gene_file):
             sequences[sequence.id] = sequence.seq
     return sequences
 
+"""
+Method that aligns two DNA sequences using an algorithm.
+
+ex.: alignSingle( "ACTTTCG" , "ACTACG" )
+Could output "ACT--ACG"
+
+Args:
+    original    (String) The DNA sequence to compare to
+    next        (String) The DNA sequence to modify using the original
+    resultList  (List) The list containing the results.
+Return:
+"""
 def alignSingle(original,next,resultList):
-    alignments = pairwise2.align.globalxx(original, next)
-    resultList.append(alignments)
-    return 0
+    print(len(original))
+    print(len(next))
+    resultList.append(pairwise2.align.globalxx(original, next, one_alignment_only = True, score_only=True))
 
+"""
+Method that aligns multiple DNA sequences.
+The first speciment of the dataset is used as the main pivot.
+This method uses parrallel computing.
+
+Args:
+    sequences (Dictionary) 
+        Key is the ID of the specimen
+        Data is the specimen's DNS sequence
+
+Return:
+    resultList (Dictionary) 
+        Key is the ID of the specimen
+        Data is the specimen's DNS sequence
+"""
 def alignSequences(sequences):
-    manager = Manager()
-    resultList= manager.list()
-    processlist=[]
 
-    first = sequences.pop(list(sequences.keys())[0])
-    for sequence in sequences:
-        p = Process(target=alignSingle, args=(first,sequence,resultList))
+    resultList= Manager().list()
+    
+    resultDict = {}
+    first = max(sequences, key=sequences.get)
+
+    resultDict[first]=sequences[first]
+    sequences.pop(first)
+    print(sequences.keys())
+    for key in sequences.keys():
+        alignSingle(resultDict[first], sequences[key],resultList)
+
+    """
+    processlist=[]
+    for key in sequences.keys():
+        p = Process(target=alignSingle, args=(first,sequences[key],resultList))
     
         p.start()
         processlist.append(p)
 
     for p in processlist:
         p.join()
-
+    """
     #il reste a combiner les resultats
-    print(resultList[0][0].seqB)
-    
-    return len(resultList)
+    #print(resultList[0][0].seqB)
+    #for i in resultList:
+    #    print(format_alignment(*i[0]))
+    #github.com/Jonathan-Richards/FastNW
+    return len(resultDict)
 
 
 
