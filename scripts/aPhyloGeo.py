@@ -18,6 +18,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 from multiprocess import Process, Manager
+from MultiProcessor import Multi
 
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
@@ -199,10 +200,14 @@ Args:
     resultList  (List) The list containing the results.
 Return:
 """
-def alignSingle(original,next,resultList):
-    print(len(original))
-    print(len(next))
-    resultList.append(pairwise2.align.globalxx(original, next, one_alignment_only = True, score_only=True))
+def alignSingle(args):
+    originalKey = args[0]
+    original = args[1]
+    nextKey = args[2]
+    next = args[3]
+    #print(len(original)," vs ",len(next),"\n\n")
+    aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
+    return [nextKey, aligned]
 
 """
 Method that aligns multiple DNA sequences.
@@ -221,34 +226,25 @@ Return:
 """
 def alignSequences(sequences):
 
-    resultList= Manager().list()
-    
-    resultDict = {}
-    first = max(sequences, key=sequences.get)
+    firstKey = max(sequences, key=sequences.get)
+    firstSeq = sequences[firstKey]
+    sequences.pop(firstKey)
 
-    resultDict[first]=sequences[first]
-    sequences.pop(first)
-    print(sequences.keys())
+    list = []
     for key in sequences.keys():
-        alignSingle(resultDict[first], sequences[key],resultList)
+        list.append([firstKey,firstSeq,key, sequences[key]])
+    for i in list:
+        print(i)
+    mp = Multi(list,alignSingle)
+    result = mp.processingLargeData()
+    print(list)
+    resultDict = {firstKey:firstSeq}
 
-    """
-    processlist=[]
-    for key in sequences.keys():
-        p = Process(target=alignSingle, args=(first,sequences[key],resultList))
-    
-        p.start()
-        processlist.append(p)
+    for i in result:
+        resultDict[i[0]] = i[1]
 
-    for p in processlist:
-        p.join()
-    """
-    #il reste a combiner les resultats
-    #print(resultList[0][0].seqB)
-    #for i in resultList:
-    #    print(format_alignment(*i[0]))
-    #github.com/Jonathan-Richards/FastNW
-    return len(resultDict)
+    print(resultDict)
+    return 
 
 
 
