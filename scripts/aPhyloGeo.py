@@ -1,14 +1,9 @@
 ﻿import subprocess
-import time   #! Deprecated import with BioPython integration
+import time  
 import pandas as pd
 import os
 import yaml
-from yaml.loader import SafeLoader
-from Bio import Phylo
-from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
-from Bio.Phylo.TreeConstruction import _DistanceMatrix
 import re
-from csv import writer
 import shutil
 import Bio as Bio 
 from Bio import SeqIO
@@ -19,6 +14,13 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 from multiprocess import Process, Manager
 from MultiProcessor import Multi
+from Bio import Phylo
+from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
+from Bio.Phylo.TreeConstruction import _DistanceMatrix
+from csv import writer
+from multiprocess import Process, Manager
+from yaml.loader import SafeLoader
+
 
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
@@ -29,21 +31,32 @@ bootstrap_threshold = params["bootstrap_threshold"]
 rf_threshold = params["rf_threshold"]
 window_size = params["window_size"]
 step_size = params["step_size"]
-data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
+data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 
+                'PRECTOTCORR_newick', 'WS10M_newick']
 reference_gene_file = params["reference_gene_file"]
 file_name = params["file_name"]
-specimen = params["specimen"]   #"Please enter the name of the colum containing the specimens names: "
+specimen = params["specimen"]
 names = params["names"]
 
 def openCSV(nom_fichier_csv):
     df = pd.read_csv(nom_fichier_csv)
     return df
 
-#-------------------------------------------------------------------------------
 
 def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
-    # Creation of a list containing the names of specimens and minimums 
-    # tempratures
+    """
+    Creation of a list containing the names of specimens and minimums 
+    tempratures
+
+    Args:
+        df (content of CSV file)
+        column_with_specimen_name (first column of names)
+        column_to_search (column to compare with the first one)
+    
+    Return:
+        The dissimilarities matrix
+
+    """
     meteo_data = df[column_to_search].tolist()
     nom_var = df[column_with_specimen_name].tolist()
     nbr_seq = len(nom_var)
@@ -52,6 +65,7 @@ def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
 
     # First loop that allow us to calculate a matrix for each sequence
     temp_tab = []
+
     for e in range(nbr_seq):
         # A list that will contain every distances before normalisation
         temp_list = []
@@ -78,7 +92,6 @@ def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
     dm = _DistanceMatrix(nom_var, matrix)
     return dm
 
-#-------------------------------------------------------------------------------
 
 def leastSquare(tree1, tree2):
     """
@@ -95,10 +108,11 @@ def leastSquare(tree1, tree2):
         tree2 (distanceTree object from biopython)
     
     Return:
-        return result (double) the final distance between the two trees
+        return result (double) the final distance between the two 
+        
     """
     ls = 0.00
-    leaves1 = tree1.get_terminals() #Produces a list of leaves from a tree
+    leaves1 = tree1.get_terminals()
   
     leavesName = list(map(lambda l: l.name,leaves1))
  
@@ -110,33 +124,22 @@ def leastSquare(tree1, tree2):
             ls+=(abs(d1-d2))
     return ls
 
-"""
-def leastSquare(tree1, tree2):
-    ls = 0.00
-    # get all the terminal clades of the first tree (as example)
-    specie_names = [specie.name for specie in tree1.get_terminals()]
-
-    for i in range(tree1.count_terminals()-1):
-        for j in range(i+1,tree1.count_terminals()):
-            d1=(tree1.distance(tree1.find_any(specie_names[i]), tree1.find_any(specie_names[j])))
-            d2=(tree2.distance(tree2.find_any(specie_names[i]), tree2.find_any(specie_names[j])))
-            ls+=(abs(d1-d2))
-    return ls
-"""
-#-------------------------------------------------------------------------------
 
 def draw_trees(trees):
     """
     Function that will draw the trees for each climatic variable.
-    The DistanceTreeConstructor object is transformed to Newick format and loaded as a toytree MulTitree object.
-    Some stylings are applied and the resulting trees are drawed into a .pdf in the viz/ dir.
+    The DistanceTreeConstructor object is transformed to Newick format and 
+    loaded as a toytree MulTitree object. Some stylings are applied and the 
+    resulting trees are drawed into a .pdf in the viz/ dir.
     
-    Parameters:
-    trees (dict): Dictionnary of DistanceTreeConstructor object with climatic variable for keys 
+    Args:
+        trees (Dictionnary of DistanceTreeConstructor object with climatic 
+        variable for keys)
+
     """
     trees_newick= {}
     toytrees = []
-    # Creating a multitree object from list of climatic trees
+    
     for k,v in trees.items():
         trees_newick[k] = v.format('newick')
         ttree = toytree.tree(trees_newick[k], tree_format=1)
@@ -148,45 +151,73 @@ def draw_trees(trees):
         tree.style.edge_align_style={'stroke':'black','stroke-width':1}
         for node in tree.treenode.traverse():
             if node.is_leaf():
-                node.add_feature('color', toytree.colors[7])  # terminals = grey
+                node.add_feature('color', toytree.colors[7]) 
             else:
-                node.add_feature('color', toytree.colors[1])  # internals/common = orange
+                node.add_feature('color', toytree.colors[1])  
     colors = tree.get_node_values('color', show_root=1, show_tips=1) 
 
     # Draw the climatic trees
-    canvas, axes, mark = mtree.draw(nrows = round(len(mtree)/5), ncols=len(mtree), height=400, width=1000,node_sizes=8, node_colors=colors, tip_labels_align=True);
+    canvas, axes, mark = mtree.draw(nrows = round(len(mtree)/5), 
+                                    ncols=len(mtree), height=400, width=1000,
+                                    node_sizes=8, node_colors=colors, 
+                                    tip_labels_align=True);
+
     for i in range(len(mtree)):
         rand_color = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,'font-size':'10px', 'font-weight':'bold'});
+        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,
+                    'font-size':'10px', 'font-weight':'bold'});
+
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
-#-------------------------------------------------------------------------------
+
 
 def createTree(dm):
+    '''
+    Create a dna tree from content coming from a fasta file.
+
+    Args:
+        dm (content used to create the tree)
+
+    Return:
+        tree (the new tree)
+    '''
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
     return tree
 
 
 def climaticPipeline(file_name, names):
+    '''
+    To do
+    '''
     trees = {}
     df = openCSV(file_name)
     for i in range(1, len(names)):
-        dm = getDissimilaritiesMatrix(df, names[0], names[i]) # liste a la position 0 contient les noms des specimens
+        dm = getDissimilaritiesMatrix(df, names[0], names[i])
         trees[names[i]] = createTree(dm)
 
     leastSquare(trees[names[1]],trees[names[2]])
 
+
 climaticPipeline(file_name, names)
 
 
-
-
 def openFastaFile(reference_gene_file):
+    '''
+    Reads the .fasta file and read every line to get the
+    sequence to analyze.
+
+    Args:
+        reference_gene_file (the fasta file to read)
+
+    Return:
+        sequences (a dictionnary containing the data from fasta file)
+    '''
     sequences = {}
     with open(reference_gene_file) as sequencesFile:
         for sequence in SeqIO.parse(sequencesFile,"fasta"):
             sequences[sequence.id] = sequence.seq
     return sequences
+
 
 """
 Method that aligns two DNA sequences using an algorithm.
@@ -247,9 +278,11 @@ def alignSequences(sequences):
     return 
 
 
-
-def geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names):
-    #prepareDirectory()
+def geneticPipeline(reference_gene_file, window_size, step_size, 
+                    bootstrap_threshold, rf_threshold, data_names):
+    '''
+    To do
+    '''
     sequences = openFastaFile(reference_gene_file)
     number_seq = alignSequences(sequences)
     print(number_seq)
@@ -261,51 +294,18 @@ def geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_thres
     #    createDistanceMatrix()
     #    createUnrootedTree()
     #    createConsensusTree() # a modifier dans la fonction
-    #    filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, data_names, number_seq, file)
+    #    filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, 
+    #                  data_names, number_seq, file)
     
 
-geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, 
+                rf_threshold, data_names)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#-----------------------------------------------------
-#! Deprecated function with Biopython integration, to remove
 def prepareDirectory():
-    # delete the results of last analysis, if we have    ???
-    with open("intree", "w"):
-        pass
-    # remove old newick files
-    delete_path = os.listdir()
-
-    for item in delete_path:
-        if item.endswith("_newick"):
-            os.remove(item)
-
-    if os.path.exists("output/upload_gene.fasta") :
-        os.remove("output/upload_gene.fasta")
-
-#-----------------------------------------leaf
-
-
-
-
-
-
-
-#-----------------------------------------  
-def prepareDirectory():
+    '''
+    To do
+    '''
     path_output_windows = './output/windows'                            
     isExist = os.path.exists(path_output_windows)
 
@@ -315,39 +315,31 @@ def prepareDirectory():
     else:
         os.makedirs(path_output_windows)
 
-    # delete the results of last analysis, if we have    
+    # delete the results of last analysis
     delete_path = os.listdir('output')
 
     for item in delete_path:
         if item.endswith("_gene"):
             shutil.rmtree('output'+'/'+item)
         
-
     delete_path2 = os.listdir()
-
     for item in delete_path2:
         if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
             os.remove(item)
     
     with open('output.csv', 'w') as f:
-        f.write("Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise\n")
+        f.write("Gene,Arbre phylogeographique,Position ASM," + 
+                "Bootstrap moyen,RF normalise\n")
 
-#prepareDirectory()
-
-#--------------------------------------------------------------
-#'1. Use the whole DNA sequences'
-
-# main function
-
-
-# number_seq = alignSequences(reference_gene_file)
-
-# print(number_seq)
-
-#-------------------------------------------------
 
 def slidingWindow(window_size=0, step=0):
-    # Permet d'avoir le nombre de lignes totales dans le fichier
+    '''
+    Get the total number of lines in the file.
+
+    Args:
+        window_size ()
+        step ()
+    '''
     try:
         f = open("infile", "r")
         line_count = -1
@@ -356,19 +348,18 @@ def slidingWindow(window_size=0, step=0):
                 line_count += 1
         f.close()
         f = open("infile", "r").read()
-        # premier nombre de la premiere ligne du fichier represente le nbr de sequences
+
         num_seq = int((f.split("\n")[0]).split(" ")[0])
-        # second nombre de la premiere ligne du fichier represente la longueur des sequences
         longueur = int((f.split("\n")[0]).split(" ")[1])
-        # permet d'obtenir le nbr de lignes qui compose chaque sequence
+        # we obtain the number of lines for every sequences
         no_line = int(line_count/num_seq)
 
-        # Recupere la sequence pour chaque variante
+        # get sequence for each variants
         with open("outfile", "w") as out:
             depart = 1
             fin = depart + no_line
-            # on connait la longueur de chaque sequence, 
-            # donc on va recuperer chaque sequence et le retranscrire sur un autre fichier separes par un \n entre chaque
+            # we know the lenght for every sequences
+            # we'll get every sequences and we rewrite it in an other file
             for i in range(0, int(num_seq)):
                 f = open("infile", "r")
                 lines_to_read = range(depart, fin)
@@ -380,8 +371,8 @@ def slidingWindow(window_size=0, step=0):
                 fin = depart + no_line
         out.close()  
 
-        # on cree un fichier out qui contient chaque sequence sans espaces 
-        # et on enregistre dans une list le nom en ordre des sequences
+        # we create a file named out that contain every sequences without
+        # blank spaces and we save each name in a list in order
         with open("outfile", "r") as out, open("out", "w") as f:
             sequences = out.read().split("\n\n")
             list_names = []
@@ -402,7 +393,8 @@ def slidingWindow(window_size=0, step=0):
         fin = debut + window_size
         while fin <= longueur:
             index = 0 
-            with open("out", "r") as f, open("output/windows/" + str(debut) + "_" + str(fin), "w") as out:
+            with open("out", "r") as f, open("output/windows/" + str(debut) + 
+                                             "_" + str(fin), "w") as out:
                 out.write(str(num_seq) + " " + str(window_size) + "\n")
                 for line in f:
                     if line != "\n":
@@ -424,6 +416,9 @@ def slidingWindow(window_size=0, step=0):
     os.system("rm out outfile infile")
 
 def createBoostrap():
+    '''
+    To do
+    '''
     filesize = os.path.getsize("infile")
     if filesize == 0:
         raise Exception("Infile for bootstrap was empty.")
@@ -431,21 +426,34 @@ def createBoostrap():
     subprocess.call(["mv", "outfile", "infile"])
 
 def createDistanceMatrix():
+    '''
+    To do
+    '''
     os.system("./exec/dnadist < input/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 def createUnrootedTree():
+    '''
+    To do
+    '''
     os.system("./exec/neighbor < input/neighbor_input.txt")
     subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
 
 
 def createConsensusTree():
+    '''
+    To do
+    '''
     os.system("./exec/consense < input/input.txt")
     # subprocess.call(["mv", "outtree", file])
     subprocess.call(["rm", "intree", "outfile"])
 
-def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_seq, aligned_file):
+def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, 
+                  number_seq, aligned_file):
+    '''
+    To do
+    '''
     bootstrap_average = calculateAverageBootstrap()
     if bootstrap_average < float(bootstrap_threshold):
         subprocess.call(["rm", "outtree"])
@@ -454,8 +462,9 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
             #print(tree)
             calculateRfDistance(tree)
             rfn = standardizedRfDistance(number_seq)
-            if rfn == None:                 #  '<=' not supported between instances of 'NoneType' and 'int'
-                raise Exception(f'La distance RF n\'est pas calculable pour {aligned_file}.')                     # fix it 
+            if rfn == None:                 
+                raise Exception(f'La distance RF n\'est pas calculable ' + 
+                                'pour {aligned_file}.')                    
             if rfn <= rf_threshold:
                 runRaxML(aligned_file, gene, tree)
                 cleanUp(aligned_file, tree)
@@ -474,6 +483,9 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
         subprocess.call(["rm", "outtree"])
 
 def calculateAverageBootstrap():
+    '''
+    To do
+    '''
     total = 0
     f = open("outtree", "r").read()
     numbers = re.findall(r'[)][:]\d+[.]\d+', f)
@@ -486,11 +498,17 @@ def calculateAverageBootstrap():
     return average
 
 def calculateRfDistance(tree):
+    '''
+    To do
+    '''
     os.system("cat " + tree + " >> infile")
     os.system("cat outtree >> infile")
     os.system("./exec/rf infile outfile tmp matrix")
 
 def standardizedRfDistance(number_seq):
+    '''
+    To do
+    '''
     # clean up the repository
     subprocess.call(["rm", "infile", "matrix", "tmp"])
     # find the rf
@@ -504,17 +522,24 @@ def standardizedRfDistance(number_seq):
             return normalized_rf
 
 def runRaxML(aligned_file, gene, tree):
+    '''
+    To do
+    '''
     current_dir = os.getcwd()
     file_name = os.path.basename(aligned_file + "_" + tree)
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
 
     # output_path = os.path.join(current_dir, "output", gene + "_gene")
     # IL FAUT CHANGER LE MODELE SELON LE GENE CHOISI
-    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -N 100 -m GTRGAMMA -x 123 -f a -p 123")
+    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -N 100 -m " +
+              "GTRGAMMA -x 123 -f a -p 123")
     # output_path = os.path.join(output_path, file_name)
     # subprocess.call(["cp", input_path, output_path])
 
 def cleanUp(file, tree):
+    '''
+    To do
+    '''
     file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
     # directory = os.path.join("output", gene + "_gene", file)
     subprocess.call(["mv", file, "outtree"])
@@ -523,6 +548,9 @@ def cleanUp(file, tree):
         os.system("rm -rf " +file)
 
 def calculateAverageBootstrapRax():
+    '''
+    To do
+    '''
     total = 0
     f = open("outtree", "r").read()
     numbers = re.findall(r'[\[]\d+[\]]', f)
@@ -535,6 +563,9 @@ def calculateAverageBootstrapRax():
     return average
 
 def addToCsv(gene, tree, file, bootstrap_average, rfn):
+    '''
+    To do
+    '''
     list = [gene, tree, file, bootstrap_average, rfn]
     with open('output.csv', 'a') as f_object:
         writer_object = writer(f_object)
@@ -542,6 +573,9 @@ def addToCsv(gene, tree, file, bootstrap_average, rfn):
         f_object.close()
 
 def keepFiles(gene, aligned_file, tree):
+    '''
+    To do
+    '''
     current_dir = os.getcwd()
     file_name = os.path.basename(aligned_file + "_" + tree + "_tree")
     input_path = os.path.join(current_dir, "output", "windows", aligned_file)
@@ -550,8 +584,3 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
     subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
-
-
-
-
-#displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
