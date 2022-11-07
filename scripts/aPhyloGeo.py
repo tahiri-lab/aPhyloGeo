@@ -8,6 +8,12 @@ import shutil
 import Bio as Bio 
 from Bio import SeqIO
 from Bio import pairwise2
+from Bio.pairwise2 import format_alignment
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
+from multiprocess import Process, Manager
+from MultiProcessor import Multi
 from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
@@ -15,8 +21,9 @@ from csv import writer
 from multiprocess import Process, Manager
 from yaml.loader import SafeLoader
 
+
 # We open the params.yaml file and put it in the params variable
-with open('../scripts/params.yaml') as f:
+with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
     print(params)
 
@@ -212,37 +219,63 @@ def openFastaFile(reference_gene_file):
     return sequences
 
 
-def alignSingle(original,next,resultList):
-    '''
-    To do
-    '''
-    alignments = pairwise2.align.globalxx(original, next)
-    resultList.append(alignments)
-    return 0
+"""
+Method that aligns two DNA sequences using an algorithm.
 
+ex.: alignSingle( "ACTTTCG" , "ACTACG" )
+Could output "ACT--ACG"
 
+Args:
+    original    (String) The DNA sequence to compare to
+    next        (String) The DNA sequence to modify using the original
+    resultList  (List) The list containing the results.
+Return:
+"""
+def alignSingle(args):
+    originalKey = args[0]
+    original = args[1]
+    nextKey = args[2]
+    next = args[3]
+    #print(len(original)," vs ",len(next),"\n\n")
+    aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
+    return [nextKey, aligned]
+
+"""
+Method that aligns multiple DNA sequences.
+The first speciment of the dataset is used as the main pivot.
+This method uses parrallel computing.
+
+Args:
+    sequences (Dictionary) 
+        Key is the ID of the specimen
+        Data is the specimen's DNS sequence
+
+Return:
+    resultList (Dictionary) 
+        Key is the ID of the specimen
+        Data is the specimen's DNS sequence
+"""
 def alignSequences(sequences):
-    '''
-    To do
-    '''
-    manager = Manager()
-    resultList= manager.list()
-    processlist=[]
 
-    first = sequences.pop(list(sequences.keys())[0])
-    for sequence in sequences:
-        p = Process(target=alignSingle, args=(first,sequence,resultList))
-    
-        p.start()
-        processlist.append(p)
+    firstKey = max(sequences, key=sequences.get)
+    firstSeq = sequences[firstKey]
+    sequences.pop(firstKey)
 
-    for p in processlist:
-        p.join()
+    list = []
+    for key in sequences.keys():
+        list.append([firstKey,firstSeq,key, sequences[key]])
+    for i in list:
+        print(i)
+    mp = Multi(list,alignSingle)
+    result = mp.processingLargeData()
+    print(list)
+    resultDict = {firstKey:firstSeq}
 
-    #We combine the results
-    print(resultList[0][0].seqB)
-    
-    return len(resultList)
+    for i in result:
+        resultDict[i[0]] = i[1]
+
+    print(resultDict)
+    return 
 
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
