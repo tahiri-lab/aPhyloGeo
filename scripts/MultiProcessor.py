@@ -55,13 +55,15 @@ class Multi:
 
 
         self.args = Manager().list(args)
+        self.processes = Manager().list()
         self.resultList = Manager().list()
         self.function = function
 
         self.processlist= []
-        self.mem1 = 1  
-        self.memA = psutil.virtual_memory()[1]
-        self.nbAllowed = 1
+        self.mem1 = Value("f",1)  
+        self.memA = Value("f",1)
+        self.memM = Value("f",psutil.virtual_memory()[1])
+        self.nbAllowed = Value('i',1)
         self.tasks = Value('i',0)
 
         self.started = Value('i',0)
@@ -77,15 +79,15 @@ class Multi:
         Nothing, but the return value of the executed method is passed to a global multiprocessing-friendly list
     """
     def executeOnce(self,arg):
-        self.terminalUpdate()
         self.tasks.value+= 1
         self.started.value +=1
+        self.processes.append(os.getpid())
 
         self.resultList.append(self.function(arg))
         self.mem1 = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1000000
+        
         self.tasks.value -= 1
         self.finished.value += 1
-        self.terminalUpdate()
 
 
     """
@@ -104,35 +106,26 @@ class Multi:
 
     """
     def processingLargeData(self):
-        print("Starting calibration run, this might some minutes")
+        print("Starting calibration run, the first instance runs alone")
         self.startTime = time.time()
 
-        #self.executeOnce(self.args.pop(0))  # Calibration run; needs to be alone to set the required memory usage of a unique task
-   
+        t = Process(target=self.terminalUpdate)
+        t.start()
+
         p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs
         p.start()
-        time.sleep(1)
-        while(True):
-            if(self.tasks.value==0):
-                self.memUpdate()
-                p.join()
-                break
-            else:
-                current_process = psutil.Process(os.getpid())
-                mem = current_process.memory_percent()
-                for child in current_process.children(recursive=True):
-                    mem+= child.memory_percent()
-                mem =(self.memA/100*mem)/1000000000
-                if (self.mem1<mem):
-                    self.mem1=mem
 
-                #print("*****\n",mem)
-                self.terminalUpdate()
-                
-                time.sleep(0.1)
+        self.processes.append(os.getpid())
+        m = Process(target=self.memUpdate)
+        m.start()
+        
+        time.sleep(1)
+        while(self.tasks.value>0):
+            #WAIT FOR CALLIBRATION
+            time.sleep(0.1)
         
         while(len(self.args)!=0):
-            if self.tasks.value < self.nbAllowed:
+            if self.tasks.value < self.nbAllowed.value:
                 p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs
                 
                 self.processlist.append(p)
@@ -140,15 +133,17 @@ class Multi:
                 time.sleep(0.1)
             else:
                 time.sleep(0.1)
-            self.terminalUpdate()
 
-        while(True):
-            if(self.tasks.value==0):
-                for p in self.processlist:
-                    p.join()
-                break
-            else:
-                self.terminalUpdate()
+
+        for p in self.processlist:
+            p.join()
+        time.sleep(1)
+            
+        t.terminate()
+        m.terminate()
+        print("\033[F", end="")
+        print("\033[B"*5, flush=True)
+        print("completed with ",str(self.amount-self.finished.value)," errors")
 
         return self.resultList
 
@@ -161,26 +156,40 @@ class Multi:
         memBuffer  (double) Amount of byte to substract from the available RAM for safety purposes
     """
     def memUpdate(self):
-        memBuffer = 1000000000
-        #self.mem1 = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1000000
-        self.nbAllowed = math.floor((((self.memA-memBuffer)/self.mem1)/1000000000))
+        memBuffer = 5 * 1000000000
+        while True:
+            self.memA.value = psutil.virtual_memory()[1]
+            for child in self.processes:
+                try:
+                    mem = psutil.Process(child).memory_percent()*self.memM.value/100000000000
+                    if (self.mem1.value<mem):
+                        self.mem1.value=mem
+                except:
+                    ""
 
-        print("Available memory: ", round(self.memA/1000000)/1000, "Gb"+
-                    "                                                         ")
-        print("needed memory:    ",round(self.mem1*1000)/1000, "Gb"+
-                    "                                                         ")
-        print("Max processes:    ", self.nbAllowed, end="\n")
+            self.nbAllowed.value = math.floor((((self.memM.value-memBuffer)/self.mem1.value)/1000000000))
+            if self.nbAllowed.value<1:
+                self.nbAllowed.value=1
     
     """
     Method that constantly updates the user about the currently run tasks
     """
     def terminalUpdate(self):
-        s=self.started.value
-        a=self.amount
-        f=self.finished.value
-        nowTime = time.time()
-        eTime = round((nowTime - self.startTime)*100)/100
-        print(" {}/{} Started    {}/{} Finished    Time elapsed: {} seconds".format(s,a,f,s,eTime), end="\r")
+        while True:
+            s=self.started.value
+            a=self.amount
+            f=self.finished.value
+            nowTime = time.time()
+            eTime = round((nowTime - self.startTime)*100)/100
+            print("Maximum memory:   ", round(self.memM.value/1000000)/1000, "Gb        ", end="\n", flush=True)
+            print("Available memory: ", round(self.memA.value/1000000)/1000, "Gb        ", end="\n", flush=True)
+            print("needed memory:    ",round(self.mem1.value*1000)/1000, "Gb        ", end="\n", flush=True)
+            print("Active processes: ", str(s-f) + "/" + str(self.nbAllowed.value) + "            ", end="\n", flush=True)
+            print(" {}/{} Started    {}/{} Finished    Time elapsed: {} seconds".format(s,a,f,s,eTime), flush=True)
+            print("\033[F", end="",flush=True)
+            print("\033[A"*5, flush=True)
+            time.sleep(0.01)
+            
     
     """
     The method executed by small processes
@@ -218,19 +227,18 @@ class Multi:
     """
     def processingSmallData(self):
         self.startTime = time.time()
-        self.terminalUpdate()
+        t = Process(target=self.terminalUpdate).start()
+
     
         for a in range(len(self.args)):
             p = Process(target=self.executeSmall, args=([self.args.pop(0)])) #Multiprocess runs
             self.processlist.append(p)
             p.start()
-            self.terminalUpdate()
 
         for p in self.processlist:
             p.join()
-            self.terminalUpdate()
 
-        self.terminalUpdate()
+        t.terminate()
 
         return self.resultList
 

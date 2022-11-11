@@ -232,11 +232,10 @@ Args:
 Return:
 """
 def alignSingle(args):
-    originalKey = args[0]
+    #originalKey = args[0]
     original = args[1]
     nextKey = args[2]
     next = args[3]
-    #print(len(original)," vs ",len(next),"\n\n")
     aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
     return [nextKey, aligned]
 
@@ -264,18 +263,15 @@ def alignSequences(sequences):
     list = []
     for key in sequences.keys():
         list.append([firstKey,firstSeq,key, sequences[key]])
-    for i in list:
-        print(i)
-    mp = Multi(list,alignSingle)
-    result = mp.processingLargeData()
-    print(list)
-    resultDict = {firstKey:firstSeq}
 
+    result = Multi(list,alignSingle).processingLargeData()
+
+    resultDict = {firstKey:firstSeq}
     for i in result:
         resultDict[i[0]] = i[1]
 
-    print(resultDict)
-    return 
+
+    return resultDict
 
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
