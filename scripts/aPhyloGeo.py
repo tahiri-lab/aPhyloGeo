@@ -266,13 +266,58 @@ def alignSequences(sequences):
 
     result = Multi(list,alignSingle).processingLargeData()
 
-    resultDict = {firstKey:firstSeq}
+    #resultDict = {firstKey:Seq(firstSeq)}
+    resultDict = {firstKey:Seq(result[0][1][0].seqA)}
     for i in result:
-        resultDict[i[0]] = i[1]
-
+        resultDict[i[0]] = Seq(i[1][0].seqB)
 
     return resultDict
 
+def slidingWindow2(alignedSequences):
+    windowedSequences={}
+    stepStart = step_size
+    winSize = window_size
+    stepEnd = step_size + winSize
+
+    for key in alignedSequences.keys():
+        seq = alignedSequences[key]
+        winSeq = seq[stepStart : stepEnd ]
+        winKey = str(key) + "_" + str(step_size) + "_" + str(stepEnd)
+        windowedSequences[winKey]=Seq(winSeq)
+
+    print (windowedSequences)
+    return windowedSequences
+"""
+not worth the effort
+
+def slidingWindowMulti(alignedSequences,windowSize,stepSize):
+    resultList={}
+    
+    stepEnd = stepSize + windowSize
+    multiList = []
+
+    def winOnce(args):
+        seq=args[0]
+        key=args[1]
+        
+        winSeq = seq[stepSize : stepEnd]
+        winKey = str(key) + "_" + str(stepSize) + "_" + str(stepEnd)
+        return({winKey:Seq(winSeq)})
+
+    for key in alignedSequences.keys():
+        multiList.append([alignedSequences[key], key])
+    resultList= Multi(multiList,winOnce).processingSmallData()
+    
+    resultDict={}
+    for d in resultList:
+        resultDict.update(d)
+
+    print (resultDict)
+    print (resultDict.keys())
+
+    return resultDict
+
+"""
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
                     bootstrap_threshold, rf_threshold, data_names):
@@ -280,9 +325,8 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     To do
     '''
     sequences = openFastaFile(reference_gene_file)
-    number_seq = alignSequences(sequences)
-    print(number_seq)
-    #slidingWindow(window_size, step_size)
+    alignedSequences = alignSequences(sequences)
+    windowedSequences = slidingWindow2(alignedSequences)
     #files = os.listdir("output/windows")
     #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
@@ -328,6 +372,7 @@ def prepareDirectory():
                 "Bootstrap moyen,RF normalise\n")
 
 
+"""
 def slidingWindow(window_size=0, step=0):
     '''
     Get the total number of lines in the file.
@@ -410,6 +455,7 @@ def slidingWindow(window_size=0, step=0):
 
     # clean up
     os.system("rm out outfile infile")
+"""
 
 def createBoostrap():
     '''
