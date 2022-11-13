@@ -246,8 +246,8 @@ This method uses parrallel computing.
 
 Args:
     sequences (Dictionary) 
-        Key is the ID of the specimen
-        Data is the specimen's DNS sequence
+        Key String) is the ID of the specimen
+        Data (Seq(String)) is the specimen's DNS sequence
 
 Return:
     resultList (Dictionary) 
@@ -266,13 +266,49 @@ def alignSequences(sequences):
 
     result = Multi(list,alignSingle).processingLargeData()
 
-    resultDict = {firstKey:firstSeq}
+    resultDict = {firstKey:Seq(result[0][1][0].seqA)}
     for i in result:
-        resultDict[i[0]] = i[1]
-
+        resultDict[i[0]] = Seq(i[1][0].seqB)
 
     return resultDict
 
+"""
+Method that slices all the sequences in a dictionary to a specific window (substring)
+
+ex.:
+    step_size=3
+    window_size=5
+
+    123 : CGGCTCAGCT  -->   123_3_7 : GCTCA
+    456 : TAGCTTCAGT  -->   456_3_7 : GCTTC
+
+Args:
+    alignedSequences (Dictionary)
+        Key (String) is the ID of the specimen
+        Data (Seq(String)) is the specimen's DNS sequence
+    others* (var) see param.yaml
+
+Return:
+    resultDict (Dictionary)
+        Key is originalKey_i_j
+            originalKey = the name of the key before the window
+            i = The starting position of the window, relative to the original sequence
+            j = The ending position of the window, relative to the original sequence
+"""
+def slidingWindow(alignedSequences):
+    windowedSequences={}
+    stepStart = step_size
+    winSize = window_size
+    stepEnd = step_size + winSize -1
+
+    for key in alignedSequences.keys():
+        seq = alignedSequences[key]
+        winSeq = seq[stepStart : stepEnd ]
+        winKey = str(key) + "_" + str(step_size) + "_" + str(stepEnd)
+        windowedSequences[winKey]=Seq(winSeq)
+
+    print (windowedSequences)#to remove; for verification only
+    return windowedSequences
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
                     bootstrap_threshold, rf_threshold, data_names):
@@ -280,9 +316,8 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     To do
     '''
     sequences = openFastaFile(reference_gene_file)
-    number_seq = alignSequences(sequences)
-    print(number_seq)
-    #slidingWindow(window_size, step_size)
+    alignedSequences = alignSequences(sequences)
+    windowedSequences = slidingWindow(alignedSequences)
     #files = os.listdir("output/windows")
     #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
@@ -326,90 +361,6 @@ def prepareDirectory():
     with open('output.csv', 'w') as f:
         f.write("Gene,Arbre phylogeographique,Position ASM," + 
                 "Bootstrap moyen,RF normalise\n")
-
-
-def slidingWindow(window_size=0, step=0):
-    '''
-    Get the total number of lines in the file.
-
-    Args:
-        window_size ()
-        step ()
-    '''
-    try:
-        f = open("infile", "r")
-        line_count = -1
-        for line in f:
-            if line != "\n":
-                line_count += 1
-        f.close()
-        f = open("infile", "r").read()
-
-        num_seq = int((f.split("\n")[0]).split(" ")[0])
-        longueur = int((f.split("\n")[0]).split(" ")[1])
-        # we obtain the number of lines for every sequences
-        no_line = int(line_count/num_seq)
-
-        # get sequence for each variants
-        with open("outfile", "w") as out:
-            depart = 1
-            fin = depart + no_line
-            # we know the lenght for every sequences
-            # we'll get every sequences and we rewrite it in an other file
-            for i in range(0, int(num_seq)):
-                f = open("infile", "r")
-                lines_to_read = range(depart, fin)
-                for position, line in enumerate(f):
-                    if position in lines_to_read:
-                        out.write(line)
-                out.write("\n")
-                depart = fin
-                fin = depart + no_line
-        out.close()  
-
-        # we create a file named out that contain every sequences without
-        # blank spaces and we save each name in a list in order
-        with open("outfile", "r") as out, open("out", "w") as f:
-            sequences = out.read().split("\n\n")
-            list_names = []
-            for seq in sequences:
-                s = seq.replace("\n", " ").split(" ")
-                if s[0] != "":
-                    list_names.append(s[0])
-                s_line = s[1:len(seq)]
-                for line in s_line:
-                    if line != "":
-                        f.write(line)
-                f.write("\n")
-        out.close()  
-        f.close()
-
-        # slide the window along the sequence
-        debut = 0
-        fin = debut + window_size
-        while fin <= longueur:
-            index = 0 
-            with open("out", "r") as f, open("output/windows/" + str(debut) + 
-                                             "_" + str(fin), "w") as out:
-                out.write(str(num_seq) + " " + str(window_size) + "\n")
-                for line in f:
-                    if line != "\n":
-                        espece = list_names[index]
-                        nbr_espaces = 11 - len(espece)   
-                        out.write(espece)
-                        for i in range(nbr_espaces):
-                            out.write(" ")
-                        out.write(line[debut:fin] + "\n")
-                        index = index + 1
-            out.close()
-            f.close()
-            debut = debut + step
-            fin = fin + step            
-    except:
-        print("An error occurred.")
-
-    # clean up
-    os.system("rm out outfile infile")
 
 def createBoostrap():
     '''
