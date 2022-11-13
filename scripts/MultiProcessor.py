@@ -43,7 +43,8 @@ class Multi:
         processlist (list)      All of the child processes    
         mem1        (double)    The memory needed to run a single child
         memA        (double)    The current available memory
-        nbAllowed   (int)       The amount of theoretical child processes that can fit in memory
+        nbAllowed   (int)       The amount of theoretical child processes that can fit in FREE memory
+        maxAllowed  (int)       The amount of theoretical child processes that can fit in TOTAL memory
         tasks       ()          The amount of child processes currently executing
         original    (String)    The DNA sequence to compare to
 
@@ -62,8 +63,9 @@ class Multi:
         self.processlist= []
         self.mem1 = Value("f",1)  
         self.memA = Value("f",1)
-        self.memM = Value("f",psutil.virtual_memory()[1])
+        self.memT = Value("f",psutil.virtual_memory()[1])#total amount of available memory at the start
         self.nbAllowed = Value('i',1)
+        self.maxAllowed = Value('i',1)
         self.tasks = Value('i',0)
 
         self.started = Value('i',0)
@@ -71,6 +73,8 @@ class Multi:
         self.amount = len(args)
 
         self.startTime = 0
+        self.timeForOne = Value("f",0)
+        self.rewrite= {True:10,False:5}
     
     """
     The method executed by the RAM hungry processes
@@ -106,26 +110,25 @@ class Multi:
 
     """
     def processingLargeData(self):
-        print("Starting calibration run, the first instance runs alone")
+        print("Starting calibration run, this might some time")
         self.startTime = time.time()
-
-        t = Process(target=self.terminalUpdate)
-        t.start()
 
         p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs
         p.start()
 
+        print("\033[B"*self.rewrite[False], flush=True)
         self.processes.append(os.getpid())
-        m = Process(target=self.memUpdate)
-        m.start()
+        b = Process(target=self.buttler,args=([True]))
+        b.start()
         
         time.sleep(1)
         while(self.tasks.value>0):
             #WAIT FOR CALLIBRATION
             time.sleep(0.1)
+        self.timeForOne.value=time.time()-self.startTime
         
         while(len(self.args)!=0):
-            if self.tasks.value < self.nbAllowed.value:
+            if (self.tasks.value < self.maxAllowed.value) & (self.nbAllowed.value >= 1):
                 p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs
                 
                 self.processlist.append(p)
@@ -139,10 +142,9 @@ class Multi:
             p.join()
         time.sleep(1)
             
-        t.terminate()
-        m.terminate()
+        b.terminate()
         print("\033[F", end="")
-        print("\033[B"*5, flush=True)
+        print("\033[B"*self.rewrite[True], flush=True)
         print("completed with ",str(self.amount-self.finished.value)," errors")
 
         return self.resultList
@@ -156,41 +158,67 @@ class Multi:
         memBuffer  (double) Amount of byte to substract from the available RAM for safety purposes
     """
     def memUpdate(self):
-        memBuffer = 5 * 1000000000
-        while True:
-            self.memA.value = psutil.virtual_memory()[1]
-            for child in self.processes:
-                try:
-                    mem = psutil.Process(child).memory_percent()*self.memM.value/100000000000
-                    if (self.mem1.value<mem):
-                        self.mem1.value=mem
-                except:
-                    ""
+        memBuffer = 0.9 #%
+        self.memA.value = psutil.virtual_memory()[1]*memBuffer
+        for child in self.processes:
+            try:
+                mem = psutil.Process(child).memory_full_info()[8] #uss emory usage
+                if (self.mem1.value<mem):
+                    self.mem1.value=mem
+            except:
+                ""
 
-            self.nbAllowed.value = math.floor((((self.memM.value-memBuffer)/self.mem1.value)/1000000000))
-            if self.nbAllowed.value<1:
-                self.nbAllowed.value=1
+        self.nbAllowed.value = math.floor((((self.memA.value*memBuffer)/self.mem1.value)))
+        if self.nbAllowed.value < 1:
+            self.nbAllowed.value = 1
+        self.maxAllowed.value = math.floor((((self.memT.value*memBuffer)/self.mem1.value)))
+        if self.maxAllowed.value < 1:
+            self.maxAllowed.value = 1
+
     
     """
     Method that constantly updates the user about the currently run tasks
     """
-    def terminalUpdate(self):
+    def terminalUpdate(self, memBlock):
+
+        s=self.started.value
+        a=self.amount
+        f=self.finished.value
+        nowTime = time.time()
+        eTime = round((nowTime - self.startTime)*10)/10
+        
+        print("---")
+        if(memBlock):
+            print("Available memory: ", round(self.memA.value/10000000)/100,"/",round(self.memT.value/10000000)/100, "Gb        ", end="\n", flush=True)
+            print("Active processes: ", str(self.tasks.value) + " / " + str(self.maxAllowed.value) + "            ", end="\n", flush=True)
+            print("Min memory per:   ",round(self.mem1.value/10000000)/100, "Gb        ", end="\n", flush=True)
+            print("Time for one:     " ,round(self.timeForOne.value*10)/10," seconds               ", flush=True)
+            print("---")
+        print("Started:          ",s,"/",a,"   ",round(s/a*100),"%           ", flush=True)
+        print("Finished:         ",f,"/",s,"   ",round(f/a*100),"%           ", flush=True)
+        print("Time elapsed:     " ,eTime," seconds               ", flush=True)
+        print("---")
+
+        print("\033[F", end="",flush=True)
+        print("\033[A"*self.rewrite[memBlock], flush=True)
+
+    """
+    Ran as a child process, the buttler will constantly run other methods.
+    In this case, it updates de memory capacity and prints updates on the terminal.
+    It exists so not to bottleneck the main thread.
+    """
+    def buttler(self,memBloc):
+        term = time.time()
+        mem = time.time()
         while True:
-            s=self.started.value
-            a=self.amount
-            f=self.finished.value
-            nowTime = time.time()
-            eTime = round((nowTime - self.startTime)*100)/100
-            print("Maximum memory:   ", round(self.memM.value/1000000)/1000, "Gb        ", end="\n", flush=True)
-            print("Available memory: ", round(self.memA.value/1000000)/1000, "Gb        ", end="\n", flush=True)
-            print("needed memory:    ",round(self.mem1.value*1000)/1000, "Gb        ", end="\n", flush=True)
-            print("Active processes: ", str(s-f) + "/" + str(self.nbAllowed.value) + "            ", end="\n", flush=True)
-            print(" {}/{} Started    {}/{} Finished    Time elapsed: {} seconds".format(s,a,f,s,eTime), flush=True)
-            print("\033[F", end="",flush=True)
-            print("\033[A"*5, flush=True)
-            time.sleep(0.01)
-            
-    
+            now = time.time()
+            if now-term>0.1:
+                self.terminalUpdate(memBloc)
+                term = now
+            if now-mem>1 & memBloc:
+                self.memUpdate()
+                mem = now
+
     """
     The method executed by small processes
 
@@ -227,7 +255,8 @@ class Multi:
     """
     def processingSmallData(self):
         self.startTime = time.time()
-        t = Process(target=self.terminalUpdate).start()
+        t = Process(target=self.buttler,args=([False]))
+        t.start()
 
     
         for a in range(len(self.args)):
@@ -238,7 +267,14 @@ class Multi:
         for p in self.processlist:
             p.join()
 
+        time.sleep(1)
+        finishedTime = round(time.time()-self.startTime)*10/10
+
         t.terminate()
+        print("\033[F", end="")
+        print("\033[B"*self.rewrite[False], flush=True)
+        print("Completed ",len(self.resultList),"tasks in ",finishedTime,"seconds")
+ 
 
         return self.resultList
 
