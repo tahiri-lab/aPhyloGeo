@@ -270,6 +270,8 @@ def alignSequences(sequences):
     for i in result:
         resultDict[i[0]] = Seq(i[1][0].seqB)
 
+    dictToFile(resultDict,"1_alignSequences",".fasta")
+
     return resultDict
 
 """
@@ -296,25 +298,64 @@ Return:
             j = The ending position of the window, relative to the original sequence
 """
 def slidingWindow(alignedSequences):
-    windowedSequences={}
-    stepStart = step_size
-    winSize = window_size
-    stepEnd = step_size + winSize -1
+    before=time.time()
 
-    for key in alignedSequences.keys():
-        seq = alignedSequences[key]
-        winSeq = seq[stepStart : stepEnd ]
-        winKey = str(key) + "_" + str(step_size) + "_" + str(stepEnd)
-        windowedSequences[winKey]=Seq(winSeq)
+    windowsDict={}
+    
+    longKey = max(alignedSequences, key=alignedSequences.get)
+    maxLength = len(alignedSequences[longKey])
+    
+    winSize = window_size #longueur
+    stepSize = step_size #avance de x
+    stepStart = 0
+    stepEnd = winSize -1
 
-    print (windowedSequences)#to remove; for verification only
-    return windowedSequences
+    while stepStart < maxLength:
+        if stepEnd > maxLength:
+            stepEnd = maxLength
+        windowsBySpecies={}
+        for key in alignedSequences.keys():
+            seq = alignedSequences[key]
+            winSeq = seq[stepStart : stepEnd ]
+            winKey = str(key) 
+            windowsBySpecies[winKey]=Seq(winSeq)
+        windowKey = str(stepStart) + "_" + str(stepEnd)
+        windowsDict[windowKey] = windowsBySpecies
+        stepStart += stepSize
+        stepEnd += stepSize
+
+    print(time.time()-before)
+
+    ##############
+    os.mkdir("./debug/2_slidingWindow")
+    for w in windowsDict.keys():
+        dictToFile(windowsDict[w],"2_slidingWindow/"+w,".fasta")
+    ##############
+
+    return windowsDict
+
+
+def dictToFile(dict,filename,ext):
+    dir = "./debug"
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+    f=open(dir+"/"+filename+ext,"w")
+    for key in dict.keys():
+        f.write(">"+str(key)+"\n")
+        f.write(str(dict[key]+"\n"))
+    return dict
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
                     bootstrap_threshold, rf_threshold, data_names):
     '''
     To do
     '''
+    ##############
+    if os.path.exists("./debug"):
+        shutil.rmtree("./debug")
+    ##############
+
     sequences = openFastaFile(reference_gene_file)
     alignedSequences = alignSequences(sequences)
     windowedSequences = slidingWindow(alignedSequences)
