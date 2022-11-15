@@ -270,7 +270,6 @@ def alignSequences(sequences):
     for i in result:
         resultDict[i[0]] = Seq(i[1][0].seqB)
 
-    print(result)
     dictToFile(resultDict,"1_alignSequences",".fasta")
 
     return resultDict
