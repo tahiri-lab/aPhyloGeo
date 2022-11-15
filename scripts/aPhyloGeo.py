@@ -8,6 +8,13 @@ import shutil
 import Bio as Bio 
 from Bio import SeqIO
 from Bio import pairwise2
+from Bio import AlignIO
+from Bio import Phylo
+from Bio.Phylo.TreeConstruction import DistanceCalculator
+from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
+from Bio.Phylo.Consensus import *
+import re
+import statistics
 from Bio.pairwise2 import format_alignment
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -310,6 +317,27 @@ def slidingWindow(alignedSequences):
     print (windowedSequences)#to remove; for verification only
     return windowedSequences
 
+def createBoostrap(alignedSequences):
+    '''
+    To do
+    '''
+    #fileName = "datasets/5seq/window_position_0_200.fa"
+    #format = "fasta"
+    #msa = AlignIO.read(fileName, format)
+    #print(alignedSequences)
+    #print("Alignment of length %i" % msa.get_alignment_length())
+    #calculator = DistanceCalculator('identity')
+    #constructor = DistanceTreeConstructor(calculator)
+    #consensus_tree = bootstrap_consensus(alignedSequences, 100, constructor, majority_consensus)
+    #print(consensus_tree)
+
+
+    #filesize = os.path.getsize("infile")
+    #if filesize == 0:
+    #    raise Exception("Infile for bootstrap was empty.")
+    #os.system("./exec/seqboot < input/bootstrap_input.txt")
+    #subprocess.call(["mv", "outfile", "infile"])
+
 def geneticPipeline(reference_gene_file, window_size, step_size, 
                     bootstrap_threshold, rf_threshold, data_names):
     '''
@@ -317,11 +345,11 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     '''
     sequences = openFastaFile(reference_gene_file)
     alignedSequences = alignSequences(sequences)
-    windowedSequences = slidingWindow(alignedSequences)
-    #files = os.listdir("output/windows")
-    #for file in files:
+    #    windowedSequences = slidingWindow(alignedSequences)
+    #    files = os.listdir("output/windows")
+    #    for file in files:
     #    os.system("cp output/windows/" + file + " infile")
-    #    createBoostrap()
+    createBoostrap(alignedSequences)
     #    createDistanceMatrix()
     #    createUnrootedTree()
     #    createConsensusTree() # a modifier dans la fonction
@@ -361,16 +389,6 @@ def prepareDirectory():
     with open('output.csv', 'w') as f:
         f.write("Gene,Arbre phylogeographique,Position ASM," + 
                 "Bootstrap moyen,RF normalise\n")
-
-def createBoostrap():
-    '''
-    To do
-    '''
-    filesize = os.path.getsize("infile")
-    if filesize == 0:
-        raise Exception("Infile for bootstrap was empty.")
-    os.system("./exec/seqboot < input/bootstrap_input.txt")
-    subprocess.call(["mv", "outfile", "infile"])
 
 def createDistanceMatrix():
     '''
