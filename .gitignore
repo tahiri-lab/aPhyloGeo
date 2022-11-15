@@ -6,3 +6,4 @@ __pycache__/*
 output*
 *newick
 temp.ipynb
+debug*
