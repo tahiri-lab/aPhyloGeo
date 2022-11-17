@@ -238,7 +238,7 @@ def alignSingle(args):
     nextKey = args[2]
     next = args[3]
     aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
-    return [nextKey, aligned,originalKey]
+    return [nextKey, aligned, originalKey]
 
 def ScoreSingle(args):
     originalKey = args[0]
@@ -292,11 +292,26 @@ def alignSequences(sequences):
 
     #resultDict = {firstKey:Seq(result[0][1][0].seqA)}
     resultDict = {}
-    for i in result:
-        resultDict[i[0]] = Seq(i[1][0].seqA)
-        resultDict[str(i[2]+" vs "+i[0])] = Seq(i[1][0].seqB)
+    resultDict[result[0][2]] = Seq(result[0][1][0].seqB)
 
-    dictToFile(resultDict,"1_alignSequences",".fasta")
+    for i in result:
+        resultDict[i[0]] = Seq(i[1][0].seqB)
+
+    #######JUST TO MAKE THE DEBUG FILES
+    temp={}
+    for i in result:
+        temp2 = {}
+        temp2[i[0]] = Seq((i[1][0].seqA))
+        temp2[i[2]] = Seq((i[1][0].seqB))
+        temp[str(i[0]+" vs "+i[2])]=temp2
+    os.mkdir("./debug/1_alignSequences")
+    time.sleep(1)
+    for w in temp.keys():
+        dictToFile(temp[w],"1_alignSequences/"+w,".fasta")
+    time.sleep(1)
+
+    dictToFile(resultDict,"1_alignSequences_OLD",".fasta")#vielle version avec les sequences non allignee
+    ######JUST TO MAKE THE DEBUG FILES
 
     return resultDict
 
@@ -380,6 +395,8 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     ##############
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
+  
+    os.mkdir("./debug")
     ##############
 
     sequences = openFastaFile(reference_gene_file)
