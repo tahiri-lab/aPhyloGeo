@@ -310,7 +310,7 @@ def alignSequences(sequences):
         dictToFile(temp[w],"1_alignSequences/"+w,".fasta")
     time.sleep(1)
 
-    dictToFile(resultDict,"1_alignSequences_OLD",".fasta")
+    dictToFile(resultDict,"1_alignSequences_OLD",".fasta")#vielle version avec les sequences non allignee
     ######JUST TO MAKE THE DEBUG FILES
 
     return resultDict
