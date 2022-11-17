@@ -395,8 +395,8 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     ##############
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
-    else:
-        os.mkdir("./debug")
+  
+    os.mkdir("./debug")
     ##############
 
     sequences = openFastaFile(reference_gene_file)
