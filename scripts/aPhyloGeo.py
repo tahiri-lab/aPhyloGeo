@@ -1,43 +1,17 @@
-﻿import subprocess
-import sys
-import time  
+﻿import subprocess 
 import pandas as pd
 import os
-import yaml
+
 import re
 import shutil
 import Bio as Bio 
 from Bio import SeqIO
-from Bio import pairwise2
-from Bio.pairwise2 import format_alignment
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Align import MultipleSeqAlignment
-from multiprocess import Process, Manager
-from MultiProcessor import Multi
-from Bio import Phylo
+from Alignement import AlignSequences
+import Params as p
+
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
-from multiprocess import Process, Manager
-from yaml.loader import SafeLoader
-
-
-# We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
-    params = yaml.load(f, Loader=SafeLoader)
-    print(params)
-
-bootstrap_threshold = params["bootstrap_threshold"]
-rf_threshold = params["rf_threshold"]
-window_size = params["window_size"]
-step_size = params["step_size"]
-data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 
-                'PRECTOTCORR_newick', 'WS10M_newick']
-reference_gene_file = params["reference_gene_file"]
-file_name = params["file_name"]
-specimen = params["specimen"]
-names = params["names"]
 
 def openCSV(nom_fichier_csv):
     df = pd.read_csv(nom_fichier_csv)
@@ -165,7 +139,7 @@ def draw_trees(trees):
 
     for i in range(len(mtree)):
         rand_color = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,
+        axes[i].text(0,mtree.ntips,p.names[i+1],style={'fill':rand_color,
                     'font-size':'10px', 'font-weight':'bold'});
 
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
@@ -199,7 +173,7 @@ def climaticPipeline(file_name, names):
     leastSquare(trees[names[1]],trees[names[2]])
 
 
-climaticPipeline(file_name, names)
+climaticPipeline(p.file_name, p.names)
 
 
 def openFastaFile(reference_gene_file):
@@ -220,175 +194,9 @@ def openFastaFile(reference_gene_file):
     return sequences
 
 
-"""
-Method that aligns two DNA sequences using an algorithm.
-
-ex.: alignSingle( "ACTTTCG" , "ACTACG" )
-Could output "ACT--ACG"
-
-Args:
-    original    (String) The DNA sequence to compare to
-    next        (String) The DNA sequence to modify using the original
-    resultList  (List) The list containing the results.
-Return:
-"""
-def alignSingle(args):
-    originalKey = args[0]
-    original = args[1]
-    nextKey = args[2]
-    next = args[3]
-    aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
-    return [nextKey, aligned, originalKey]
-
-def ScoreSingle(args):
-    originalKey = args[0]
-    original = args[1]
-    nextKey = args[2]
-    next = args[3]
-    score = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True, score_only=True)
-    return score
-
-def getSequenceCentroid(sequences):
-    resultKey=""
-    resultSum= sys.maxsize
-    for key in sequences.keys():
-        sum=0
-        for seq in sequences.keys():
-            Key = sequences[key]
-            Seq = sequences[seq]
-            sum += ScoreSingle([key,Key,seq,Seq])
-        if resultSum > sum:
-            resultSum = sum
-            resultKey = key
-    print("The centroid is \'", resultKey, "\' with a score of ", resultSum)
-    return [resultKey,resultSum]
-
-"""
-Method that aligns multiple DNA sequences.
-The first speciment of the dataset is used as the main pivot.
-This method uses parrallel computing.
-
-Args:
-    sequences (Dictionary) 
-        Key String) is the ID of the specimen
-        Data (Seq(String)) is the specimen's DNS sequence
-
-Return:
-    resultList (Dictionary) 
-        Key is the ID of the specimen
-        Data is the specimen's DNS sequence
-"""
-def alignSequences(sequences):
-
-    centroidKey =getSequenceCentroid(sequences)[0]
-    centroid = sequences.pop(centroidKey)
-
-    list = []
-    for key in sequences.keys():
-        list.append([centroidKey,centroid, key, sequences[key]])
-
-    
-    result = Multi(list,alignSingle).processingLargeData()
-
-    #resultDict = {firstKey:Seq(result[0][1][0].seqA)}
-    resultDict = {}
-    resultDict[result[0][2]] = Seq(result[0][1][0].seqB)
-
-    for i in result:
-        resultDict[i[0]] = Seq(i[1][0].seqB)
-
-    #######JUST TO MAKE THE DEBUG FILES
-    temp={}
-    for i in result:
-        temp2 = {}
-        temp2[i[0]] = Seq((i[1][0].seqA))
-        temp2[i[2]] = Seq((i[1][0].seqB))
-        temp[str(i[0]+" vs "+i[2])]=temp2
-    os.mkdir("./debug/1_alignSequences")
-    time.sleep(1)
-    for w in temp.keys():
-        dictToFile(temp[w],"1_alignSequences/"+w,".fasta")
-    time.sleep(1)
-
-    dictToFile(resultDict,"1_alignSequences_OLD",".fasta")#vielle version avec les sequences non allignee
-    ######JUST TO MAKE THE DEBUG FILES
-
-    return resultDict
-
-"""
-Method that slices all the sequences in a dictionary to a specific window (substring)
-
-ex.:
-    step_size=3
-    window_size=5
-
-    123 : CGGCTCAGCT  -->   123_3_7 : GCTCA
-    456 : TAGCTTCAGT  -->   456_3_7 : GCTTC
-
-Args:
-    alignedSequences (Dictionary)
-        Key (String) is the ID of the specimen
-        Data (Seq(String)) is the specimen's DNS sequence
-    others* (var) see param.yaml
-
-Return:
-    resultDict (Dictionary)
-        Key is originalKey_i_j
-            originalKey = the name of the key before the window
-            i = The starting position of the window, relative to the original sequence
-            j = The ending position of the window, relative to the original sequence
-"""
-def slidingWindow(alignedSequences):
-    before=time.time()
-
-    windowsDict={}
-    
-    longKey = max(alignedSequences, key=alignedSequences.get)
-    maxLength = len(alignedSequences[longKey])
-    
-    winSize = window_size #longueur
-    stepSize = step_size #avance de x
-    stepStart = 0
-    stepEnd = winSize -1
-
-    while stepStart < maxLength:
-        if stepEnd > maxLength:
-            stepEnd = maxLength
-        windowsBySpecies={}
-        for key in alignedSequences.keys():
-            seq = alignedSequences[key]
-            winSeq = seq[stepStart : stepEnd ]
-            winKey = str(key) 
-            windowsBySpecies[winKey]=Seq(winSeq)
-        windowKey = str(stepStart) + "_" + str(stepEnd)
-        windowsDict[windowKey] = windowsBySpecies
-        stepStart += stepSize
-        stepEnd += stepSize
-
-    print(time.time()-before)
-
-    ##############
-    os.mkdir("./debug/2_slidingWindow")
-    for w in windowsDict.keys():
-        dictToFile(windowsDict[w],"2_slidingWindow/"+w,".fasta")
-    ##############
-
-    return windowsDict
 
 
-def dictToFile(dict,filename,ext):
-    dir = "./debug"
-    if not os.path.exists(dir):
-        os.mkdir(dir)
-
-    f=open(dir+"/"+filename+ext,"w")
-    for key in dict.keys():
-        f.write(">"+str(key)+"\n")
-        f.write(str(dict[key]+"\n"))
-    return dict
-
-def geneticPipeline(reference_gene_file, window_size, step_size, 
-                    bootstrap_threshold, rf_threshold, data_names):
+def geneticPipeline():
     '''
     To do
     '''
@@ -398,10 +206,10 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
   
     os.mkdir("./debug")
     ##############
-
-    sequences = openFastaFile(reference_gene_file)
-    alignedSequences = alignSequences(sequences)
-    windowedSequences = slidingWindow(alignedSequences)
+    sequences = openFastaFile(p.reference_gene_file)
+    alignementObject = AlignSequences(sequences)
+    alignedSequences = alignementObject.aligned
+    windowedSequences = alignementObject.windowed
     #files = os.listdir("output/windows")
     #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
@@ -413,8 +221,7 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     #                  data_names, number_seq, file)
     
 
-geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, 
-                rf_threshold, data_names)
+geneticPipeline()
 
 
 def prepareDirectory():
