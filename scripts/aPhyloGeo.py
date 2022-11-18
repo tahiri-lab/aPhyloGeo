@@ -6,6 +6,7 @@ import yaml
 import re
 import shutil
 import Bio as Bio 
+from io import StringIO
 from Bio import SeqIO
 from Bio import pairwise2
 from Bio import AlignIO
@@ -28,6 +29,7 @@ from csv import writer
 from multiprocess import Process, Manager
 from yaml.loader import SafeLoader
 
+start_time = time.time()
 
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
@@ -353,19 +355,26 @@ def dictToFile(dict,filename,ext):
         f.write(str(dict[key]+"\n"))
     return dict
 
-def createBoostrap(alignedSequences):
+def createBoostrap(windowedSequences):
     '''
-    To do
+    Create a tree structure from sequences given by a dictionnary.
+
+    Parameters:
+        windowedSequences(dictionnary) = Dictionnary with sequences to transform into trees
     '''
-    #fileName = "datasets/5seq/window_position_0_200.fa"
-    #format = "fasta"
-    #msa = AlignIO.read(fileName, format)
-    #print(alignedSequences)
-    #print("Alignment of length %i" % msa.get_alignment_length())
-    #calculator = DistanceCalculator('identity')
-    #constructor = DistanceTreeConstructor(calculator)
-    #consensus_tree = bootstrap_consensus(alignedSequences, 100, constructor, majority_consensus)
-    #print(consensus_tree)
+    constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
+    try:
+        for key in windowedSequences.keys():
+            data = ""
+            innerDict = windowedSequences[key]
+            for key in innerDict.keys():
+                data += str(">" + key + "\n" + innerDict[key] + "\n")
+            msa = AlignIO.read(StringIO(data), "fasta")
+            consensus_tree = bootstrap_consensus(msa, 100, constructor, majority_consensus)
+            print(consensus_tree)
+    except:
+        print("Les lignes pour l'alignement " + key + " ne sont pas de même longueur.")
+
 
 
     #filesize = os.path.getsize("infile")
@@ -386,11 +395,11 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
 
     sequences = openFastaFile(reference_gene_file)
     alignedSequences = alignSequences(sequences)
-    #    windowedSequences = slidingWindow(alignedSequences)
+    windowedSequences = slidingWindow(alignedSequences)
     #    files = os.listdir("output/windows")
     #    for file in files:
     #    os.system("cp output/windows/" + file + " infile")
-    createBoostrap(alignedSequences)
+    createBoostrap(windowedSequences)
     #    createDistanceMatrix()
     #    createUnrootedTree()
     #    createConsensusTree() # a modifier dans la fonction
@@ -590,3 +599,5 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
     subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
+
+print("Complété en : %s secondes" % (time.time() - start_time))
