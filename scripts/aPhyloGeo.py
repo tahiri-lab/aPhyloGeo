@@ -1,4 +1,5 @@
 ﻿import subprocess
+import sys
 import time  
 import pandas as pd
 import os
@@ -241,12 +242,35 @@ Args:
 Return:
 """
 def alignSingle(args):
-    #originalKey = args[0]
+    originalKey = args[0]
     original = args[1]
     nextKey = args[2]
     next = args[3]
     aligned = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True)
-    return [nextKey, aligned]
+    return [nextKey, aligned, originalKey]
+
+def ScoreSingle(args):
+    originalKey = args[0]
+    original = args[1]
+    nextKey = args[2]
+    next = args[3]
+    score = pairwise2.align.globalxx(str(original), str(next), one_alignment_only = True, score_only=True)
+    return score
+
+def getSequenceCentroid(sequences):
+    resultKey=""
+    resultSum= sys.maxsize
+    for key in sequences.keys():
+        sum=0
+        for seq in sequences.keys():
+            Key = sequences[key]
+            Seq = sequences[seq]
+            sum += ScoreSingle([key,Key,seq,Seq])
+        if resultSum > sum:
+            resultSum = sum
+            resultKey = key
+    print("The centroid is \'", resultKey, "\' with a score of ", resultSum)
+    return [resultKey,resultSum]
 
 """
 Method that aligns multiple DNA sequences.
@@ -265,21 +289,38 @@ Return:
 """
 def alignSequences(sequences):
 
-    firstKey = max(sequences, key=sequences.get)
-    firstSeq = sequences[firstKey]
-    sequences.pop(firstKey)
+    centroidKey =getSequenceCentroid(sequences)[0]
+    centroid = sequences.pop(centroidKey)
 
     list = []
     for key in sequences.keys():
-        list.append([firstKey,firstSeq,key, sequences[key]])
+        list.append([centroidKey,centroid, key, sequences[key]])
 
+    
     result = Multi(list,alignSingle).processingLargeData()
 
-    resultDict = {firstKey:Seq(result[0][1][0].seqA)}
+    #resultDict = {firstKey:Seq(result[0][1][0].seqA)}
+    resultDict = {}
+    resultDict[result[0][2]] = Seq(result[0][1][0].seqB)
+
     for i in result:
         resultDict[i[0]] = Seq(i[1][0].seqB)
 
-    dictToFile(resultDict,"1_alignSequences",".fasta")
+    #######JUST TO MAKE THE DEBUG FILES
+    temp={}
+    for i in result:
+        temp2 = {}
+        temp2[i[0]] = Seq((i[1][0].seqA))
+        temp2[i[2]] = Seq((i[1][0].seqB))
+        temp[str(i[0]+" vs "+i[2])]=temp2
+    os.mkdir("./debug/1_alignSequences")
+    time.sleep(1)
+    for w in temp.keys():
+        dictToFile(temp[w],"1_alignSequences/"+w,".fasta")
+    time.sleep(1)
+
+    dictToFile(resultDict,"1_alignSequences_OLD",".fasta")#vielle version avec les sequences non allignee
+    ######JUST TO MAKE THE DEBUG FILES
 
     return resultDict
 
@@ -391,6 +432,8 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     ##############
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
+  
+    os.mkdir("./debug")
     ##############
 
     sequences = openFastaFile(reference_gene_file)
