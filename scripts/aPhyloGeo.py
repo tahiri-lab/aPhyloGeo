@@ -1,6 +1,7 @@
 ﻿import subprocess 
 import pandas as pd
 import os
+import yaml
 
 import re
 import shutil
@@ -12,6 +13,25 @@ import Params as p
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
+from multiprocess import Process, Manager
+from yaml.loader import SafeLoader
+
+
+# We open the params.yaml file and put it in the params variable
+with open('./scripts/params.yaml') as f:
+    params = yaml.load(f, Loader=SafeLoader)
+    print(params)
+
+bootstrap_threshold = params["bootstrap_threshold"]
+rf_threshold = params["rf_threshold"]
+window_size = params["window_size"]
+step_size = params["step_size"]
+data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 
+                'PRECTOTCORR_newick', 'WS10M_newick']
+reference_gene_file = params["reference_gene_file"]
+file_name = params["file_name"]
+specimen = params["specimen"]
+names = params["names"]
 
 def openCSV(nom_fichier_csv):
     df = pd.read_csv(nom_fichier_csv)
@@ -176,6 +196,7 @@ def climaticPipeline(file_name, names):
 climaticPipeline(p.file_name, p.names)
 
 def geneticPipeline():
+
     '''
     To do
     '''
@@ -193,7 +214,7 @@ def geneticPipeline():
     #files = os.listdir("output/windows")
     #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
-    #    createBoostrap()
+    consensusTree = createBoostrap(windowedSequences)
     #    createDistanceMatrix()
     #    createUnrootedTree()
     #    createConsensusTree() # a modifier dans la fonction
@@ -263,16 +284,6 @@ def prepareDirectory():
     with open('output.csv', 'w') as f:
         f.write("Gene,Arbre phylogeographique,Position ASM," + 
                 "Bootstrap moyen,RF normalise\n")
-
-def createBoostrap():
-    '''
-    To do
-    '''
-    filesize = os.path.getsize("infile")
-    if filesize == 0:
-        raise Exception("Infile for bootstrap was empty.")
-    os.system("./exec/seqboot < input/bootstrap_input.txt")
-    subprocess.call(["mv", "outfile", "infile"])
 
 def createDistanceMatrix():
     '''
