@@ -3,6 +3,7 @@ import time
 
 import os
 import Bio as Bio 
+from Bio import SeqIO
 from Bio import pairwise2
 from Bio.Seq import Seq
 from MultiProcessor import Multi
@@ -10,60 +11,74 @@ import Params as p
 
 class AlignSequences:
 
-    def __init__(self,sequences):
+    def __init__(self):
 
-        self.sequences = sequences
+        self.sequences = self.openFastaFile()
         self.centroidKey = self.getSequenceCentroid()[0]
         self.centroidSeq = self.sequences.pop(self.centroidKey)
 
         self.aligned = self.alignSequences()
+        self.heuristicMSA = self.starAlignement()
         self.windowed = self.slidingWindow()
+        
         self.msa = ""
 
+    def openFastaFile(self):
+        '''
+        Reads the .fasta file and read every line to get the
+        sequence to analyze.
 
-    """
-    Method that aligns two DNA sequences using an algorithm.
+        Args:
+            reference_gene_file (the fasta file to read)
 
-    ex.: alignSingle( "ACTTTCG" , "ACTACG" )
-    Could output "ACT--ACG"
-
-    Args:
-        original    (String) The DNA sequence to compare to
-        next        (String) The DNA sequence to modify using the original
-        resultList  (List) The list containing the results.
-    Return:
-    """
-    def alignSingle(self,args):
-        scID = args[0]
-        sc = args[1]
-        seqBID = args[2]
-        seqB = args[3]
-        aligned = pairwise2.align.globalxx(str(self.centroidSeq), str(seqB), one_alignment_only = True)
-        return [seqBID, aligned, scID]
-
-    def ScoreSingle(self,seqA, seqB):
-        score = pairwise2.align.globalxx( 
-            str(seqA), str(seqB), 
-            one_alignment_only = True, 
-            score_only=True
-            )
-        return score
+        Return:
+            sequences (a dictionnary containing the data from fasta file)
+        '''
+        sequences = {}
+        with open(p.reference_gene_file) as sequencesFile:
+            for sequence in SeqIO.parse(sequencesFile,"fasta"):
+                sequences[sequence.id] = sequence.seq
+        return sequences
 
     def getSequenceCentroid(self):
         seqs = self.sequences
         resultKey= ""
         resultSum= sys.maxsize
 
+        list = []
         for seqID in seqs.keys():
-            sum = 0
             for seqID2 in seqs.keys():
-                sum += self.ScoreSingle(seqs[seqID], seqs[seqID2])
-            if resultSum > sum:
-                resultSum = sum; resultKey = seqID
+                list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
+
+        results = Multi(list,self.ScoreSingle).processingSmallData()
+        rDict = {}
+
+        for tuple in results:
+            rDict[tuple[0]] = 0
+
+        for tuple in results:
+            rDict[tuple[0]] = rDict[tuple[0]]+tuple[2]
+
+        for k in rDict.keys():
+            if rDict[k]<resultSum:
+                resultSum = rDict[k]
+                resultKey = k
 
         print("The centroid is \'", resultKey, "\' with a score of ", resultSum,"\n")
 
         return [resultKey,resultSum]
+
+    def ScoreSingle(self, args):
+        seqA= args[0]
+        seqAID = args[1]
+        seqB = args[2]
+        seqBID = args[3]
+        score = pairwise2.align.globalxx( 
+            str(seqA), str(seqB), 
+            one_alignment_only = True, 
+            score_only=True
+            )
+        return (seqAID, seqBID, score)
 
     """
     Method that aligns multiple DNA sequences.
@@ -89,30 +104,128 @@ class AlignSequences:
 
         result = Multi(list,self.alignSingle).processingLargeData()
 
-        resultDict = { result[0][2] : Seq(result[0][1][0].seqB) }
-
-        for i in result:
-            resultDict[i[0]] = Seq(i[1][0].seqB)
-
-        #######JUST TO MAKE THE DEBUG FILES
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
         temp={}
         for i in result:
             temp2 = {}
-            temp2[i[0]] = Seq((i[1][0].seqA))
-            temp2[i[2]] = Seq((i[1][0].seqB))
+            temp2[i[2]] = Seq((i[1][0].seqA))
+            temp2[i[0]] = Seq((i[1][0].seqB))
             temp[str(i[0]+" vs "+i[2])]=temp2
         os.mkdir("./debug/1_alignSequences")
         time.sleep(1)
         for w in temp.keys():
             self.dictToFile(temp[w],str("1_alignSequences/"+w),".fasta")
         time.sleep(1)
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
 
-        self.dictToFile(resultDict,"1_alignSequences_OLD",".fasta")
-        #vielle version avec les sequences non allignee
-        ######JUST TO MAKE THE DEBUG FILES
+        return temp
+   
+    """
+    Method that aligns two DNA sequences using an algorithm.
 
-        return resultDict
-    
+    ex.: alignSingle( "ACTTTCG" , "ACTACG" )
+    Could output "ACT--ACG"
+
+    Args:
+        original    (String) The DNA sequence to compare to
+        next        (String) The DNA sequence to modify using the original
+        resultList  (List) The list containing the results.
+    Return:
+    """
+    def alignSingle(self,args):
+        scID = args[0]
+        sc = args[1]
+        seqBID = args[2]
+        seqB = args[3]
+        aligned = pairwise2.align.globalxx(str(self.centroidSeq), str(seqB), one_alignment_only = True)
+        return [seqBID, aligned, scID]
+
+    def starAlignement(self):
+
+        scKey = self.centroidKey
+        starAlign = {}
+
+        for k in self.aligned.keys():
+            couple = self.aligned[k]    #a couple is SeqA and SeqB of a pairwise alignement
+
+            a = list(couple.keys())
+            a.remove(scKey)
+            sNewKey = a[0]  #SeqB ID, *not* the reference
+
+            starAlign[ scKey ] = couple[ scKey ] #SeqA, the reference
+            starAlign[ sNewKey ] = couple[ sNewKey ] #SeqB, *not* the reference
+
+            if len( starAlign ) > 2:
+                starAlign = self.merge( starAlign, scKey, sNewKey )
+                starAlign = self.equalizeLength(starAlign)
+
+            starAlign[ "temp" ] = starAlign[ scKey ] #SeqA, the *old* reference
+        starAlign.pop( "temp" )
+
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
+        os.mkdir("./debug/2_starAlignement")
+        self.dictToFile(starAlign,"2_starAlignement/starAligned",".fasta")
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
+
+        return starAlign
+        
+        
+    def merge(self, result, k1, k2):
+        newRef= result[k1]
+        tempRef = result["temp"]
+        minLen = 1
+        pos = 0
+        while pos< minLen:
+            #The sequence length could change at each iteration
+            #these assignemnts needs to be done each loop to get to the true end
+            #and not to skip the '-' we just added
+            newRef= result[k1]
+            tempRef = result["temp"]
+            minLen = min( len(newRef), len(tempRef) ) 
+
+            nChar = newRef[pos]
+            tChar = tempRef[pos]
+
+            if nChar != tChar:
+                if nChar =='-': #- found in the new reference; change all but the 2 new elements
+                    keyList = list(result.keys())
+                    keyList.remove(k1)
+                    keyList.remove(k2)
+                elif tChar =='-':   #- found in the old reference; change the 2 new elements
+                    keyList=[k1,k2]
+                else:
+                    errStr = str(
+                    "Alignement error. Merge() found \""+str(nChar) + "\" and \"" + str(tChar) + "\" " 
+                    "at position " + str(pos) + " of two versions of the centroid sequences\n"+
+                    "Please check the previous methods and ensure the pairwise alignemnt is correct"+
+                    "\nCentroid ID: "+str(self.centroidKey)+
+                    "\nPairwise seq ID last inserted: "+str(k2)
+                    )
+                    raise Exception(errStr)
+
+                result = self.insertDash(result, pos, keyList)
+
+            pos+=1
+        
+        return result
+
+    def insertDash(self, dict, pos, keyList):
+        for k in keyList:
+            char = '-'
+            s = dict[k]
+            s = s[:pos]+ char +s[pos:]
+            dict[k] = s
+        return dict
+
+    def equalizeLength(self, unEqualSeqs):
+        equalizedSeqs = {}
+        maxLen = len( str( max( list( unEqualSeqs.values() ) ) ) ) #number of chars in the longest sequence
+
+        for k in unEqualSeqs.keys():
+            equalizedSeqs[k]= Seq(str(unEqualSeqs[k]).ljust(maxLen,'-'))
+
+        return equalizedSeqs
+
     """
     Method that slices all the sequences in a dictionary to a specific window (substring)
 
@@ -137,7 +250,7 @@ class AlignSequences:
                 j = The ending position of the window, relative to the original sequence
     """
     def slidingWindow(self):
-        alignedSequences = self.aligned 
+        alignedSequences = self.heuristicMSA
         before=time.time()
 
         windowsDict={}
@@ -167,12 +280,13 @@ class AlignSequences:
         print(time.time()-before)
 
         ##############
-        os.mkdir("./debug/2_slidingWindow")
+        os.mkdir("./debug/3_slidingWindow")
         for w in windowsDict.keys():
-            self.dictToFile(windowsDict[w],"2_slidingWindow/"+w,".fasta")
+            self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
         ##############
 
         return windowsDict
+
 
     def dictToFile(self,dict,filename,ext):
         dir = "./debug"
@@ -184,3 +298,4 @@ class AlignSequences:
             f.write(">"+str(key)+"\n")
             f.write(str(dict[key]+"\n"))
         return dict
+
