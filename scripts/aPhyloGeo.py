@@ -210,7 +210,7 @@ def climaticPipeline(file_name, names):
 
     leastSquare(trees[names[1]],trees[names[2]])
 
-    def createBoostrap(windowedSequences):
+def createBoostrap(windowedSequences):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Parameters:
