@@ -6,4 +6,4 @@ rf_threshold: 100
 window_size: 200
 step_size: 100
 data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
-reference_gene_file: './datasets/5seq/seq.fasta'
+reference_gene_file: './datasets/5seq/seq very small.fasta'

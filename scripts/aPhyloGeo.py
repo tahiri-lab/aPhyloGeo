@@ -30,8 +30,6 @@ from csv import writer
 from multiprocess import Process, Manager
 from yaml.loader import SafeLoader
 
-start_time = time.time()
-
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
@@ -404,25 +402,16 @@ def createBoostrap(windowedSequences):
         windowedSequences(dictionnary) = Dictionnary with sequences to transform into trees
     '''
     constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
-    try:
-        for key in windowedSequences.keys():
-            data = ""
-            innerDict = windowedSequences[key]
-            for key in innerDict.keys():
-                data += str(">" + key + "\n" + innerDict[key] + "\n")
-            msa = AlignIO.read(StringIO(data), "fasta")
-            consensus_tree = bootstrap_consensus(msa, 100, constructor, majority_consensus)
-            print(consensus_tree)
-    except:
-        print("Les lignes pour l'alignement " + key + " ne sont pas de même longueur.")
+    consensus_tree = {}
+    for key in windowedSequences.keys():
+        data = ""
+        innerDict = windowedSequences[key]
+        for seq in innerDict.keys():
+            data += str(">" + seq + "\n" + innerDict[seq] + "\n")
+        msa = AlignIO.read(StringIO(data), "fasta")
+        consensus_tree[key] = bootstrap_consensus(msa, 100, constructor, majority_consensus)
+    return consensus_tree
 
-
-
-    #filesize = os.path.getsize("infile")
-    #if filesize == 0:
-    #    raise Exception("Infile for bootstrap was empty.")
-    #os.system("./exec/seqboot < input/bootstrap_input.txt")
-    #subprocess.call(["mv", "outfile", "infile"])
 
 def geneticPipeline(reference_gene_file, window_size, step_size, 
                     bootstrap_threshold, rf_threshold, data_names):
@@ -442,7 +431,7 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     #    files = os.listdir("output/windows")
     #    for file in files:
     #    os.system("cp output/windows/" + file + " infile")
-    createBoostrap(windowedSequences)
+    consensusTree = createBoostrap(windowedSequences)
     #    createDistanceMatrix()
     #    createUnrootedTree()
     #    createConsensusTree() # a modifier dans la fonction
@@ -642,5 +631,3 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
     subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
-
-print("Complété en : %s secondes" % (time.time() - start_time))
