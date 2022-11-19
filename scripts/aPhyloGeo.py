@@ -192,6 +192,22 @@ def climaticPipeline(file_name, names):
 
     leastSquare(trees[names[1]],trees[names[2]])
 
+    def createBoostrap(windowedSequences):
+    '''
+    Create a tree structure from sequences given by a dictionnary.
+    Parameters:
+        windowedSequences(dictionnary) = Dictionnary with sequences to transform into trees
+    '''
+    constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
+    consensus_tree = {}
+    for key in windowedSequences.keys():
+        data = ""
+        innerDict = windowedSequences[key]
+        for seq in innerDict.keys():
+            data += str(">" + seq + "\n" + innerDict[seq] + "\n")
+        msa = AlignIO.read(StringIO(data), "fasta")
+        consensus_tree[key] = bootstrap_consensus(msa, 100, constructor, majority_consensus)
+    return consensus_tree
 
 climaticPipeline(p.file_name, p.names)
 
