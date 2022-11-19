@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 import Bio as Bio 
-from Bio import SeqIO
+
 from Alignement import AlignSequences
 import Params as p
 
@@ -175,41 +175,21 @@ def climaticPipeline(file_name, names):
 
 climaticPipeline(p.file_name, p.names)
 
-
-def openFastaFile(reference_gene_file):
-    '''
-    Reads the .fasta file and read every line to get the
-    sequence to analyze.
-
-    Args:
-        reference_gene_file (the fasta file to read)
-
-    Return:
-        sequences (a dictionnary containing the data from fasta file)
-    '''
-    sequences = {}
-    with open(reference_gene_file) as sequencesFile:
-        for sequence in SeqIO.parse(sequencesFile,"fasta"):
-            sequences[sequence.id] = sequence.seq
-    return sequences
-
-
-
-
 def geneticPipeline():
     '''
     To do
     '''
-    ##############
+    ####### JUST TO MAKE THE DEBUG FILES ####### 
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
-  
     os.mkdir("./debug")
-    ##############
-    sequences = openFastaFile(p.reference_gene_file)
-    alignementObject = AlignSequences(sequences)
+    ####### JUST TO MAKE THE DEBUG FILES ####### 
+
+    alignementObject = AlignSequences()
     alignedSequences = alignementObject.aligned
+    heuristicMSA = alignementObject.heuristicMSA
     windowedSequences = alignementObject.windowed
+    
     #files = os.listdir("output/windows")
     #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
@@ -222,6 +202,37 @@ def geneticPipeline():
     
 
 geneticPipeline()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def prepareDirectory():
