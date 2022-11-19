@@ -1,9 +1,7 @@
-﻿import subprocess
-import sys
-import time  
+﻿import subprocess 
 import pandas as pd
 import os
-import yaml
+
 import re
 import shutil
 import Bio as Bio 
@@ -29,6 +27,7 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
 from multiprocess import Process, Manager
 from yaml.loader import SafeLoader
+
 
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
@@ -172,7 +171,7 @@ def draw_trees(trees):
 
     for i in range(len(mtree)):
         rand_color = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0,mtree.ntips,names[i+1],style={'fill':rand_color,
+        axes[i].text(0,mtree.ntips,p.names[i+1],style={'fill':rand_color,
                     'font-size':'10px', 'font-weight':'bold'});
 
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
@@ -206,7 +205,7 @@ def climaticPipeline(file_name, names):
     leastSquare(trees[names[1]],trees[names[2]])
 
 
-climaticPipeline(file_name, names)
+climaticPipeline(p.file_name, p.names)
 
 
 def openFastaFile(reference_gene_file):
@@ -424,12 +423,12 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
   
     os.mkdir("./debug")
     ##############
-
-    sequences = openFastaFile(reference_gene_file)
-    alignedSequences = alignSequences(sequences)
-    windowedSequences = slidingWindow(alignedSequences)
-    #    files = os.listdir("output/windows")
-    #    for file in files:
+    sequences = openFastaFile(p.reference_gene_file)
+    alignementObject = AlignSequences(sequences)
+    alignedSequences = alignementObject.aligned
+    windowedSequences = alignementObject.windowed
+    #files = os.listdir("output/windows")
+    #for file in files:
     #    os.system("cp output/windows/" + file + " infile")
     consensusTree = createBoostrap(windowedSequences)
     #    createDistanceMatrix()
@@ -439,8 +438,7 @@ def geneticPipeline(reference_gene_file, window_size, step_size,
     #                  data_names, number_seq, file)
     
 
-geneticPipeline(reference_gene_file, window_size, step_size, bootstrap_threshold, 
-                rf_threshold, data_names)
+geneticPipeline()
 
 
 def prepareDirectory():
