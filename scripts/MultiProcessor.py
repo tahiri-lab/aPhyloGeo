@@ -110,7 +110,7 @@ class Multi:
 
     """
     def processingLargeData(self):
-        print("Starting calibration run, this might some time")
+        print("    Starting multiprocessing, this might some time\n    The first process is ran alone for calibration purposes")
         self.startTime = time.time()
 
         p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs
@@ -145,7 +145,7 @@ class Multi:
         b.terminate()
         print("\033[F", end="")
         print("\033[B"*self.rewrite[True], flush=True)
-        print("completed with ",str(self.amount-self.finished.value)," errors")
+        print("Completed with ",str(self.amount-self.finished.value)," errors\n")
 
         return self.resultList
 

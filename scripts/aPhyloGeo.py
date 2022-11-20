@@ -237,7 +237,8 @@ def geneticPipeline():
     ####### JUST TO MAKE THE DEBUG FILES ####### 
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
-    os.mkdir("./debug")
+    if p.makeDebugFiles:
+        os.mkdir("./debug")
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
     alignementObject = AlignSequences()
