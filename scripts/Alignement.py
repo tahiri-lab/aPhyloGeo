@@ -10,10 +10,44 @@ from MultiProcessor import Multi
 import Params as p
 
 class AlignSequences:
+    """
+    Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.    
+    """
 
     def __init__(self):
+        """
+        Constructor if the alignment object.
+        Makes all the necessary actions upon creation; no need to call any methods on the object.
+        All parts of the process are available as variables.
 
-        self.sequences = self.openFastaFile()
+        args:
+            self.sequences (Dictionary) Read data from the fasta file          
+                key = Sequence ID
+                value = Seq()
+
+            self.centroidKey (String) Specimen ID of the centroid sequence
+
+            self.centroidSeq (Seq()) The centroid sequence
+
+            self.aligned (Dictionary) Sequences after pairwise alignement
+                key = Sequence ID (String) the specimen's ID
+                value = Sequence (Seq()) the specimen's DNA sequence
+
+            self.heuristicMSA (Dictionary) Sequences after star style alignement
+                key = Sequence ID (String) the specimen's ID
+                value = Sequence (Seq()) the specimen's DNA sequence
+
+            self.windowed (Dictionary of Dictionary) Sequences after being windowed
+                key = Window ID (String) as "startPosition_endPosition"
+                value = (Dictionary)
+                    key = Sequence ID (String) the specimen's ID
+                    value = Sequence (Seq()) the specimen's DNA sequence
+
+            ##todo
+            self.msa (AlignIO()) 
+        """
+
+        self.sequences = self.openFastaFile(p.reference_gene_file)
         self.centroidKey = self.getSequenceCentroid()[0]
         self.centroidSeq = self.sequences.pop(self.centroidKey)
 
@@ -21,54 +55,87 @@ class AlignSequences:
         self.heuristicMSA = self.starAlignement()
         self.windowed = self.slidingWindow()
         
-        self.msa = ""
+        #self.msa = "" we probably should put the AlignIO() MSA object from biopython here
 
-    def openFastaFile(self):
+    def openFastaFile(self,file):
         '''
-        Reads the .fasta file and read every line to get the
-        sequence to analyze.
+        Reads the .fasta file. Extract sequence ID and sequences.
 
         Args:
-            reference_gene_file (the fasta file to read)
+            file (String) the file name of a .fasta file
 
         Return:
-            sequences (a dictionnary containing the data from fasta file)
+            sequences (dictionnary)
+                see self.sequences
         '''
         sequences = {}
-        with open(p.reference_gene_file) as sequencesFile:
+        with open(file) as sequencesFile:
             for sequence in SeqIO.parse(sequencesFile,"fasta"):
                 sequences[sequence.id] = sequence.seq
         return sequences
 
     def getSequenceCentroid(self):
+        """
+        Method that picks the centroid sequence in a dictionary of sequences
+
+        variables:
+            list (list) Needed variable format for using Multiprocessor
+
+        return: a list of:
+            resultKey (String)
+            resultSum (int)
+        """
+
         seqs = self.sequences
         resultKey= ""
         resultSum= sys.maxsize
+        print("\nSearching for the centroid")
 
+        #formats input as a list for the Multiprocess
         list = []
         for seqID in seqs.keys():
             for seqID2 in seqs.keys():
-                list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
+                if seqID != seqID2:
+                    list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
 
+        #starts all the processes
         results = Multi(list,self.ScoreSingle).processingSmallData()
+        
+        #formats the multiprocess output back in a dictionnary
         rDict = {}
-
         for tuple in results:
-            rDict[tuple[0]] = 0
-
+            rDict[tuple[0]] = 0 #first pass to ensure all entries exist
         for tuple in results:
-            rDict[tuple[0]] = rDict[tuple[0]]+tuple[2]
+            rDict[tuple[0]] = rDict[tuple[0]]+tuple[2] #Increment the sum for each speciment
 
+        #minimum value
+        amount = 0
         for k in rDict.keys():
+            amount+=1
             if rDict[k]<resultSum:
                 resultSum = rDict[k]
                 resultKey = k
 
-        print("The centroid is \'", resultKey, "\' with a score of ", resultSum,"\n")
+        print("The centroid is \'", resultKey, "\' with a total score of ", resultSum, " with an average score of ", resultSum/amount,"\n")
 
         return [resultKey,resultSum]
 
     def ScoreSingle(self, args):
+        """
+        Method the gets only the score of a couple of sequence regarding the pairwise alignement
+
+        Args: a list:
+            seqA    (Seq()) Sequence A; considered the refenrence
+            seqAID  (String) Specimen A's ID
+            seqB    (Seq()) Sequence B
+            seqBID  (String) Speciment B's ID
+
+        return:
+            seqAID  see above
+            seqBID  see above
+            score   (float) the resulting score of this couple of alignement
+        """
+
         seqA= args[0]
         seqAID = args[1]
         seqB = args[2]
@@ -76,26 +143,26 @@ class AlignSequences:
         score = pairwise2.align.globalxx( 
             str(seqA), str(seqB), 
             one_alignment_only = True, 
-            score_only=True
+            score_only=True #important line, reduces execution time by alot
             )
         return (seqAID, seqBID, score)
 
-    """
-    Method that aligns multiple DNA sequences.
-    The first speciment of the dataset is used as the main pivot.
-    This method uses parrallel computing.
-
-    Args:
-        sequences (Dictionary) 
-            Key String) is the ID of the specimen
-            Data (Seq(String)) is the specimen's DNS sequence
-
-    Return:
-        resultList (Dictionary) 
-            Key is the ID of the specimen
-            Data is the specimen's DNS sequence
-    """
     def alignSequences(self):
+        """
+        Method that aligns multiple DNA sequences.
+        The first speciment of the dataset is used as the main pivot.
+        This method uses parrallel computing.
+
+        Variables:
+            seqs (Dictionary) see self.sequences
+            list (list) Needed variable format for using Multiprocessor
+            result (list) output of all the processes
+
+        Return:
+            resultList (Dictionary) see self.aligned
+    
+        """
+        print("\nStarting sequence alignement")
         seqs = self.sequences
 
         list = []
@@ -103,41 +170,48 @@ class AlignSequences:
             list.append( [self.centroidKey, self.centroidSeq, seqXID, seqs[seqXID] ] )
 
         result = Multi(list,self.alignSingle).processingLargeData()
+        aligned={}
 
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
-        temp={}
+        #reformats the output in a  dictionnary
         for i in result:
-            temp2 = {}
-            temp2[i[2]] = Seq((i[1][0].seqA))
-            temp2[i[0]] = Seq((i[1][0].seqB))
-            temp[str(i[0]+" vs "+i[2])]=temp2
-        os.mkdir("./debug/1_alignSequences")
-        time.sleep(1)
-        for w in temp.keys():
-            self.dictToFile(temp[w],str("1_alignSequences/"+w),".fasta")
-        time.sleep(1)
+            temp = {}
+            temp[i[2]] = Seq((i[1][0].seqA))
+            temp[i[0]] = Seq((i[1][0].seqB))
+            aligned[str(i[0]+" vs "+i[2])]=temp
+        #time.sleep(1)
+
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
+        if p.makeDebugFiles:
+            os.mkdir("./debug/1_alignSequences")
+            for w in aligned.keys():
+                self.dictToFile(aligned[w],str("1_alignSequences/"+w),".fasta")
+        #time.sleep(1)
         ####### JUST TO MAKE THE DEBUG FILES ####### 
 
-        return temp
+        return aligned
    
-    """
-    Method that aligns two DNA sequences using an algorithm.
 
-    ex.: alignSingle( "ACTTTCG" , "ACTACG" )
-    Could output "ACT--ACG"
-
-    Args:
-        original    (String) The DNA sequence to compare to
-        next        (String) The DNA sequence to modify using the original
-        resultList  (List) The list containing the results.
-    Return:
-    """
     def alignSingle(self,args):
+        """
+        Method that aligns two DNA sequences using the pairwise2 algorithm.
+
+        Args: 
+            args (list)
+                scID    (String) The centroid sequence ID to compare to
+                sc      (Seq()) The DNA sequence of scID
+                seqBID  (String) The sequence ID to compare with
+                seqB    (Seq()) The DNA sequence of seqBID
+                
+        Return: (list)
+            seqBID see above
+            aligned (List) The list containing the results.
+            scID see above
+        """
         scID = args[0]
         sc = args[1]
         seqBID = args[2]
         seqB = args[3]
-        aligned = pairwise2.align.globalxx(str(self.centroidSeq), str(seqB), one_alignment_only = True)
+        aligned = pairwise2.align.globalxx(str(sc), str(seqB), one_alignment_only = True)
         return [seqBID, aligned, scID]
 
     def starAlignement(self):
@@ -163,13 +237,13 @@ class AlignSequences:
         starAlign.pop( "temp" )
 
         ####### JUST TO MAKE THE DEBUG FILES ####### 
-        os.mkdir("./debug/2_starAlignement")
-        self.dictToFile(starAlign,"2_starAlignement/starAligned",".fasta")
+        if p.makeDebugFiles:
+            os.mkdir("./debug/2_starAlignement")
+            self.dictToFile(starAlign,"2_starAlignement/starAligned",".fasta")
         ####### JUST TO MAKE THE DEBUG FILES ####### 
 
         return starAlign
-        
-        
+             
     def merge(self, result, k1, k2):
         newRef= result[k1]
         tempRef = result["temp"]
@@ -226,30 +300,30 @@ class AlignSequences:
 
         return equalizedSeqs
 
-    """
-    Method that slices all the sequences in a dictionary to a specific window (substring)
-
-    ex.:
-        step_size=3
-        window_size=5
-
-        123 : CGGCTCAGCT  -->   123_3_7 : GCTCA
-        456 : TAGCTTCAGT  -->   456_3_7 : GCTTC
-
-    Args:
-        alignedSequences (Dictionary)
-            Key (String) is the ID of the specimen
-            Data (Seq(String)) is the specimen's DNS sequence
-        others* (var) see param.yaml
-
-    Return:
-        resultDict (Dictionary)
-            Key is originalKey_i_j
-                originalKey = the name of the key before the window
-                i = The starting position of the window, relative to the original sequence
-                j = The ending position of the window, relative to the original sequence
-    """
     def slidingWindow(self):
+        """
+        Method that slices all the sequences in a dictionary to a specific window (substring)
+
+        ex.:
+            step_size=3
+            window_size=5
+
+            123 : CGGCTCAGCT  -->   123_3_7 : GCTCA
+            456 : TAGCTTCAGT  -->   456_3_7 : GCTTC
+
+        Args:
+            alignedSequences (Dictionary)
+                Key (String) is the ID of the specimen
+                Data (Seq(String)) is the specimen's DNS sequence
+            others* (var) see param.yaml
+
+        Return:
+            resultDict (Dictionary)
+                Key is originalKey_i_j
+                    originalKey = the name of the key before the window
+                    i = The starting position of the window, relative to the original sequence
+                    j = The ending position of the window, relative to the original sequence
+        """
         alignedSequences = self.heuristicMSA
         before=time.time()
 
@@ -280,13 +354,13 @@ class AlignSequences:
         print(time.time()-before)
 
         ##############
-        os.mkdir("./debug/3_slidingWindow")
-        for w in windowsDict.keys():
-            self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
+        if p.makeDebugFiles:
+            os.mkdir("./debug/3_slidingWindow")
+            for w in windowsDict.keys():
+                self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
         ##############
 
         return windowsDict
-
 
     def dictToFile(self,dict,filename,ext):
         dir = "./debug"
