@@ -8,22 +8,11 @@ import shutil
 import Bio as Bio 
 
 from io import StringIO
-from Bio import SeqIO
-from Bio import pairwise2
 from Bio import AlignIO
-from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.Consensus import *
 import re
-import statistics
-from Bio.pairwise2 import format_alignment
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Align import MultipleSeqAlignment
-from multiprocess import Process, Manager
-from MultiProcessor import Multi
-from Bio import Phylo
 
 from Alignement import AlignSequences
 import Params as p
@@ -31,7 +20,6 @@ import Params as p
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
-from multiprocess import Process, Manager
 from yaml.loader import SafeLoader
 
 
