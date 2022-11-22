@@ -22,7 +22,7 @@ with open('./scripts/params.yaml') as f:
 
 
 bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["ls_threshold"]
+lsThreshold = params["rf_threshold"]
 windowSize = params["window_size"]
 stepSize = params["step_size"]
 dataNames = params["data_names"]
