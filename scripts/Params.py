@@ -7,7 +7,7 @@ with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
 
 bootstrap_threshold =  params["bootstrap_threshold"]
-rf_threshold =         params["rf_threshold"]
+ls_threshold =         params["ls_threshold"]
 window_size =          params["window_size"]
 step_size =            params["step_size"]
 data_names =           ['ALLSKY_SFC_SW_DWN_newick', 
