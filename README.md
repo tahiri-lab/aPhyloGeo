@@ -57,7 +57,7 @@ The workflow of the algorithm. The operations within this workflow include sever
 # Installation
 
 ## Linux UNIX and Mac OS versions
-SimPlot++ is available as a Python script.
+aPhyloGeo is available as a Python script.
 
 ### Prerequisites
 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
