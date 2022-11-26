@@ -6,6 +6,7 @@ import yaml
 import re
 import shutil
 import Bio as Bio 
+import csv
 
 from io import StringIO
 from Bio import AlignIO
@@ -26,8 +27,8 @@ from yaml.loader import SafeLoader
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
-    print(params)
-
+    
+ns = 0
 bootstrap_threshold = params["bootstrap_threshold"]
 rf_threshold = params["rf_threshold"]
 window_size = params["window_size"]
@@ -38,6 +39,8 @@ reference_gene_file = params["reference_gene_file"]
 file_name = params["file_name"]
 specimen = params["specimen"]
 names = params["names"]
+bootstrapList = []
+data = []
 
 def openCSV(nom_fichier_csv):
     df = pd.read_csv(nom_fichier_csv)
@@ -195,14 +198,15 @@ def climaticPipeline(file_name, names):
     for i in range(1, len(names)):
         dm = getDissimilaritiesMatrix(df, names[0], names[i])
         trees[names[i]] = createTree(dm)
-
     leastSquare(trees[names[1]],trees[names[2]])
+    return trees
+    
 
 def createBoostrap(windowedSequences):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Parameters:
-        windowedSequences(dictionnary) = Dictionnary with sequences to transform into trees
+        windowedSequences : Dictionnary with sequences to transform into trees
     '''
     constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
     consensus_tree = {}
@@ -215,10 +219,129 @@ def createBoostrap(windowedSequences):
         consensus_tree[key] = bootstrap_consensus(msa, 100, constructor, majority_consensus)
     return consensus_tree
 
-climaticPipeline(p.file_name, p.names)
+
+def calculateAverageBootstrap(tree):
+    '''
+    Calculate if the average confidence of a tree
+
+    Args:
+        tree : The tree to get the average confidence from
+    Return : The average Bootstrap(confidence)
+    '''
+    leaves = tree.get_nonterminals()
+    treeConfidences = list(map(lambda l: l.confidence,leaves))
+    treeConfidences.pop(0)
+    totalConfidence = 0
+    for confidences in treeConfidences:
+        totalConfidence += confidences
+    averageBootsrap = totalConfidence / len(treeConfidences)
+    return averageBootsrap
+
+
+def createGeneticList(geneticTrees):
+    '''
+    Create a list of Trees if the bootstrap Average is higher than
+    the threshold
+
+    Args :
+        geneticTrees : A dictionnary of genetic trees
+    Return : A list with the geneticTrees
+    '''
+    geneticList = []
+    for key in geneticTrees:
+        bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
+        if(bootstrap_average >= bootstrap_threshold):
+            bootstrapList.append(bootstrap_average)
+            geneticList.append(key)
+    return geneticList
+
+
+def createClimaticList(climaticTrees):
+    '''
+    Create a list of climaticTrees
+
+    Args :
+        climaticTrees : A dictionnary of climatic trees
+    Return : A list with the climaticTrees
+    '''
+    climaticList = []
+    for key in climaticTrees:
+        climaticList.append(key)
+    return climaticList
+
+
+def getData(leavesName, rfn, index, climaticList, geneticList):
+    '''
+    Get data from a csv file a various parameters to store into a list
+
+    Args :
+        leavesName : The name of the actual leave
+        rfn : The normalised RF
+        climaticList : The list of climatic trees
+        geneticList : The list of genetic trees
+    '''
+    with open('datasets/5seq/geo.csv', 'r') as file:
+        csvreader = csv.reader(file)
+        for leave in leavesName:
+            for row in csvreader:
+                if(row[0] == leave):
+                    return ["seq.fasta", climaticList[index], leave, geneticList[0], 
+                            str(bootstrapList[0]), str(round(rfn, 2))]
+
+
+def writeOutputFile(data):
+    '''
+    Write the datas from data list into a new csv file
+
+    Args :
+        data : the list contaning the final data
+    '''
+    header = ['Gene', 'Arbre Phylogeographique', 'Position ASM', 'Bootsrap moyen', 'RF normalise']
+    with open ("output.csv", "w", encoding="UTF8") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for i in range(len(data)):
+            writer.writerow(data[i])
+        f.close
+
+
+def filterResults(climaticTrees, geneticTrees):
+    '''
+    Create the final datas from the Climatic Tree and the Genetic Tree
+
+    Args :
+        climaticTrees : The dictionnary containing every climaticTrees
+        geneticTrees : The dictionnary containing every geneticTrees
+    Return : A list of the final datas
+    '''
+    # Create a list of the tree if the bootstrap is superior of the
+    # bootstrap treshold
+    geneticList = createGeneticList(geneticTrees)
+
+    # Create a list with the climatic trees name
+    climaticList = createClimaticList(climaticTrees)
+
+    # Compare every genetic trees with every climatic trees. If the returned value is
+    # inferior or equal to the rf threshold, we keep the datas
+    while (len(geneticList) > 0 ):
+        leaves1 = geneticTrees[geneticList[0]].get_terminals()
+        leavesName = list(map(lambda l: l.name,leaves1))
+        i = 0
+        for tree in climaticTrees.keys():
+            rfn = leastSquare(geneticTrees[geneticList[0]], climaticTrees[climaticList[i]])
+            if rfn == None:                 
+               raise Exception(f'La distance RF n\'est pas calculable ' + 
+                            'pour {aligned_file}.')                
+            if rfn <= rf_threshold:
+                data.append(getData(leavesName, rfn, i, climaticList, geneticList))
+            i += 1             
+        geneticList.pop(0)
+        bootstrapList.pop(0)
+    # We write the datas into an output csv file
+    writeOutputFile(data)
+
 
 def geneticPipeline():
-
     '''
     To do
     '''
@@ -233,18 +356,11 @@ def geneticPipeline():
     alignedSequences = alignementObject.aligned
     heuristicMSA = alignementObject.heuristicMSA
     windowedSequences = alignementObject.windowed
-    
-    #files = os.listdir("output/windows")
-    #for file in files:
-    #    os.system("cp output/windows/" + file + " infile")
-    consensusTree = createBoostrap(windowedSequences)
-    #    createDistanceMatrix()
-    #    createUnrootedTree()
-    #    createConsensusTree() # a modifier dans la fonction
-    #    filterResults(reference_gene_file, bootstrap_threshold, rf_threshold, 
-    #                  data_names, number_seq, file)
-    
+    geneticTrees = createBoostrap(windowedSequences)
+    filterResults(climaticTrees, geneticTrees)
 
+
+climaticTrees = climaticPipeline(p.file_name, p.names)
 geneticPipeline()
 
 
@@ -331,54 +447,6 @@ def createConsensusTree():
     os.system("./exec/consense < input/input.txt")
     # subprocess.call(["mv", "outtree", file])
     subprocess.call(["rm", "intree", "outfile"])
-
-def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, 
-                  number_seq, aligned_file):
-    '''
-    To do
-    '''
-    bootstrap_average = calculateAverageBootstrap()
-    if bootstrap_average < float(bootstrap_threshold):
-        subprocess.call(["rm", "outtree"])
-    else:
-        for tree in data_names:
-            #print(tree)
-            calculateRfDistance(tree)
-            rfn = standardizedRfDistance(number_seq)
-            if rfn == None:                 
-                raise Exception(f'La distance RF n\'est pas calculable ' + 
-                                'pour {aligned_file}.')                    
-            if rfn <= rf_threshold:
-                runRaxML(aligned_file, gene, tree)
-                cleanUp(aligned_file, tree)
-                bootstrap_rax = calculateAverageBootstrapRax()
-                if bootstrap_rax < float(bootstrap_threshold):
-                    continue
-                else:
-                    calculateRfDistance(tree)
-                    rfn_rax = standardizedRfDistance(number_seq)
-                    if rfn_rax == None:     #  '<=' not supported between instances of 'NoneType' and 'int'
-                        raise Exception(f'La distance RF pour Rax n\'est pas calculable pour {aligned_file}.')         # fix it 
-                    if rfn_rax <= rf_threshold:
-                        addToCsv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
-                        keepFiles(gene, aligned_file, tree)
-                        # a verifier ici
-        subprocess.call(["rm", "outtree"])
-
-def calculateAverageBootstrap():
-    '''
-    To do
-    '''
-    total = 0
-    f = open("outtree", "r").read()
-    numbers = re.findall(r'[)][:]\d+[.]\d+', f)
-    for number in numbers:
-        total = total + float(number[2:])
-    if len(numbers) >0:
-        average = total / len(numbers)
-    else:
-        average = -1
-    return average
 
 def calculateRfDistance(tree):
     '''
