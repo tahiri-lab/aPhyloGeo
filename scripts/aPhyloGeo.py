@@ -15,6 +15,7 @@ from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.Consensus import *
 import re
 
+from MultiProcessor import Multi
 from Alignement import AlignSequences
 import Params as p
 
@@ -202,22 +203,37 @@ def climaticPipeline(file_name, names):
     return trees
     
 
-def createBoostrap(windowedSequences):
+def createBoostrap(msaSet):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Parameters:
         windowedSequences : Dictionnary with sequences to transform into trees
     '''
     constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
+
+    #creation of intermidiary list
+    #each list is a process
+    list = []
+    for key in msaSet.keys():
+        list.append([msaSet, constructor, key])
+
+    #multiprocessing
+    print("Creating bootstrap variations with multiplyer of:",p.bootstrapAmount)
+    result = Multi(list,bootSingle).processingSmallData()
+
+    #reshaping the output into a readble dictionary
     consensus_tree = {}
-    for key in windowedSequences.keys():
-        data = ""
-        innerDict = windowedSequences[key]
-        for seq in innerDict.keys():
-            data += str(">" + seq + "\n" + innerDict[seq] + "\n")
-        msa = AlignIO.read(StringIO(data), "fasta")
-        consensus_tree[key] = bootstrap_consensus(msa, 100, constructor, majority_consensus)
+    for i in result:
+        consensus_tree[i[1]]=i[0]
+
     return consensus_tree
+
+def bootSingle(args):
+    msaSet = args[0]
+    constructor = args[1]
+    key = args[2]
+    result = bootstrap_consensus(msaSet[key], p.bootstrapAmount, constructor, majority_consensus)
+    return [result,key]
 
 
 def calculateAverageBootstrap(tree):
@@ -285,7 +301,7 @@ def getData(leavesName, rfn, index, climaticList, geneticList):
         for leave in leavesName:
             for row in csvreader:
                 if(row[0] == leave):
-                    return ["seq.fasta", climaticList[index], leave, geneticList[0], 
+                    return [p.reference_gene_filename, climaticList[index], leave, geneticList[0], 
                             str(bootstrapList[0]), str(round(rfn, 2))]
 
 
@@ -296,7 +312,7 @@ def writeOutputFile(data):
     Args :
         data : the list contaning the final data
     '''
-    header = ['Gene', 'Arbre Phylogeographique', 'Position ASM', 'Bootsrap moyen', 'RF normalise']
+    header = ['Gene', 'Arbre Phylogeographique','Nom de la feuille', 'Position ASM', 'Bootsrap moyen', 'RF normalise']
     with open ("output.csv", "w", encoding="UTF8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
@@ -353,10 +369,11 @@ def geneticPipeline():
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
     alignementObject = AlignSequences()
-    alignedSequences = alignementObject.aligned
-    heuristicMSA = alignementObject.heuristicMSA
-    windowedSequences = alignementObject.windowed
-    geneticTrees = createBoostrap(windowedSequences)
+    #alignedSequences = alignementObject.aligned
+    #heuristicMSA = alignementObject.heuristicMSA
+    #windowedSequences = alignementObject.windowed
+    msaSet = alignementObject.msaSet
+    geneticTrees = createBoostrap(msaSet)
     filterResults(climaticTrees, geneticTrees)
 
 
