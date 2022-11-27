@@ -101,7 +101,7 @@ class AlignSequences:
                     list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
 
         #starts all the processes
-        results = Multi(list,self.ScoreSingle).processingSmallData()
+        results = Multi(list,self.ScoreSingle).processingLargeData()
         
         #formats the multiprocess output back in a dictionnary
         rDict = {}
