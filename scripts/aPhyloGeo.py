@@ -30,7 +30,7 @@ with open('./scripts/params.yaml') as f:
     
 ns = 0
 bootstrap_threshold = params["bootstrap_threshold"]
-rf_threshold = params["rf_threshold"]
+ls_threshold = params["rf_threshold"]
 window_size = params["window_size"]
 step_size = params["step_size"]
 data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 
@@ -189,16 +189,16 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline(file_name, names):
+def climaticPipeline():
     '''
     To do
     '''
     trees = {}
-    df = openCSV(file_name)
-    for i in range(1, len(names)):
-        dm = getDissimilaritiesMatrix(df, names[0], names[i])
-        trees[names[i]] = createTree(dm)
-    leastSquare(trees[names[1]],trees[names[2]])
+    df = openCSV(p.file_name)
+    for i in range(1, len(p.names)):
+        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
+        trees[p.names[i]] = createTree(dm)
+    leastSquare(trees[p.names[1]],trees[p.names[2]])
     return trees
     
 
@@ -328,12 +328,12 @@ def filterResults(climaticTrees, geneticTrees):
         leavesName = list(map(lambda l: l.name,leaves1))
         i = 0
         for tree in climaticTrees.keys():
-            rfn = leastSquare(geneticTrees[geneticList[0]], climaticTrees[climaticList[i]])
-            if rfn == None:                 
+            ls = leastSquare(geneticTrees[geneticList[0]], climaticTrees[climaticList[i]])
+            if ls == None:                 
                raise Exception(f'La distance RF n\'est pas calculable ' + 
                             'pour {aligned_file}.')                
-            if rfn <= rf_threshold:
-                data.append(getData(leavesName, rfn, i, climaticList, geneticList))
+            if ls <= ls_threshold:
+                data.append(getData(leavesName, ls, i, climaticList, geneticList))
             i += 1             
         geneticList.pop(0)
         bootstrapList.pop(0)
@@ -341,7 +341,7 @@ def filterResults(climaticTrees, geneticTrees):
     writeOutputFile(data)
 
 
-def geneticPipeline():
+def geneticPipeline(climaticTrees):
     '''
     To do
     '''
@@ -358,180 +358,3 @@ def geneticPipeline():
     windowedSequences = alignementObject.windowed
     geneticTrees = createBoostrap(windowedSequences)
     filterResults(climaticTrees, geneticTrees)
-
-
-climaticTrees = climaticPipeline(p.file_name, p.names)
-geneticPipeline()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def prepareDirectory():
-    '''
-    To do
-    '''
-    path_output_windows = './output/windows'                            
-    isExist = os.path.exists(path_output_windows)
-
-    if isExist:
-        for f in os.listdir(path_output_windows):
-            os.remove(os.path.join(path_output_windows, f))
-    else:
-        os.makedirs(path_output_windows)
-
-    # delete the results of last analysis
-    delete_path = os.listdir('output')
-
-    for item in delete_path:
-        if item.endswith("_gene"):
-            shutil.rmtree('output'+'/'+item)
-        
-    delete_path2 = os.listdir()
-    for item in delete_path2:
-        if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
-            os.remove(item)
-    
-    with open('output.csv', 'w') as f:
-        f.write("Gene,Arbre phylogeographique,Position ASM," + 
-                "Bootstrap moyen,RF normalise\n")
-
-def createDistanceMatrix():
-    '''
-    To do
-    '''
-    os.system("./exec/dnadist < input/dnadist_input.txt")
-    subprocess.call(["mv", "outfile", "infile"])
-
-def createUnrootedTree():
-    '''
-    To do
-    '''
-    os.system("./exec/neighbor < input/neighbor_input.txt")
-    subprocess.call(["rm", "infile", "outfile"])
-    subprocess.call(["mv", "outtree", "intree"])
-
-
-def createConsensusTree():
-    '''
-    To do
-    '''
-    os.system("./exec/consense < input/input.txt")
-    # subprocess.call(["mv", "outtree", file])
-    subprocess.call(["rm", "intree", "outfile"])
-
-def calculateRfDistance(tree):
-    '''
-    To do
-    '''
-    os.system("cat " + tree + " >> infile")
-    os.system("cat outtree >> infile")
-    os.system("./exec/rf infile outfile tmp matrix")
-
-def standardizedRfDistance(number_seq):
-    '''
-    To do
-    '''
-    # clean up the repository
-    subprocess.call(["rm", "infile", "matrix", "tmp"])
-    # find the rf
-    f = open("outfile", "r").read()
-    words = re.split(r'[ \n]', f)
-    for i in range(len(words)):
-        if words[i] == "=":
-            rf = int(words[i+1])
-            normalized_rf = (rf/(2*number_seq-6))*100
-            subprocess.call(["rm", "outfile"])
-            return normalized_rf
-
-def runRaxML(aligned_file, gene, tree):
-    '''
-    To do
-    '''
-    current_dir = os.getcwd()
-    file_name = os.path.basename(aligned_file + "_" + tree)
-    input_path = os.path.join(current_dir, "output", "windows", aligned_file)
-
-    # output_path = os.path.join(current_dir, "output", gene + "_gene")
-    # IL FAUT CHANGER LE MODELE SELON LE GENE CHOISI
-    os.system("./exec/raxmlHPC -s " + input_path + " -n " + file_name + " -N 100 -m " +
-              "GTRGAMMA -x 123 -f a -p 123")
-    # output_path = os.path.join(output_path, file_name)
-    # subprocess.call(["cp", input_path, output_path])
-
-def cleanUp(file, tree):
-    '''
-    To do
-    '''
-    file = "RAxML_bipartitionsBranchLabels."+file+"_"+tree
-    # directory = os.path.join("output", gene + "_gene", file)
-    subprocess.call(["mv", file, "outtree"])
-    files_to_delete = ['*bipartitions.*', '*bootstrap*', '*info*', '*bestTree*']
-    for file in files_to_delete:
-        os.system("rm -rf " +file)
-
-def calculateAverageBootstrapRax():
-    '''
-    To do
-    '''
-    total = 0
-    f = open("outtree", "r").read()
-    numbers = re.findall(r'[\[]\d+[\]]', f)
-    for number in numbers:
-        total = total + float(number[1:(len(number)-1)])
-    if len(numbers) > 0 :
-        average = total / len(numbers)
-    else:
-        average = -1
-    return average
-
-def addToCsv(gene, tree, file, bootstrap_average, rfn):
-    '''
-    To do
-    '''
-    list = [gene, tree, file, bootstrap_average, rfn]
-    with open('output.csv', 'a') as f_object:
-        writer_object = writer(f_object)
-        writer_object.writerow(list)
-        f_object.close()
-
-def keepFiles(gene, aligned_file, tree):
-    '''
-    To do
-    '''
-    current_dir = os.getcwd()
-    file_name = os.path.basename(aligned_file + "_" + tree + "_tree")
-    input_path = os.path.join(current_dir, "output", "windows", aligned_file)
-    output_path = os.path.join(current_dir, "output", gene + "_gene")
-    tree_path = os.path.join(output_path, file_name)
-    subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
-    subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
-    subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
