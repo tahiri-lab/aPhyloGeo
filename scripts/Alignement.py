@@ -3,9 +3,11 @@ import time
 
 import os
 import Bio as Bio 
+from io import StringIO
 from Bio import SeqIO
 from Bio import pairwise2
 from Bio.Seq import Seq
+from Bio import AlignIO
 from MultiProcessor import Multi
 import Params as p
 
@@ -55,7 +57,7 @@ class AlignSequences:
         self.heuristicMSA = self.starAlignement()
         self.windowed = self.slidingWindow()
         
-        #self.msa = "" we probably should put the AlignIO() MSA object from biopython here
+        self.msaSet = self.makeMSA()
 
     def openFastaFile(self,file):
         '''
@@ -99,7 +101,7 @@ class AlignSequences:
                     list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
 
         #starts all the processes
-        results = Multi(list,self.ScoreSingle).processingSmallData()
+        results = Multi(list,self.ScoreSingle).processingLargeData()
         
         #formats the multiprocess output back in a dictionnary
         rDict = {}
@@ -190,7 +192,6 @@ class AlignSequences:
 
         return aligned
    
-
     def alignSingle(self,args):
         """
         Method that aligns two DNA sequences using the pairwise2 algorithm.
@@ -351,14 +352,12 @@ class AlignSequences:
             stepStart += stepSize
             stepEnd += stepSize
 
-        print(time.time()-before)
-
-        ##############
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
         if p.makeDebugFiles:
             os.mkdir("./debug/3_slidingWindow")
             for w in windowsDict.keys():
                 self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
-        ##############
+        ####### JUST TO MAKE THE DEBUG FILES ####### 
 
         return windowsDict
 
@@ -372,4 +371,14 @@ class AlignSequences:
             f.write(">"+str(key)+"\n")
             f.write(str(dict[key]+"\n"))
         return dict
+
+    def makeMSA(self):
+        msaSet = {}
+        for windowSet in self.windowed.keys():
+            data = ""
+            window = self.windowed[windowSet]
+            for seq in window.keys():
+                data += str(">" + seq + "\n" + window[seq] + "\n")
+            msaSet[windowSet] = AlignIO.read(StringIO(data), "fasta")
+        return msaSet
 

@@ -16,8 +16,11 @@ data_names =           ['ALLSKY_SFC_SW_DWN_newick',
                                 'QV2M_newick', 
                                 'PRECTOTCORR_newick', 
                                 'WS10M_newick']
-reference_gene_file =  params["reference_gene_file"]
+reference_gene_file =  params["reference_gene_dir"]+'/'+params["reference_gene_file"]
+reference_gene_filename = params["reference_gene_file"]
+
 file_name =            params["file_name"]
 specimen =             params["specimen"]
 names      =           params["names"]
 makeDebugFiles=        params["makeDebugFiles"]
+bootstrapAmount=        params["bootstrap_amount"]
