@@ -1,24 +1,15 @@
-﻿import subprocess 
-import pandas as pd
+﻿import pandas as pd
 import os
 import yaml
-
-import re
 import shutil
 import Bio as Bio 
 import csv
-
-from io import StringIO
-from Bio import AlignIO
+import Params as p
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.Consensus import *
-import re
-
 from MultiProcessor import Multi
 from Alignement import AlignSequences
-import Params as p
-
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
@@ -28,73 +19,82 @@ from yaml.loader import SafeLoader
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
-    
-ns = 0
-bootstrap_threshold = params["bootstrap_threshold"]
-ls_threshold = params["rf_threshold"]
-window_size = params["window_size"]
-step_size = params["step_size"]
-data_names = ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 
-                'PRECTOTCORR_newick', 'WS10M_newick']
-reference_gene_file = params["reference_gene_file"]
-file_name = params["file_name"]
+
+
+bootstrapThreshold = params["bootstrap_threshold"]
+lsThreshold = params["rf_threshold"]
+windowSize = params["window_size"]
+stepSize = params["step_size"]
+dataNames = params["data_names"]
+referenceGeneFile = params["reference_gene_file"]
+fileName = params["file_name"]
 specimen = params["specimen"]
 names = params["names"]
 bootstrapList = []
 data = []
 
-def openCSV(nom_fichier_csv):
-    df = pd.read_csv(nom_fichier_csv)
+
+def openCSV(file):
+    """
+    Open and read the csv file to get the datas
+
+    Args:
+        fileName (the file with the content to read from)
+    
+    Return:
+        The content of the file
+    """
+    df = pd.read_csv(file)
     return df
 
 
-def getDissimilaritiesMatrix(df, column_with_specimen_name, column_to_search):
+def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
     Creation of a list containing the names of specimens and minimums 
     tempratures
 
     Args:
         df (content of CSV file)
-        column_with_specimen_name (first column of names)
-        column_to_search (column to compare with the first one)
+        columnWithSpecimenName (first column of names)
+        columnToSearch (column to compare with the first one)
     
     Return:
         The dissimilarities matrix
 
     """
-    meteo_data = df[column_to_search].tolist()
-    nom_var = df[column_with_specimen_name].tolist()
-    nbr_seq = len(nom_var)
-    max_value = 0
-    min_value = 0
+    meteoData = df[columnToSearch].tolist()
+    nomVar = df[columnWithSpecimenName].tolist()
+    nbrSeq = len(nomVar)
+    maxValue = 0
+    minValue = 0
 
     # First loop that allow us to calculate a matrix for each sequence
-    temp_tab = []
+    tempTab = []
 
-    for e in range(nbr_seq):
+    for e in range(nbrSeq):
         # A list that will contain every distances before normalisation
-        temp_list = []
-        for i in range(nbr_seq):
-            maximum = max(float(meteo_data[e]), float(meteo_data[i]))
-            minimum = min(float(meteo_data[e]), float(meteo_data[i]))
+        tempList = []
+        for i in range(nbrSeq):
+            maximum = max(float(meteoData[e]), float(meteoData[i]))
+            minimum = min(float(meteoData[e]), float(meteoData[i]))
             distance = maximum - minimum
-            temp_list.append(float("{:.6f}".format(distance)))
+            tempList.append(float("{:.6f}".format(distance)))
 
         # Allow to find the maximum and minimum value for the weather value and 
         # then to add the temporary list in an array   
-        if max_value < max(temp_list):
-            max_value = max(temp_list)
-        if min_value > min(temp_list):
-            min_value = min(temp_list)
-        temp_tab.append(temp_list)
+        if maxValue < max(tempList):
+            maxValue = max(tempList)
+        if minValue > min(tempList):
+            minValue = min(tempList)
+        tempTab.append(tempList)
 
     # Calculate normalised matrix
-    tab_df = pd.DataFrame(temp_tab)
-    dm_df = (tab_df - min_value)/(max_value - min_value)
-    dm_df = dm_df.round(6)
+    tabDf = pd.DataFrame(tempTab)
+    dmDf = (tabDf - minValue)/(maxValue - minValue)
+    dmDf = dmDf.round(6)
 
-    matrix = [dm_df.iloc[i,:i+1].tolist() for i in range(len(dm_df))]
-    dm = _DistanceMatrix(nom_var, matrix)
+    matrix = [dmDf.iloc[i,:i+1].tolist() for i in range(len(dmDf))]
+    dm = _DistanceMatrix(nomVar, matrix)
     return dm
 
 
@@ -130,7 +130,7 @@ def leastSquare(tree1, tree2):
     return ls
 
 
-def draw_trees(trees):
+def drawTreesmake(trees):
     """
     Function that will draw the trees for each climatic variable.
     The DistanceTreeConstructor object is transformed to Newick format and 
@@ -142,12 +142,12 @@ def draw_trees(trees):
         variable for keys)
 
     """
-    trees_newick= {}
+    treesNewick= {}
     toytrees = []
     
     for k,v in trees.items():
-        trees_newick[k] = v.format('newick')
-        ttree = toytree.tree(trees_newick[k], tree_format=1)
+        treesNewick[k] = v.format('newick')
+        ttree = toytree.tree(treesNewick[k], tree_format=1)
         toytrees.append(ttree)
     mtree = toytree.mtree(toytrees)
 
@@ -168,8 +168,8 @@ def draw_trees(trees):
                                     tip_labels_align=True);
 
     for i in range(len(mtree)):
-        rand_color = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0,mtree.ntips,p.names[i+1],style={'fill':rand_color,
+        randColor = "#%03x" % random.randint(0, 0xFFF)
+        axes[i].text(0,mtree.ntips,p.names[i+1],style={'fill':randColor,
                     'font-size':'10px', 'font-weight':'bold'});
 
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
@@ -192,7 +192,10 @@ def createTree(dm):
 
 def climaticPipeline():
     '''
-    To do
+    Creates a dictionnary with the climatic Trees
+
+    Return:
+        trees (the climatic tree dictionnary)
     '''
     trees = {}
     df = openCSV(p.file_name)
@@ -206,8 +209,10 @@ def climaticPipeline():
 def createBoostrap(msaSet):
     '''
     Create a tree structure from sequences given by a dictionnary.
-    Parameters:
-        windowedSequences : Dictionnary with sequences to transform into trees
+    Args:
+        windowedSequences (dictionnary with sequences to transform into trees)
+    Return:
+        *********TO WRITE**********
     '''
     constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
 
@@ -222,17 +227,18 @@ def createBoostrap(msaSet):
     result = Multi(list,bootSingle).processingSmallData()
 
     #reshaping the output into a readble dictionary
-    consensus_tree = {}
+    consensusTree = {}
     for i in result:
-        consensus_tree[i[1]]=i[0]
+        consensusTree[i[1]]=i[0]
 
-    return consensus_tree
+    return consensusTree
 
 def bootSingle(args):
     msaSet = args[0]
     constructor = args[1]
     key = args[2]
-    result = bootstrap_consensus(msaSet[key], p.bootstrapAmount, constructor, majority_consensus)
+    result = bootstrap_consensus(msaSet[key], p.bootstrapAmount, constructor, 
+                                 majority_consensus)
     return [result,key]
 
 
@@ -241,8 +247,9 @@ def calculateAverageBootstrap(tree):
     Calculate if the average confidence of a tree
 
     Args:
-        tree : The tree to get the average confidence from
-    Return : The average Bootstrap(confidence)
+        tree (The tree to get the average confidence from)
+    Return : 
+        averageBootstrap(the average Bootstrap(confidence))
     '''
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda l: l.confidence,leaves))
@@ -260,13 +267,14 @@ def createGeneticList(geneticTrees):
     the threshold
 
     Args :
-        geneticTrees : A dictionnary of genetic trees
-    Return : A list with the geneticTrees
+        geneticTrees (a dictionnary of genetic trees)
+    Return : 
+        geneticList (a list with the geneticTrees)
     '''
     geneticList = []
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if(bootstrap_average >= bootstrap_threshold):
+        if(bootstrap_average >= bootstrapThreshold):
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
     return geneticList
@@ -277,8 +285,9 @@ def createClimaticList(climaticTrees):
     Create a list of climaticTrees
 
     Args :
-        climaticTrees : A dictionnary of climatic trees
-    Return : A list with the climaticTrees
+        climaticTrees (a dictionnary of climatic trees)
+    Return : 
+        climaticList(a list with the climaticTrees)
     '''
     climaticList = []
     for key in climaticTrees:
@@ -286,23 +295,24 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, rfn, index, climaticList, geneticList):
+def getData(leavesName, ls, index, climaticList, geneticList):
     '''
     Get data from a csv file a various parameters to store into a list
 
     Args :
-        leavesName : The name of the actual leave
-        rfn : The normalised RF
-        climaticList : The list of climatic trees
-        geneticList : The list of genetic trees
+        leavesName (the name of the actual leave)
+        ls (least square distance between two trees)
+        climaticList (the list of climatic trees)
+        geneticList : (the list of genetic trees)
     '''
     with open('datasets/5seq/geo.csv', 'r') as file:
         csvreader = csv.reader(file)
         for leave in leavesName:
             for row in csvreader:
                 if(row[0] == leave):
-                    return [p.reference_gene_filename, climaticList[index], leave, geneticList[0], 
-                            str(bootstrapList[0]), str(round(rfn, 2))]
+                    return [p.reference_gene_filename, climaticList[index], 
+                            leave, geneticList[0], 
+                            str(bootstrapList[0]), str(round(ls, 2))]
 
 
 def writeOutputFile(data):
@@ -310,9 +320,10 @@ def writeOutputFile(data):
     Write the datas from data list into a new csv file
 
     Args :
-        data : the list contaning the final data
+        data (the list contaning the final data)
     '''
-    header = ['Gene', 'Arbre Phylogeographique','Nom de la feuille', 'Position ASM', 'Bootsrap moyen', 'RF normalise']
+    header = ['Gene', 'Arbre Phylogeographique','Nom de la feuille', 
+              'Position ASM', 'Bootsrap moyen', 'RF normalise']
     with open ("output.csv", "w", encoding="UTF8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
@@ -326,9 +337,8 @@ def filterResults(climaticTrees, geneticTrees):
     Create the final datas from the Climatic Tree and the Genetic Tree
 
     Args :
-        climaticTrees : The dictionnary containing every climaticTrees
-        geneticTrees : The dictionnary containing every geneticTrees
-    Return : A list of the final datas
+        climaticTrees (the dictionnary containing every climaticTrees)
+        geneticTrees (the dictionnary containing every geneticTrees)
     '''
     # Create a list of the tree if the bootstrap is superior of the
     # bootstrap treshold
@@ -337,19 +347,21 @@ def filterResults(climaticTrees, geneticTrees):
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
 
-    # Compare every genetic trees with every climatic trees. If the returned value is
-    # inferior or equal to the rf threshold, we keep the datas
+    # Compare every genetic trees with every climatic trees. If the returned 
+    # value is inferior or equal to the rf threshold, we keep the datas
     while (len(geneticList) > 0 ):
         leaves1 = geneticTrees[geneticList[0]].get_terminals()
         leavesName = list(map(lambda l: l.name,leaves1))
         i = 0
         for tree in climaticTrees.keys():
-            ls = leastSquare(geneticTrees[geneticList[0]], climaticTrees[climaticList[i]])
+            ls = leastSquare(geneticTrees[geneticList[0]], 
+                             climaticTrees[climaticList[i]])
             if ls == None:                 
                raise Exception(f'La distance RF n\'est pas calculable ' + 
                             'pour {aligned_file}.')                
-            if ls <= ls_threshold:
-                data.append(getData(leavesName, ls, i, climaticList, geneticList))
+            if ls <= lsThreshold:
+                data.append(getData(leavesName, ls, i, climaticList, 
+                                    geneticList))
             i += 1             
         geneticList.pop(0)
         bootstrapList.pop(0)
@@ -359,7 +371,13 @@ def filterResults(climaticTrees, geneticTrees):
 
 def geneticPipeline(climaticTrees):
     '''
-    To do
+    Get the genetic Trees from the initial file datas so we 
+    can compare every valid tree with the climatic ones. In the 
+    end it calls a method that create a final csv file with all
+    the data that we need for the comparison
+
+    Args:
+        climaticTrees (the dictionnary of climaticTrees)
     '''
     ####### JUST TO MAKE THE DEBUG FILES ####### 
     if os.path.exists("./debug"):

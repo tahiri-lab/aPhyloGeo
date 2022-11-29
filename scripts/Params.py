@@ -5,7 +5,6 @@ from yaml.loader import SafeLoader
 # We open the params.yaml file and put it in the params variable
 with open('./scripts/params.yaml') as f:
     params = yaml.load(f, Loader=SafeLoader)
-    print(params)
 
 bootstrap_threshold =  params["bootstrap_threshold"]
 rf_threshold =         params["rf_threshold"]
