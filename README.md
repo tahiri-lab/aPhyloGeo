@@ -77,7 +77,7 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `python3 -m pip install -r requirements.txt`.
-6. Launch SimPlot++ using `python3 main.py`.
+6. Launch aPhyloGeo using `python3 main.py`.
 
 
 
