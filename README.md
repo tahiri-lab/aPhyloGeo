@@ -54,7 +54,10 @@ Link to the French version: [French version](https://github.com/tahiri-lab/aPhyl
 The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. The first block (the light pink color) is responsible for creating the trees based on the climate data. The second block (the dark yellow color) performs the function of input parameter validation. The third block (the light-yellow color) allows the creation of phylogenetic trees. This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
 
-## How to use?
+# Installation
+
+## Linux UNIX and Mac OS versions
+SimPlot++ is available as a Python script.
 
 ### Prerequisites
 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
@@ -62,6 +65,21 @@ Before using this program, make sure that you have installed all the necessary l
 ```
 pip install -r requirements.txt
 ```
+
+### Python script
+A `requirements.txt` file containing all required libraries is available in the GitHub repository.
+
+Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
+
+<u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
+1. After downloading the source code, go to the folder containing `main.py`.
+2. If you do not have `virtualenv` installed, run `python3 -m pip install --user virtualenv`
+3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
+4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
+5. Install the required libraries using `python3 -m pip install -r requirements.txt`.
+6. Launch SimPlot++ using `python3 main.py`.
+
+
 
 ### Creation of climatic trees
 
