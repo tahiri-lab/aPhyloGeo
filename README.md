@@ -31,7 +31,7 @@
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>-->
     <li>
-      <a href="#Reference">Reference</a>
+      <a href="#References">References</a>
     </li>
     <li>
       <a href="#contact">Contact</a>
