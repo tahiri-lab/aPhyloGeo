@@ -168,7 +168,7 @@ In this work, we applied software packages of the following versions: MUSCLE ver
 
 + For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access
 
-## References
+# References
 
 1. Sequence alignment tool : `MUSCLE`
 + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
