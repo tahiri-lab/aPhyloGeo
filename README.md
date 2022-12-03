@@ -21,7 +21,7 @@
         <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
       </ul>
     </li>
-    <li> Available analyses</li>
+    <!--<li> Available analyses</li>
       <ul>
         <li><a href="#Group-creation">Group creation</a></li>
         <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
