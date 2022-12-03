@@ -29,8 +29,8 @@
         <li><a href="#BootScan-analysis">BootScan analysis</a></li>
         <li><a href="#Findsites">Findsites</a></li>
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
-      </ul>
-    <li>-->
+      </ul>-->
+    <li>
       <a href="#Reference">Reference</a>
     </li>
     <li>
