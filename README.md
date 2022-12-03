@@ -9,8 +9,38 @@
 
 <h2  align="center">Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
 
+<details open>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About the project</a>
+    </li>
+    <li>
+      <a href="#Installation">Installation</a>
+      <ul>
+        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
+      </ul>
+    </li>
+    <li> Available analyses</li>
+      <ul>
+        <li><a href="#Group-creation">Group creation</a></li>
+        <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
+        <li><a href="#Similarity-networks">Similarity networks</a></li>
+        <li><a href="#BootScan-analysis">BootScan analysis</a></li>
+        <li><a href="#Findsites">Findsites</a></li>
+        <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
+      </ul>
+    <li>-->
+      <a href="#Reference">Reference</a>
+    </li>
+    <li>
+      <a href="#contact">Contact</a>
+    </li>
+  </ol>
+</details>
 
-# aPhyloGeo
+
+# About the project
 
 Link to the French version: [French version](https://github.com/tahiri-lab/aPhylogeo/blob/main/README_fr.md)
 
@@ -137,3 +167,6 @@ doi:10.1186/1471-2105-5-113
 4. Phylogenetic analysis: `RAxML`
     [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
 
+
+# Contact
+Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
