@@ -12,27 +12,9 @@ from MultiProcessor import Multi
 from Alignement import AlignSequences
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
-from csv import writer
-from yaml.loader import SafeLoader
 
-
-# We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
-    params = yaml.load(f, Loader=SafeLoader)
-
-
-bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["rf_threshold"]
-windowSize = params["window_size"]
-stepSize = params["step_size"]
-dataNames = params["data_names"]
-referenceGeneFile = params["reference_gene_file"]
-fileName = params["file_name"]
-specimen = params["specimen"]
-names = params["names"]
 bootstrapList = []
 data = []
-
 
 def openCSV(file):
     """
@@ -46,7 +28,6 @@ def openCSV(file):
     """
     df = pd.read_csv(file)
     return df
-
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
@@ -97,7 +78,6 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     dm = _DistanceMatrix(nomVar, matrix)
     return dm
 
-
 def leastSquare(tree1, tree2):
     """
     Method that calculates the least square distance between two trees.
@@ -128,7 +108,6 @@ def leastSquare(tree1, tree2):
             d2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
             ls+=(abs(d1-d2))
     return ls
-
 
 def drawTreesmake(trees):
     """
@@ -174,7 +153,6 @@ def drawTreesmake(trees):
 
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
 
-
 def createTree(dm):
     '''
     Create a dna tree from content coming from a fasta file.
@@ -188,24 +166,7 @@ def createTree(dm):
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
     return tree
-
-
-def climaticPipeline():
-    '''
-    Creates a dictionnary with the climatic Trees
-
-    Return:
-        trees (the climatic tree dictionnary)
-    '''
-    trees = {}
-    df = openCSV(p.file_name)
-    for i in range(1, len(p.names)):
-        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
-        trees[p.names[i]] = createTree(dm)
-    leastSquare(trees[p.names[1]],trees[p.names[2]])
-    return trees
     
-
 def createBoostrap(msaSet):
     '''
     Create a tree structure from sequences given by a dictionnary.
@@ -241,7 +202,6 @@ def bootSingle(args):
                                  majority_consensus)
     return [result,key]
 
-
 def calculateAverageBootstrap(tree):
     '''
     Calculate if the average confidence of a tree
@@ -260,7 +220,6 @@ def calculateAverageBootstrap(tree):
     averageBootsrap = totalConfidence / len(treeConfidences)
     return averageBootsrap
 
-
 def createGeneticList(geneticTrees):
     '''
     Create a list of Trees if the bootstrap Average is higher than
@@ -274,11 +233,10 @@ def createGeneticList(geneticTrees):
     geneticList = []
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if(bootstrap_average >= bootstrapThreshold):
+        if(bootstrap_average >= p.bootstrap_threshold):
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
     return geneticList
-
 
 def createClimaticList(climaticTrees):
     '''
@@ -293,7 +251,6 @@ def createClimaticList(climaticTrees):
     for key in climaticTrees:
         climaticList.append(key)
     return climaticList
-
 
 def getData(leavesName, ls, index, climaticList, geneticList):
     '''
@@ -314,7 +271,6 @@ def getData(leavesName, ls, index, climaticList, geneticList):
                             leave, geneticList[0], 
                             str(bootstrapList[0]), str(round(ls, 2))]
 
-
 def writeOutputFile(data):
     '''
     Write the datas from data list into a new csv file
@@ -330,7 +286,6 @@ def writeOutputFile(data):
         for i in range(len(data)):
             writer.writerow(data[i])
         f.close
-
 
 def filterResults(climaticTrees, geneticTrees):
     '''
@@ -359,7 +314,7 @@ def filterResults(climaticTrees, geneticTrees):
             if ls == None:                 
                raise Exception(f'La distance RF n\'est pas calculable ' + 
                             'pour {aligned_file}.')                
-            if ls <= lsThreshold:
+            if ls <= p.rf_threshold:
                 data.append(getData(leavesName, ls, i, climaticList, 
                                     geneticList))
             i += 1             
@@ -367,7 +322,6 @@ def filterResults(climaticTrees, geneticTrees):
         bootstrapList.pop(0)
     # We write the datas into an output csv file
     writeOutputFile(data)
-
 
 def geneticPipeline(climaticTrees):
     '''
@@ -387,9 +341,24 @@ def geneticPipeline(climaticTrees):
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
     alignementObject = AlignSequences()
-    #alignedSequences = alignementObject.aligned
+    #alignedSequences = alignementObject.aligned    check alignement.py for all available mid-execution objects!
     #heuristicMSA = alignementObject.heuristicMSA
     #windowedSequences = alignementObject.windowed
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet)
     filterResults(climaticTrees, geneticTrees)
+
+def climaticPipeline():
+    '''
+    Creates a dictionnary with the climatic Trees
+
+    Return:
+        trees (the climatic tree dictionnary)
+    '''
+    trees = {}
+    df = openCSV(p.file_name)
+    for i in range(1, len(p.names)):
+        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
+        trees[p.names[i]] = createTree(dm)
+    leastSquare(trees[p.names[1]],trees[p.names[2]])
+    return trees

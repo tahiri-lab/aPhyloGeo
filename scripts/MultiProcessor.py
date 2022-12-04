@@ -118,7 +118,7 @@ class Multi:
             Multiprocess outputs "Killed" and kills the child.
 
         """
-        print("    Starting multiprocessing, this might some time\n    The first process is ran alone for calibration purposes")
+        print("    Starting multiprocessing, this might take some time\n    The first process is ran alone for calibration purposes")
         self.startTime = time.time()
 
         p = Process(target=self.executeOnce, args=([self.args.pop(0)])) #Multiprocess runs once alone
