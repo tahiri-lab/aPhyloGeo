@@ -22,7 +22,7 @@ with open('./scripts/params.yaml') as f:
 
 
 bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["rf_threshold"]
+lsThreshold = params["ls_threshold"]
 windowSize = params["window_size"]
 stepSize = params["step_size"]
 dataNames = params["data_names"]
@@ -249,7 +249,7 @@ def calculateAverageBootstrap(tree):
     Args:
         tree (The tree to get the average confidence from)
     Return : 
-        averageBootstrap(the average Bootstrap(confidence))
+        averageBootstrap (the average Bootstrap (confidence))
     '''
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda l: l.confidence,leaves))
