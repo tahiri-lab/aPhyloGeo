@@ -16,7 +16,6 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 bootstrapList = []
 data = []
 
-
 def openCSV(file):
     """
     Open and read the csv file to get the datas
@@ -29,7 +28,6 @@ def openCSV(file):
     """
     df = pd.read_csv(file)
     return df
-
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
@@ -80,7 +78,6 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     dm = _DistanceMatrix(nomVar, matrix)
     return dm
 
-
 def leastSquare(tree1, tree2):
     """
     Method that calculates the least square distance between two trees.
@@ -111,7 +108,6 @@ def leastSquare(tree1, tree2):
             d2=(tree2.distance(tree2.find_any(i), tree2.find_any(j)))
             ls+=(abs(d1-d2))
     return ls
-
 
 def drawTreesmake(trees):
     """
@@ -157,7 +153,6 @@ def drawTreesmake(trees):
 
     toyplot.pdf.render(canvas,'../viz/climactic_trees.pdf')
 
-
 def createTree(dm):
     '''
     Create a dna tree from content coming from a fasta file.
@@ -172,7 +167,6 @@ def createTree(dm):
     tree = constructor.nj(dm)
     return tree
     
-
 def createBoostrap(msaSet):
     '''
     Create a tree structure from sequences given by a dictionnary.
@@ -208,7 +202,6 @@ def bootSingle(args):
                                  majority_consensus)
     return [result,key]
 
-
 def calculateAverageBootstrap(tree):
     '''
     Calculate if the average confidence of a tree
@@ -227,7 +220,6 @@ def calculateAverageBootstrap(tree):
     averageBootsrap = totalConfidence / len(treeConfidences)
     return averageBootsrap
 
-
 def createGeneticList(geneticTrees):
     '''
     Create a list of Trees if the bootstrap Average is higher than
@@ -241,11 +233,10 @@ def createGeneticList(geneticTrees):
     geneticList = []
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if(bootstrap_average >= bootstrapThreshold):
+        if(bootstrap_average >= p.bootstrapThreshold):
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
     return geneticList
-
 
 def createClimaticList(climaticTrees):
     '''
@@ -260,7 +251,6 @@ def createClimaticList(climaticTrees):
     for key in climaticTrees:
         climaticList.append(key)
     return climaticList
-
 
 def getData(leavesName, ls, index, climaticList, geneticList):
     '''
@@ -281,7 +271,6 @@ def getData(leavesName, ls, index, climaticList, geneticList):
                             leave, geneticList[0], 
                             str(bootstrapList[0]), str(round(ls, 2))]
 
-
 def writeOutputFile(data):
     '''
     Write the datas from data list into a new csv file
@@ -297,7 +286,6 @@ def writeOutputFile(data):
         for i in range(len(data)):
             writer.writerow(data[i])
         f.close
-
 
 def filterResults(climaticTrees, geneticTrees):
     '''
@@ -334,7 +322,6 @@ def filterResults(climaticTrees, geneticTrees):
         bootstrapList.pop(0)
     # We write the datas into an output csv file
     writeOutputFile(data)
-
 
 def geneticPipeline(climaticTrees):
     '''
