@@ -233,7 +233,7 @@ def createGeneticList(geneticTrees):
     geneticList = []
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if(bootstrap_average >= p.bootstrapThreshold):
+        if(bootstrap_average >= p.bootstrap_threshold):
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
     return geneticList
@@ -314,7 +314,7 @@ def filterResults(climaticTrees, geneticTrees):
             if ls == None:                 
                raise Exception(f'La distance RF n\'est pas calculable ' + 
                             'pour {aligned_file}.')                
-            if ls <= lsThreshold:
+            if ls <= p.rf_threshold:
                 data.append(getData(leavesName, ls, i, climaticList, 
                                     geneticList))
             i += 1             
