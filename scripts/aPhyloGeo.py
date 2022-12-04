@@ -12,24 +12,7 @@ from MultiProcessor import Multi
 from Alignement import AlignSequences
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
-from csv import writer
-from yaml.loader import SafeLoader
 
-
-# We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
-    params = yaml.load(f, Loader=SafeLoader)
-
-
-bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["rf_threshold"]
-windowSize = params["window_size"]
-stepSize = params["step_size"]
-dataNames = params["data_names"]
-referenceGeneFile = params["reference_gene_file"]
-fileName = params["file_name"]
-specimen = params["specimen"]
-names = params["names"]
 bootstrapList = []
 data = []
 
@@ -188,22 +171,6 @@ def createTree(dm):
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
     return tree
-
-
-def climaticPipeline():
-    '''
-    Creates a dictionnary with the climatic Trees
-
-    Return:
-        trees (the climatic tree dictionnary)
-    '''
-    trees = {}
-    df = openCSV(p.file_name)
-    for i in range(1, len(p.names)):
-        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
-        trees[p.names[i]] = createTree(dm)
-    leastSquare(trees[p.names[1]],trees[p.names[2]])
-    return trees
     
 
 def createBoostrap(msaSet):
@@ -387,9 +354,24 @@ def geneticPipeline(climaticTrees):
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
     alignementObject = AlignSequences()
-    #alignedSequences = alignementObject.aligned
+    #alignedSequences = alignementObject.aligned    check alignement.py for all available mid-execution objects!
     #heuristicMSA = alignementObject.heuristicMSA
     #windowedSequences = alignementObject.windowed
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet)
     filterResults(climaticTrees, geneticTrees)
+
+def climaticPipeline():
+    '''
+    Creates a dictionnary with the climatic Trees
+
+    Return:
+        trees (the climatic tree dictionnary)
+    '''
+    trees = {}
+    df = openCSV(p.file_name)
+    for i in range(1, len(p.names)):
+        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
+        trees[p.names[i]] = createTree(dm)
+    leastSquare(trees[p.names[1]],trees[p.names[2]])
+    return trees
