@@ -210,7 +210,7 @@ def createBoostrap(msaSet):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Args:
-        windowedSequences (dictionnary with sequences to transform into trees)
+        msaSet (dictionnary with multiple sequences alignment to transform into trees)
     Return:
         *********TO WRITE**********
     '''
@@ -300,7 +300,7 @@ def getData(leavesName, ls, index, climaticList, geneticList):
     Get data from a csv file a various parameters to store into a list
 
     Args :
-        leavesName (the name of the actual leave)
+        leavesName (the list of the actual leaves)
         ls (least square distance between two trees)
         climaticList (the list of climatic trees)
         geneticList : (the list of genetic trees)
@@ -323,7 +323,7 @@ def writeOutputFile(data):
         data (the list contaning the final data)
     '''
     header = ['Gene', 'Arbre Phylogeographique','Nom de la feuille', 
-              'Position ASM', 'Bootsrap moyen', 'RF normalise']
+              'Position ASM', 'Bootsrap moyen', 'Distance ls']
     with open ("output.csv", "w", encoding="UTF8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
@@ -357,7 +357,7 @@ def filterResults(climaticTrees, geneticTrees):
             ls = leastSquare(geneticTrees[geneticList[0]], 
                              climaticTrees[climaticList[i]])
             if ls == None:                 
-               raise Exception(f'La distance RF n\'est pas calculable ' + 
+               raise Exception(f'La distance ls n\'est pas calculable ' + 
                             'pour {aligned_file}.')                
             if ls <= lsThreshold:
                 data.append(getData(leavesName, ls, i, climaticList, 
