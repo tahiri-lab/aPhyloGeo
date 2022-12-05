@@ -216,12 +216,52 @@ class AlignSequences:
         return [seqBID, aligned, scID]
 
     def starAlignement(self):
+        """
+        Method that combs through all the pairwise alignments couples and makes it so that every sequenced is alaigned with every other sequences.
+        If a "-" is found in the seqA of a pair, but not another, it is inserted into every other ones.
 
+        ex.:
+            pair1:          pair2:
+            
+            seqA1: TACTAC   seqA2: TAC-TAC
+            seqB1: TACTAC   seqB2: TACTTAC
+
+            becomes:
+            seqA1: TAC-TAC   seqA2: TAC-TAC
+            seqB1: TAC-TAC   seqB2: TACTTAC
+
+            and outputs:
+            seqA : TAC-TAC   #now combines SeqA1 and SeqA2
+            seqB1: TAC-TAC   
+            seqB2: TACTTAC
+
+            then, we compare the aligned set with the next pair:
+
+            SeqA : TAC-TAC  seqA3: TACTA-C
+            seqB1: TAC-TAC  seqB3: TACTAAC
+            seqB2: TACTTAC
+
+            wich makes:
+            SeqA : TAC-TA-C  seqA3: TAC-TA-C
+            seqB1: TAC-TA-C  seqB3: TAC-TAAC
+            seqB2: TACTTA-C
+
+            and outputs:
+            SeqA : TAC-TA-C     #now combines SeqA1, SeqA2 and SeqA3     
+            seqB1: TAC-TA-C  
+            seqB2: TACTTA-C
+            seqB3: TAC-TAAC
+
+            over and over again
+                
+        Return: 
+            starAlign (dict) see self.heuristicMSA
+        """
         scKey = self.centroidKey
         starAlign = {}
 
         for k in self.aligned.keys():
-            couple = self.aligned[k]    #a couple is SeqA and SeqB of a pairwise alignement
+            couple = self.aligned[k]    #couple is SeqA and SeqB of a pairwise alignement
 
             a = list(couple.keys())
             a.remove(scKey)
@@ -246,6 +286,24 @@ class AlignSequences:
         return starAlign
              
     def merge(self, result, k1, k2):
+        """
+        Method that loops through each position of two strings ans compares the Chars.
+
+        Arguments:
+            result (dict) the dictionnary of objects to compare; 
+                contains only object that have already been aligned + a new pair to align
+                can be refered to as "aligned set"
+            k1 (String) The Key of the object we want compared
+            k2 (String) The Key of the object we want compared
+        Variables:
+            minLen  (int)   The number of char in the smallest of the two strings
+            pos     (int)   The char position at wich we are now; it loops
+            nChar   (char)  The char from k1
+            tChar   (char)  The char from K2
+            keylist (list)  Ultimatly, contains all the keys of the object that need to change
+        Return:
+            result (dict)   The same object we started with, but with one more aligned pair inside.
+        """
         newRef= result[k1]
         tempRef = result["temp"]
         minLen = 1
@@ -285,6 +343,20 @@ class AlignSequences:
         return result
 
     def insertDash(self, dict, pos, keyList):
+        """
+        Method that inserts a "-" at [pos] in a string at every Key in a dict
+
+        Arguments:
+            dict    (dict)  contains many objects as:
+                key = (string)
+                values = (string)
+            pos     (int)   the char position at wich to insert
+            keyList (list)  list of keys of objects to modify
+        Variables:
+            char    (char)  The char to insert
+        Return:
+            dict    (dict)  The same we started with, with the modifications
+        """
         for k in keyList:
             char = '-'
             s = dict[k]
@@ -293,8 +365,18 @@ class AlignSequences:
         return dict
 
     def equalizeLength(self, unEqualSeqs):
+        """
+        Method that pads the the string in a dictionnaries values field to be equal to the longuest one.
+        Paddinf is made with "-"
+        Arguments:
+            unEqualSeqs (dict) contains many objects as:
+                key = (string)
+                values = (string)
+        Return:
+            equalizedSeqs (dict) see unEqualSeqs; but all the values have the same length
+        """
         equalizedSeqs = {}
-        maxLen = len( str( max( list( unEqualSeqs.values() ) ) ) ) #number of chars in the longest sequence
+        maxLen = len( str( max( list( unEqualSeqs.values() ) ) ) ) #number of chars in the longest string
 
         for k in unEqualSeqs.keys():
             equalizedSeqs[k]= Seq(str(unEqualSeqs[k]).ljust(maxLen,'-'))
@@ -362,6 +444,20 @@ class AlignSequences:
         return windowsDict
 
     def dictToFile(self,dict,filename,ext):
+        """
+        Debuging method that creates files from a dictonnary of sequences.
+        File is put in the debug file of the cwd
+
+        arguments
+            dict        (dict)      the objects to write in the file 
+                key = (string)
+                values = (string)
+            filename    (String)    the name of the future file
+            ext         (String)    the file extension
+        
+        return:
+            dict        (dict)       see dict from arguments
+        """
         dir = "./debug"
         if not os.path.exists(dir):
             os.mkdir(dir)
@@ -373,6 +469,15 @@ class AlignSequences:
         return dict
 
     def makeMSA(self):
+        """
+        Method that create a dictionnary of Multiple Sequence Alignment(MSA) objects from bioPython.
+        Each entry in the dictionnary is a MSA object of a single sliding window
+
+        return
+            msaSet (dict)
+                key (String) the window name
+                value (AlignIO) the MSA object
+        """
         msaSet = {}
         for windowSet in self.windowed.keys():
             data = ""

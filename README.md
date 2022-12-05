@@ -9,8 +9,38 @@
 
 <h2  align="center">Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
 
+<details open>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About the project</a>
+    </li>
+    <li>
+      <a href="#Installation">Installation</a>
+      <ul>
+        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
+      </ul>
+    </li>
+    <!--<li> Available analyses</li>
+      <ul>
+        <li><a href="#Group-creation">Group creation</a></li>
+        <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
+        <li><a href="#Similarity-networks">Similarity networks</a></li>
+        <li><a href="#BootScan-analysis">BootScan analysis</a></li>
+        <li><a href="#Findsites">Findsites</a></li>
+        <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
+      </ul>-->
+    <li>
+      <a href="#References">References</a>
+    </li>
+    <li>
+      <a href="#contact">Contact</a>
+    </li>
+  </ol>
+</details>
 
-# aPhyloGeo
+
+# About the project
 
 Link to the French version: [French version](https://github.com/tahiri-lab/aPhylogeo/blob/main/README_fr.md)
 
@@ -24,7 +54,10 @@ Link to the French version: [French version](https://github.com/tahiri-lab/aPhyl
 The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. The first block (the light pink color) is responsible for creating the trees based on the climate data. The second block (the dark yellow color) performs the function of input parameter validation. The third block (the light-yellow color) allows the creation of phylogenetic trees. This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
 
-## How to use?
+# Installation
+
+## Linux UNIX and Mac OS versions
+aPhyloGeo is available as a Python script.
 
 ### Prerequisites
 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
@@ -32,6 +65,21 @@ Before using this program, make sure that you have installed all the necessary l
 ```
 pip install -r requirements.txt
 ```
+
+### Python script
+A `requirements.txt` file containing all required libraries is available in the GitHub repository.
+
+Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
+
+<u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
+1. After downloading the source code, go to the folder containing `main.py`.
+2. If you do not have `virtualenv` installed, run `python3 -m pip install --user virtualenv`
+3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
+4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
+5. Install the required libraries using `python3 -m pip install -r requirements.txt`.
+6. Launch aPhyloGeo using `python3 main.py`.
+
+
 
 ### Creation of climatic trees
 
@@ -120,7 +168,7 @@ In this work, we applied software packages of the following versions: MUSCLE ver
 
 + For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access
 
-## References
+# References
 
 1. Sequence alignment tool : `MUSCLE`
 + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
@@ -137,3 +185,6 @@ doi:10.1186/1471-2105-5-113
 4. Phylogenetic analysis: `RAxML`
     [A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014](https://academic.oup.com/bioinformatics/article/30/9/1312/238053?login=true)
 
+
+# Contact
+Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.

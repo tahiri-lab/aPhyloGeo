@@ -22,7 +22,7 @@ with open('./scripts/params.yaml') as f:
 
 
 bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["rf_threshold"]
+lsThreshold = params["ls_threshold"]
 windowSize = params["window_size"]
 stepSize = params["step_size"]
 dataNames = params["data_names"]
@@ -249,7 +249,7 @@ def calculateAverageBootstrap(tree):
     Args:
         tree (The tree to get the average confidence from)
     Return : 
-        averageBootstrap(the average Bootstrap(confidence))
+        averageBootstrap (the average Bootstrap (confidence))
     '''
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda l: l.confidence,leaves))
@@ -322,8 +322,8 @@ def writeOutputFile(data):
     Args :
         data (the list contaning the final data)
     '''
-    header = ['Gene', 'Arbre Phylogeographique','Nom de la feuille', 
-              'Position ASM', 'Bootsrap moyen', 'Distance ls']
+    header = ['Gene', 'Phylogeographic tree','Name of species', 
+              'Position in ASM', 'Bootsrap mean', 'Least-Square distance']
     with open ("output.csv", "w", encoding="UTF8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
@@ -348,7 +348,7 @@ def filterResults(climaticTrees, geneticTrees):
     climaticList = createClimaticList(climaticTrees)
 
     # Compare every genetic trees with every climatic trees. If the returned 
-    # value is inferior or equal to the rf threshold, we keep the datas
+    # value is inferior or equal to the (Least-Square distance) LS threshold, we keep the datas
     while (len(geneticList) > 0 ):
         leaves1 = geneticTrees[geneticList[0]].get_terminals()
         leavesName = list(map(lambda l: l.name,leaves1))
@@ -357,7 +357,7 @@ def filterResults(climaticTrees, geneticTrees):
             ls = leastSquare(geneticTrees[geneticList[0]], 
                              climaticTrees[climaticList[i]])
             if ls == None:                 
-               raise Exception(f'La distance ls n\'est pas calculable ' + 
+               raise Exception(f'The LS distance is not calculable' + 
                             'pour {aligned_file}.')                
             if ls <= lsThreshold:
                 data.append(getData(leavesName, ls, i, climaticList, 
