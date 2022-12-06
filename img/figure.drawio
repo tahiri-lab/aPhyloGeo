@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-12-06T01:10:05.236Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" etag="WMBhdkH7A2Tc3rwjyu6W" version="20.6.0" type="github" pages="6">
+<mxfile host="app.diagrams.net" modified="2022-12-06T01:12:21.901Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" etag="YGIAMshUCZge8kGFiz0Y" version="20.6.0" type="github" pages="6">
   <diagram id="ZQ_5J2CHFgrV61spP5Iu" name="Page-1">
     <mxGraphModel dx="2249" dy="1923" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -1300,7 +1300,7 @@
         <mxCell id="GG_y0LI38G6kwXoI29Fl-18" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;Calcul de la distance entre chaque paire d&#39;&lt;b&gt;&lt;font color=&quot;#660033&quot;&gt;arbre climatique&lt;/font&gt;&lt;/b&gt; et d&#39;&lt;b&gt;&lt;font color=&quot;#660033&quot;&gt;arbre génétique&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#A50040;fontColor=#333333;fillColor=#D882B5;fontSize=18;" parent="1" vertex="1">
           <mxGeometry x="-523" y="-506" width="200" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="GG_y0LI38G6kwXoI29Fl-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=18;fontColor=#333333;" parent="1" source="GG_y0LI38G6kwXoI29Fl-24" target="GG_y0LI38G6kwXoI29Fl-31" edge="1">
+        <mxCell id="GG_y0LI38G6kwXoI29Fl-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=18;fontColor=#333333;entryX=0.16;entryY=0.55;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="GG_y0LI38G6kwXoI29Fl-24" target="GG_y0LI38G6kwXoI29Fl-31" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="GG_y0LI38G6kwXoI29Fl-24" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;Écrire les résultats dans le fichier .csv&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#A50040;fontColor=#333333;fillColor=#D882B5;fontSize=18;" parent="1" vertex="1">
@@ -1328,7 +1328,7 @@
           <mxGeometry x="-311" y="-1190" width="175" height="120" as="geometry" />
         </mxCell>
         <mxCell id="GG_y0LI38G6kwXoI29Fl-31" value="Fin" style="ellipse;shape=cloud;fillColor=#EA6B66;fontSize=18;fontFamily=Helvetica;fontColor=#333333;" parent="1" vertex="1">
-          <mxGeometry x="-228.5" y="-225" width="169" height="120" as="geometry" />
+          <mxGeometry x="-250" y="-232" width="169" height="120" as="geometry" />
         </mxCell>
         <mxCell id="GG_y0LI38G6kwXoI29Fl-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontFamily=Helvetica;fontSize=18;fillColor=#a0522d;strokeColor=#6D1F00;fontColor=#333333;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
