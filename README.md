@@ -34,9 +34,6 @@
       <a href="#Settings">Settings</a>
     </li>
     <li>
-      <a href="#Potential-problems-encountered">Potential problems encountered</a>
-    </li>
-    <li>
       <a href="#Example">Example</a>
       <ul>
         <li><a href="#Input">Input</a></li>
@@ -55,7 +52,7 @@
 
 # About the project
 
-`aPhylogeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
+`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
 
 ## Workflow
 
@@ -64,7 +61,11 @@
 
 The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. The first block (the light pink color) is responsible for creating the trees based on the climate data. The second block (the dark yellow color) performs the function of input parameter validation. The third block (the light-yellow color) allows the creation of phylogenetic trees. This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
+**Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
+
 In this work, we applied software packages of the following versions: MUSCLE version 3.18 (GNU GENERAL PUBLIC LICENSE), PHYLIP version 3.18 (open source license), RAxML version 8.2.12 (GNU GENERAL PUBLIC LICENSE).
+
+[Biopython](https://biopython.org/)
 
 
 # Installation
@@ -95,11 +96,13 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 
 
 # Settings
+The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
 
-
-# Potential problems encountered
-
-+ For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access.
+- **Bootstrap threshold**: Number of replicates threshold to be generated for each sub-MSA (each position of the sliding window)
+- **Window length**: Size of the sliding window
+- **Step**: Sliding window advancement step
+- **Distance choice**: Least Square (LS) distance (version 1.0) will be extented to [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+- **Least Square distance threshold**: LS distance threshold at which the results are most significant
 
 
 # Example
@@ -111,6 +114,7 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 ## Output
 
 # References
+
 
 1. Sequence alignment tool : `MUSCLE`
 + [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
