@@ -30,6 +30,19 @@
         <li><a href="#Findsites">Findsites</a></li>
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>-->
+     <li>
+      <a href="#Settings">Settings</a>
+    </li>
+    <li>
+      <a href="#Potential-problems-encountered">Potential problems encountered</a>
+    </li>
+    <li>
+      <a href="#Example">Example</a>
+      <ul>
+        <li><a href="#Input">Input</a></li>
+        <li><a href="#Output">Output</a></li>
+      </ul>
+    </li>
     <li>
       <a href="#References">References</a>
     </li>
@@ -52,6 +65,8 @@ Link to the French version: [French version](https://github.com/tahiri-lab/aPhyl
 
 
 The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. The first block (the light pink color) is responsible for creating the trees based on the climate data. The second block (the dark yellow color) performs the function of input parameter validation. The third block (the light-yellow color) allows the creation of phylogenetic trees. This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
+
+In this work, we applied software packages of the following versions: MUSCLE version 3.18 (GNU GENERAL PUBLIC LICENSE), PHYLIP version 3.18 (open source license), RAxML version 8.2.12 (GNU GENERAL PUBLIC LICENSE).
 
 
 # Installation
@@ -81,92 +96,21 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 
 
 
-### Creation of climatic trees
-
-In order to obtain the climatic data trees, you need to create a csv file containing the data to study ( see the example [data.csv](./data/data.csv) ).
-
-This file should have a structure similar to the example file. A column containing the names of the specimens should be present since the name of this column will be requested when the program is launched. **The column names should not contain parentheses**!
-
-The other columns should contain the climatic variables that are to be studied. The values must be **numeric** for the program to work properly.
-
-Once the file is created with the data, it is now time to create the trees with this command: 
-
-```
-make tree
-```
-Here is an example of what is displayed on the terminal and the entries entered according to the example file [data.csv](./data/data.csv) :
-
-```
-====================================================================================================================
-Before running this script, please make sure there is a .csv file containing all the data to analyze in this repo
-====================================================================================================================
-Please enter the name of the csv file (this is a relative path): data/donnees.csv
-Number of trees to create: 
-5
-Please enter the name of the colum containing the specimens names: Nom du specimen
-Please enter the name of the column to analyze in your csv file (1): T min à 2m C
-Please enter the name of the column to analyze in your csv file (2): T max à 2m C
-Please enter the name of the column to analyze in your csv file (3): Humidité relative à 2m %
-Please enter the name of the column to analyze in your csv file (4): Précipitation totale sur le mois mm
-Please enter the name of the column to analyze in your csv file (5): Pression en surface kpa
-```
-
-Make sure that the column names are identical to the ones you entered so that the program can find them. The names of the sequences to be studied and the names of the specimens in this file must also match exactly.
-
-The climatic trees should then be created in the current folder with the column names followed by ``newick`` (e.g. ``T_max_to_2m_C_newick``). 
+# Settings
 
 
-### Creating phylogenetic trees and phylogeographic analysis
+# Potential problems encountered
 
-1. The `.fasta` sequence files must be put in the folder [data](./data). Note that the header of the sequence file must respect this format (Note: The sequences obtained on [GISAID](https://www.gisaid.org) all respect this format):
++ For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access.
 
-```>hCoV-19/Nigeria/S38/2020|EPI_ISL_2399462|2020-10-12```
 
-In order to be able to differentiate each sequence with a different name, this tool will isolate the 3rd word encountered in the header. In this example, the sequence will be named `S38`. In case this word is longer than 10 characters, the program will only take the first ten : 
+# Example
 
-```>hCoV-19/India/GJ-GBRC560b/2021|EPI_ISL_1677798|2021-01-12```
+## Description
 
-In this case, the sequence name will only be `GJ-GBRC560` since it is exactly 10 characters long. This is important to understand, especially for the names you will give to the sequences in the `csv` climatic data file, which must be identical to the single names.
+## Input
 
-2. Once the sequences have been placed in the [data](./data) folder, all you have to do is run the program with `make` command. Here is an example of what should appear on the terminal and an example of the entries:
-
-```
-How many climatic data tree will be used?: 1
-Name of the tree file (1): T_max_à_2m_C_newick
-Enter the bootstrap value threshold between 0 and 100%: 10
-Enter the Robinson and Foulds distance threshold between 0 and 100%: 100
-Sliding window size: 100
-Step count: 10
-===============================================
-Please select an option among the following: 
-===============================================
-1. Use the whole DNA sequences
-2. Study specific genes of SARS-CoV-2
-Please enter 1 or 2: 2
-================================================================================
-Choose among the following genes to analyze seperated by spaces (ex: 1 8 11): 
-================================================================================
-1 : ORF1ab
-2 : S
-3 : ORF3a
-4 : ORF3b
-5 : E
-6 : M
-7 : ORF6
-8 : ORF7a
-9 : ORF7b
-10 : ORF8
-11 : N
-12 : ORF10
-7
-```
-Depending on the bootstrap value and the `Robinson-Fould metric` found for each MSA ( Multiple Sequence Alignment ), the climatic tree of interest with their corresponding MSA will be kept in the folders of each selected [gene](./output) or in the [reference](./output/reference_gene) folder if the complete sequence has been studied. Finally, the [output.csv](output.csv) file will contain all the significant MSAs and their related informations such as their position on the sequence, the gene related to this position, their bootstrap value and their `RF metric`.
-
-In this work, we applied software packages of the following versions: MUSCLE version 3.18 (GNU GENERAL PUBLIC LICENSE), PHYLIP version 3.18 (open source license), RAxML version 8.2.12 (GNU GENERAL PUBLIC LICENSE).
-
-## Potential problems encountered
-
-+ For `macOS` users, it is likely that your computer is blocking access to the `MUSCLE` program. If this is the case, go to the privacy settings on your machine and give the program access
+## Output
 
 # References
 
