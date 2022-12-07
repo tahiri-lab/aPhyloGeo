@@ -48,7 +48,7 @@ Link to the French version: [French version](https://github.com/tahiri-lab/aPhyl
 
 ## Workflow
 
-![](./img/workflow_en.png)
+![](./img/worflow_EN.png)
 
 
 The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. The first block (the light pink color) is responsible for creating the trees based on the climate data. The second block (the dark yellow color) performs the function of input parameter validation. The third block (the light-yellow color) allows the creation of phylogenetic trees. This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
