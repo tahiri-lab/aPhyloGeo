@@ -52,7 +52,7 @@
 
 # About the project
 
-`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
+`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor Nadia Tahiri  (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [RLeast Square (LS) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub). MSAs that yield trees with a significant `RF` value are then saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations.
 
 ## Workflow
 
@@ -77,7 +77,7 @@ aPhyloGeo is available as a Python script.
 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Python script
