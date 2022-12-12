@@ -126,6 +126,11 @@ ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability o
 
 ## Input
 
+The algorithm takes two files as input with the following definitions:
+
+- **Genetic file** with fasta extebsion. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
+- **Claimatic file** with csv extebsion. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
+
 ## Output
 
 # References
