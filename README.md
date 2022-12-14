@@ -56,7 +56,7 @@
 
 ## Workflow
 
-![](./img/Fig_1.png)
+![](./img/Fig1.png)
 
 
 Figure 1. The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. 
