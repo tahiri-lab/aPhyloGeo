@@ -74,7 +74,7 @@ This is the most important block and the basis of this study, through the result
 Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the worflow below).
 **Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
 
-In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-clauses).
+In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License).
 
 
 
@@ -138,25 +138,15 @@ The algorithm will return a csv file that contains information from all relevant
 
 # References
 
-
-1. Sequence alignment tool : `MUSCLE`
-+ [Edgar, R.C. (2004) MUSCLE: multiple sequence alignment with high accuracy and high throughput.Nucleic Acids Res. 32(5):1792-1797.](https://academic.oup.com/nar/article/32/5/1792/2380623)
-doi:10.1093/nar/gkh340]
-+ [Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment method with reduced time and space complexity BMC Bioinformatics, (5) 113.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-5-113)
-doi:10.1186/1471-2105-5-113
-
-2. Phylip Package: `Seqboot`, `DNADist`, `Neighbor`, `Consense`
-+ [J. Felsenstein. 1989. PHYLIP - Phylogeny Inference Package (Version 3.2) . Cladistics. 5: 164-166.](https://evolution.genetics.washington.edu/phylip.html)
-
-3. Calculation of distance between phylogenetic tree: `Least Square metric`
+1. Calculation of distance between phylogenetic tree: `Least Square metric`
 + [Cavalli-Sforza, L. L., & Edwards, A. W. (1967). Phylogenetic analysis. Models and estimation procedures. American journal of human genetics, 19(3 Pt 1), 233.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/)
 + [Felsenstein, J. (1997). An alternating least squares approach to inferring phylogenies from pairwise distances. Systematic biology, 46(1), 101-111.](https://pubmed.ncbi.nlm.nih.gov/11975348/)
 + [Makarenkov, V., & Lapointe, F. J. (2004). A weighted least-squares approach for inferring phylogenies from incomplete distance matrices. Bioinformatics, 20(13), 2113-2121.](https://pubmed.ncbi.nlm.nih.gov/15059836/)
 
-3. Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
+2. Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
 + [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
     
-4. Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
+3. Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
 # Contact
