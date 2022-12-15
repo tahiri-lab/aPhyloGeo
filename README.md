@@ -62,7 +62,12 @@
 Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. 
 - **The first block** (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file). 
 - **The second block** (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file). 
-- **The third block** (the light green color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step. 
+- **The third block** (the light green color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
+
+$$ls(T_1, T_2) = \sum_{1 \le i \le j \le n} \lvert \delta(i,j) - \xi(i,j) \rvert$$
+
+
+where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ and $j$ are two species, $\delta(i,j)$ is the distance between specie $i$ and specie $j$ in $T_1$, $\xi(i,j)$ is the distance between specie $i$ and specie $j$ in $T_2$, and $n$ is the total number of species.
 
 This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
