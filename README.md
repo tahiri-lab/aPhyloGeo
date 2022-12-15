@@ -61,8 +61,8 @@
 
 Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. 
 - **The first block** (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file). 
-- **The second block** (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file). 
-- **The third block** (the light green color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
+- **The second block** (the light green color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file). 
+- **The third block** (the light pink color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
 
 $$ls(T_1, T_2) = \sum_{1 \le i \le j \le n} \lvert \delta(i,j) - \xi(i,j) \rvert$$
 
@@ -103,6 +103,8 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 5. Install the required libraries using `python3 -m pip install -r requirements.txt`.
 6. Launch aPhyloGeo using `python3 main.py`.
 
+You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
+
 
 
 # Settings
@@ -129,11 +131,11 @@ ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability o
 
 The algorithm takes two files as input with the following definitions:
 
-- **Genetic file** with fasta extebsion. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
-- **Claimatic file** with csv extebsion. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
+- **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
+- **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
 
 ## Output
-The algorithm will return a csv file that contains information from all relevant MSAs (see Worflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average boostratp value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
+The algorithm will return a csv file that contains information from all relevant MSAs (see Worflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
 
 
 # References
