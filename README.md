@@ -56,10 +56,10 @@
 
 ## Workflow
 
-![](./img/Fig_1.png)
+![The workflow of the algorithm. The operations within this workflow include several blocks.](./img/Fig_1.png)
 
 
-Figure 1. The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. 
+The blocks are highlighted by three different colors. 
 - **The first block** (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file). 
 - **The second block** (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file). 
 - **The third block** (the light green color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step. 
