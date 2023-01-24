@@ -101,7 +101,7 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `pip install -r requirements.txt`.
-6. Launch aPhyloGeo using `python3 main.py`.
+6. Launch aPhyloGeo using `python3 scripts/main.py`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
