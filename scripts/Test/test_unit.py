@@ -29,4 +29,4 @@ def test_getDissimilaritiesMatrix():
                     print("Testing " + filename + " ...")
                     assert f.read() == str(aPhyloGeo.getDissimilaritiesMatrix(df, 'id' , filename[0:-4]))
 
-    assert True
+   
