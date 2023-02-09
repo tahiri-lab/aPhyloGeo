@@ -131,8 +131,8 @@ ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability o
 
 The algorithm takes two files as input with the following definitions:
 
-- **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
-- **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
+- 🧬 **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
+- ⛅ **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
 
 ## Output
 The algorithm will return a csv file that contains information from all relevant MSAs (see Worflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
