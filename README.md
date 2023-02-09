@@ -151,5 +151,5 @@ The algorithm will return a csv file that contains information from all relevant
 3️⃣ Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
-# Contact
-📧 Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
+# 📧 Contact
+Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
