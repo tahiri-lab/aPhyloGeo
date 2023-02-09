@@ -84,16 +84,16 @@ In this work, we applied software packages of the following versions: [Biopython
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
-Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
+💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
 
 ```
 pip3 install -r requirements.txt
 ```
 
-### Python script
+### 💻 Python script
 A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
-Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
+⚠️ Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
 
 <u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
 1. After downloading the source code, go to the folder containing `main.py`.
@@ -152,4 +152,4 @@ The algorithm will return a csv file that contains information from all relevant
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
 # Contact
-Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
+📧 Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
