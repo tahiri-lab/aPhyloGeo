@@ -1,9 +1,11 @@
 import yaml
 from yaml.loader import SafeLoader
+import os
 
 
 # We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
+# We use the absolute path to the file so that we can run the script from anywhere
+with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
     params = yaml.load(f, Loader=SafeLoader)
 
 bootstrap_threshold =  params["bootstrap_threshold"]

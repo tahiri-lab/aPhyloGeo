@@ -15,9 +15,9 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
 from yaml.loader import SafeLoader
 
-
 # We open the params.yaml file and put it in the params variable
-with open('./scripts/params.yaml') as f:
+# We use the absolute path to the file so that we can run the script from anywhere
+with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
     params = yaml.load(f, Loader=SafeLoader)
 
 
@@ -201,6 +201,10 @@ def climaticPipeline():
     df = openCSV(p.file_name)
     for i in range(1, len(p.names)):
         dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
+        # write a file named p.names[i] containing dm
+        # with open("./scripts/Test/TestFiles/Dissimilarity/" + p.names[i] + ".csv", 'w') as fwrite:
+        #     fwrite.write(str(dm))
+
         trees[p.names[i]] = createTree(dm)
     leastSquare(trees[p.names[1]],trees[p.names[2]])
     return trees
