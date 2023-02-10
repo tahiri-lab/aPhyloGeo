@@ -201,11 +201,8 @@ def climaticPipeline():
     df = openCSV(p.file_name)
     for i in range(1, len(p.names)):
         dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
-        # write a file named p.names[i] containing dm
-        # with open("./scripts/Test/TestFiles/Dissimilarity/" + p.names[i] + ".csv", 'w') as fwrite:
-        #     fwrite.write(str(dm))
-
         trees[p.names[i]] = createTree(dm)
+    
     leastSquare(trees[p.names[1]],trees[p.names[2]])
     return trees
     
