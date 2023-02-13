@@ -7,7 +7,7 @@
         </p>
 
 
-<h2  align="center">Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
+<h2  align="center"> 🌳 Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
 
 <details open>
   <summary>Table of Contents</summary>
@@ -50,9 +50,14 @@
 </details>
 
 
-# About the project
+# 📝 About the project
 
 `aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionnally saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations (see Worflow Section for more details).
+
+💡 If you are using our algorithm in your research, please cite our recent paper: 
+Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
+[Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
+
 
 ## Workflow
 
@@ -78,22 +83,22 @@ In this work, we applied software packages of the following versions: [Biopython
 
 
 
-# Installation
+# ⚒️ Installation
 
 ## Linux UNIX and Mac OS versions
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
-Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
+💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
 
 ```
 pip3 install -r requirements.txt
 ```
 
-### Python script
+### 💻 Python script
 A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
-Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
+⚠️ Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
 
 <u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
 1. After downloading the source code, go to the folder containing `main.py`.
@@ -107,7 +112,7 @@ You can also launch the package using the `make` command from your terminal when
 
 
 
-# Settings
+# 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
 
 - **Bootstrap threshold**: Number of replicates threshold to be generated for each sub-MSA (each position of the sliding window)
@@ -117,7 +122,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 - **Least Square distance threshold**: LS distance threshold at which the results are most significant
 
 
-# Example
+# 📁 Example
 
 ## Description
 We selected only 5 of 38 lineages with regional characteristics for further study (see Koshkarov et al., 2022). Based on location information, complete nucleotide sequencing data for these 5 lineages was collected from the [NCBI Virus website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/). In the case of the availability of multiple sequencing results for the same lineage in the same country, we selected the sequence whose collection date was closest to the earliest date presented. If there are several sequencing results for the same country on the same date, the sequence with the least number of ambiguous characters (N per
@@ -131,25 +136,25 @@ ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability o
 
 The algorithm takes two files as input with the following definitions:
 
-- **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
-- **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
+- 🧬 **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
+- ⛅ **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
 
 ## Output
 The algorithm will return a csv file that contains information from all relevant MSAs (see Worflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
 
 
-# References
+# ✔️ References
 
-1. Calculation of distance between phylogenetic tree: `Least Square metric`
+1️⃣ Calculation of distance between phylogenetic tree: `Least Square metric`
 + [Cavalli-Sforza, L. L., & Edwards, A. W. (1967). Phylogenetic analysis. Models and estimation procedures. American journal of human genetics, 19(3 Pt 1), 233.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/)
 + [Felsenstein, J. (1997). An alternating least squares approach to inferring phylogenies from pairwise distances. Systematic biology, 46(1), 101-111.](https://pubmed.ncbi.nlm.nih.gov/11975348/)
 + [Makarenkov, V., & Lapointe, F. J. (2004). A weighted least-squares approach for inferring phylogenies from incomplete distance matrices. Bioinformatics, 20(13), 2113-2121.](https://pubmed.ncbi.nlm.nih.gov/15059836/)
 
-2. Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
+2️⃣ Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
 + [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
     
-3. Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
+3️⃣ Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
-# Contact
+# 📧 Contact
 Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
