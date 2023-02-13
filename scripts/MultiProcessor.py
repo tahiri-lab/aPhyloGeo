@@ -1,7 +1,6 @@
 from multiprocess import Process,Value,Manager
 import psutil
 import time
-import resource
 import math
 import os
 
