@@ -32,9 +32,8 @@ class TestGenetic:
 @pytest.mark.usefixtures('alignementSetup')
 class TestAlignement:
 
-    def test_openFastaFile(self, alignementSetup):
-        assert True
     def test_getSequenceCentroid(self, alignementSetup):
+        alignementSetup.getSequenceCentroid()
         assert True
     def test_alignSequences(self, alignementSetup):
         assert True

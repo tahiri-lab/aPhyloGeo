@@ -224,7 +224,7 @@ def createBoostrap(msaSet):
         list.append([msaSet, constructor, key])
 
     #multiprocessing
-    print("Creating bootstrap variations with multiplyer of:",p.bootstrapAmount)
+    print("Creating bootstrap variations with multiplyer of:", p.bootstrapAmount)
     result = Multi(list,bootSingle).processingSmallData()
 
     #reshaping the output into a readble dictionary
