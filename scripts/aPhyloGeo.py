@@ -15,24 +15,8 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
 from yaml.loader import SafeLoader
 
-
-# We open the params.yaml file and put it in the params variable
-# with open('./scripts/params.yaml') as f:
-#     params = yaml.load(f, Loader=SafeLoader)
-
-
-# bootstrapThreshold = params["bootstrap_threshold"]
-# lsThreshold = params["ls_threshold"]
-# windowSize = params["window_size"]
-# stepSize = params["step_size"]
-# dataNames = params["data_names"]
-# referenceGeneFile = params["reference_gene_file"]
-# fileName = params["file_name"]
-# specimen = params["specimen"]
-# names = params["names"]
 bootstrapList = []
 data = []
-
 _p = Params()   # variable used in the bootSingle function because we
                 # can't pass a parameter (it uses multiprocessing)
 
