@@ -191,8 +191,6 @@ def climaticPipeline(p=Params()):
     for i in range(1, len(p.names)):
         dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
         trees[p.names[i]] = createTree(dm)
-    
-    leastSquare(trees[p.names[1]],trees[p.names[2]])
     return trees
     
 
