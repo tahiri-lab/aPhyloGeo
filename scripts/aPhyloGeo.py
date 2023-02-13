@@ -32,7 +32,10 @@ from yaml.loader import SafeLoader
 # names = params["names"]
 bootstrapList = []
 data = []
-_p = Params()
+
+_p = Params()   # variable used in the bootSingle function because we
+                # can't pass a parameter (it uses multiprocessing)
+
 
 def openCSV(file):
     """
@@ -227,7 +230,9 @@ def createBoostrap(msaSet:dict, p:Params):
 
     #multiprocessing
     print("Creating bootstrap variations with multiplyer of:",p.bootstrapAmount)
-    _p = p
+    
+    _p = p  # variable used in the bootSingle function because we
+            # can't pass a parameter (it uses multiprocessing)
     result = Multi(list,bootSingle).processingSmallData()
 
     #reshaping the output into a readble dictionary
