@@ -4,7 +4,7 @@ import yaml
 import shutil
 import Bio as Bio 
 import csv
-import Params as p
+from Params import Params
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.Consensus import *
@@ -15,23 +15,10 @@ from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from csv import writer
 from yaml.loader import SafeLoader
 
-# We open the params.yaml file and put it in the params variable
-# We use the absolute path to the file so that we can run the script from anywhere
-with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
-    params = yaml.load(f, Loader=SafeLoader)
-
-
-bootstrapThreshold = params["bootstrap_threshold"]
-lsThreshold = params["ls_threshold"]
-windowSize = params["window_size"]
-stepSize = params["step_size"]
-dataNames = params["data_names"]
-referenceGeneFile = params["reference_gene_file"]
-fileName = params["file_name"]
-specimen = params["specimen"]
-names = params["names"]
 bootstrapList = []
 data = []
+_p = Params()   # variable used in the bootSingle function because we
+                # can't pass a parameter (it uses multiprocessing)
 
 
 def openCSV(file):
@@ -190,9 +177,11 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline():
+def climaticPipeline(p=Params()):
     '''
     Creates a dictionnary with the climatic Trees
+    Args:
+        p (Params object : created if not specified)
 
     Return:
         trees (the climatic tree dictionnary)
@@ -207,11 +196,12 @@ def climaticPipeline():
     return trees
     
 
-def createBoostrap(msaSet):
+def createBoostrap(msaSet:dict, p:Params):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Args:
         msaSet (dictionnary with multiple sequences alignment to transform into trees)
+        p (Params object)
     Return:
         *********TO WRITE**********
     '''
@@ -224,7 +214,10 @@ def createBoostrap(msaSet):
         list.append([msaSet, constructor, key])
 
     #multiprocessing
-    print("Creating bootstrap variations with multiplyer of:", p.bootstrapAmount)
+    print("Creating bootstrap variations with multiplyer of:",p.bootstrapAmount)
+    
+    _p = p  # variable used in the bootSingle function because we
+            # can't pass a parameter (it uses multiprocessing)
     result = Multi(list,bootSingle).processingSmallData()
 
     #reshaping the output into a readble dictionary
@@ -235,10 +228,16 @@ def createBoostrap(msaSet):
     return consensusTree
 
 def bootSingle(args):
+    '''
+    Args:
+        args (list of arguments)
+    Return:
+        *********TO WRITE**********
+    '''
     msaSet = args[0]
     constructor = args[1]
     key = args[2]
-    result = bootstrap_consensus(msaSet[key], p.bootstrapAmount, constructor, 
+    result = bootstrap_consensus(msaSet[key], _p.bootstrapAmount, constructor, 
                                  majority_consensus)
     return [result,key]
 
@@ -262,7 +261,7 @@ def calculateAverageBootstrap(tree):
     return averageBootsrap
 
 
-def createGeneticList(geneticTrees):
+def createGeneticList(geneticTrees, p:Params):
     '''
     Create a list of Trees if the bootstrap Average is higher than
     the threshold
@@ -275,7 +274,7 @@ def createGeneticList(geneticTrees):
     geneticList = []
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if(bootstrap_average >= bootstrapThreshold):
+        if(bootstrap_average >= p.bootstrap_threshold):
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
     return geneticList
@@ -296,7 +295,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, geneticList):
+def getData(leavesName, ls, index, climaticList, geneticList, p:Params):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -305,8 +304,10 @@ def getData(leavesName, ls, index, climaticList, geneticList):
         ls (least square distance between two trees)
         climaticList (the list of climatic trees)
         geneticList : (the list of genetic trees)
+        p (Params object)
     '''
-    with open('datasets/5seq/geo.csv', 'r') as file:
+    p.file_name
+    with open(p.file_name, 'r') as file:
         csvreader = csv.reader(file)
         for leave in leavesName:
             for row in csvreader:
@@ -333,17 +334,18 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees):
+def filterResults(climaticTrees, geneticTrees, p:Params):
     '''
     Create the final datas from the Climatic Tree and the Genetic Tree
 
     Args :
         climaticTrees (the dictionnary containing every climaticTrees)
         geneticTrees (the dictionnary containing every geneticTrees)
+        p (the Params object)
     '''
     # Create a list of the tree if the bootstrap is superior of the
     # bootstrap treshold
-    geneticList = createGeneticList(geneticTrees)
+    geneticList = createGeneticList(geneticTrees, p)
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
@@ -360,9 +362,9 @@ def filterResults(climaticTrees, geneticTrees):
             if ls == None:                 
                raise Exception(f'The LS distance is not calculable' + 
                             'pour {aligned_file}.')                
-            if ls <= lsThreshold:
+            if ls <= p.ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList, 
-                                    geneticList))
+                                    geneticList, p))
             i += 1             
         geneticList.pop(0)
         bootstrapList.pop(0)
@@ -370,7 +372,7 @@ def filterResults(climaticTrees, geneticTrees):
     writeOutputFile(data)
 
 
-def geneticPipeline(climaticTrees):
+def geneticPipeline(climaticTrees, p=Params()):
     '''
     Get the genetic Trees from the initial file datas so we 
     can compare every valid tree with the climatic ones. In the 
@@ -387,10 +389,10 @@ def geneticPipeline(climaticTrees):
         os.mkdir("./debug")
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
-    alignementObject = AlignSequences()
+    alignementObject = AlignSequences(p)
     #alignedSequences = alignementObject.aligned
     #heuristicMSA = alignementObject.heuristicMSA
     #windowedSequences = alignementObject.windowed
     msaSet = alignementObject.msaSet
-    geneticTrees = createBoostrap(msaSet)
-    filterResults(climaticTrees, geneticTrees)
+    geneticTrees = createBoostrap(msaSet, p)
+    filterResults(climaticTrees, geneticTrees, p)

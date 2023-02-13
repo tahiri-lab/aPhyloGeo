@@ -9,14 +9,13 @@ from Bio import pairwise2
 from Bio.Seq import Seq
 from Bio import AlignIO
 from MultiProcessor import Multi
-import Params as p
-
+from Params import Params
 class AlignSequences:
     """
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.    
     """
 
-    def __init__(self):
+    def __init__(self, p=Params()):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
@@ -48,8 +47,8 @@ class AlignSequences:
             ##todo
             self.msa (AlignIO()) 
         """
-
-        self.sequences = self.openFastaFile(p.reference_gene_file)
+        self.p = p
+        self.sequences = self.openFastaFile(self.p.reference_gene_file)
         self.centroidKey = self.getSequenceCentroid()[0]
         self.centroidSeq = self.sequences.pop(self.centroidKey)
 
@@ -211,7 +210,7 @@ class AlignSequences:
         #time.sleep(1)
 
         ####### JUST TO MAKE THE DEBUG FILES ####### 
-        if p.makeDebugFiles:
+        if self.p.makeDebugFiles:
             os.mkdir("./debug/1_alignSequences")
             for w in aligned.keys():
                 self.dictToFile(aligned[w],str("1_alignSequences/"+w),".fasta")
@@ -306,7 +305,7 @@ class AlignSequences:
         starAlign.pop( "temp" )
 
         ####### JUST TO MAKE THE DEBUG FILES ####### 
-        if p.makeDebugFiles:
+        if self.p.makeDebugFiles:
             os.mkdir("./debug/2_starAlignement")
             self.dictToFile(starAlign,"2_starAlignement/starAligned",".fasta")
         ####### JUST TO MAKE THE DEBUG FILES ####### 
@@ -443,8 +442,8 @@ class AlignSequences:
         longKey = max(alignedSequences, key=alignedSequences.get)
         maxLength = len(alignedSequences[longKey])
         
-        winSize = p.window_size #longueur
-        stepSize = p.step_size #avance de x
+        winSize = self.p.window_size #longueur
+        stepSize = self.p.step_size #avance de x
         stepStart = 0
         stepEnd = winSize -1
 
@@ -463,7 +462,7 @@ class AlignSequences:
             stepEnd += stepSize
 
         ####### JUST TO MAKE THE DEBUG FILES ####### 
-        if p.makeDebugFiles:
+        if self.p.makeDebugFiles:
             os.mkdir("./debug/3_slidingWindow")
             for w in windowsDict.keys():
                 self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
