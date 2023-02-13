@@ -21,6 +21,7 @@ def test_climaticPipeline():
         curent_dir = dir + '\\' + test_case
         dir_tree = current_file + '\\TestFiles\\CreateTree\\' + test_case
         df = aPhyloGeo.openCSV(climaticDataFilePath)
+        trees = {}
 
         for filename in os.listdir(curent_dir):
             if filename.endswith(".csv"):
@@ -30,7 +31,15 @@ def test_climaticPipeline():
                     matrix = aPhyloGeo.getDissimilaritiesMatrix(df, 'id' , filename_without_ext)    
                     # test getDissimilaritiesMatrix
                     assert str(matrix) == matrix_expected.read()
+
+                    trees[filename_without_ext] = aPhyloGeo.createTree(matrix)
+
                     with open(dir_tree + '\\' + filename_without_ext + '.txt', 'r') as create_tree_expected:
+
                         # test createTree
                         assert str(aPhyloGeo.createTree(matrix)) == create_tree_expected.read()
+
+        # test leastSquare
+        assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'],trees['T2M']) == 2.1550089999999997
+
 
