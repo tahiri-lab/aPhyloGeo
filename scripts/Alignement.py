@@ -56,8 +56,36 @@ class AlignSequences:
         self.aligned = self.alignSequences()
         self.heuristicMSA = self.starAlignement()
         self.windowed = self.slidingWindow()
-        
         self.msaSet = self.makeMSA()
+
+        # print("\n\n", self.windowed, "\n\n")
+
+        # with open( os.path.dirname(__file__) + "\\Test\\TestFiles\\GetSequenceCentroid\\" + p.reference_gene_filename[0:-5], 'w') as f:
+        #     f.write(str(self.centroidKey))
+
+        # for key in self.aligned.keys():
+        #     dir_path = os.path.dirname(__file__) + "\\Test\\TestFiles\\AlignSequence\\" + p.reference_gene_filename + "\\" + key
+        #     if not os.path.isdir(dir_path):
+        #         os.mkdir(dir_path)
+        #     for key2 in self.aligned[key].keys():
+        #         with open(dir_path + "\\" + key2, 'w') as f:
+        #             f.write(str(self.aligned[key][key2]))
+
+        # for key in self.heuristicMSA.keys():
+        #     with open(os.path.dirname(__file__) + "\\Test\\TestFiles\\StarAlignement\\" + p.reference_gene_filename + "\\" + key, 'w') as f:
+        #         f.write(str(self.heuristicMSA[key]))
+
+        # for key in self.windowed.keys():
+        #     dir_path = os.path.dirname(__file__) + "\\Test\\TestFiles\\SlidingWindow\\" + p.reference_gene_filename + "\\" + key
+        #     if not os.path.isdir(dir_path):
+        #         os.mkdir(dir_path)
+        #     for key2 in self.windowed[key].keys():
+        #         with open(dir_path + "\\" + key2, 'w') as f:
+        #             f.write(str(self.windowed[key][key2]))
+    
+        # for key in self.msaSet.keys():
+        #     AlignIO.write(self.msaSet[key], os.path.dirname(__file__) + "\\Test\\TestFiles\\MakeMSA\\" + p.reference_gene_filename + "\\" + key + ".fasta", "fasta")
+
 
     def openFastaFile(self,file):
         '''
