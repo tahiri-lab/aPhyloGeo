@@ -514,3 +514,46 @@ class AlignSequences:
             msaSet[windowSet] = AlignIO.read(StringIO(data), "fasta")
         return msaSet
 
+
+    def fileToDict(filename, ext):
+        """
+        Method that reads a fasta file and returns a dictionnary of Seq objects
+
+        arguments:
+            filename    (String)    the name of the file
+            ext         (String)    the file extension
+        
+        return:
+            dict        (dict)
+                key = (string)
+                values = (string)
+        """
+        f=open(filename+ext,"r")
+        dict = {}
+        for line in f:
+            if line[0] == ">":
+                key = line[1:-1]
+                dict[key] = ""
+            else:
+                dict[key] += line[:-1]
+        f.close()
+        return dict
+    
+    def fileToAlignIO(filename, ext):
+        """
+        Method that reads a fasta file and returns a AlignIO object
+
+        arguments:
+            filename    (String)    the name of the file
+            ext         (String)    the file extension
+        
+        return:
+            alignIO     (AlignIO)   the AlignIO object
+        """
+        f=open(filename+ext,"r")
+        data = ""
+        for line in f:
+            data += line
+        f.close()
+        alignIO = AlignIO.read(StringIO(data), "fasta")
+        return alignIO

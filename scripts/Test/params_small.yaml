@@ -9,4 +9,4 @@ bootstrap_amount: 100
 data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
 reference_gene_dir: '../datasets/5seq'
 reference_gene_file: 'seq small.fasta'
-makeDebugFiles: True
+makeDebugFiles: False
