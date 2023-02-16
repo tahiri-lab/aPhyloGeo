@@ -15,11 +15,7 @@ class Params:
         self.ls_threshold =         params["ls_threshold"]
         self.window_size =          params["window_size"]
         self.step_size =            params["step_size"]
-        self.data_names =           ['ALLSKY_SFC_SW_DWN_newick', 
-                                        'T2M_newick', 
-                                        'QV2M_newick', 
-                                        'PRECTOTCORR_newick', 
-                                        'WS10M_newick']
+        self.data_names =           params["data_names"]
         self.reference_gene_file =  params["reference_gene_dir"]+'/'+params["reference_gene_file"]
         self.reference_gene_filename = params["reference_gene_file"]
 
