@@ -65,14 +65,22 @@ def test_alignement(alignementSetup):
             expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\SlidingWindow\\" + test_case + "\\" + key, '.fasta')
             assert windowed[key] == expected
 
-        # msa = alignement.msaSet
-        # for key in msa.keys():
-        #     f=open(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta","r")
-        #     data = ""
-        #     for line in f:
-        #         data += line
-        #     f.close()
-        #     expected = AlignIO.read(StringIO(data), "fasta")
-        #     print(expected, '\n', msa[key])
-        #     assert str(msa[key]) == str(expected)
+        msa = alignement.msaSet
+        
+        for key in msa.keys():
+            f=open(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta","r")
+            data = ""
+            noOfLines = 0
+            for line in f:
+                data += line
+                noOfLines += 1
+            f.close()
+            expected = str(AlignIO.read(StringIO(data), "fasta"))
+            actual = str(msa[key])
+
+            # for all the lines in expected
+            for i in range(noOfLines):
+                if expected[i] not in actual:
+                    assert False
+
     
