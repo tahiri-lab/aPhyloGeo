@@ -17,8 +17,6 @@ from yaml.loader import SafeLoader
 
 bootstrapList = []
 data = []
-_p = Params()   # variable used in the bootSingle function because we
-                # can't pass a parameter (it uses multiprocessing)
 
 
 def openCSV(file):
@@ -201,28 +199,27 @@ def createBoostrap(msaSet:dict, p:Params):
         msaSet (dictionnary with multiple sequences alignment to transform into trees)
         p (Params object)
     Return:
-        *********TO WRITE**********
+        A dictionary with the trees for each sequence
     '''
     constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
 
-    #creation of intermidiary list
-    #each list is a process
-    list = []
+    #creation of intermidiary array
+    #each array is a process
+    array = []
     for key in msaSet.keys():
-        list.append([msaSet, constructor, key])
+        array.append([msaSet, constructor, key, p.bootstrapAmount])
 
     #multiprocessing
     print("Creating bootstrap variations with multiplyer of:",p.bootstrapAmount)
-    
-    _p = p  # variable used in the bootSingle function because we
-            # can't pass a parameter (it uses multiprocessing)
-    result = Multi(list,bootSingle).processingSmallData()
+
+    result = Multi(array,bootSingle).processingSmallData()
 
     #reshaping the output into a readble dictionary
     consensusTree = {}
     for i in result:
         consensusTree[i[1]]=i[0]
-
+    # Bio.Phylo.write(list(consensusTree.values()), os.path.dirname(__file__) + "\\Test\\TestFiles\\CreateBootstrap\\test.xml", "phyloxml")
+    
     return consensusTree
 
 def bootSingle(args):
@@ -235,7 +232,9 @@ def bootSingle(args):
     msaSet = args[0]
     constructor = args[1]
     key = args[2]
-    result = bootstrap_consensus(msaSet[key], _p.bootstrapAmount, constructor, 
+    bootstrapAmount = args[3]
+
+    result = bootstrap_consensus(msaSet[key], bootstrapAmount, constructor, 
                                  majority_consensus)
     return [result,key]
 
@@ -370,7 +369,7 @@ def filterResults(climaticTrees, geneticTrees, p:Params):
     writeOutputFile(data)
 
 
-def geneticPipeline(climaticTrees, p=Params()):
+def geneticPipeline(climaticTrees, p=Params(), aligneementObject=None):
     '''
     Get the genetic Trees from the initial file datas so we 
     can compare every valid tree with the climatic ones. In the 
@@ -379,6 +378,8 @@ def geneticPipeline(climaticTrees, p=Params()):
 
     Args:
         climaticTrees (the dictionnary of climaticTrees)
+        p (the Params object)[optionnal]
+        aligneementObject (the AlignSequences object)[optionnal]
     '''
     ####### JUST TO MAKE THE DEBUG FILES ####### 
     if os.path.exists("./debug"):
@@ -387,10 +388,9 @@ def geneticPipeline(climaticTrees, p=Params()):
         os.mkdir("./debug")
     ####### JUST TO MAKE THE DEBUG FILES ####### 
 
-    alignementObject = AlignSequences(p)
-    #alignedSequences = alignementObject.aligned
-    #heuristicMSA = alignementObject.heuristicMSA
-    #windowedSequences = alignementObject.windowed
+    if aligneementObject == None:
+        alignementObject = AlignSequences(p)
+
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p)
     filterResults(climaticTrees, geneticTrees, p)
