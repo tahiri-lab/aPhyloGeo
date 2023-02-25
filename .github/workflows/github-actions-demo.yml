@@ -1,14 +1,17 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Python package
+
 on: [push]
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-  steps:
-      # - uses: actions/checkout@v3
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -26,4 +29,3 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
-      
