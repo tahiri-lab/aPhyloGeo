@@ -7,6 +7,7 @@ exclude =
 per-file-ignores =
     aPhyloGeo.py: F405
     MultiProcessor.py: E501, E722
+    Alignement.py: E501, E502
 ignore = 
     W291
     W293

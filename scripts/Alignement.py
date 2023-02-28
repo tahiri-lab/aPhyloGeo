@@ -1,8 +1,5 @@
 import sys
-import time  
-
 import os
-import Bio as Bio 
 from io import StringIO
 from Bio import SeqIO
 from Bio import pairwise2
@@ -10,6 +7,8 @@ from Bio.Seq import Seq
 from Bio import AlignIO
 from MultiProcessor import Multi
 from Params import Params
+
+
 class AlignSequences:
     """
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.    
@@ -57,36 +56,7 @@ class AlignSequences:
         self.windowed = self.slidingWindow()
         self.msaSet = self.makeMSA()
 
-        # print("\n\n", self.windowed, "\n\n")
-
-        # with open( os.path.dirname(__file__) + "\\Test\\TestFiles\\GetSequenceCentroid\\" + p.reference_gene_filename[0:-5], 'w') as f:
-        #     f.write(str(self.centroidKey))
-
-        # for key in self.aligned.keys():
-        #     dir_path = os.path.dirname(__file__) + "\\Test\\TestFiles\\AlignSequence\\" + p.reference_gene_filename + "\\" + key
-        #     if not os.path.isdir(dir_path):
-        #         os.mkdir(dir_path)
-        #     for key2 in self.aligned[key].keys():
-        #         with open(dir_path + "\\" + key2, 'w') as f:
-        #             f.write(str(self.aligned[key][key2]))
-
-        # for key in self.heuristicMSA.keys():
-        #     with open(os.path.dirname(__file__) + "\\Test\\TestFiles\\StarAlignement\\" + p.reference_gene_filename + "\\" + key, 'w') as f:
-        #         f.write(str(self.heuristicMSA[key]))
-
-        # for key in self.windowed.keys():
-        #     dir_path = os.path.dirname(__file__) + "\\Test\\TestFiles\\SlidingWindow\\" + p.reference_gene_filename + "\\" + key
-        #     if not os.path.isdir(dir_path):
-        #         os.mkdir(dir_path)
-        #     for key2 in self.windowed[key].keys():
-        #         with open(dir_path + "\\" + key2, 'w') as f:
-        #             f.write(str(self.windowed[key][key2]))
-    
-        # for key in self.msaSet.keys():
-        #     AlignIO.write(self.msaSet[key], os.path.dirname(__file__) + "\\Test\\TestFiles\\MakeMSA\\" + p.reference_gene_filename + "\\" + key + ".fasta", "fasta")
-
-
-    def openFastaFile(self,file):
+    def openFastaFile(self, file):
         '''
         Reads the .fasta file. Extract sequence ID and sequences.
 
@@ -99,7 +69,7 @@ class AlignSequences:
         '''
         sequences = {}
         with open(file) as sequencesFile:
-            for sequence in SeqIO.parse(sequencesFile,"fasta"):
+            for sequence in SeqIO.parse(sequencesFile, "fasta"):
                 sequences[sequence.id] = sequence.seq
         return sequences
 
@@ -116,42 +86,45 @@ class AlignSequences:
         """
 
         seqs = self.sequences
-        resultKey= ""
-        resultSum= sys.maxsize
+        resultKey = ""
+        resultSum = sys.maxsize
         print("\nSearching for the centroid")
 
-        #formats input as a list for the Multiprocess
+        # formats input as a list for the Multiprocess
         list = []
         for seqID in seqs.keys():
             for seqID2 in seqs.keys():
                 if seqID != seqID2:
-                    list.append([seqs[seqID],seqID, seqs[seqID2],seqID2])
+                    list.append([seqs[seqID], seqID, seqs[seqID2], seqID2])
 
-        #starts all the processes
-        results = Multi(list,self.ScoreSingle).processingLargeData()
+        # starts all the processes
+        results = Multi(list, self.ScoreSingle).processingLargeData()
         
-        #formats the multiprocess output back in a dictionnary
+        # formats the multiprocess output back in a dictionnary
         rDict = {}
         for tuple in results:
-            rDict[tuple[0]] = 0 #first pass to ensure all entries exist
+            rDict[tuple[0]] = 0  # first pass to ensure all entries exist
         for tuple in results:
-            rDict[tuple[0]] = rDict[tuple[0]]+tuple[2] #Increment the sum for each speciment
+            # Increment the sum for each speciment
+            rDict[tuple[0]] = rDict[tuple[0]] + tuple[2]  
 
-        #minimum value
-        amount = 0
+        amount = 0  # minimum value
         for k in rDict.keys():
-            amount+=1
-            if rDict[k]<resultSum:
+            amount += 1
+            if rDict[k] < resultSum:
                 resultSum = rDict[k]
                 resultKey = k
 
-        print("The centroid is \'", resultKey, "\' with a total score of ", resultSum, " with an average score of ", resultSum/amount,"\n")
+        print("The centroid is \'", resultKey, "\' with a total score of ", 
+              resultSum, " with an average score of ", resultSum / amount,
+              "\n")
 
-        return [resultKey,resultSum]
+        return [resultKey, resultSum]
 
     def ScoreSingle(self, args):
         """
-        Method the gets only the score of a couple of sequence regarding the pairwise alignement
+        Method the gets only the score of a couple of sequence regarding the
+        pairwise alignement
 
         Args: a list:
             seqA    (Seq()) Sequence A; considered the refenrence
@@ -165,15 +138,15 @@ class AlignSequences:
             score   (float) the resulting score of this couple of alignement
         """
 
-        seqA= args[0]
+        seqA = args[0]
         seqAID = args[1]
         seqB = args[2]
         seqBID = args[3]
         score = pairwise2.align.globalxx( 
             str(seqA), str(seqB), 
-            one_alignment_only = True, 
-            score_only=True #important line, reduces execution time by alot
-            )
+            one_alignment_only=True, 
+            score_only=True  # important line, reduces execution time by alot
+        )
         return (seqAID, seqBID, score)
 
     def alignSequences(self):
@@ -196,30 +169,30 @@ class AlignSequences:
 
         list = []
         for seqXID in seqs.keys():
-            list.append( [self.centroidKey, self.centroidSeq, seqXID, seqs[seqXID] ] )
+            list.append([self.centroidKey, self.centroidSeq, seqXID,
+                         seqs[seqXID]])
 
-        result = Multi(list,self.alignSingle).processingLargeData()
-        aligned={}
+        result = Multi(list, self.alignSingle).processingLargeData()
+        aligned = {}
 
-        #reformats the output in a  dictionnary
+        # reformats the output in a  dictionnary
         for i in result:
             temp = {}
             temp[i[2]] = Seq((i[1][0].seqA))
             temp[i[0]] = Seq((i[1][0].seqB))
-            aligned[str(i[0]+" vs "+i[2])]=temp
-        #time.sleep(1)
+            aligned[str(i[0] + " vs " + i[2])] = temp
 
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+        # JUST TO MAKE THE DEBUG FILES 
         if self.p.makeDebugFiles:
             os.mkdir("./debug/1_alignSequences")
             for w in aligned.keys():
-                self.dictToFile(aligned[w],str("1_alignSequences/"+w),".fasta")
-        #time.sleep(1)
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+                self.dictToFile(aligned[w], str("1_alignSequences/" + w),
+                                ".fasta")
+        # JUST TO MAKE THE DEBUG FILES 
 
         return aligned
    
-    def alignSingle(self,args):
+    def alignSingle(self, args):
         """
         Method that aligns two DNA sequences using the pairwise2 algorithm.
 
@@ -239,13 +212,16 @@ class AlignSequences:
         sc = args[1]
         seqBID = args[2]
         seqB = args[3]
-        aligned = pairwise2.align.globalxx(str(sc), str(seqB), one_alignment_only = True)
+        aligned = pairwise2.align.globalxx(str(sc), str(seqB),
+                                           one_alignment_only=True)
         return [seqBID, aligned, scID]
 
     def starAlignement(self):
         """
-        Method that combs through all the pairwise alignments couples and makes it so that every sequenced is alaigned with every other sequences.
-        If a "-" is found in the seqA of a pair, but not another, it is inserted into every other ones.
+        Method that combs through all the pairwise alignments couples and makes
+        it so that every sequenced is aligned with every other sequences. If a
+        "-" is found in the seqA of a pair, but not another, it is inserted
+        into every other ones.
 
         ex.:
             pair1:          pair2:
@@ -288,27 +264,29 @@ class AlignSequences:
         starAlign = {}
 
         for k in self.aligned.keys():
-            couple = self.aligned[k]    #couple is SeqA and SeqB of a pairwise alignement
+            # couple is SeqA and SeqB of a pairwise alignement
+            couple = self.aligned[k]
 
             a = list(couple.keys())
             a.remove(scKey)
-            sNewKey = a[0]  #SeqB ID, *not* the reference
+            sNewKey = a[0]   # SeqB ID, *not* the reference
 
-            starAlign[ scKey ] = couple[ scKey ] #SeqA, the reference
-            starAlign[ sNewKey ] = couple[ sNewKey ] #SeqB, *not* the reference
+            starAlign[scKey] = couple[scKey]  # SeqA, the reference
+            starAlign[sNewKey] = couple[sNewKey]  # SeqB, *not* the reference
 
-            if len( starAlign ) > 2:
-                starAlign = self.merge( starAlign, scKey, sNewKey )
+            if len(starAlign) > 2:
+                starAlign = self.merge(starAlign, scKey, sNewKey)
                 starAlign = self.equalizeLength(starAlign)
 
-            starAlign[ "temp" ] = starAlign[ scKey ] #SeqA, the *old* reference
-        starAlign.pop( "temp" )
+            starAlign["temp"] = starAlign[scKey]  # SeqA, the *old* reference
+        starAlign.pop("temp")
 
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+        # JUST TO MAKE THE DEBUG FILES
         if self.p.makeDebugFiles:
             os.mkdir("./debug/2_starAlignement")
-            self.dictToFile(starAlign,"2_starAlignement/starAligned",".fasta")
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+            self.dictToFile(starAlign, "2_starAlignement/starAligned",
+                            ".fasta")
+        # JUST TO MAKE THE DEBUG FILES 
 
         return starAlign
              
@@ -331,41 +309,48 @@ class AlignSequences:
         Return:
             result (dict)   The same object we started with, but with one more aligned pair inside.
         """
-        newRef= result[k1]
+        newRef = result[k1]
         tempRef = result["temp"]
         minLen = 1
         pos = 0
-        while pos< minLen:
-            #The sequence length could change at each iteration
-            #these assignemnts needs to be done each loop to get to the true end
-            #and not to skip the '-' we just added
-            newRef= result[k1]
+        while pos < minLen:
+            # The sequence length could change at each iteration
+            # these assignemnts needs to be done each loop to get 
+            # to the true end and not to skip the '-' we just added
+            newRef = result[k1]
             tempRef = result["temp"]
-            minLen = min( len(newRef), len(tempRef) ) 
+            minLen = min(len(newRef), len(tempRef)) 
 
             nChar = newRef[pos]
             tChar = tempRef[pos]
 
             if nChar != tChar:
-                if nChar =='-': #- found in the new reference; change all but the 2 new elements
+
+                # - found in the new ref, change all but the 2 new elements
+                if nChar == '-':  
                     keyList = list(result.keys())
                     keyList.remove(k1)
                     keyList.remove(k2)
-                elif tChar =='-':   #- found in the old reference; change the 2 new elements
-                    keyList=[k1,k2]
+
+                # - found in the old ref; change the 2 new elements
+                elif tChar == '-':  
+                    keyList = [k1, k2]
                 else:
                     errStr = str(
-                    "Alignement error. Merge() found \""+str(nChar) + "\" and \"" + str(tChar) + "\" " 
-                    "at position " + str(pos) + " of two versions of the centroid sequences\n"+
-                    "Please check the previous methods and ensure the pairwise alignemnt is correct"+
-                    "\nCentroid ID: "+str(self.centroidKey)+
-                    "\nPairwise seq ID last inserted: "+str(k2)
+                        "Alignement error. Merge() found \"" + str(nChar) +   \
+                        "\" and \"" + str(tChar) + "\" " + "at position " +   \
+                        str(pos) + " of two versions of the centroid " +      \
+                        "sequences\n" + "Please check the previous methods" + \
+                        " and ensure the pairwise alignemnt is correct" +     \
+                        "\nCentroid ID: " + str(self.centroidKey) +           \
+                        "\nPairwise seq ID" + " last inserted: " + str(k2)
                     )
+
                     raise Exception(errStr)
 
                 result = self.insertDash(result, pos, keyList)
 
-            pos+=1
+            pos += 1
         
         return result
 
@@ -387,7 +372,7 @@ class AlignSequences:
         for k in keyList:
             char = '-'
             s = dict[k]
-            s = s[:pos]+ char +s[pos:]
+            s = s[:pos] + char + s[pos:]
             dict[k] = s
         return dict
 
@@ -403,10 +388,11 @@ class AlignSequences:
             equalizedSeqs (dict) see unEqualSeqs; but all the values have the same length
         """
         equalizedSeqs = {}
-        maxLen = len( str( max( list( unEqualSeqs.values() ) ) ) ) #number of chars in the longest string
+        # number of chars in the longest string
+        maxLen = len(str(max(list(unEqualSeqs.values()))))  
 
         for k in unEqualSeqs.keys():
-            equalizedSeqs[k]= Seq(str(unEqualSeqs[k]).ljust(maxLen,'-'))
+            equalizedSeqs[k] = Seq(str(unEqualSeqs[k]).ljust(maxLen, '-'))
 
         return equalizedSeqs
 
@@ -435,42 +421,43 @@ class AlignSequences:
                     j = The ending position of the window, relative to the original sequence
         """
         alignedSequences = self.heuristicMSA
-        before=time.time()
+        # before = time.time()
 
-        windowsDict={}
+        windowsDict = {}
         
         longKey = max(alignedSequences, key=alignedSequences.get)
         maxLength = len(alignedSequences[longKey])
         
-        winSize = self.p.window_size #longueur
-        stepSize = self.p.step_size #avance de x
+        winSize = self.p.window_size  # longueur
+        stepSize = self.p.step_size  # avance de x
         stepStart = 0
-        stepEnd = winSize -1
+        stepEnd = winSize - 1
 
         while stepStart < maxLength:
             if stepEnd > maxLength:
                 stepEnd = maxLength
-            windowsBySpecies={}
+            windowsBySpecies = {}
             for key in alignedSequences.keys():
                 seq = alignedSequences[key]
-                winSeq = seq[stepStart : stepEnd ]
+                winSeq = seq[stepStart: stepEnd]
                 winKey = str(key) 
-                windowsBySpecies[winKey]=Seq(winSeq)
+                windowsBySpecies[winKey] = Seq(winSeq)
             windowKey = str(stepStart) + "_" + str(stepEnd)
             windowsDict[windowKey] = windowsBySpecies
             stepStart += stepSize
             stepEnd += stepSize
 
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+        # JUST TO MAKE THE DEBUG FILES
         if self.p.makeDebugFiles:
             os.mkdir("./debug/3_slidingWindow")
             for w in windowsDict.keys():
-                self.dictToFile(windowsDict[w],"3_slidingWindow/"+w,".fasta")
-        ####### JUST TO MAKE THE DEBUG FILES ####### 
+                self.dictToFile(windowsDict[w], "3_slidingWindow/" + w,
+                                ".fasta")
+        # JUST TO MAKE THE DEBUG FILES
 
         return windowsDict
 
-    def dictToFile(self,dict,filename,ext):
+    def dictToFile(self, dict, filename, ext):
         """
         Debuging method that creates files from a dictonnary of sequences.
         File is put in the debug file of the cwd
@@ -489,16 +476,17 @@ class AlignSequences:
         if not os.path.exists(dir):
             os.mkdir(dir)
 
-        f=open(dir+"/"+filename+ext,"w")
+        f = open(dir + "/" + filename + ext, "w")
         for key in dict.keys():
-            f.write(">"+str(key)+"\n")
-            f.write(str(dict[key]+"\n"))
+            f.write(">" + str(key) + "\n")
+            f.write(str(dict[key] + "\n"))
         return dict
 
     def makeMSA(self):
         """
-        Method that create a dictionnary of Multiple Sequence Alignment(MSA) objects from bioPython.
-        Each entry in the dictionnary is a MSA object of a single sliding window
+        Method that create a dictionnary of Multiple Sequence Alignment(MSA) 
+        objects from bioPython. Each entry in the dictionnary is a MSA object
+        of a single sliding window.
 
         return
             msaSet (dict)
@@ -514,7 +502,6 @@ class AlignSequences:
             msaSet[windowSet] = AlignIO.read(StringIO(data), "fasta")
         return msaSet
 
-
     def fileToDict(filename, ext):
         """
         Method that reads a fasta file and returns a dictionnary of Seq objects
@@ -528,7 +515,7 @@ class AlignSequences:
                 key = (string)
                 values = (string)
         """
-        f=open(filename+ext,"r")
+        f = open(filename + ext, "r")
         dict = {}
         for line in f:
             if line[0] == ">":
@@ -550,7 +537,7 @@ class AlignSequences:
         return:
             alignIO     (AlignIO)   the AlignIO object
         """
-        f=open(filename+ext,"r")
+        f = open(filename + ext, "r")
         data = ""
         for line in f:
             data += line
