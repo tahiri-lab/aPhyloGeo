@@ -6,6 +6,7 @@ from io import StringIO
 # from Bio.Phylo.PhyloXML import Phylogeny
 import os
 from Params import Params
+from pathlib import Path
 import pytest
 
 current_file = os.path.dirname(__file__)
@@ -58,9 +59,10 @@ class TestGenetic():
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-
             centroid = alignement.centroidKey
-            with open(current_file + "\\TestFiles\\GetSequenceCentroid\\" + test_case, 'r') as f:
+            filename = Path(current_file + "\\TestFiles\\GetSequenceCentroid\\" + test_case)
+
+            with open(filename, 'r') as f:
                 centroid_file = f.read()
                 assert centroid == centroid_file
 
@@ -69,8 +71,8 @@ class TestGenetic():
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-
             aligned = alignement.aligned
+
             for key in aligned.keys():
                 expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\AlignSequence\\" + test_case + "\\" + key, '.fasta')
                 assert aligned[key] == expected
@@ -80,7 +82,6 @@ class TestGenetic():
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-
             starAlignement = alignement.heuristicMSA            
             expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\StarAlignement\\" + test_case, '.fasta')
             assert starAlignement == expected
@@ -90,8 +91,8 @@ class TestGenetic():
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-
             windowed = alignement.windowed
+
             for key in windowed.keys():
                 expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\SlidingWindow\\" + test_case + "\\" + key, '.fasta')
                 assert windowed[key] == expected
@@ -101,11 +102,11 @@ class TestGenetic():
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-
             msa = alignement.msaSet
-
+            
             for key in msa.keys():
-                f = open(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta", "r")
+                filename = Path(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta")
+                f = open(filename, "r")
                 data = ""
                 noOfLines = 0
                 for line in f:
