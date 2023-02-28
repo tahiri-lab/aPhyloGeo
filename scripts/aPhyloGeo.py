@@ -72,10 +72,10 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
 
     # Calculate normalised matrix
     tabDf = pd.DataFrame(tempTab)
-    dmDf = (tabDf - minValue)/(maxValue - minValue)
+    dmDf = (tabDf - minValue) / (maxValue - minValue)
     dmDf = dmDf.round(6)
 
-    matrix = [dmDf.iloc[i, :i+1].tolist() for i in range(len(dmDf))]
+    matrix = [dmDf.iloc[i, :i + 1].tolist() for i in range(len(dmDf))]
     dm = _DistanceMatrix(nomVar, matrix)
     return dm
 
@@ -108,7 +108,7 @@ def leastSquare(tree1, tree2):
         for j in leavesName:
             d1 = (tree1.distance(tree1.find_any(i), tree1.find_any(j)))
             d2 = (tree2.distance(tree2.find_any(i), tree2.find_any(j)))
-            ls += (abs(d1-d2))
+            ls += (abs(d1 - d2))
     return ls
 
 
@@ -145,17 +145,17 @@ def drawTreesmake(trees, p):
     colors = tree.get_node_values('color', show_root=1, show_tips=1)
 
     # Draw the climatic trees
-    canvas, axes, mark = mtree.draw(nrows=round(len(mtree)/5),
+    canvas, axes, mark = mtree.draw(nrows=round(len(mtree) / 5),
                                     ncols=len(mtree), height=400, width=1000,
                                     node_sizes=8, node_colors=colors,
                                     tip_labels_align=True)
 
     for i in range(len(mtree)):
         randColor = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0, mtree.ntips, p.names[i+1], style={'fill': randColor,
-                                                          'font-size': '10px',
-                                                          'font-weight': 'bold'
-                                                          })
+        axes[i].text(0, mtree.ntips, p.names[i + 1], style={'fill': randColor,
+                                                            'font-size': '10px',
+                                                            'font-weight': 'bold'
+                                                            })
 
     toyplot.pdf.render(canvas, '../viz/climactic_trees.pdf')
 
@@ -362,8 +362,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
             ls = leastSquare(geneticTrees[geneticList[0]],
                              climaticTrees[climaticList[i]])
             if ls is None:
-               raise Exception('The LS distance is not calculable' +
-                               'pour {aligned_file}.')
+                raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
             if ls <= p.ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
                                     geneticList, p))

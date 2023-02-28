@@ -7,8 +7,8 @@ climaticDataFilePath = '../datasets/5seq/geo.csv'
 genetic_test_cases = ['seq small.fasta', 'seq very small.fasta', 'seq.fasta']
 climatic_test_cases = ['geo.csv']
 
-def test_openCSV():
 
+def test_openCSV():
     df1 = pd.read_csv(climaticDataFilePath)
     df2 = aPhyloGeo.openCSV(climaticDataFilePath)
     assert df1.equals(df2)
@@ -28,7 +28,7 @@ def test_climaticPipeline():
                 filename_without_ext = filename[0:-4]
 
                 with open(curent_dir + '\\' + filename, 'r') as matrix_expected:
-                    matrix = aPhyloGeo.getDissimilaritiesMatrix(df, 'id' , filename_without_ext)    
+                    matrix = aPhyloGeo.getDissimilaritiesMatrix(df, 'id', filename_without_ext)    
                     # test getDissimilaritiesMatrix
                     assert str(matrix) == matrix_expected.read()
 
@@ -40,6 +40,4 @@ def test_climaticPipeline():
                         assert str(aPhyloGeo.createTree(matrix)) == create_tree_expected.read()
 
         # test leastSquare
-        assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'],trees['T2M']) == 2.1550089999999997
-
-
+        assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == 2.1550089999999997

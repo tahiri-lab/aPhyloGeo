@@ -12,6 +12,6 @@ titleCard = r"""
 """  # https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aPhyloGeo%20
 
 if __name__ == "__main__":
-    print(titleCard+"\n")
+    print(titleCard + "\n")
     climaticTrees = climaticPipeline()
     geneticPipeline(climaticTrees)

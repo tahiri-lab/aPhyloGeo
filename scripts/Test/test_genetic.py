@@ -2,13 +2,11 @@ from Alignement import AlignSequences
 import aPhyloGeo
 from Bio import AlignIO
 from io import StringIO
-from Bio import Phylo
-from Bio.Phylo.PhyloXML import Phylogeny
+# from Bio import Phylo
+# from Bio.Phylo.PhyloXML import Phylogeny
 import os
-import pandas as pd
 from Params import Params
 import pytest
-
 
 current_file = os.path.dirname(__file__)
 _params = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
@@ -40,12 +38,8 @@ def climaticTreesSetup():
 #         assert True
 
 
-
-
 class TestGenetic():
 
-    
-    
     def setup_class(self):
         '''
         This fixture will be used to create the diffrent alignement objects
@@ -59,7 +53,6 @@ class TestGenetic():
         self.alignement = [very_small]
         # self.alignementSetup = [very_small, small]
 
-
     def test_centroidKey(self):
     
         for alignement in self.alignement:
@@ -70,7 +63,6 @@ class TestGenetic():
             with open(current_file + "\\TestFiles\\GetSequenceCentroid\\" + test_case, 'r') as f:
                 centroid_file = f.read()
                 assert centroid == centroid_file
-
 
     def test_aligned(self):
     
@@ -83,7 +75,6 @@ class TestGenetic():
                 expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\AlignSequence\\" + test_case + "\\" + key, '.fasta')
                 assert aligned[key] == expected
 
-
     def test_heuristicMSA(self):
     
         for alignement in self.alignement:
@@ -93,7 +84,6 @@ class TestGenetic():
             starAlignement = alignement.heuristicMSA            
             expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\StarAlignement\\" + test_case, '.fasta')
             assert starAlignement == expected
-
 
     def test_windowed(self):
 
@@ -106,7 +96,6 @@ class TestGenetic():
                 expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\SlidingWindow\\" + test_case + "\\" + key, '.fasta')
                 assert windowed[key] == expected
 
-
     def test_msaSet(self):
 
         for alignement in self.alignement:
@@ -116,7 +105,7 @@ class TestGenetic():
             msa = alignement.msaSet
 
             for key in msa.keys():
-                f=open(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta","r")
+                f = open(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta", "r")
                 data = ""
                 noOfLines = 0
                 for line in f:
@@ -150,6 +139,3 @@ class TestGenetic():
 
     def test_filterResults(self):
         assert True
-
-
-    
