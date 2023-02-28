@@ -60,7 +60,7 @@ class TestGenetic():
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             centroid = alignement.centroidKey
-            filename = Path(current_file + "\\TestFiles\\GetSequenceCentroid\\" + test_case)
+            filename = Path(current_file + "/TestFiles/GetSequenceCentroid/" + test_case)
 
             with open(filename, 'r') as f:
                 centroid_file = f.read()
@@ -105,7 +105,7 @@ class TestGenetic():
             msa = alignement.msaSet
             
             for key in msa.keys():
-                filename = Path(current_file + "\\TestFiles\\MakeMSA\\" + test_case + "\\" + key + ".fasta")
+                filename = Path(current_file + "/TestFiles/MakeMSA/" + test_case + "/" + (key + ".fasta"))
                 f = open(filename, "r")
                 data = ""
                 noOfLines = 0
