@@ -5,5 +5,8 @@ exclude =
     aPhyloGeo_env
     Params.py
 per-file-ignores =
-    main.py: W291
-    ; aPhyloGeo.py: F405
+    aPhyloGeo.py: F405
+    MultiProcessor.py: E501, E722
+ignore = 
+    W291
+    W293
