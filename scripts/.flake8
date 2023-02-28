@@ -1,0 +1,9 @@
+[flake8]
+exclude =
+    migrations
+    __pycache__
+    aPhyloGeo_env
+    Params.py
+per-file-ignores =
+    main.py: W291
+    ; aPhyloGeo.py: F405

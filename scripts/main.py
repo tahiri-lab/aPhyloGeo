@@ -1,5 +1,5 @@
 from aPhyloGeo import geneticPipeline, climaticPipeline
-titleCard=r"""                               
+titleCard = r"""                               
         ____    __               ___           ____                            
        /\  _`\ /\ \             /\_ \         /\  _`\                          
    __  \ \ \L\ \ \ \___   __  __\//\ \     ___\ \ \L\_\     __    ___          
@@ -9,7 +9,7 @@ titleCard=r"""
  \/__/\/_/ \/_/    \/_/\/_/`/___/> \/____/\/___/  \/___/  \/____/\/___/        
                               /\___/                                           
                               \/__/                                            
-"""#https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aPhyloGeo%20
+"""  # https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aPhyloGeo%20
 
 if __name__ == "__main__":
     print(titleCard+"\n")
