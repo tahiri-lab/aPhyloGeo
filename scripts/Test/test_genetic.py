@@ -7,15 +7,13 @@ from io import StringIO
 import os
 from Params import Params
 from pathlib import Path
-import pytest
+# import pytest
 
 current_file = os.path.dirname(__file__)
-_params = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
 
-
-@pytest.fixture(scope="module")
-def climaticTreesSetup():
-    return aPhyloGeo.climaticPipeline(_params)
+# @pytest.fixture(scope="module")
+# def climaticTreesSetup():
+#     return aPhyloGeo.climaticPipeline(_params)
 
 # @pytest.fixture
 # def alignementSetup()->list:
@@ -49,15 +47,20 @@ class TestGenetic():
             list: list of alignement objects
         '''
         print("Begin setup for test class test_genetic...")
-        # small = AlignSequences(Params(os.path.join(os.path.dirname(__file__), "params_small.yaml")))
-        very_small = AlignSequences(_params)
-        self.alignement = [very_small]
-        # self.alignementSetup = [very_small, small]
+
+        params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
+        params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
+        small = AlignSequences(params_small)
+        very_small = AlignSequences(params_very_small)
+
+        self.alignementSetup = [very_small, small]
+        self.paramSetup = [params_very_small, params_small]
 
     def test_centroidKey(self):
+
         print("Begin test_centroidKey...")
     
-        for alignement in self.alignement:
+        for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             centroid = alignement.centroidKey
@@ -68,9 +71,10 @@ class TestGenetic():
                 assert centroid == centroid_file
 
     def test_aligned(self):
+
         print("Begin test_aligned...")
     
-        for alignement in self.alignement:
+        for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             aligned = alignement.aligned
@@ -80,9 +84,10 @@ class TestGenetic():
                 assert aligned[key] == expected
 
     def test_heuristicMSA(self):
+
         print("Begin test_heuristicMSA...")
     
-        for alignement in self.alignement:
+        for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             starAlignement = alignement.heuristicMSA            
@@ -90,9 +95,10 @@ class TestGenetic():
             assert starAlignement == expected
 
     def test_windowed(self):
+
         print("Begin test_windowed...")
 
-        for alignement in self.alignement:
+        for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             windowed = alignement.windowed
@@ -102,9 +108,10 @@ class TestGenetic():
                 assert windowed[key] == expected
 
     def test_msaSet(self):
+
         print("Begin test_msaSet...")
 
-        for alignement in self.alignement:
+        for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             msa = alignement.msaSet
@@ -127,11 +134,11 @@ class TestGenetic():
                         assert False
 
     # def test_createBootStrap(self):
-    #     for alignement in self.alignement:
+    #     for alignement, params in zip(self.alignementSetup, self.paramSetup)):
 
     #         test_case = alignement.p.reference_gene_filename[0:-6]
 
-    #         trees = aPhyloGeo.createBoostrap(alignement.msaSet, _params)
+    #         trees = aPhyloGeo.createBoostrap(alignement.msaSet, params)
     #         # open the file
     #         expected = Phylo.parse(current_file + "\\TestFiles\\CreateBootstrap\\" + test_case + ".xml", "phyloxml")
     #         actual = [str(Phylogeny.from_tree(tree)) for tree in list(trees.values())]
