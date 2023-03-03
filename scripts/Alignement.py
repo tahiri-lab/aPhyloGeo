@@ -7,6 +7,7 @@ from Bio.Seq import Seq
 from Bio import AlignIO
 from MultiProcessor import Multi
 from Params import Params
+from pathlib import Path
 
 
 class AlignSequences:
@@ -515,7 +516,7 @@ class AlignSequences:
                 key = (string)
                 values = (string)
         """
-        f = open(filename + ext, "r")
+        f = open(Path(filename + ext), "r")
         dict = {}
         for line in f:
             if line[0] == ">":
@@ -537,7 +538,7 @@ class AlignSequences:
         return:
             alignIO     (AlignIO)   the AlignIO object
         """
-        f = open(filename + ext, "r")
+        f = open(Path(filename + ext), "r")
         data = ""
         for line in f:
             data += line

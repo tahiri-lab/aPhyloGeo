@@ -28,7 +28,6 @@ def test_climaticPipeline():
         for filename in os.listdir(curent_dir):
             if filename.endswith(".csv"):
                 filename_without_ext = filename[0:-4]
-                print(filename)
                 file = Path(curent_dir / filename)
 
                 with open(file, 'r') as matrix_expected:

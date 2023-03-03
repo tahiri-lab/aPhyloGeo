@@ -48,13 +48,14 @@ class TestGenetic():
         Returns:
             list: list of alignement objects
         '''
-        print("TEST")
+        print("Begin setup for test class test_genetic...")
         # small = AlignSequences(Params(os.path.join(os.path.dirname(__file__), "params_small.yaml")))
         very_small = AlignSequences(_params)
         self.alignement = [very_small]
         # self.alignementSetup = [very_small, small]
 
     def test_centroidKey(self):
+        print("Begin test_centroidKey...")
     
         for alignement in self.alignement:
             
@@ -67,6 +68,7 @@ class TestGenetic():
                 assert centroid == centroid_file
 
     def test_aligned(self):
+        print("Begin test_aligned...")
     
         for alignement in self.alignement:
             
@@ -74,19 +76,21 @@ class TestGenetic():
             aligned = alignement.aligned
 
             for key in aligned.keys():
-                expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\AlignSequence\\" + test_case + "\\" + key, '.fasta')
+                expected = AlignSequences.fileToDict(current_file + "/TestFiles/AlignSequence/" + test_case + "/" + key, '.fasta')
                 assert aligned[key] == expected
 
     def test_heuristicMSA(self):
+        print("Begin test_heuristicMSA...")
     
         for alignement in self.alignement:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
             starAlignement = alignement.heuristicMSA            
-            expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\StarAlignement\\" + test_case, '.fasta')
+            expected = AlignSequences.fileToDict(current_file + "/TestFiles/StarAlignement/" + test_case, '.fasta')
             assert starAlignement == expected
 
     def test_windowed(self):
+        print("Begin test_windowed...")
 
         for alignement in self.alignement:
             
@@ -94,10 +98,11 @@ class TestGenetic():
             windowed = alignement.windowed
 
             for key in windowed.keys():
-                expected = AlignSequences.fileToDict(current_file + "\\TestFiles\\SlidingWindow\\" + test_case + "\\" + key, '.fasta')
+                expected = AlignSequences.fileToDict(current_file + "/TestFiles/SlidingWindow/" + test_case + "/" + key, '.fasta')
                 assert windowed[key] == expected
 
     def test_msaSet(self):
+        print("Begin test_msaSet...")
 
         for alignement in self.alignement:
             
@@ -139,4 +144,5 @@ class TestGenetic():
     #                 assert False
 
     def test_filterResults(self):
+        print("Begin test_filterResults...")
         assert True
