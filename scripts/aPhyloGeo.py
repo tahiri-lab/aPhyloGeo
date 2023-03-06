@@ -325,6 +325,7 @@ def writeOutputFile(data):
     Args :
         data (the list contaning the final data)
     '''
+    print("Writing the output file")
     header = ['Gene', 'Phylogeographic tree', 'Name of species',
               'Position in ASM', 'Bootsrap mean', 'Least-Square distance']
     with open("output.csv", "w", encoding="UTF8") as f:
@@ -344,7 +345,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
         geneticTrees (the dictionnary containing every geneticTrees)
         p (the Params object)
     '''
-    # Create a list of the tree if the bootstrap is superior of the
+    # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
     geneticList = createGeneticList(geneticTrees, p)
 
@@ -373,7 +374,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
     writeOutputFile(data)
 
 
-def geneticPipeline(climaticTrees, p=Params(), aligneementObject=None):
+def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
     '''
     Get the genetic Trees from the initial file datas so we
     can compare every valid tree with the climatic ones. In the
@@ -392,7 +393,7 @@ def geneticPipeline(climaticTrees, p=Params(), aligneementObject=None):
         os.mkdir("./debug")
     # JUST TO MAKE THE DEBUG FILES
 
-    if aligneementObject is None:
+    if alignementObject is None:
         alignementObject = AlignSequences(p)
 
     msaSet = alignementObject.msaSet

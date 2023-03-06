@@ -1,51 +1,25 @@
 from Alignement import AlignSequences
 import aPhyloGeo
+import ast
 from Bio import AlignIO
 from io import StringIO
-# from Bio import Phylo
-# from Bio.Phylo.PhyloXML import Phylogeny
+from Bio import Phylo
+from Bio.Phylo.PhyloXML import Phylogeny
 import os
 from Params import Params
 from pathlib import Path
-# import pytest
+
 
 current_file = os.path.dirname(__file__)
-
-# @pytest.fixture(scope="module")
-# def climaticTreesSetup():
-#     return aPhyloGeo.climaticPipeline(_params)
-
-# @pytest.fixture
-# def alignementSetup()->list:
-#     '''
-#     This fixture will be used to create the diffrent alignement objects
-
-#     Returns:
-#         list: list of alignement objects
-#     '''
-#     small = AlignSequences(Params(os.path.join(os.path.dirname(__file__), "params_small.yaml")))
-#     very_small = AlignSequences(Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml")))
-#     return [very_small, small]
-
-# @pytest.mark.usefixtures('climaticTreesSetup')
-# class TestGenetic:
-
-#     def test_genetic_createBootStrap(self):
-#         assert True
-
-#     def test_genetic_filterResults(self):
-#         assert True
-
 
 class TestGenetic():
 
     def setup_class(self):
         '''
-        This fixture will be used to create the diffrent alignement objects
-
-        Returns:
-            list: list of alignement objects
+        This setup is used to create the diffrent alignement objects, and their
+        corresponding params object
         '''
+
         print("Begin setup for test class test_genetic...")
 
         params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
@@ -117,62 +91,50 @@ class TestGenetic():
             msa = alignement.msaSet
             
             for key in msa.keys():
+
                 filename = Path(current_file + "/TestFiles/MakeMSA/" + test_case + "/" + (key + ".fasta"))
                 f = open(filename, "r")
-                data = ""
-                noOfLines = 0
-                for line in f:
-                    data += line
-                    noOfLines += 1
+                data = f.read()
                 f.close()
+
                 expected = str(AlignIO.read(StringIO(data), "fasta"))
                 actual = str(msa[key])
 
-                # for all the lines in expected
-                for i in range(noOfLines):
-                    if expected[i] not in actual:
-                        assert False
-
-    # def test_createBootStrap(self):
-    #     for alignement, params in zip(self.alignementSetup, self.paramSetup)):
-
-    #         test_case = alignement.p.reference_gene_filename[0:-6]
-
-    #         trees = aPhyloGeo.createBoostrap(alignement.msaSet, params)
-    #         # open the file
-    #         expected = Phylo.parse(current_file + "\\TestFiles\\CreateBootstrap\\" + test_case + ".xml", "phyloxml")
-    #         actual = [str(Phylogeny.from_tree(tree)) for tree in list(trees.values())]
-    #         for tree in actual:
-    #             print(tree)
-            
-    #         for tree in expected:
-    #             print(str(tree))
-    #             if str(tree) not in actual:
-    #                 assert False
+                for line in expected:
+                    assert line in actual
 
     def test_filterResults(self):
 
-        print("Begin test_filterResults...")
+        for alignement, params in zip(self.alignementSetup, self.paramSetup):
 
-        for alignement in self.alignementSetup:
             test_case = alignement.p.reference_gene_filename[0:-6]
 
-            assert True
-    
-    def test_createGeneticList(self):
+            # Test the createBootstrap function
+            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, params)
+            actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
+            actual_bootstrap = [(tree.splitlines()).sort() for tree in actual_bootstrap]
+            
+            expected_bootstrap = [str(tree) for tree in Phylo.parse(current_file + "/TestFiles/CreateBootstrap/" + test_case + ".xml", "phyloxml")]
+            expected_bootstrap = [(tree.splitlines()).sort() for tree in expected_bootstrap]
+            
+            for tree in actual_bootstrap:
+                assert tree in expected_bootstrap
 
-        print("Begin test_createClimaticList...")
-        
-        for alignement in self.alignementSetup:
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            # test of the createGeneticList function
+            with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
+                actual_list = aPhyloGeo.createGeneticList(genetic_trees, params)
+                expected_list = ast.literal_eval(f.read())
+            for elem in actual_list:
+                assert elem in expected_list
 
-            assert True
-    
-    def test_writeOutputFile(self):
+            climatic_trees = aPhyloGeo.climaticPipeline(params)
+            aPhyloGeo.filterResults(climatic_trees, genetic_trees, params)
 
-        print("Begin test_writeOutputFile...")
-
-        for alignement in self.alignementSetup:
-            test_case = alignement.p.reference_gene_filename[0:-6]
-
-            assert True
+            # TO BE CONFIRMED
+            # # test of the writeOutputFiles function
+            # with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
+            #     expected_output = expected_file.readlines()
+            # with open("output.csv", 'r') as actual_file:
+            #     actual_output = actual_file.readlines()
+            # assert len(actual_output) == len(expected_output)
+          
