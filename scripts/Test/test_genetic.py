@@ -151,5 +151,28 @@ class TestGenetic():
     #                 assert False
 
     def test_filterResults(self):
+
         print("Begin test_filterResults...")
-        assert True
+
+        for alignement in self.alignementSetup:
+            test_case = alignement.p.reference_gene_filename[0:-6]
+
+            assert True
+    
+    def test_createGeneticList(self):
+
+        print("Begin test_createClimaticList...")
+        
+        for alignement in self.alignementSetup:
+            test_case = alignement.p.reference_gene_filename[0:-6]
+
+            assert True
+    
+    def test_writeOutputFile(self):
+
+        print("Begin test_writeOutputFile...")
+
+        for alignement in self.alignementSetup:
+            test_case = alignement.p.reference_gene_filename[0:-6]
+
+            assert True

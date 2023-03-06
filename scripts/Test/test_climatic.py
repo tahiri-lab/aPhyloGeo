@@ -2,18 +2,20 @@ import aPhyloGeo
 import os
 import pandas as pd
 from pathlib import Path
+import pytest
 
 current_file = Path(os.path.dirname(__file__))
 climaticDataFilePath = '../datasets/5seq/geo.csv'
-genetic_test_cases = ['seq small.fasta', 'seq very small.fasta', 'seq.fasta']
 climatic_test_cases = ['geo.csv']
 
+@pytest.fixture(scope="module")
+def climaticTreesSetup():
+    return aPhyloGeo.climaticPipeline()
 
 def test_openCSV():
     df1 = pd.read_csv(climaticDataFilePath)
     df2 = aPhyloGeo.openCSV(climaticDataFilePath)
     assert df1.equals(df2)
-
 
 def test_climaticPipeline():
     
@@ -44,4 +46,14 @@ def test_climaticPipeline():
                         assert str(aPhyloGeo.createTree(matrix)) == create_tree_expected.read()
 
         # test leastSquare
-        assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == 2.1550089999999997
+        expected_least_square = 2.1550089999999997
+        assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == expected_least_square
+
+def test_createClimaticList(climaticTreesSetup):
+
+    print("Begin test_createGeneticList...")
+    for test_case in climatic_test_cases:
+        trees = aPhyloGeo.createClimaticList(climaticTreesSetup)
+        
+
+        assert True
