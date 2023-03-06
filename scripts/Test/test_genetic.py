@@ -12,6 +12,7 @@ from pathlib import Path
 
 current_file = os.path.dirname(__file__)
 
+
 class TestGenetic():
 
     def setup_class(self):
@@ -137,4 +138,4 @@ class TestGenetic():
             # with open("output.csv", 'r') as actual_file:
             #     actual_output = actual_file.readlines()
             # assert len(actual_output) == len(expected_output)
-          
+

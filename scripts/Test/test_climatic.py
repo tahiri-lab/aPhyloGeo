@@ -9,14 +9,17 @@ current_file = Path(os.path.dirname(__file__))
 climaticDataFilePath = '../datasets/5seq/geo.csv'
 climatic_test_cases = ['geo.csv']
 
+
 @pytest.fixture(scope="module")
 def climaticTreesSetup():
     return aPhyloGeo.climaticPipeline(Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml")))
+
 
 def test_openCSV():
     df1 = pd.read_csv(climaticDataFilePath)
     df2 = aPhyloGeo.openCSV(climaticDataFilePath)
     assert df1.equals(df2)
+
 
 def test_climaticPipeline():
     
@@ -49,6 +52,7 @@ def test_climaticPipeline():
         # test leastSquare
         expected_least_square = 2.1550089999999997
         assert aPhyloGeo.leastSquare(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == expected_least_square
+
 
 def test_createClimaticList(climaticTreesSetup):
 
