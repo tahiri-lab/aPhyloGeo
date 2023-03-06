@@ -32,18 +32,21 @@ class TestGenetic():
         self.paramSetup = [params_very_small, params_small]
 
     def test_centroidKey(self):
+        ''' 
+        This test is used to test the centroidKey function.
+        '''
 
         print("Begin test_centroidKey...")
     
         for alignement in self.alignementSetup:
             
             test_case = alignement.p.reference_gene_filename[0:-6]
-            centroid = alignement.centroidKey
+            actual_centroid = alignement.centroidKey
             filename = Path(current_file + "/TestFiles/GetSequenceCentroid/" + test_case)
 
-            with open(filename, 'r') as f:
-                centroid_file = f.read()
-                assert centroid == centroid_file
+            with open(filename, 'r') as expected_file:
+                expected_centroid = expected_file.read()
+                assert actual_centroid == expected_centroid
 
     def test_aligned(self):
 
