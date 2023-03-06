@@ -1,6 +1,7 @@
 import aPhyloGeo
 import os
 import pandas as pd
+from Params import Params
 from pathlib import Path
 import pytest
 
@@ -10,7 +11,7 @@ climatic_test_cases = ['geo.csv']
 
 @pytest.fixture(scope="module")
 def climaticTreesSetup():
-    return aPhyloGeo.climaticPipeline()
+    return aPhyloGeo.climaticPipeline(Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml")))
 
 def test_openCSV():
     df1 = pd.read_csv(climaticDataFilePath)
@@ -53,7 +54,7 @@ def test_createClimaticList(climaticTreesSetup):
 
     print("Begin test_createGeneticList...")
     for test_case in climatic_test_cases:
-        trees = aPhyloGeo.createClimaticList(climaticTreesSetup)
-        
-
-        assert True
+        actual_list = aPhyloGeo.createClimaticList(climaticTreesSetup)
+        with open(Path(current_file / 'TestFiles/CreateClimaticList' / test_case / "list.txt"), 'r') as f:
+            expected_list = f.read()
+            assert str(actual_list) == expected_list
