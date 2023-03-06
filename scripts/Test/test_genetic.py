@@ -138,4 +138,3 @@ class TestGenetic():
             # with open("output.csv", 'r') as actual_file:
             #     actual_output = actual_file.readlines()
             # assert len(actual_output) == len(expected_output)
-
