@@ -25,8 +25,8 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --ignore=E222,E501,E502,E722,F403,F405,W291,W293
-      # - name: Test with pytest
-      #   run: |
-      #     cd scripts 
-      #     echo ${GITHUB_WORKSPACE}
-      #     python -m pytest
+      - name: Test with pytest
+        run: |
+          cd scripts 
+          echo ${GITHUB_WORKSPACE}
+          python -m pytest

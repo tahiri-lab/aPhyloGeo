@@ -49,6 +49,9 @@ class TestGenetic():
                 assert actual_centroid == expected_centroid
 
     def test_aligned(self):
+        '''
+        This test is used to test the aligned function.
+        '''
 
         print("Begin test_aligned...")
     
@@ -62,6 +65,9 @@ class TestGenetic():
                 assert aligned[key] == expected
 
     def test_heuristicMSA(self):
+        '''
+        This test is used to test the heuristicMSA function.
+        '''
 
         print("Begin test_heuristicMSA...")
     
@@ -73,6 +79,9 @@ class TestGenetic():
             assert starAlignement == expected
 
     def test_windowed(self):
+        '''
+        This test is used to test the windowed function.
+        '''
 
         print("Begin test_windowed...")
 
@@ -86,6 +95,9 @@ class TestGenetic():
                 assert windowed[key] == expected
 
     def test_msaSet(self):
+        '''
+        This test is used to test the msaSet function.
+        '''
 
         print("Begin test_msaSet...")
 
@@ -108,6 +120,9 @@ class TestGenetic():
                     assert line in actual
 
     def test_filterResults(self):
+        '''
+        This test is used to test the filterResults function.
+        '''
 
         for alignement, params in zip(self.alignementSetup, self.paramSetup):
 
