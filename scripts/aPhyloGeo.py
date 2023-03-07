@@ -220,8 +220,6 @@ def createBoostrap(msaSet: dict, p: Params):
     consensusTree = {}
     for i in result:
         consensusTree[i[1]] = i[0]
-    # Bio.Phylo.write(list(consensusTree.values()), os.path.dirname(__file__) +
-    # "\\Test\\TestFiles\\CreateBootstrap\\test.xml", "phyloxml")
 
     return consensusTree
 
