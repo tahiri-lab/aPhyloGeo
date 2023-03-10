@@ -12,9 +12,6 @@ from Alignement import AlignSequences
 from csv import writer as csv_writer
 import random
 
-bootstrapList = []
-data = []
-
 
 def openCSV(file):
     """
@@ -216,7 +213,10 @@ def createBoostrap(msaSet: dict, p: Params):
 
     result = Multi(array, bootSingle).processingSmallData()
 
+    result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
+    
     # reshaping the output into a readble dictionary
+    # consensusTree = {i[1] : i[0] for i in result}
     consensusTree = {}
     for i in result:
         consensusTree[i[1]] = i[0]
@@ -264,20 +264,22 @@ def createGeneticList(geneticTrees, p: Params):
     '''
     Create a list of Trees if the bootstrap Average is higher than
     the threshold 
-    Appends the bootstrap average to the bootstrapList
 
     Args :
         geneticTrees (a dictionnary of genetic trees)
     Return :
-        geneticList (a list with the geneticTrees)
+        geneticList (a sorted list with the geneticTrees)
+        bootstrapList (a list with the bootstrap average of each tree)
     '''
+    bootstrapList = []
     geneticList = []
+
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
         if bootstrap_average >= p.bootstrap_threshold:
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
-    return geneticList
+    return geneticList, bootstrapList
 
 
 def createClimaticList(climaticTrees):
@@ -295,7 +297,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, geneticList, p: Params):
+def getData(leavesName, ls, index, climaticList, bootstrapList, geneticList, p: Params):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -303,6 +305,7 @@ def getData(leavesName, ls, index, climaticList, geneticList, p: Params):
         leavesName (the list of the actual leaves)
         ls (least square distance between two trees)
         climaticList (the list of climatic trees)
+        bootstrapList (the list of bootstrap values)
         geneticList : (the list of genetic trees)
         p (Params object)
     '''
@@ -326,7 +329,7 @@ def writeOutputFile(data):
     '''
     print("Writing the output file")
     header = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootsrap mean', 'Least-Square distance']
+              'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
     with open("output.csv", "w", encoding="UTF8") as f:
         writer = csv_writer(f)
         writer.writerow(header)
@@ -346,11 +349,12 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
     '''
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
-    geneticList = createGeneticList(geneticTrees, p)
+    geneticList, bootstrapList = createGeneticList(geneticTrees, p)
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
 
+    data = []
     # Compare every genetic trees with every climatic trees. If the returned
     # value is inferior or equal to the (Least-Square distance) LS threshold,
     # we keep the data
@@ -364,7 +368,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
                 raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
             if ls <= p.ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
-                                    geneticList, p))
+                                    bootstrapList, geneticList, p))
         geneticList.pop(0)
         bootstrapList.pop(0)
     # We write the datas into an output csv file
