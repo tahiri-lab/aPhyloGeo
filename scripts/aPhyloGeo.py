@@ -263,7 +263,8 @@ def calculateAverageBootstrap(tree):
 def createGeneticList(geneticTrees, p: Params):
     '''
     Create a list of Trees if the bootstrap Average is higher than
-    the threshold
+    the threshold 
+    Appends the bootstrap average to the bootstrapList
 
     Args :
         geneticTrees (a dictionnary of genetic trees)
@@ -356,8 +357,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
     while (len(geneticList) > 0):
         leaves = geneticTrees[geneticList[0]].get_terminals()
         leavesName = list(map(lambda x: x.name, leaves))
-        i = 0
-        for tree in climaticTrees.keys():
+        for i in range(len(climaticTrees.keys())):
             ls = leastSquare(geneticTrees[geneticList[0]],
                              climaticTrees[climaticList[i]])
             if ls is None:
@@ -365,7 +365,6 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
             if ls <= p.ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
                                     geneticList, p))
-            i += 1
         geneticList.pop(0)
         bootstrapList.pop(0)
     # We write the datas into an output csv file
