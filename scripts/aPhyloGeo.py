@@ -216,7 +216,7 @@ def createBoostrap(msaSet: dict, p: Params):
     result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
     
     # reshaping the output into a readble dictionary
-    return {i[1] : i[0] for i in result}
+    return {i[1]: i[0] for i in result}
 
 
 def bootSingle(args):
