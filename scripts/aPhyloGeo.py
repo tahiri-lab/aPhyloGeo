@@ -216,12 +216,7 @@ def createBoostrap(msaSet: dict, p: Params):
     result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
     
     # reshaping the output into a readble dictionary
-    # consensusTree = {i[1] : i[0] for i in result}
-    consensusTree = {}
-    for i in result:
-        consensusTree[i[1]] = i[0]
-
-    return consensusTree
+    return {i[1] : i[0] for i in result}
 
 
 def bootSingle(args):
@@ -349,7 +344,7 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
     '''
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
-    geneticList, bootstrapList = createGeneticList(geneticTrees, p)
+    geneticList, bootstrapList = createGeneticList(geneticTrees, p)        
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)

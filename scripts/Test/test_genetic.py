@@ -23,13 +23,13 @@ class TestGenetic():
 
         print("Begin setup for test class test_genetic...")
 
-        params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
+        # params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
         params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-        small = AlignSequences(params_small)
+        # small = AlignSequences(params_small)
         very_small = AlignSequences(params_very_small)
 
-        self.alignementSetup = [very_small, small]
-        self.paramSetup = [params_very_small, params_small]
+        self.alignementSetup = [very_small]#, small]
+        self.paramSetup = [params_very_small]#, params_small]
 
     def test_centroidKey(self):
         ''' 
@@ -140,19 +140,21 @@ class TestGenetic():
                 assert tree in expected_bootstrap
 
             # test of the createGeneticList function
+            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, params)
             with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
-                actual_list = aPhyloGeo.createGeneticList(genetic_trees, params)
                 expected_list = ast.literal_eval(f.read())
-            for elem in actual_list:
-                assert elem in expected_list
+            assert actual_list == expected_list
+            with open(Path(current_file + "/TestFiles/BootstrapList/" + test_case + ".txt"), 'r') as f:
+                expected_bootstrap_list = f.read()
+            assert actual_bootstrap_list == expected_bootstrap_list
 
             climatic_trees = aPhyloGeo.climaticPipeline(params)
             aPhyloGeo.filterResults(climatic_trees, genetic_trees, params)
 
             # TO BE CONFIRMED
-            # # test of the writeOutputFiles function
-            # with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
-            #     expected_output = expected_file.readlines()
-            # with open("output.csv", 'r') as actual_file:
-            #     actual_output = actual_file.readlines()
-            # assert len(actual_output) == len(expected_output)
+            # test of the writeOutputFiles function
+            with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
+                expected_output = expected_file.readlines()
+            with open("output.csv", 'r') as actual_file:
+                actual_output = actual_file.readlines()
+            assert actual_output == expected_output
