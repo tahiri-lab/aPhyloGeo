@@ -292,7 +292,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, bootstrapList, geneticList, p: Params):
+def getData(leavesName, ls, index, climaticList, bootstrap, genetic, p: Params):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -300,8 +300,8 @@ def getData(leavesName, ls, index, climaticList, bootstrapList, geneticList, p: 
         leavesName (the list of the actual leaves)
         ls (least square distance between two trees)
         climaticList (the list of climatic trees)
-        bootstrapList (the list of bootstrap values)
-        geneticList : (the list of genetic trees)
+        bootstrap (bootstrap values)
+        genetic  (genetic tree)
         p (Params object)
     '''
     p.file_name
@@ -311,8 +311,8 @@ def getData(leavesName, ls, index, climaticList, bootstrapList, geneticList, p: 
             for row in csvreader:
                 if row[0] == leave:
                     return [p.reference_gene_filename, climaticList[index],
-                            leave, geneticList[0],
-                            str(bootstrapList[0]), str(round(ls, 2))]
+                            leave, genetic,
+                            str(bootstrap), str(round(ls, 2))]
 
 
 def writeOutputFile(data):
@@ -354,18 +354,23 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
     # value is inferior or equal to the (Least-Square distance) LS threshold,
     # we keep the data
     while (len(geneticList) > 0):
-        leaves = geneticTrees[geneticList[0]].get_terminals()
+
+        current_genetic = geneticList.pop(0)
+        current_bootstrap = bootstrapList.pop(0)
+
+        leaves = geneticTrees[current_genetic].get_terminals()
         leavesName = list(map(lambda x: x.name, leaves))
+        
+
         for i in range(len(climaticTrees.keys())):
-            ls = leastSquare(geneticTrees[geneticList[0]],
+            ls = leastSquare(geneticTrees[current_genetic],
                              climaticTrees[climaticList[i]])
             if ls is None:
                 raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
             if ls <= p.ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
-                                    bootstrapList, geneticList, p))
-        geneticList.pop(0)
-        bootstrapList.pop(0)
+                                    current_bootstrap, current_genetic, p))
+        
     # We write the datas into an output csv file
     writeOutputFile(data)
 
