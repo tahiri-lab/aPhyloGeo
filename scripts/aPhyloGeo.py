@@ -360,7 +360,6 @@ def filterResults(climaticTrees, geneticTrees, p: Params):
 
         leaves = geneticTrees[current_genetic].get_terminals()
         leavesName = list(map(lambda x: x.name, leaves))
-        
 
         for i in range(len(climaticTrees.keys())):
             ls = leastSquare(geneticTrees[current_genetic],
