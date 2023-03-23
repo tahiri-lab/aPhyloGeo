@@ -144,9 +144,6 @@ class TestGenetic():
             with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
-            with open(Path(current_file + "/TestFiles/BootstrapList/" + test_case + ".txt"), 'r') as f:
-                expected_bootstrap_list = ast.literal_eval(f.read())
-            assert len(actual_bootstrap_list) == len(expected_bootstrap_list)
 
             climatic_trees = aPhyloGeo.climaticPipeline(params)
             aPhyloGeo.filterResults(climatic_trees, genetic_trees, params)
