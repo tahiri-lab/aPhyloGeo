@@ -151,7 +151,7 @@ class TestGenetic():
             # TO BE CONFIRMED
             # test of the writeOutputFiles function
             with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
-                expected_output = expected_file.readlines()
+                expected_output = expected_file.readlines().remove("\n")
             with open("output.csv", 'r') as actual_file:
-                actual_output = actual_file.readlines()
+                actual_output = actual_file.readlines().remove("\n")
             assert len(actual_output) == len(expected_output)
