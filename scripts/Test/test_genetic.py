@@ -25,8 +25,10 @@ class TestGenetic():
 
         params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
         params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-        small = AlignSequences(params_small)
-        very_small = AlignSequences(params_very_small)
+        small = AlignSequences(params_small.reference_gene_file, params_small.window_size, params_small.step_size,
+                               params_small.makeDebugFiles, params_small.bootstrapAmount)
+        very_small = AlignSequences(params_very_small.reference_gene_file, params_very_small.window_size, params_very_small.step_size,
+                                    params_very_small.makeDebugFiles, params_very_small.bootstrapAmount)
 
         self.alignementSetup = [very_small, small]
         self.paramSetup = [params_very_small, params_small]
@@ -38,9 +40,9 @@ class TestGenetic():
 
         print("Begin test_centroidKey...")
     
-        for alignement in self.alignementSetup:
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
             
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            test_case = p.reference_gene_filename[0:-6]
             actual_centroid = alignement.centroidKey
             filename = Path(current_file + "/TestFiles/GetSequenceCentroid/" + test_case)
 
@@ -55,9 +57,9 @@ class TestGenetic():
 
         print("Begin test_aligned...")
     
-        for alignement in self.alignementSetup:
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
             
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            test_case = p.reference_gene_filename[0:-6]
             aligned = alignement.aligned
 
             for key in aligned.keys():
@@ -71,9 +73,9 @@ class TestGenetic():
 
         print("Begin test_heuristicMSA...")
     
-        for alignement in self.alignementSetup:
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
             
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            test_case = p.reference_gene_filename[0:-6]
             starAlignement = alignement.heuristicMSA            
             expected = AlignSequences.fileToDict(current_file + "/TestFiles/StarAlignement/" + test_case, '.fasta')
             assert starAlignement == expected
@@ -85,9 +87,9 @@ class TestGenetic():
 
         print("Begin test_windowed...")
 
-        for alignement in self.alignementSetup:
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
             
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            test_case = p.reference_gene_filename[0:-6]
             windowed = alignement.windowed
 
             for key in windowed.keys():
@@ -101,9 +103,9 @@ class TestGenetic():
 
         print("Begin test_msaSet...")
 
-        for alignement in self.alignementSetup:
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
             
-            test_case = alignement.p.reference_gene_filename[0:-6]
+            test_case = p.reference_gene_filename[0:-6]
             msa = alignement.msaSet
             
             for key in msa.keys():
@@ -124,12 +126,12 @@ class TestGenetic():
         This test is used to test the filterResults function.
         '''
 
-        for alignement, params in zip(self.alignementSetup, self.paramSetup):
-
-            test_case = alignement.p.reference_gene_filename[0:-6]
+        for alignement, p in zip(self.alignementSetup, self.paramSetup):
+            
+            test_case = p.reference_gene_filename[0:-6]
 
             # Test the createBootstrap function
-            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, params)
+            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, p)
             actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
             actual_bootstrap = [(tree.splitlines()).sort() for tree in actual_bootstrap]
             
@@ -140,16 +142,14 @@ class TestGenetic():
                 assert tree in expected_bootstrap
 
             # test of the createGeneticList function
-            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, params)
+            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, p)
             with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
 
-            climatic_trees = aPhyloGeo.climaticPipeline(params)
-            aPhyloGeo.filterResults(climatic_trees, genetic_trees, params)
+            climatic_trees = aPhyloGeo.climaticPipeline(p.file_name, p.names)
+            aPhyloGeo.filterResults(climatic_trees, genetic_trees, p)
 
-            # TO BE CONFIRMED
-            # test of the writeOutputFiles function
             with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
                 expected_output = [value for value in expected_file.readlines() if value != "\n"]
             with open("output.csv", 'r') as actual_file:

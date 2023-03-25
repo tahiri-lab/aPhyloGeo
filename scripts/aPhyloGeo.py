@@ -172,20 +172,21 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline(p=Params()):
+def climaticPipeline(file_name, names):
     '''
     Creates a dictionnary with the climatic Trees
     Args:
-        p (Params object : created if not specified)
+        file_name (name of the file to use)
+        names (list of names of the columns to use)
 
     Return:
         trees (the climatic tree dictionnary)
     '''
     trees = {}
-    df = openCSV(p.file_name)
-    for i in range(1, len(p.names)):
-        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
-        trees[p.names[i]] = createTree(dm)
+    df = openCSV(file_name)
+    for i in range(1, len(names)):
+        dm = getDissimilaritiesMatrix(df, names[0], names[i])
+        trees[names[i]] = createTree(dm)
     return trees
 
 
@@ -394,7 +395,7 @@ def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
     # JUST TO MAKE THE DEBUG FILES
 
     if alignementObject is None:
-        alignementObject = AlignSequences(p)
+        alignementObject = AlignSequences(p.reference_gene_file, p.reference_gene_file, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p)

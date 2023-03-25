@@ -15,11 +15,18 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.    
     """
 
-    def __init__(self, p=Params()):
+    def __init__(self, reference_gene_file, window_size, step_size, makeDebugFiles, bootstrapAmount):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
         All parts of the process are available as variables.
+
+        Inputs:
+            reference_gene_file (String) the file name of a .fasta file
+            window_size (Integer) the size of the window
+            step_size (Integer) the size of the step
+            makeDebugFiles (Boolean) if True, will create a folder with all the intermediate files
+
 
         args:
             self.sequences (Dictionary) Read data from the fasta file          
@@ -47,8 +54,13 @@ class AlignSequences:
             ##todo
             self.msa (AlignIO()) 
         """
-        self.p = p
-        self.sequences = self.openFastaFile(self.p.reference_gene_file)
+        self.reference_gene_file = reference_gene_file
+        self.window_size = window_size
+        self.step_size = step_size
+        self.makeDebugFiles = makeDebugFiles
+        self.bootstrapAmount = bootstrapAmount
+
+        self.sequences = self.openFastaFile(self.reference_gene_file)
         self.centroidKey = self.getSequenceCentroid()[0]
         self.centroidSeq = self.sequences.pop(self.centroidKey)
 
@@ -184,7 +196,7 @@ class AlignSequences:
             aligned[str(i[0] + " vs " + i[2])] = temp
 
         # JUST TO MAKE THE DEBUG FILES 
-        if self.p.makeDebugFiles:
+        if self.makeDebugFiles:
             os.mkdir("./debug/1_alignSequences")
             for w in aligned.keys():
                 self.dictToFile(aligned[w], str("1_alignSequences/" + w),
@@ -283,7 +295,7 @@ class AlignSequences:
         starAlign.pop("temp")
 
         # JUST TO MAKE THE DEBUG FILES
-        if self.p.makeDebugFiles:
+        if self.makeDebugFiles:
             os.mkdir("./debug/2_starAlignement")
             self.dictToFile(starAlign, "2_starAlignement/starAligned",
                             ".fasta")
@@ -429,10 +441,8 @@ class AlignSequences:
         longKey = max(alignedSequences, key=alignedSequences.get)
         maxLength = len(alignedSequences[longKey])
         
-        winSize = self.p.window_size  # longueur
-        stepSize = self.p.step_size  # avance de x
         stepStart = 0
-        stepEnd = winSize - 1
+        stepEnd = self.window_size - 1
 
         while stepStart < maxLength:
             if stepEnd > maxLength:
@@ -445,11 +455,11 @@ class AlignSequences:
                 windowsBySpecies[winKey] = Seq(winSeq)
             windowKey = str(stepStart) + "_" + str(stepEnd)
             windowsDict[windowKey] = windowsBySpecies
-            stepStart += stepSize
-            stepEnd += stepSize
+            stepStart += self.step_size
+            stepEnd += self.step_size
 
         # JUST TO MAKE THE DEBUG FILES
-        if self.p.makeDebugFiles:
+        if self.makeDebugFiles:
             os.mkdir("./debug/3_slidingWindow")
             for w in windowsDict.keys():
                 self.dictToFile(windowsDict[w], "3_slidingWindow/" + w,

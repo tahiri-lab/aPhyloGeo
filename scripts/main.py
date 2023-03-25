@@ -1,4 +1,6 @@
 from aPhyloGeo import geneticPipeline, climaticPipeline
+from aPhyloGeo import Params
+
 titleCard = r"""                               
         ____    __               ___           ____                            
        /\  _`\ /\ \             /\_ \         /\  _`\                          
@@ -13,5 +15,6 @@ titleCard = r"""
 
 if __name__ == "__main__":
     print(titleCard + "\n")
-    climaticTrees = climaticPipeline()
+    p = Params()
+    climaticTrees = climaticPipeline(p.file_name, p.names)
     geneticPipeline(climaticTrees)

@@ -1,4 +1,4 @@
-name: Python package
+name: Test aPhyloGeo
 
 on: [push]
 

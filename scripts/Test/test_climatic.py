@@ -17,7 +17,8 @@ def climaticTreesSetup():
     Returns:
         climaticTrees (dict): A dictionary containing the climatic trees.
     '''
-    return aPhyloGeo.climaticPipeline(Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml")))
+    p = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
+    return aPhyloGeo.climaticPipeline(p.file_name, p.names)
 
 
 def test_openCSV():
