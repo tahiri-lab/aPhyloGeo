@@ -131,7 +131,7 @@ class TestGenetic():
             test_case = p.reference_gene_filename[0:-6]
 
             # Test the createBootstrap function
-            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, p)
+            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, p.bootstrapAmount)
             actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
             actual_bootstrap = [(tree.splitlines()).sort() for tree in actual_bootstrap]
             
@@ -142,13 +142,13 @@ class TestGenetic():
                 assert tree in expected_bootstrap
 
             # test of the createGeneticList function
-            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, p)
+            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, p.bootstrap_threshold)
             with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
 
             climatic_trees = aPhyloGeo.climaticPipeline(p.file_name, p.names)
-            aPhyloGeo.filterResults(climatic_trees, genetic_trees, p)
+            aPhyloGeo.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
 
             with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
                 expected_output = [value for value in expected_file.readlines() if value != "\n"]
