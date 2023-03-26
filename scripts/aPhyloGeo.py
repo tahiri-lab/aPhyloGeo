@@ -399,7 +399,7 @@ def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
     # JUST TO MAKE THE DEBUG FILES
 
     if alignementObject is None:
-        alignementObject = AlignSequences(p.reference_gene_file, p.reference_gene_file, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
+        alignementObject = AlignSequences(p.reference_gene_file, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)

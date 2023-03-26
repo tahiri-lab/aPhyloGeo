@@ -17,4 +17,4 @@ if __name__ == "__main__":
     print(titleCard + "\n")
     p = Params()
     climaticTrees = climaticPipeline(p.file_name, p.names)
-    geneticPipeline(climaticTrees)
+    geneticPipeline(climaticTrees, p)
