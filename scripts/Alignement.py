@@ -6,7 +6,6 @@ from Bio import pairwise2
 from Bio.Seq import Seq
 from Bio import AlignIO
 from MultiProcessor import Multi
-from Params import Params
 from pathlib import Path
 
 
