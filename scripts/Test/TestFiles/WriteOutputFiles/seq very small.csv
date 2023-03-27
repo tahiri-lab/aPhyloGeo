@@ -1,71 +1,142 @@
-Gene,Phylogeographic tree,Name of species,Position in ASM,Bootsrap mean,Least-Square distance
-seq very small.fasta,ALLSKY_SFC_SW_DWN,ON129429,0_199,87.0,2.98
-seq very small.fasta,T2M,ON129429,0_199,87.0,3.37
-seq very small.fasta,PRECTOTCORR,ON129429,0_199,87.0,1.54
-seq very small.fasta,QV2M,ON129429,0_199,87.0,3.51
-seq very small.fasta,WS10M,ON129429,0_199,87.0,2.83
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,100_299,100.0,2.23
-seq very small.fasta,T2M,OM739053,100_299,100.0,2.47
-seq very small.fasta,PRECTOTCORR,OM739053,100_299,100.0,3.44
-seq very small.fasta,QV2M,OM739053,100_299,100.0,3.55
-seq very small.fasta,WS10M,OM739053,100_299,100.0,3.61
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,200_399,100.0,2.23
-seq very small.fasta,T2M,OM739053,200_399,100.0,2.47
-seq very small.fasta,PRECTOTCORR,OM739053,200_399,100.0,3.44
-seq very small.fasta,QV2M,OM739053,200_399,100.0,3.55
-seq very small.fasta,WS10M,OM739053,200_399,100.0,3.61
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,300_499,100.0,2.23
-seq very small.fasta,T2M,OM739053,300_499,100.0,2.47
-seq very small.fasta,PRECTOTCORR,OM739053,300_499,100.0,3.44
-seq very small.fasta,QV2M,OM739053,300_499,100.0,3.55
-seq very small.fasta,WS10M,OM739053,300_499,100.0,3.61
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,400_599,100.0,2.2
-seq very small.fasta,T2M,OM739053,400_599,100.0,2.43
-seq very small.fasta,PRECTOTCORR,OM739053,400_599,100.0,3.4
-seq very small.fasta,QV2M,OM739053,400_599,100.0,3.5
-seq very small.fasta,WS10M,OM739053,400_599,100.0,3.56
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,500_699,82.5,2.15
-seq very small.fasta,T2M,OM739053,500_699,82.5,2.33
-seq very small.fasta,PRECTOTCORR,OM739053,500_699,82.5,3.34
-seq very small.fasta,QV2M,OM739053,500_699,82.5,3.38
-seq very small.fasta,WS10M,OM739053,500_699,82.5,3.44
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,600_799,79.5,2.13
-seq very small.fasta,T2M,OM739053,600_799,79.5,2.3
-seq very small.fasta,PRECTOTCORR,OM739053,600_799,79.5,3.32
-seq very small.fasta,QV2M,OM739053,600_799,79.5,3.29
-seq very small.fasta,WS10M,OM739053,600_799,79.5,3.35
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,700_899,78.5,2.16
-seq very small.fasta,T2M,OM739053,700_899,78.5,2.37
-seq very small.fasta,PRECTOTCORR,OM739053,700_899,78.5,3.35
-seq very small.fasta,QV2M,OM739053,700_899,78.5,3.44
-seq very small.fasta,WS10M,OM739053,700_899,78.5,3.5
-seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,800_999,92.5,3.74
-seq very small.fasta,T2M,ON134852,800_999,92.5,3.39
-seq very small.fasta,PRECTOTCORR,ON134852,800_999,92.5,1.85
-seq very small.fasta,QV2M,ON134852,800_999,92.5,3.69
-seq very small.fasta,WS10M,ON134852,800_999,92.5,3.77
-seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,900_1099,94.0,3.75
-seq very small.fasta,T2M,ON134852,900_1099,94.0,3.45
-seq very small.fasta,PRECTOTCORR,ON134852,900_1099,94.0,1.91
-seq very small.fasta,QV2M,ON134852,900_1099,94.0,3.74
-seq very small.fasta,WS10M,ON134852,900_1099,94.0,3.82
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,1000_1199,100.0,2.23
-seq very small.fasta,T2M,OM739053,1000_1199,100.0,2.47
-seq very small.fasta,PRECTOTCORR,OM739053,1000_1199,100.0,3.44
-seq very small.fasta,QV2M,OM739053,1000_1199,100.0,3.55
-seq very small.fasta,WS10M,OM739053,1000_1199,100.0,3.61
-seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,1100_1299,93.5,2.11
-seq very small.fasta,T2M,OM739053,1100_1299,93.5,2.29
-seq very small.fasta,PRECTOTCORR,OM739053,1100_1299,93.5,3.3
-seq very small.fasta,QV2M,OM739053,1100_1299,93.5,3.26
-seq very small.fasta,WS10M,OM739053,1100_1299,93.5,3.31
-seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,1200_1328,100.0,2.53
-seq very small.fasta,T2M,ON134852,1200_1328,100.0,2.66
-seq very small.fasta,PRECTOTCORR,ON134852,1200_1328,100.0,1.6
-seq very small.fasta,QV2M,ON134852,1200_1328,100.0,2.8
-seq very small.fasta,WS10M,ON134852,1200_1328,100.0,2.73
-seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,1300_1328,84.5,2.5
-seq very small.fasta,T2M,ON134852,1300_1328,84.5,3.54
-seq very small.fasta,PRECTOTCORR,ON134852,1300_1328,84.5,2.83
-seq very small.fasta,QV2M,ON134852,1300_1328,84.5,3.17
-seq very small.fasta,WS10M,ON134852,1300_1328,84.5,2.86
+Gene,Phylogeographic tree,Name of species,Position in ASM,Bootstrap mean,Least-Square distance
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,ON129429,0_199,87.0,2.98
+
+seq very small.fasta,T2M,ON129429,0_199,87.0,3.37
+
+seq very small.fasta,PRECTOTCORR,ON129429,0_199,87.0,1.54
+
+seq very small.fasta,QV2M,ON129429,0_199,87.0,3.51
+
+seq very small.fasta,WS10M,ON129429,0_199,87.0,2.83
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,100_299,100.0,2.23
+
+seq very small.fasta,T2M,OM739053,100_299,100.0,2.47
+
+seq very small.fasta,PRECTOTCORR,OM739053,100_299,100.0,3.44
+
+seq very small.fasta,QV2M,OM739053,100_299,100.0,3.55
+
+seq very small.fasta,WS10M,OM739053,100_299,100.0,3.61
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,200_399,100.0,2.23
+
+seq very small.fasta,T2M,OM739053,200_399,100.0,2.47
+
+seq very small.fasta,PRECTOTCORR,OM739053,200_399,100.0,3.44
+
+seq very small.fasta,QV2M,OM739053,200_399,100.0,3.55
+
+seq very small.fasta,WS10M,OM739053,200_399,100.0,3.61
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,300_499,100.0,2.23
+
+seq very small.fasta,T2M,OM739053,300_499,100.0,2.47
+
+seq very small.fasta,PRECTOTCORR,OM739053,300_499,100.0,3.44
+
+seq very small.fasta,QV2M,OM739053,300_499,100.0,3.55
+
+seq very small.fasta,WS10M,OM739053,300_499,100.0,3.61
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,400_599,100.0,2.2
+
+seq very small.fasta,T2M,OM739053,400_599,100.0,2.43
+
+seq very small.fasta,PRECTOTCORR,OM739053,400_599,100.0,3.4
+
+seq very small.fasta,QV2M,OM739053,400_599,100.0,3.5
+
+seq very small.fasta,WS10M,OM739053,400_599,100.0,3.56
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,500_699,82.5,2.15
+
+seq very small.fasta,T2M,OM739053,500_699,82.5,2.33
+
+seq very small.fasta,PRECTOTCORR,OM739053,500_699,82.5,3.34
+
+seq very small.fasta,QV2M,OM739053,500_699,82.5,3.38
+
+seq very small.fasta,WS10M,OM739053,500_699,82.5,3.44
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,600_799,79.5,2.13
+
+seq very small.fasta,T2M,OM739053,600_799,79.5,2.3
+
+seq very small.fasta,PRECTOTCORR,OM739053,600_799,79.5,3.32
+
+seq very small.fasta,QV2M,OM739053,600_799,79.5,3.29
+
+seq very small.fasta,WS10M,OM739053,600_799,79.5,3.35
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,700_899,78.5,2.16
+
+seq very small.fasta,T2M,OM739053,700_899,78.5,2.37
+
+seq very small.fasta,PRECTOTCORR,OM739053,700_899,78.5,3.35
+
+seq very small.fasta,QV2M,OM739053,700_899,78.5,3.44
+
+seq very small.fasta,WS10M,OM739053,700_899,78.5,3.5
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,800_999,92.5,3.74
+
+seq very small.fasta,T2M,ON134852,800_999,92.5,3.39
+
+seq very small.fasta,PRECTOTCORR,ON134852,800_999,92.5,1.85
+
+seq very small.fasta,QV2M,ON134852,800_999,92.5,3.69
+
+seq very small.fasta,WS10M,ON134852,800_999,92.5,3.77
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,900_1099,94.0,3.75
+
+seq very small.fasta,T2M,ON134852,900_1099,94.0,3.45
+
+seq very small.fasta,PRECTOTCORR,ON134852,900_1099,94.0,1.91
+
+seq very small.fasta,QV2M,ON134852,900_1099,94.0,3.74
+
+seq very small.fasta,WS10M,ON134852,900_1099,94.0,3.82
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,1000_1199,100.0,2.23
+
+seq very small.fasta,T2M,OM739053,1000_1199,100.0,2.47
+
+seq very small.fasta,PRECTOTCORR,OM739053,1000_1199,100.0,3.44
+
+seq very small.fasta,QV2M,OM739053,1000_1199,100.0,3.55
+
+seq very small.fasta,WS10M,OM739053,1000_1199,100.0,3.61
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,OM739053,1100_1299,93.5,2.11
+
+seq very small.fasta,T2M,OM739053,1100_1299,93.5,2.29
+
+seq very small.fasta,PRECTOTCORR,OM739053,1100_1299,93.5,3.3
+
+seq very small.fasta,QV2M,OM739053,1100_1299,93.5,3.26
+
+seq very small.fasta,WS10M,OM739053,1100_1299,93.5,3.31
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,1200_1328,100.0,2.53
+
+seq very small.fasta,T2M,ON134852,1200_1328,100.0,2.66
+
+seq very small.fasta,PRECTOTCORR,ON134852,1200_1328,100.0,1.6
+
+seq very small.fasta,QV2M,ON134852,1200_1328,100.0,2.8
+
+seq very small.fasta,WS10M,ON134852,1200_1328,100.0,2.73
+
+seq very small.fasta,ALLSKY_SFC_SW_DWN,ON134852,1300_1328,84.5,2.5
+
+seq very small.fasta,T2M,ON134852,1300_1328,84.5,3.54
+
+seq very small.fasta,PRECTOTCORR,ON134852,1300_1328,84.5,2.83
+
+seq very small.fasta,QV2M,ON134852,1300_1328,84.5,3.17
+
+seq very small.fasta,WS10M,ON134852,1300_1328,84.5,2.86
+

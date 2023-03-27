@@ -1,4 +1,4 @@
-Gene,Phylogeographic tree,Name of species,Position in ASM,Bootsrap mean,Least-Square distance
+Gene,Phylogeographic tree,Name of species,Position in ASM,Bootstrap mean,Least-Square distance
 
 seq small.fasta,ALLSKY_SFC_SW_DWN,ON129429,0_199,86.0,3.14
 

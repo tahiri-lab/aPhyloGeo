@@ -12,9 +12,6 @@ from Alignement import AlignSequences
 from csv import writer as csv_writer
 import random
 
-bootstrapList = []
-data = []
-
 
 def openCSV(file):
     """
@@ -175,30 +172,31 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline(p=Params()):
+def climaticPipeline(file_name, names):
     '''
     Creates a dictionnary with the climatic Trees
     Args:
-        p (Params object : created if not specified)
+        file_name (name of the file to use)
+        names (list of names of the columns to use)
 
     Return:
         trees (the climatic tree dictionnary)
     '''
     trees = {}
-    df = openCSV(p.file_name)
-    for i in range(1, len(p.names)):
-        dm = getDissimilaritiesMatrix(df, p.names[0], p.names[i])
-        trees[p.names[i]] = createTree(dm)
+    df = openCSV(file_name)
+    for i in range(1, len(names)):
+        dm = getDissimilaritiesMatrix(df, names[0], names[i])
+        trees[names[i]] = createTree(dm)
     return trees
 
 
-def createBoostrap(msaSet: dict, p: Params):
+def createBoostrap(msaSet: dict, bootstrapAmount):
     '''
     Create a tree structure from sequences given by a dictionnary.
     Args:
         msaSet (dictionnary with multiple sequences alignment to transform into
                 trees)
-        p (Params object)
+        bootstrapAmount 
     Return:
         A dictionary with the trees for each sequence
     '''
@@ -208,20 +206,18 @@ def createBoostrap(msaSet: dict, p: Params):
     # each array is a process
     array = []
     for key in msaSet.keys():
-        array.append([msaSet, constructor, key, p.bootstrapAmount])
+        array.append([msaSet, constructor, key, bootstrapAmount])
 
     # multiprocessing
     print("Creating bootstrap variations with multiplyer of : ",
-          p.bootstrapAmount)
+          bootstrapAmount)
 
     result = Multi(array, bootSingle).processingSmallData()
 
+    result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
+    
     # reshaping the output into a readble dictionary
-    consensusTree = {}
-    for i in result:
-        consensusTree[i[1]] = i[0]
-
-    return consensusTree
+    return {i[1]: i[0] for i in result}
 
 
 def bootSingle(args):
@@ -260,23 +256,27 @@ def calculateAverageBootstrap(tree):
     return averageBootsrap
 
 
-def createGeneticList(geneticTrees, p: Params):
+def createGeneticList(geneticTrees, bootstrap_threshold):
     '''
     Create a list of Trees if the bootstrap Average is higher than
-    the threshold
+    the threshold 
 
     Args :
         geneticTrees (a dictionnary of genetic trees)
+        bootstrap_threshold
     Return :
-        geneticList (a list with the geneticTrees)
+        geneticList (a sorted list with the geneticTrees)
+        bootstrapList (a list with the bootstrap average of each tree)
     '''
+    bootstrapList = []
     geneticList = []
+
     for key in geneticTrees:
         bootstrap_average = calculateAverageBootstrap(geneticTrees[key])
-        if bootstrap_average >= p.bootstrap_threshold:
+        if bootstrap_average >= bootstrap_threshold:
             bootstrapList.append(bootstrap_average)
             geneticList.append(key)
-    return geneticList
+    return geneticList, bootstrapList
 
 
 def createClimaticList(climaticTrees):
@@ -294,7 +294,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, geneticList, p: Params):
+def getData(leavesName, ls, index, climaticList, bootstrap, genetic, file_name, reference_gene_filename):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -302,18 +302,19 @@ def getData(leavesName, ls, index, climaticList, geneticList, p: Params):
         leavesName (the list of the actual leaves)
         ls (least square distance between two trees)
         climaticList (the list of climatic trees)
-        geneticList : (the list of genetic trees)
-        p (Params object)
+        bootstrap (bootstrap values)
+        genetic  (genetic tree)
+        file_name
+        reference_gene_filename
     '''
-    p.file_name
-    with open(p.file_name, 'r') as file:
+    with open(file_name, 'r') as file:
         csvreader = csv.reader(file)
         for leave in leavesName:
             for row in csvreader:
                 if row[0] == leave:
-                    return [p.reference_gene_filename, climaticList[index],
-                            leave, geneticList[0],
-                            str(bootstrapList[0]), str(round(ls, 2))]
+                    return [reference_gene_filename, climaticList[index],
+                            leave, genetic,
+                            str(bootstrap), str(round(ls, 2))]
 
 
 def writeOutputFile(data):
@@ -325,7 +326,7 @@ def writeOutputFile(data):
     '''
     print("Writing the output file")
     header = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootsrap mean', 'Least-Square distance']
+              'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
     with open("output.csv", "w", encoding="UTF8") as f:
         writer = csv_writer(f)
         writer.writerow(header)
@@ -334,40 +335,46 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees, p: Params):
+def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, file_name, reference_gene_filename):
     '''
     Create the final datas from the Climatic Tree and the Genetic Tree
 
     Args :
         climaticTrees (the dictionnary containing every climaticTrees)
         geneticTrees (the dictionnary containing every geneticTrees)
-        p (the Params object)
+        bootstrap_threshold (the bootstrap threshold)
+        ls_threshold (the least square threshold)
+        file_name (the name of the csv file)
+        reference_gene_filename (the name of the reference gene)
     '''
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
-    geneticList = createGeneticList(geneticTrees, p)
+    geneticList, bootstrapList = createGeneticList(geneticTrees, bootstrap_threshold)        
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
 
+    data = []
     # Compare every genetic trees with every climatic trees. If the returned
     # value is inferior or equal to the (Least-Square distance) LS threshold,
     # we keep the data
     while (len(geneticList) > 0):
-        leaves = geneticTrees[geneticList[0]].get_terminals()
+
+        current_genetic = geneticList.pop(0)
+        current_bootstrap = bootstrapList.pop(0)
+
+        leaves = geneticTrees[current_genetic].get_terminals()
         leavesName = list(map(lambda x: x.name, leaves))
-        i = 0
-        for tree in climaticTrees.keys():
-            ls = leastSquare(geneticTrees[geneticList[0]],
+
+        for i in range(len(climaticTrees.keys())):
+            ls = leastSquare(geneticTrees[current_genetic],
                              climaticTrees[climaticList[i]])
             if ls is None:
                 raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
-            if ls <= p.ls_threshold:
+            if ls <= ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
-                                    geneticList, p))
-            i += 1
-        geneticList.pop(0)
-        bootstrapList.pop(0)
+                                    current_bootstrap, current_genetic, file_name, reference_gene_filename))
+        
     # We write the datas into an output csv file
     writeOutputFile(data)
 
@@ -392,8 +399,8 @@ def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
     # JUST TO MAKE THE DEBUG FILES
 
     if alignementObject is None:
-        alignementObject = AlignSequences(p)
+        alignementObject = AlignSequences(p.reference_gene_file, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
 
     msaSet = alignementObject.msaSet
-    geneticTrees = createBoostrap(msaSet, p)
-    filterResults(climaticTrees, geneticTrees, p)
+    geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
+    filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
