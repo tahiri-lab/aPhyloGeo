@@ -9,3 +9,4 @@ temp.ipynb
 debug*
 /aPhyloGeoEnv
 /scripts/aPhyloGeo_env
+*.egg-info

@@ -4,7 +4,7 @@ import os
 
 
 class Params:
-    
+
     def __init__(self, params_file=os.path.join(os.path.dirname(__file__), "params.yaml")):
 
         # We open the params.yaml file and put it in the params variable

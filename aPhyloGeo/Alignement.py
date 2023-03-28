@@ -5,13 +5,13 @@ from Bio import SeqIO
 from Bio import pairwise2
 from Bio.Seq import Seq
 from Bio import AlignIO
-from MultiProcessor import Multi
+from aPhyloGeo.MultiProcessor import Multi
 from pathlib import Path
 
 
 class AlignSequences:
     """
-    Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.    
+    Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
     def __init__(self, reference_gene_file, window_size, step_size, makeDebugFiles, bootstrapAmount):
@@ -28,7 +28,7 @@ class AlignSequences:
 
 
         args:
-            self.sequences (Dictionary) Read data from the fasta file          
+            self.sequences (Dictionary) Read data from the fasta file
                 key = Sequence ID
                 value = Seq()
 
@@ -51,7 +51,7 @@ class AlignSequences:
                     value = Sequence (Seq()) the specimen's DNA sequence
 
             ##todo
-            self.msa (AlignIO()) 
+            self.msa (AlignIO())
         """
         self.reference_gene_file = reference_gene_file
         self.window_size = window_size
@@ -111,14 +111,14 @@ class AlignSequences:
 
         # starts all the processes
         results = Multi(list, self.ScoreSingle).processingLargeData()
-        
+
         # formats the multiprocess output back in a dictionnary
         rDict = {}
         for tuple in results:
             rDict[tuple[0]] = 0  # first pass to ensure all entries exist
         for tuple in results:
             # Increment the sum for each speciment
-            rDict[tuple[0]] = rDict[tuple[0]] + tuple[2]  
+            rDict[tuple[0]] = rDict[tuple[0]] + tuple[2]
 
         amount = 0  # minimum value
         for k in rDict.keys():
@@ -127,7 +127,7 @@ class AlignSequences:
                 resultSum = rDict[k]
                 resultKey = k
 
-        print("The centroid is \'", resultKey, "\' with a total score of ", 
+        print("The centroid is \'", resultKey, "\' with a total score of ",
               resultSum, " with an average score of ", resultSum / amount,
               "\n")
 
@@ -154,9 +154,9 @@ class AlignSequences:
         seqAID = args[1]
         seqB = args[2]
         seqBID = args[3]
-        score = pairwise2.align.globalxx( 
-            str(seqA), str(seqB), 
-            one_alignment_only=True, 
+        score = pairwise2.align.globalxx(
+            str(seqA), str(seqB),
+            one_alignment_only=True,
             score_only=True  # important line, reduces execution time by alot
         )
         return (seqAID, seqBID, score)
@@ -174,7 +174,7 @@ class AlignSequences:
 
         Return:
             resultList (Dictionary) see self.aligned
-    
+
         """
         print("\nStarting sequence alignement")
         seqs = self.sequences
@@ -194,27 +194,27 @@ class AlignSequences:
             temp[i[0]] = Seq((i[1][0].seqB))
             aligned[str(i[0] + " vs " + i[2])] = temp
 
-        # JUST TO MAKE THE DEBUG FILES 
+        # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
             os.mkdir("./debug/1_alignSequences")
             for w in aligned.keys():
                 self.dictToFile(aligned[w], str("1_alignSequences/" + w),
                                 ".fasta")
-        # JUST TO MAKE THE DEBUG FILES 
+        # JUST TO MAKE THE DEBUG FILES
 
         return aligned
-   
+
     def alignSingle(self, args):
         """
         Method that aligns two DNA sequences using the pairwise2 algorithm.
 
-        Args: 
+        Args:
             args (list)
                 scID    (String) The centroid sequence ID to compare to
                 sc      (Seq()) The DNA sequence of scID
                 seqBID  (String) The sequence ID to compare with
                 seqB    (Seq()) The DNA sequence of seqBID
-                
+
         Return: (list)
             seqBID see above
             aligned (List) The list containing the results.
@@ -237,7 +237,7 @@ class AlignSequences:
 
         ex.:
             pair1:          pair2:
-            
+
             seqA1: TACTAC   seqA2: TAC-TAC
             seqB1: TACTAC   seqB2: TACTTAC
 
@@ -247,7 +247,7 @@ class AlignSequences:
 
             and outputs:
             seqA : TAC-TAC   #now combines SeqA1 and SeqA2
-            seqB1: TAC-TAC   
+            seqB1: TAC-TAC
             seqB2: TACTTAC
 
             then, we compare the aligned set with the next pair:
@@ -262,14 +262,14 @@ class AlignSequences:
             seqB2: TACTTA-C
 
             and outputs:
-            SeqA : TAC-TA-C     #now combines SeqA1, SeqA2 and SeqA3     
-            seqB1: TAC-TA-C  
+            SeqA : TAC-TA-C     #now combines SeqA1, SeqA2 and SeqA3
+            seqB1: TAC-TA-C
             seqB2: TACTTA-C
             seqB3: TAC-TAAC
 
             over and over again
-                
-        Return: 
+
+        Return:
             starAlign (dict) see self.heuristicMSA
         """
         scKey = self.centroidKey
@@ -298,16 +298,16 @@ class AlignSequences:
             os.mkdir("./debug/2_starAlignement")
             self.dictToFile(starAlign, "2_starAlignement/starAligned",
                             ".fasta")
-        # JUST TO MAKE THE DEBUG FILES 
+        # JUST TO MAKE THE DEBUG FILES
 
         return starAlign
-             
+
     def merge(self, result, k1, k2):
         """
         Method that loops through each position of two strings ans compares the Chars.
 
         Arguments:
-            result (dict) the dictionnary of objects to compare; 
+            result (dict) the dictionnary of objects to compare;
                 contains only object that have already been aligned + a new pair to align
                 can be refered to as "aligned set"
             k1 (String) The Key of the object we want compared
@@ -327,11 +327,11 @@ class AlignSequences:
         pos = 0
         while pos < minLen:
             # The sequence length could change at each iteration
-            # these assignemnts needs to be done each loop to get 
+            # these assignemnts needs to be done each loop to get
             # to the true end and not to skip the '-' we just added
             newRef = result[k1]
             tempRef = result["temp"]
-            minLen = min(len(newRef), len(tempRef)) 
+            minLen = min(len(newRef), len(tempRef))
 
             nChar = newRef[pos]
             tChar = tempRef[pos]
@@ -339,13 +339,13 @@ class AlignSequences:
             if nChar != tChar:
 
                 # - found in the new ref, change all but the 2 new elements
-                if nChar == '-':  
+                if nChar == '-':
                     keyList = list(result.keys())
                     keyList.remove(k1)
                     keyList.remove(k2)
 
                 # - found in the old ref; change the 2 new elements
-                elif tChar == '-':  
+                elif tChar == '-':
                     keyList = [k1, k2]
                 else:
                     errStr = str(
@@ -363,7 +363,7 @@ class AlignSequences:
                 result = self.insertDash(result, pos, keyList)
 
             pos += 1
-        
+
         return result
 
     def insertDash(self, dict, pos, keyList):
@@ -401,7 +401,7 @@ class AlignSequences:
         """
         equalizedSeqs = {}
         # number of chars in the longest string
-        maxLen = len(str(max(list(unEqualSeqs.values()))))  
+        maxLen = len(str(max(list(unEqualSeqs.values()))))
 
         for k in unEqualSeqs.keys():
             equalizedSeqs[k] = Seq(str(unEqualSeqs[k]).ljust(maxLen, '-'))
@@ -436,10 +436,10 @@ class AlignSequences:
         # before = time.time()
 
         windowsDict = {}
-        
+
         longKey = max(alignedSequences, key=alignedSequences.get)
         maxLength = len(alignedSequences[longKey])
-        
+
         stepStart = 0
         stepEnd = self.window_size - 1
 
@@ -450,7 +450,7 @@ class AlignSequences:
             for key in alignedSequences.keys():
                 seq = alignedSequences[key]
                 winSeq = seq[stepStart: stepEnd]
-                winKey = str(key) 
+                winKey = str(key)
                 windowsBySpecies[winKey] = Seq(winSeq)
             windowKey = str(stepStart) + "_" + str(stepEnd)
             windowsDict[windowKey] = windowsBySpecies
@@ -473,12 +473,12 @@ class AlignSequences:
         File is put in the debug file of the cwd
 
         arguments
-            dict        (dict)      the objects to write in the file 
+            dict        (dict)      the objects to write in the file
                 key = (string)
                 values = (string)
             filename    (String)    the name of the future file
             ext         (String)    the file extension
-        
+
         return:
             dict        (dict)       see dict from arguments
         """
@@ -494,7 +494,7 @@ class AlignSequences:
 
     def makeMSA(self):
         """
-        Method that create a dictionnary of Multiple Sequence Alignment(MSA) 
+        Method that create a dictionnary of Multiple Sequence Alignment(MSA)
         objects from bioPython. Each entry in the dictionnary is a MSA object
         of a single sliding window.
 
@@ -519,7 +519,7 @@ class AlignSequences:
         arguments:
             filename    (String)    the name of the file
             ext         (String)    the file extension
-        
+
         return:
             dict        (dict)
                 key = (string)
@@ -535,7 +535,7 @@ class AlignSequences:
                 dict[key] += line[:-1]
         f.close()
         return dict
-    
+
     def fileToAlignIO(filename, ext):
         """
         Method that reads a fasta file and returns a AlignIO object
@@ -543,7 +543,7 @@ class AlignSequences:
         arguments:
             filename    (String)    the name of the file
             ext         (String)    the file extension
-        
+
         return:
             alignIO     (AlignIO)   the AlignIO object
         """

@@ -2,16 +2,16 @@
 import os
 import shutil
 import csv
-from Params import Params
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from Bio.Phylo.Consensus import *
-from MultiProcessor import Multi
-from Alignement import AlignSequences
 from csv import writer as csv_writer
 import random
 
+from aPhyloGeo.MultiProcessor import Multi
+from aPhyloGeo.Alignement import AlignSequences
+from aPhyloGeo.Params import Params
 
 def openCSV(file):
     """
@@ -196,7 +196,7 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
     Args:
         msaSet (dictionnary with multiple sequences alignment to transform into
                 trees)
-        bootstrapAmount 
+        bootstrapAmount
     Return:
         A dictionary with the trees for each sequence
     '''
@@ -215,7 +215,7 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
     result = Multi(array, bootSingle).processingSmallData()
 
     result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
-    
+
     # reshaping the output into a readble dictionary
     return {i[1]: i[0] for i in result}
 
@@ -259,7 +259,7 @@ def calculateAverageBootstrap(tree):
 def createGeneticList(geneticTrees, bootstrap_threshold):
     '''
     Create a list of Trees if the bootstrap Average is higher than
-    the threshold 
+    the threshold
 
     Args :
         geneticTrees (a dictionnary of genetic trees)
@@ -349,7 +349,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
     '''
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
-    geneticList, bootstrapList = createGeneticList(geneticTrees, bootstrap_threshold)        
+    geneticList, bootstrapList = createGeneticList(geneticTrees, bootstrap_threshold)
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
@@ -374,7 +374,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
             if ls <= ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
                                     current_bootstrap, current_genetic, file_name, reference_gene_filename))
-        
+
     # We write the datas into an output csv file
     writeOutputFile(data)
 
