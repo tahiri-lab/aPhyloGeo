@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-      - run: pip install -r scripts/requirements.txt
+      - run: pip install -r aPhyloGeo/requirements.txt
 
       - name: Lint with flake8
         run: |
