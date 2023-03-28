@@ -9,9 +9,9 @@ from Bio.Phylo.Consensus import *
 from csv import writer as csv_writer
 import random
 
-from aPhyloGeo.MultiProcessor import Multi
-from aPhyloGeo.Alignement import AlignSequences
-from aPhyloGeo.Params import Params
+from MultiProcessor import Multi
+from Alignement import AlignSequences
+from Params import Params
 
 
 def openCSV(file):
