@@ -13,6 +13,7 @@ from aPhyloGeo.MultiProcessor import Multi
 from aPhyloGeo.Alignement import AlignSequences
 from aPhyloGeo.Params import Params
 
+
 def openCSV(file):
     """
     Open and read the csv file to get the datas
