@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-29T22:58:26.918Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="MyeN7hbsG8VIBLus_phB" version="20.8.20" type="github" pages="10">
+<mxfile host="app.diagrams.net" modified="2023-03-29T22:59:08.654Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="ir2j1Y7WpPEWgQXz0e4Q" version="20.8.20" type="github" pages="10">
   <diagram id="ZQ_5J2CHFgrV61spP5Iu" name="Page-1">
     <mxGraphModel dx="1877" dy="1750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -2351,9 +2351,6 @@
         </mxCell>
         <mxCell id="S2Cah5KNURdo2pbnpJai-66" value="true" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=18;labelBackgroundColor=none;rotation=0;fontColor=#333333;" vertex="1" connectable="0" parent="S2Cah5KNURdo2pbnpJai-1">
           <mxGeometry x="-399.9999999999999" y="-613.0000000000001" as="geometry" />
-        </mxCell>
-        <mxCell id="S2Cah5KNURdo2pbnpJai-67" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://enimmersion-eau.fr/wp-content/uploads/2018/05/02-adaptation-changements-climatique.png;" vertex="1" parent="S2Cah5KNURdo2pbnpJai-1">
-          <mxGeometry x="-769.9999999999999" y="-1095" width="70" height="70" as="geometry" />
         </mxCell>
         <mxCell id="S2Cah5KNURdo2pbnpJai-68" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://ugc.futurelearn.com/uploads/images/e5/99/e59945bf-782e-4528-b5af-2b39cc6d676f.png;" vertex="1" parent="S2Cah5KNURdo2pbnpJai-1">
           <mxGeometry x="111.91" y="-1080" width="160" height="80" as="geometry" />
