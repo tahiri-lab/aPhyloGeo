@@ -1,13 +1,13 @@
-from Alignement import AlignSequences
-import aPhyloGeo
 import ast
 from Bio import AlignIO
 from io import StringIO
 from Bio import Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 import os
-from Params import Params
 from pathlib import Path
+from aPhyloGeo.Params import Params
+from aPhyloGeo.Alignement import AlignSequences
+from aPhyloGeo import aPhyloGeo
 
 
 current_file = os.path.dirname(__file__)

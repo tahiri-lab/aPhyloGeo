@@ -6,6 +6,7 @@ setup(
     author='Tahiri Lab',
     description="A phylogenetic and geographic analysis tool",
     version="0.0.1",
+    include_package_data = True,
     install_requires=[
         "numpy>=1.21.6",
         "pandas>=1.3.5",
@@ -16,6 +17,6 @@ setup(
         "pytest>=7.2.1",
         "flake8>=4.0.1"
     ],
-    python_requires=">=3.7.0,<=3.10.99",
+    python_requires=">=3.7.0,<=3.11.1",
     packages=find_packages(),
 )

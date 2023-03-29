@@ -1,7 +1,7 @@
-import aPhyloGeo
 import os
 import pandas as pd
-from Params import Params
+from aPhyloGeo.Params import Params
+from aPhyloGeo import aPhyloGeo
 from pathlib import Path
 import pytest
 

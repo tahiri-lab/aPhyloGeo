@@ -1,5 +1,5 @@
 from aPhyloGeo.aPhyloGeo import geneticPipeline, climaticPipeline
-from aPhyloGeo.aPhyloGeo import Params
+from aPhyloGeo.Params import Params
 
 titleCard = r"""
         ____    __               ___           ____
