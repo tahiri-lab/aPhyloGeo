@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from aPhyloGeo.Params import Params
+from aPhyloGeo.params import Params
 from aPhyloGeo import aPhyloGeo
 from pathlib import Path
 import pytest
@@ -45,12 +45,12 @@ def test_climaticPipeline():
 
     print("Begin test_climaticPipeline...")
     
-    dir = Path(current_file / 'TestFiles/Dissimilarity')
+    dir = Path(current_file / 'testFiles/dissimilarity')
     
     for test_case in climatic_test_cases:
 
         curent_dir = Path(dir / test_case)
-        dir_test_case = Path(current_file / 'TestFiles/CreateTree' / test_case)
+        dir_test_case = Path(current_file / 'testFiles/createTree' / test_case)
 
         df = aPhyloGeo.openCSV(climaticDataFilePath)
         trees = {}
@@ -90,6 +90,6 @@ def test_createClimaticList(climaticTreesSetup):
 
     for test_case in climatic_test_cases:
         actual_list = aPhyloGeo.createClimaticList(climaticTreesSetup)
-        with open(Path(current_file / 'TestFiles/CreateClimaticList' / test_case / "list.txt"), 'r') as f:
+        with open(Path(current_file / 'testFiles/createClimaticList' / test_case / "list.txt"), 'r') as f:
             expected_list = f.read()
             assert str(actual_list) == expected_list

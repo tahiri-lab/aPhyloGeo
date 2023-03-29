@@ -5,8 +5,8 @@ from Bio import Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 import os
 from pathlib import Path
-from aPhyloGeo.Params import Params
-from aPhyloGeo.Alignement import AlignSequences
+from aPhyloGeo.params import Params
+from aPhyloGeo.alignement import AlignSequences
 from aPhyloGeo import aPhyloGeo
 
 
@@ -44,7 +44,7 @@ class TestGenetic():
             
             test_case = p.reference_gene_filename[0:-6]
             actual_centroid = alignement.centroidKey
-            filename = Path(current_file + "/TestFiles/GetSequenceCentroid/" + test_case)
+            filename = Path(current_file + "/testFiles/getSequenceCentroid/" + test_case)
 
             with open(filename, 'r') as expected_file:
                 expected_centroid = expected_file.read()
@@ -63,7 +63,7 @@ class TestGenetic():
             aligned = alignement.aligned
 
             for key in aligned.keys():
-                expected = AlignSequences.fileToDict(current_file + "/TestFiles/AlignSequence/" + test_case + "/" + key, '.fasta')
+                expected = AlignSequences.fileToDict(current_file + "/testFiles/alignSequence/" + test_case + "/" + key, '.fasta')
                 assert aligned[key] == expected
 
     def test_heuristicMSA(self):
@@ -77,7 +77,7 @@ class TestGenetic():
             
             test_case = p.reference_gene_filename[0:-6]
             starAlignement = alignement.heuristicMSA            
-            expected = AlignSequences.fileToDict(current_file + "/TestFiles/StarAlignement/" + test_case, '.fasta')
+            expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/" + test_case, '.fasta')
             assert starAlignement == expected
 
     def test_windowed(self):
@@ -93,7 +93,7 @@ class TestGenetic():
             windowed = alignement.windowed
 
             for key in windowed.keys():
-                expected = AlignSequences.fileToDict(current_file + "/TestFiles/SlidingWindow/" + test_case + "/" + key, '.fasta')
+                expected = AlignSequences.fileToDict(current_file + "/testFiles/slidingWindow/" + test_case + "/" + key, '.fasta')
                 assert windowed[key] == expected
 
     def test_msaSet(self):
@@ -110,7 +110,7 @@ class TestGenetic():
             
             for key in msa.keys():
 
-                filename = Path(current_file + "/TestFiles/MakeMSA/" + test_case + "/" + (key + ".fasta"))
+                filename = Path(current_file + "/testFiles/makeMSA/" + test_case + "/" + (key + ".fasta"))
                 f = open(filename, "r")
                 data = f.read()
                 f.close()
@@ -135,7 +135,7 @@ class TestGenetic():
             actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
             actual_bootstrap = [(tree.splitlines()).sort() for tree in actual_bootstrap]
             
-            expected_bootstrap = [str(tree) for tree in Phylo.parse(current_file + "/TestFiles/CreateBootstrap/" + test_case + ".xml", "phyloxml")]
+            expected_bootstrap = [str(tree) for tree in Phylo.parse(current_file + "/testFiles/createBootstrap/" + test_case + ".xml", "phyloxml")]
             expected_bootstrap = [(tree.splitlines()).sort() for tree in expected_bootstrap]
             
             for tree in actual_bootstrap:
@@ -143,14 +143,14 @@ class TestGenetic():
 
             # test of the createGeneticList function
             actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, p.bootstrap_threshold)
-            with open(Path(current_file + "/TestFiles/CreateGeneticList/" + test_case + ".txt"), 'r') as f:
+            with open(Path(current_file + "/testFiles/createGeneticList/" + test_case + ".txt"), 'r') as f:
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
 
             climatic_trees = aPhyloGeo.climaticPipeline(p.file_name, p.names)
             aPhyloGeo.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
 
-            with open(Path(current_file + "/TestFiles/WriteOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
+            with open(Path(current_file + "/testFiles/writeOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
                 expected_output = [value for value in expected_file.readlines() if value != "\n"]
             with open("output.csv", 'r') as actual_file:
                 actual_output = [value for value in actual_file.readlines() if value != "\n"] 
