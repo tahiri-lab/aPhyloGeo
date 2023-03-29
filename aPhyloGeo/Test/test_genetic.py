@@ -30,8 +30,8 @@ class TestGenetic():
         very_small = AlignSequences(params_very_small.reference_gene_file, params_very_small.window_size, params_very_small.step_size,
                                     params_very_small.makeDebugFiles, params_very_small.bootstrapAmount)
 
-        self.alignementSetup = [very_small]  #, small]
-        self.paramSetup = [params_very_small]  #, params_small]
+        self.alignementSetup = [very_small]  # , small]
+        self.paramSetup = [params_very_small]  # , params_small]
 
     def test_centroidKey(self):
         ''' 
