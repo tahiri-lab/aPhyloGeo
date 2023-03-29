@@ -6,7 +6,7 @@ setup(
     author='Tahiri Lab',
     description="A phylogenetic and geographic analysis tool",
     version="0.0.1",
-    include_package_data = True,
+    include_package_data=True,
     install_requires=[
         "numpy>=1.21.6",
         "pandas>=1.3.5",
