@@ -8,6 +8,7 @@ from pathlib import Path
 from aPhyloGeo.params import Params
 from aPhyloGeo.alignement import AlignSequences
 from aPhyloGeo import aPhyloGeo
+import pandas as pd
 
 
 current_file = os.path.dirname(__file__)
@@ -147,7 +148,7 @@ class TestGenetic():
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
 
-            climatic_trees = aPhyloGeo.climaticPipeline(p.file_name, p.names)
+            climatic_trees = aPhyloGeo.climaticPipeline(pd.read_csv(p.file_name), p.names)
             aPhyloGeo.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
 
             with open(Path(current_file + "/testFiles/writeOutputFiles/" + test_case + ".csv"), 'r') as expected_file:

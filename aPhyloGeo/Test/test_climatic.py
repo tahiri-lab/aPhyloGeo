@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 current_file = Path(os.path.dirname(__file__))
-climaticDataFilePath = '../datasets/5seq/geo.csv'
+df = pd.read_csv('../datasets/5seq/geo.csv')
 climatic_test_cases = ['geo.csv']
 
 
@@ -18,20 +18,7 @@ def climaticTreesSetup():
         climaticTrees (dict): A dictionary containing the climatic trees.
     '''
     p = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-    return aPhyloGeo.climaticPipeline(p.file_name, p.names)
-
-
-def test_openCSV():
-    '''
-    This test is used to test the openCSV function.
-    '''
-    
-    print("Begin test_createGeneticList...")
-
-    df1 = pd.read_csv(climaticDataFilePath)
-    df2 = aPhyloGeo.openCSV(climaticDataFilePath)
-
-    assert df1.equals(df2)
+    return aPhyloGeo.climaticPipeline(pd.read_csv(p.file_name), p.names)
 
 
 def test_climaticPipeline():
@@ -52,7 +39,6 @@ def test_climaticPipeline():
         curent_dir = Path(dir / test_case)
         dir_test_case = Path(current_file / 'testFiles/createTree' / test_case)
 
-        df = aPhyloGeo.openCSV(climaticDataFilePath)
         trees = {}
 
         for filename in os.listdir(curent_dir):

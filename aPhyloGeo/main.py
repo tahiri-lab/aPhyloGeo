@@ -1,5 +1,6 @@
 from aPhyloGeo.aPhyloGeo import geneticPipeline, climaticPipeline
 from aPhyloGeo.params import Params
+import pandas as pd 
 
 titleCard = r"""
         ____    __               ___           ____
@@ -16,5 +17,6 @@ titleCard = r"""
 if __name__ == "__main__":
     print(titleCard + "\n")
     p = Params()
-    climaticTrees = climaticPipeline(p.file_name, p.names)
+    df = pd.read_csv(p.file_name)
+    climaticTrees = climaticPipeline(df, p.names)
     geneticPipeline(climaticTrees, p)

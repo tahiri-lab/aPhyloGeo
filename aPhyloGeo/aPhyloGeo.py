@@ -13,21 +13,6 @@ from aPhyloGeo.multiProcessor import Multi
 from aPhyloGeo.alignement import AlignSequences
 from aPhyloGeo.params import Params
 
-
-def openCSV(file):
-    """
-    Open and read the csv file to get the datas
-
-    Args:
-        fileName (the file with the content to read from)
-
-    Return:
-        The content of the file
-    """
-    df = pd.read_csv(file)
-    return df
-
-
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
     Creation of a list containing the names of specimens and minimums
@@ -173,18 +158,17 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline(file_name, names):
+def climaticPipeline(df, names):
     '''
     Creates a dictionnary with the climatic Trees
     Args:
-        file_name (name of the file to use)
+        df (contains the data to use)
         names (list of names of the columns to use)
 
     Return:
         trees (the climatic tree dictionnary)
     '''
     trees = {}
-    df = openCSV(file_name)
     for i in range(1, len(names)):
         dm = getDissimilaritiesMatrix(df, names[0], names[i])
         trees[names[i]] = createTree(dm)
