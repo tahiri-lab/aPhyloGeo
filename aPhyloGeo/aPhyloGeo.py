@@ -13,6 +13,7 @@ from aPhyloGeo.multiProcessor import Multi
 from aPhyloGeo.alignement import AlignSequences
 from aPhyloGeo.params import Params
 
+
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
     Creation of a list containing the names of specimens and minimums
