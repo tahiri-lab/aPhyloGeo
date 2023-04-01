@@ -107,7 +107,7 @@ A `requirements.txt` file containing all required libraries is available in the 
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `pip install -r requirements.txt`.
 6. Install the package using `pip -e install .`.
-7. Launch aPhyloGeo using `python3 aPhyloGeo.main.py`.
+7. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
