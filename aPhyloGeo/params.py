@@ -12,16 +12,16 @@ class Params:
         with open(params_file) as f:
             params = yaml.load(f, Loader=SafeLoader)
 
-        self.bootstrap_threshold =      params["bootstrap_threshold"]
-        self.ls_threshold =             params["ls_threshold"]
-        self.window_size =              params["window_size"]
-        self.step_size =                params["step_size"]
-        self.data_names =               params["data_names"]
-        self.reference_gene_file =      params["reference_gene_dir"] + '/' + params["reference_gene_file"]
-        self.reference_gene_filename =  params["reference_gene_file"]
+        self.bootstrap_threshold = params["bootstrap_threshold"]
+        self.ls_threshold = params["ls_threshold"]
+        self.window_size = params["window_size"]
+        self.step_size = params["step_size"]
+        self.data_names = params["data_names"]
+        self.reference_gene_file = params["reference_gene_dir"] + '/' + params["reference_gene_file"]
+        self.reference_gene_filename = params["reference_gene_file"]
 
-        self.file_name =                params["file_name"]
-        self.specimen =                 params["specimen"]
-        self.names =                    params["names"]
-        self.makeDebugFiles =           params["makeDebugFiles"]
-        self.bootstrapAmount =          params["bootstrap_amount"]
+        self.file_name = params["file_name"]
+        self.specimen = params["specimen"]
+        self.names = params["names"]
+        self.makeDebugFiles = params["makeDebugFiles"]
+        self.bootstrapAmount = params["bootstrap_amount"]
