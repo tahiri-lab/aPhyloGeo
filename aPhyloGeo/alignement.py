@@ -1,7 +1,6 @@
 import sys
 import os
 from io import StringIO
-from Bio import SeqIO
 from Bio import pairwise2
 from Bio.Seq import Seq
 from Bio import AlignIO

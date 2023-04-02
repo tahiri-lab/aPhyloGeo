@@ -1,12 +1,10 @@
 ﻿import pandas as pd
 import os
 import shutil
-import csv
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from Bio.Phylo.Consensus import *
-from Bio import Phylo
 from Bio import SeqIO
 from csv import writer as csv_writer
 import random
@@ -296,7 +294,6 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
         reference_gene_filename
     '''
  
- 
     for leave in leavesName:
         for i, row in csv_data.iterrows():
             if row[0] == leave:
@@ -398,17 +395,17 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
 
 def openFastaFile(file):
-        '''
-        Reads the .fasta file. Extract sequence ID and sequences.
+    '''
+    Reads the .fasta file. Extract sequence ID and sequences.
 
-        Args:
-            file (String) the file name of a .fasta file
+    Args:
+        file (String) the file name of a .fasta file
 
-        Return:
-            sequences (dictionnary)
-        '''
-        sequences = {}
-        with open(file) as sequencesFile:
-            for sequence in SeqIO.parse(sequencesFile, "fasta"):
-                sequences[sequence.id] = sequence.seq
-        return sequences
+    Return:
+        sequences (dictionnary)
+    '''
+    sequences = {}
+    with open(file) as sequencesFile:
+        for sequence in SeqIO.parse(sequencesFile, "fasta"):
+            sequences[sequence.id] = sequence.seq
+    return sequences
