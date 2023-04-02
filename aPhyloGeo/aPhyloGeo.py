@@ -365,6 +365,8 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
 
     # We write the datas into an output csv file
     writeOutputFile(data)
+    print(data)
+    return data
 
 
 def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
@@ -392,7 +394,7 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
-    filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, csv_data, p.reference_gene_filename)
+    return filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, csv_data, p.reference_gene_filename)
 
 
 def openFastaFile(file):
