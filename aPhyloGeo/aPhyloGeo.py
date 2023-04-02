@@ -6,6 +6,8 @@ from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from Bio.Phylo.Consensus import *
+from Bio import Phylo
+from Bio import SeqIO
 from csv import writer as csv_writer
 import random
 
@@ -385,8 +387,26 @@ def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
     # JUST TO MAKE THE DEBUG FILES
 
     if alignementObject is None:
-        alignementObject = AlignSequences(p.reference_gene_file, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
+        sequences = openFastaFile(p.reference_gene_file)
+        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
     filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
+
+
+def openFastaFile(file):
+        '''
+        Reads the .fasta file. Extract sequence ID and sequences.
+
+        Args:
+            file (String) the file name of a .fasta file
+
+        Return:
+            sequences (dictionnary)
+        '''
+        sequences = {}
+        with open(file) as sequencesFile:
+            for sequence in SeqIO.parse(sequencesFile, "fasta"):
+                sequences[sequence.id] = sequence.seq
+        return sequences

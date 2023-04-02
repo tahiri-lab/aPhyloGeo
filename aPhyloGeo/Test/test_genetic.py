@@ -24,11 +24,13 @@ class TestGenetic():
 
         print("Begin setup for test class test_genetic...")
 
-        # params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
-        params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
+        # params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))     
+        # sequences_small = aPhyloGeo.readFastaFile(params_small.reference_gene_file)
         # small = AlignSequences(params_small.reference_gene_file, params_small.window_size, params_small.step_size,
         #                        params_small.makeDebugFiles, params_small.bootstrapAmount)
-        very_small = AlignSequences(params_very_small.reference_gene_file, params_very_small.window_size, params_very_small.step_size,
+        params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
+        sequences_very_small = aPhyloGeo.openFastaFile(params_very_small.reference_gene_file)
+        very_small = AlignSequences(sequences_very_small, params_very_small.window_size, params_very_small.step_size,
                                     params_very_small.makeDebugFiles, params_very_small.bootstrapAmount)
 
         self.alignementSetup = [very_small]  # , small]
