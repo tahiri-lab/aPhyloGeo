@@ -282,7 +282,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, bootstrap, genetic, file_name, reference_gene_filename):
+def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -292,17 +292,17 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, file_name, 
         climaticList (the list of climatic trees)
         bootstrap (bootstrap values)
         genetic  (genetic tree)
-        file_name
+        csv_data (the pf containing the data)
         reference_gene_filename
     '''
-    with open(file_name, 'r') as file:
-        csvreader = csv.reader(file)
-        for leave in leavesName:
-            for row in csvreader:
-                if row[0] == leave:
-                    return [reference_gene_filename, climaticList[index],
-                            leave, genetic,
-                            str(bootstrap), str(round(ls, 2))]
+ 
+ 
+    for leave in leavesName:
+        for i, row in csv_data.iterrows():
+            if row[0] == leave:
+                return [reference_gene_filename, climaticList[index],
+                        leave, genetic,
+                        str(bootstrap), str(round(ls, 2))]
 
 
 def writeOutputFile(data):
@@ -323,7 +323,7 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, file_name, reference_gene_filename):
+def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, csv_data, reference_gene_filename):
     '''
     Create the final datas from the Climatic Tree and the Genetic Tree
 
@@ -332,7 +332,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
         geneticTrees (the dictionnary containing every geneticTrees)
         bootstrap_threshold (the bootstrap threshold)
         ls_threshold (the least square threshold)
-        file_name (the name of the csv file)
+        csv_data (dataframe containing the data from the csv file)
         reference_gene_filename (the name of the reference gene)
     '''
     # Create a list of the tree if the bootstrap is superior to the
@@ -361,13 +361,13 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
                 raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
             if ls <= ls_threshold:
                 data.append(getData(leavesName, ls, i, climaticList,
-                                    current_bootstrap, current_genetic, file_name, reference_gene_filename))
+                                    current_bootstrap, current_genetic, csv_data, reference_gene_filename))
 
     # We write the datas into an output csv file
     writeOutputFile(data)
 
 
-def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
+def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
     '''
     Get the genetic Trees from the initial file datas so we
     can compare every valid tree with the climatic ones. In the
@@ -392,7 +392,7 @@ def geneticPipeline(climaticTrees, p=Params(), alignementObject=None):
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
-    filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, p.file_name, p.reference_gene_filename)
+    filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, csv_data, p.reference_gene_filename)
 
 
 def openFastaFile(file):

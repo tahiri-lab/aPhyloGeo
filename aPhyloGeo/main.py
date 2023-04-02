@@ -19,4 +19,4 @@ if __name__ == "__main__":
     p = Params()
     df = pd.read_csv(p.file_name)
     climaticTrees = climaticPipeline(df, p.names)
-    geneticPipeline(climaticTrees, p)
+    geneticPipeline(climaticTrees, df, p)
