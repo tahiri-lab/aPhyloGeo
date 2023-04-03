@@ -13,6 +13,9 @@ from aPhyloGeo.multiProcessor import Multi
 from aPhyloGeo.alignement import AlignSequences
 from aPhyloGeo.params import Params
 
+HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
+          'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
+
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
@@ -310,11 +313,10 @@ def writeOutputFile(data):
         data (the list contaning the final data)
     '''
     print("Writing the output file")
-    header = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
+   
     with open("output.csv", "w", encoding="UTF8") as f:
         writer = csv_writer(f)
-        writer.writerow(header)
+        writer.writerow(HEADER)
         for i in range(len(data)):
             writer.writerow(data[i])
         f.close
@@ -362,8 +364,8 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
 
     # We write the datas into an output csv file
     writeOutputFile(data)
-    print(data)
-    return data
+    
+    return [HEADER] + data
 
 
 def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
