@@ -364,8 +364,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
 
     # We write the datas into an output csv file
     writeOutputFile(data)
-    
-    return [HEADER] + data
+    return data
 
 
 def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
