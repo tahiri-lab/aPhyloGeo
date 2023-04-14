@@ -105,7 +105,7 @@ A `requirements.txt` file containing all required libraries is available in the 
 2. If you do not have `virtualenv` installed, run `python3 -m pip install --user virtualenv`
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
-5. Install the required libraries using `pip install -r requirements.txt`.
+5. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
 6. Install the package using `pip -e install .`.
 7. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
