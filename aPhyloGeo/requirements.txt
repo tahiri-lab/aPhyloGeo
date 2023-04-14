@@ -1,5 +1,4 @@
 bio==1.5.2
-flake8==4.0.1
 multiprocess==0.70.14
 pandas==1.3.5
 psutil==5.9.4

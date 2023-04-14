@@ -14,8 +14,7 @@ setup(
         "multiprocess>=0.70.14",
         "psutil>=5.9.4",
         "PyYAML>=6.0",
-        "pytest>=7.2.1",
-        "flake8>=4.0.1"
+        "pytest>=7.2.1"
     ],
     python_requires=">=3.7.0,<=3.11.1",
     packages=find_packages(),
