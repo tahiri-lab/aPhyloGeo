@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 import os
 import shutil
 from Bio.Phylo.TreeConstruction import DistanceCalculator
@@ -365,7 +365,6 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
     if create_file:
         # We write the datas into an output csv file
         writeOutputFile(data)
-
     return format_to_csv(data)
 
 
