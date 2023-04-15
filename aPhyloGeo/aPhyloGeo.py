@@ -370,6 +370,15 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
 
 
 def format_to_csv(data):
+    '''
+    Format the data to a csv file
+
+    Args:
+        data: array of arrays of data
+
+    Returns:
+        result: dict with key header and value array of data
+    '''
     result = {}
 
     for h in HEADER:
