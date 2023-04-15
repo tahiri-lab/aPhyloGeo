@@ -296,7 +296,7 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
         csv_data (the pf containing the data)
         reference_gene_filename
     '''
- 
+
     for leave in leavesName:
         for i, row in csv_data.iterrows():
             if row[0] == leave:
@@ -313,7 +313,7 @@ def writeOutputFile(data):
         data (the list contaning the final data)
     '''
     print("Writing the output file")
-   
+
     with open("output.csv", "w", encoding="UTF8") as f:
         writer = csv_writer(f)
         writer.writerow(HEADER)
@@ -322,7 +322,7 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, csv_data, reference_gene_filename):
+def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, csv_data, reference_gene_filename, create_file=True):
     '''
     Create the final datas from the Climatic Tree and the Genetic Tree
 
@@ -362,8 +362,9 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
                 data.append(getData(leavesName, ls, i, climaticList,
                                     current_bootstrap, current_genetic, csv_data, reference_gene_filename))
 
-    # We write the datas into an output csv file
-    writeOutputFile(data)
+    if create_file:
+        # We write the datas into an output csv file
+        writeOutputFile(data)
     return data
 
 
