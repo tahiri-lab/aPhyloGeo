@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 import os
 import shutil
 from Bio.Phylo.TreeConstruction import DistanceCalculator
@@ -365,7 +365,29 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
     if create_file:
         # We write the datas into an output csv file
         writeOutputFile(data)
-    return data
+    return format_to_csv(data)
+
+
+def format_to_csv(data):
+    '''
+    Format the data to a csv file
+
+    Args:
+        data: array of arrays of data
+
+    Returns:
+        result: dict with key header and value array of data
+    '''
+    result = {}
+
+    for h in HEADER:
+        result[h] = []
+
+    for row in data:
+        for col_index in range(len(row)):
+            result[HEADER[col_index]].append(row[col_index])
+
+    return result
 
 
 def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
