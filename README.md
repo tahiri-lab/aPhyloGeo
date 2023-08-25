@@ -92,6 +92,11 @@ In this work, we applied software packages of the following versions: [Biopython
 💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
 
 ```
+pip3 install cython
+```
+and then:
+
+```
 pip3 install -r requirements.txt
 ```
 
