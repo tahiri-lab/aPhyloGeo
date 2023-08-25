@@ -25,3 +25,6 @@ class Params:
         self.names = params["names"]
         self.makeDebugFiles = params["makeDebugFiles"]
         self.bootstrapAmount = params["bootstrap_amount"]
+
+        self.alignment_method = params["alignment_method"]
+        self.fasta_path = params["fasta_path"]
