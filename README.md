@@ -18,7 +18,7 @@
     <li>
       <a href="#Installation">Installation</a>
       <ul>
-        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
+        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
       </ul>
     </li>
     <!--<li> Available analyses</li>
