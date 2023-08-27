@@ -53,6 +53,7 @@
 # 📝 About the project
 
 `aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionnally saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations (see Worflow Section for more details).
+In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pymuscle5 algorithm.
 
 💡 If you are using our algorithm in your research, please cite our recent paper: 
 Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
@@ -85,7 +86,7 @@ In this work, we applied software packages of the following versions: [Biopython
 
 # ⚒️ Installation
 
-## Linux UNIX and Mac OS versions
+## Linux UNIX, Mac OS & Windows versions
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
@@ -99,15 +100,15 @@ and then:
 ```
 pip3 install -r requirements.txt
 ```
-
-### 💻 Python script
 A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
-⚠️ Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
+⚠️ Assuming Python 3.8 or higher is installed on the machine, these scripts should run well with the libraries installed.
+
+### 💻 Python script for Linux UNIX or Mac OS versions
 
 <u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
-1. After downloading the source code, go to the folder containing `main.py`.
-2. If you do not have `virtualenv` installed, run `python3 -m pip install --user virtualenv`
+1. After downloading the source code, go to the folder containing `main.py`. 
+2. If you do not have **virtualenv** installed, run `python3 -m pip install --user virtualenv`
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
@@ -116,7 +117,16 @@ A `requirements.txt` file containing all required libraries is available in the 
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
+### 💻 Python script for Windows version
 
+<u>Here is an example of how to run the script in Windows:</u>
+1. After downloading the source code, navigate to the folder containing `main.py` using the Command Prompt.
+2. If you don't have **virtualenv** installed, run `python -m pip install --user virtualenv`.
+3. Create a new virtual environment (venv) by executing `python -m venv aPhyloGeo_env`.
+4. To activate the virtual environment, use the command `aPhyloGeo_env\Scripts\activate`.
+5. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
+6. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
+7. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
 
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
@@ -126,6 +136,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 - **Step**: Sliding window advancement step
 - **Distance choice**: Least Square (LS) distance (version 1.0) will be extented to [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 - **Least Square distance threshold**: LS distance threshold at which the results are most significant
+- **Alignment method**: algorithm selection for sequence alignment ('1' for pairwise2 and '2' for pymuscle)
 
 
 # 📁 Example
