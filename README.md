@@ -52,7 +52,7 @@
 
 # 📝 About the project
 
-`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionnally saved in folders with their respective tree. The `output.csv` file contains the informations of all the significant MSAs informations (see Worflow Section for more details).
+`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionally saved in folders with their respective tree. The `output.csv` file contains the information of all the significant MSAs information (see Workflow Section for more details).
 In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pymuscle5 algorithm.
 
 💡 If you are using our algorithm in your research, please cite our recent paper: 
@@ -65,10 +65,10 @@ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis
 ![](./img/Fig_1.png)
 
 
-Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted by three different colors. 
+Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted with three different colors. 
 - **The first block** (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file). 
 - **The second block** (the light green color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file). 
-- **The third block** (the light pink color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
+- **The third block** (the light pink color) allows the comparison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
 
 $$LS(T_1, T_2) = \sum_{i=1}^{n-1} \sum_{j=i}^{n} \lvert \delta(i,j) - \xi(i,j) \rvert$$
 
@@ -77,7 +77,7 @@ where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ an
 
 This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
-Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the worflow below).
+Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the workflow below).
 **Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
 
 In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License).
@@ -134,7 +134,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 - **Bootstrap threshold**: Number of replicates threshold to be generated for each sub-MSA (each position of the sliding window)
 - **Window length**: Size of the sliding window
 - **Step**: Sliding window advancement step
-- **Distance choice**: Least Square (LS) distance (version 1.0) will be extented to [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+- **Distance choice**: Least Square (LS) distance (version 1.0) will be extended to [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 - **Least Square distance threshold**: LS distance threshold at which the results are most significant
 - **Alignment method**: algorithm selection for sequence alignment ('1' for pairwise2 and '2' for pymuscle)
 
@@ -157,7 +157,7 @@ The algorithm takes two files as input with the following definitions:
 - ⛅ **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
 
 ## Output
-The algorithm will return a csv file that contains information from all relevant MSAs (see Worflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
+The algorithm will return a csv file that contains information from all relevant MSAs (see Workflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
 
 
 # ✔️ References
@@ -174,4 +174,4 @@ The algorithm will return a csv file that contains information from all relevant
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
 # 📧 Contact
-Please email us at : <Nadia.Tahiri@USherbrooke.ca> for any question or feedback.
+Please email us at: <Nadia.Tahiri@USherbrooke.ca> for any questions or feedback.
