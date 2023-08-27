@@ -1,11 +1,21 @@
 import sys
 import os
+
+import Bio.SeqIO
+
 from io import StringIO
 from Bio import pairwise2
 from Bio.Seq import Seq
+from Bio.Align import MultipleSeqAlignment
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
+
 from Bio import AlignIO
 from aPhyloGeo.multiProcessor import Multi
 from pathlib import Path
+
+sys.path.append('/home/mus/Documents/aPhyloGeo-main/aPhyloGeo/ENTER/lib/python3.8/site-packages')
+import pymuscle5
 
 
 class AlignSequences:
@@ -13,7 +23,7 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
-    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount):
+    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method, fasta_path):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
@@ -58,26 +68,35 @@ class AlignSequences:
         self.bootstrapAmount = bootstrapAmount
 
         self.sequences = sequences
-        self.centroidKey = self.getSequenceCentroid()[0]
-        self.centroidSeq = self.sequences.pop(self.centroidKey)
+        self.fasta_path = fasta_path
+        self.alignment_method = alignment_method
 
-        self.aligned = self.alignSequences()
-        self.heuristicMSA = self.starAlignement()
-        self.windowed = self.slidingWindow()
-        self.msaSet = self.makeMSA()
+        if self.alignment_method == '1':
+            self.centroidKey = self.getSequenceCentroid()[0]
+            self.centroidSeq = self.sequences.pop(self.centroidKey)
 
+            self.aligned = self.alignSequencesWithPairwise2()
+            self.heuristicMSA = self.starAlignement()
+            self.windowed = self.slidingWindow()
+            self.msaSet = self.makeMSA()
+
+        elif self.alignment_method == '2':
+            self.aligned = self.alignSequencesWithPymuscle5(fasta_path)
+            self.windowed = self.slidingWindow()
+            self.msaSet = self.makeMSA()
+        else:
+            raise ValueError("Invalid alignment method")
+        
     def getSequenceCentroid(self):
         """
         Method that picks the centroid sequence in a dictionary of sequences
 
         variables:
             list (list) Needed variable format for using Multiprocessor
-
         return: a list of:
             resultKey (String)
             resultSum (int)
         """
-
         seqs = self.sequences
         resultKey = ""
         resultSum = sys.maxsize
@@ -142,7 +161,7 @@ class AlignSequences:
         )
         return (seqAID, seqBID, score)
 
-    def alignSequences(self):
+    def alignSequencesWithPairwise2(self):
         """
         Method that aligns multiple DNA sequences.
         The first speciment of the dataset is used as the main pivot.
@@ -184,6 +203,52 @@ class AlignSequences:
         # JUST TO MAKE THE DEBUG FILES
 
         return aligned
+    
+    def alignSequencesWithPymuscle5(self, fasta_path):
+        """
+        Method that aligns multiple DNA sequences using pymuscle5.
+        Similar to alignSequenceWithPairwise2, but we've reformatted the return to match the input to the SlidingWindow method.
+
+        Variables:
+            fasta_path (str): Path to the FASTA file containing sequences to align.
+            records (list): List of SeqRecord objects containing sequences from the FASTA file.
+            sequences (list): List of pymuscle5.Sequence objects for alignment.
+            aligned (dict): Dictionary to store aligned sequences.
+            aligner (pymuscle5.Aligner): PyMuscle5 aligner object.
+            msa (pymuscle5._muscle.Alignment): Result of the sequence alignment.
+            seq (pymuscle5._muscle.Sequence): Aligned sequence object.
+            seq_id (str): Decoded identifier of the aligned sequence.
+            seq_data (str): Decoded aligned sequence data.
+            heuristicMSA (dict): Dictionary to store the aligned sequences (see self.heuristicMSA).
+
+        Return:
+            heuristicMSA (dict): Dictionary containing aligned sequences (see self.heuristicMSA).
+        """
+
+        print("\nStarting sequence alignment with pymuscle5")
+        # Lecture des séquences à partir du fichier FASTA
+        records = list(Bio.SeqIO.parse(fasta_path, "fasta"))
+
+        # Création des séquences PyMuscle5
+        sequences = [
+            pymuscle5.Sequence(record.id.encode(), bytes(record.seq))
+            for record in records
+        ]
+        
+        aligned = {}
+
+        # Alignement des séquences
+        aligner = pymuscle5.Aligner()
+        msa = aligner.align(sequences)
+
+        for seq in msa.sequences:
+            seq_id = seq.name.decode()
+            seq_data = seq.sequence.decode()
+            aligned[seq_id] = seq_data
+
+        self.heuristicMSA = aligned
+        return self.heuristicMSA
+
 
     def alignSingle(self, args):
         """
@@ -491,6 +556,7 @@ class AlignSequences:
             for seq in window.keys():
                 data += str(">" + seq + "\n" + window[seq] + "\n")
             msaSet[windowSet] = AlignIO.read(StringIO(data), "fasta")
+
         return msaSet
 
     def fileToDict(filename, ext):
