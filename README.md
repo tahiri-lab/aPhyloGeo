@@ -93,13 +93,9 @@ In this work, we applied software packages of the following versions: [Biopython
 💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
 
 ```
-pip3 install cython
-```
-and then:
-
-```
 pip3 install -r requirements.txt
 ```
+
 A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
 ⚠️ Assuming Python 3.8 or higher is installed on the machine, these scripts should run well with the libraries installed.
@@ -113,7 +109,8 @@ A `requirements.txt` file containing all required libraries is available in the 
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
 6. Install the package using `pip install -e .`
-7. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
+7. Install pymuscle5 using `pip install git+https://github.com/althonos/pymuscle5`.
+8. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
@@ -126,7 +123,8 @@ You can also launch the package using the `make` command from your terminal when
 4. To activate the virtual environment, use the command `aPhyloGeo_env\Scripts\activate`.
 5. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
 6. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
-7. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
+7. Install pymuscle5 using `pip install git+https://github.com/althonos/pymuscle5`.
+8. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
 
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
