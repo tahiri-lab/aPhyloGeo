@@ -1,19 +1,14 @@
 import sys
 import os
-
 import Bio.SeqIO
+import pymuscle5
 
 from io import StringIO
 from Bio import pairwise2
 from Bio.Seq import Seq
-
 from Bio import AlignIO
 from aPhyloGeo.multiProcessor import Multi
 from pathlib import Path
-
-sys.path.append('/home/mus/Documents/aPhyloGeo-main/aPhyloGeo/ENTER/lib/python3.8/site-packages')
-import pymuscle5
-
 
 class AlignSequences:
     """
@@ -245,7 +240,6 @@ class AlignSequences:
 
         self.heuristicMSA = aligned
         return self.heuristicMSA
-
 
     def alignSingle(self, args):
         """
