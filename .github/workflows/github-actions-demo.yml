@@ -20,6 +20,7 @@ jobs:
       - run: pip install -r aPhyloGeo/requirements.txt
       - run: pip install flake8
       - run: pip install -e .
+      - run: pip install git+https://github.com/althonos/pymuscle5
 
       - name: Lint with flake8
         run: |
