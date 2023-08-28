@@ -63,7 +63,7 @@ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis
 
 ## Workflow
 
-![](./img/Fig_1.png)
+![](./img/Workflow.png)
 
 
 Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted with three different colors. 
