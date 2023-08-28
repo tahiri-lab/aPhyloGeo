@@ -10,6 +10,7 @@ from Bio import AlignIO
 from aPhyloGeo.multiProcessor import Multi
 from pathlib import Path
 
+
 class AlignSequences:
     """
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
