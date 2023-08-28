@@ -6,9 +6,6 @@ import Bio.SeqIO
 from io import StringIO
 from Bio import pairwise2
 from Bio.Seq import Seq
-from Bio.Align import MultipleSeqAlignment
-from Bio.SeqRecord import SeqRecord
-from Bio import SeqIO
 
 from Bio import AlignIO
 from aPhyloGeo.multiProcessor import Multi
