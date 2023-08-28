@@ -54,7 +54,7 @@
 
 `aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionally saved in folders with their respective tree. The `output.csv` file contains the information of all the significant MSAs information (see Workflow Section for more details).
 
-In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pymuscle5 algorithm.
+In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pyMUSCLE5 algorithm.
 
 💡 If you are using our algorithm in your research, please cite our recent paper: 
 Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
@@ -110,7 +110,7 @@ A `requirements.txt` file containing all required libraries is available in the 
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
 5. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
 6. Install the package using `pip install -e .`
-7. Install pymuscle5 using `pip install git+https://github.com/althonos/pymuscle5`.
+7. Install pyMUSCLE5 using `pip install git+https://github.com/althonos/pymuscle5`.
 8. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
@@ -124,7 +124,7 @@ You can also launch the package using the `make` command from your terminal when
 4. To activate the virtual environment, use the command `aPhyloGeo_env\Scripts\activate`.
 5. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
 6. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
-7. Install pymuscle5 using `pip install git+https://github.com/althonos/pymuscle5`.
+7. Install pyMUSCLE5 using `pip install git+https://github.com/althonos/pymuscle5`.
 8. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
 
 # 🚀 Settings
