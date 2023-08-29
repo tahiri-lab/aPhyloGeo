@@ -16,7 +16,7 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
-    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method, fasta_path):
+    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
@@ -61,7 +61,6 @@ class AlignSequences:
         self.bootstrapAmount = bootstrapAmount
 
         self.sequences = sequences
-        self.fasta_path = fasta_path
         self.alignment_method = alignment_method
 
         if self.alignment_method == '1':
@@ -74,7 +73,7 @@ class AlignSequences:
             self.msaSet = self.makeMSA()
 
         elif self.alignment_method == '2':
-            self.aligned = self.alignSequencesWithPymuscle5(fasta_path)
+            self.aligned = self.alignSequencesWithPymuscle5()
             self.windowed = self.slidingWindow()
             self.msaSet = self.makeMSA()
         else:
@@ -197,7 +196,7 @@ class AlignSequences:
 
         return aligned
     
-    def alignSequencesWithPymuscle5(self, fasta_path):
+    def alignSequencesWithPymuscle5(self):
         """
         Method that aligns multiple DNA sequences using pymuscle5.
         Similar to alignSequenceWithPairwise2, but we've reformatted the return to match the input to the SlidingWindow method.
@@ -220,6 +219,7 @@ class AlignSequences:
 
         print("\nStarting sequence alignment with pymuscle5")
         # Lecture des séquences à partir du fichier FASTA
+        fasta_path = self.reference_gene_dir + self.reference_gene_file
         records = list(Bio.SeqIO.parse(fasta_path, "fasta"))
 
         # Création des séquences PyMuscle5
