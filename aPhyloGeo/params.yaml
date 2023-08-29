@@ -9,6 +9,5 @@ bootstrap_amount: 100
 data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
 reference_gene_dir: './datasets/5seq'
 reference_gene_file: 'seq very small.fasta'
-fasta_path: './datasets/5seq/seq very small.fasta'
 makeDebugFiles: True
 alignment_method: '2' #Please enter 1 for pairwise2 alignment or 2 for pymuscle5
