@@ -10,3 +10,4 @@ data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCO
 reference_gene_dir: '../datasets/5seq'
 reference_gene_file: 'seq very small.fasta'
 makeDebugFiles: False
+alignment_method: '1'
