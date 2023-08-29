@@ -16,7 +16,7 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
-    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method):
+    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method, reference_gene_file):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
@@ -62,6 +62,7 @@ class AlignSequences:
 
         self.sequences = sequences
         self.alignment_method = alignment_method
+        self.reference_gene_file = reference_gene_file
 
         if self.alignment_method == '1':
             self.centroidKey = self.getSequenceCentroid()[0]
@@ -219,7 +220,7 @@ class AlignSequences:
 
         print("\nStarting sequence alignment with pymuscle5")
         # Lecture des séquences à partir du fichier FASTA
-        fasta_path = self.reference_gene_dir + self.reference_gene_file
+        fasta_path = self.reference_gene_file
         records = list(Bio.SeqIO.parse(fasta_path, "fasta"))
 
         # Création des séquences PyMuscle5
