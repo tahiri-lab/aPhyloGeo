@@ -411,7 +411,7 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
     if alignementObject is None:
         sequences = openFastaFile(p.reference_gene_file)
-        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount)
+        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount, p.alignment_method, p.reference_gene_file)
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
