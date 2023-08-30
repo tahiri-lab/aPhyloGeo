@@ -110,13 +110,14 @@ A `requirements.txt` file containing all required libraries is available in the 
 
 <u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
 1. After downloading the source code, go to the folder containing `main.py`. 
-2. If you do not have **virtualenv** installed, run `python3 -m pip install --user virtualenv`
+2. If you do not have **virtualenv** installed, run `python3 -m pip install --user virtualenv`.
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
-5. Install the required cython library using : `pip install cython`
+5. Install the required libraries using `pip install cython` and `sudo apt install git`.
 6. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
-7. Install the package using `pip install -e .`
-8. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
+7. Install the package using `pip install -e ..`
+8. Navigate back to the previous folder using `cd ..`
+9. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
@@ -127,10 +128,11 @@ You can also launch the package using the `make` command from your terminal when
 2. If you don't have **virtualenv** installed, run `python -m pip install --user virtualenv`.
 3. Create a new virtual environment (venv) by executing `python -m venv aPhyloGeo_env`.
 4. To activate the virtual environment, use the command `aPhyloGeo_env\Scripts\activate`.
-5. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
-6. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
-7. Install pyMUSCLE5 using `pip install git+https://github.com/althonos/pymuscle5`.
-8. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
+5. Install the required libraries using `pip install cython` and `pip install git`.
+6. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
+7. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
+8. Navigate back to the previous folder using `cd ..`
+9. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
 
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
