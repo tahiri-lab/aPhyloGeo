@@ -91,10 +91,15 @@ In this work, we applied software packages of the following versions: [Biopython
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
-💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type the following command:
+💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type these following commands:
 
 ```
-pip3 install -r requirements.txt
+pip3 install cython
+```
+then:
+
+```
+pip install -r requirements.txt
 ```
 
 A `requirements.txt` file containing all required libraries is available in the GitHub repository.
@@ -108,9 +113,9 @@ A `requirements.txt` file containing all required libraries is available in the 
 2. If you do not have **virtualenv** installed, run `python3 -m pip install --user virtualenv`
 3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
 4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
-5. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
-6. Install the package using `pip install -e .`
-7. Install pyMUSCLE5 using `pip install git+https://github.com/althonos/pymuscle5`.
+5. Install the required cython library using : `pip install cython`
+6. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
+7. Install the package using `pip install -e .`
 8. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
