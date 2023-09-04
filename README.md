@@ -121,6 +121,9 @@ A `requirements.txt` file containing all required libraries is available in the 
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
+<u>**Here is a gif of the example above:**</u>
+![](https://github.com/tahiri-lab/aPhyloGeo/blob/main/img/InstallationGuideLinux.gif)
+
 ### 💻 Python script for Windows version
 
 <u>Here is an example of how to run the script in Windows:</u>
