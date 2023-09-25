@@ -8,7 +8,7 @@ setup(
     version="0.0.1",
     include_package_data=True,
     install_requires=[
-        "numpy>=1.21.6",
+        "numpy>=1.25.2",
         "pandas>=1.3.5",
         "bio>=1.5.2",
         "multiprocess>=0.70.14",
