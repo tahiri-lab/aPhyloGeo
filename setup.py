@@ -16,6 +16,6 @@ setup(
         "PyYAML>=6.0",
         "pytest>=7.2.1"
     ],
-    python_requires=">=3.7.0,<=3.11.1",
+    python_requires=">=3.9.0,<=3.11.1",
     packages=find_packages(),
 )
