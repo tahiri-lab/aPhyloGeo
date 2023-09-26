@@ -1,4 +1,4 @@
-from aPhyloGeo.aPhyloGeo import geneticPipeline, climaticPipeline
+from aPhyloGeo.utils import geneticPipeline, climaticPipeline
 from aPhyloGeo.params import Params
 import pandas as pd 
 

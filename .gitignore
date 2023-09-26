@@ -7,6 +7,19 @@ output*
 *newick
 temp.ipynb
 debug*
-/aPhyloGeoEnv
-/scripts/aPhyloGeo_env
 *.egg-info
+
+#Ignore virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+/scripts/aPhyloGeo_env
+/aPhyloGeoEnv
+
+#Ignore the build directory (and its sub-directories):
+build
+
+#Ignore the distribution directory
+dist

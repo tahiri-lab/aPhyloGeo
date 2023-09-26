@@ -7,7 +7,7 @@ from io import StringIO
 from Bio import pairwise2
 from Bio.Seq import Seq
 from Bio import AlignIO
-from aPhyloGeo.multiProcessor import Multi
+from .multiProcessor import Multi
 from pathlib import Path
 
 

@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from aPhyloGeo.params import Params
 from aPhyloGeo.alignement import AlignSequences
-from aPhyloGeo import aPhyloGeo
+from aPhyloGeo import utils
 import pandas as pd
 
 
@@ -29,7 +29,7 @@ class TestGenetic():
         # small = AlignSequences(params_small.reference_gene_file, params_small.window_size, params_small.step_size,
         #                        params_small.makeDebugFiles, params_small.bootstrapAmount)
         params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-        sequences_very_small = aPhyloGeo.openFastaFile(params_very_small.reference_gene_file)
+        sequences_very_small = utils.openFastaFile(params_very_small.reference_gene_file)
         very_small = AlignSequences(sequences_very_small, params_very_small.window_size, params_very_small.step_size,
                                     params_very_small.makeDebugFiles, params_very_small.bootstrapAmount, params_very_small.alignment_method, params_very_small.reference_gene_file)
 
@@ -134,7 +134,7 @@ class TestGenetic():
             test_case = p.reference_gene_filename[0:-6]
 
             # Test the createBootstrap function
-            genetic_trees = aPhyloGeo.createBoostrap(alignement.msaSet, p.bootstrapAmount)
+            genetic_trees = utils.createBoostrap(alignement.msaSet, p.bootstrapAmount)
             actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
             actual_bootstrap = [(tree.splitlines()).sort() for tree in actual_bootstrap]
             
@@ -145,14 +145,14 @@ class TestGenetic():
                 assert tree in expected_bootstrap
 
             # test of the createGeneticList function
-            actual_list, actual_bootstrap_list = aPhyloGeo.createGeneticList(genetic_trees, p.bootstrap_threshold)
+            actual_list, actual_bootstrap_list = utils.createGeneticList(genetic_trees, p.bootstrap_threshold)
             with open(Path(current_file + "/testFiles/createGeneticList/" + test_case + ".txt"), 'r') as f:
                 expected_list = ast.literal_eval(f.read())
             assert actual_list == expected_list
 
             df = pd.read_csv(p.file_name)
-            climatic_trees = aPhyloGeo.climaticPipeline(df, p.names)
-            aPhyloGeo.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, df, p.reference_gene_filename)
+            climatic_trees = utils.climaticPipeline(df, p.names)
+            utils.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, df, p.reference_gene_filename)
 
             with open(Path(current_file + "/testFiles/writeOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
                 expected_output = [value for value in expected_file.readlines() if value != "\n"]

@@ -9,9 +9,9 @@ from Bio import SeqIO
 from csv import writer as csv_writer
 import random
 
-from aPhyloGeo.multiProcessor import Multi
-from aPhyloGeo.alignement import AlignSequences
-from aPhyloGeo.params import Params
+from .multiProcessor import Multi
+from .alignement import AlignSequences
+from .params import Params
 
 HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
           'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
