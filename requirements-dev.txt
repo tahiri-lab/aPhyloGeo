@@ -1,0 +1,9 @@
+bio = "^1.5.9"
+multiprocess = "^0.70.15"
+pandas = "^2.1.1"
+psutil = "^5.9.5"
+pyyaml = "^6.0.1"
+pytest = "^7.4.2"
+numpy = "^1.26.0"
+cython = "^3.0.2"
+pymuscle5 = {git = "https://github.com/althonos/pymuscle5"}
