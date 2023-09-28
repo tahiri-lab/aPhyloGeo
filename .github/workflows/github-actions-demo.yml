@@ -24,4 +24,4 @@ jobs:
           flake8 . --ignore=E222,E501,E502,E722,F403,F405,W291,W293
       - name: Test with pytest
         run: |
-          make ci
+          make test
