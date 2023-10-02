@@ -52,7 +52,7 @@ def test_climaticPipeline():
                 print(f'Actual matrix: {actual_matrix}')
                 with open(file, 'r') as expected_file:  
                     expected_matrix = expected_file.read()
-
+                print(f'file: {file}')
                 print(f'Expected matrix: {expected_matrix}')
                 # test getDissimilaritiesMatrix
                 assert str(actual_matrix) == expected_matrix
