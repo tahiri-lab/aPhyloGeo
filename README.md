@@ -91,51 +91,28 @@ In this work, we applied software packages of the following versions: [Biopython
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
-💡 Before using this program, make sure that you have installed all the necessary libraries for it to work properly. To do this, simply type these following commands:
+This package use ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation)
+⚠️ For windows installation it's recommended to launch powershell in **Administrator mode**.
 
-```
-pip3 install cython
-```
-then:
+Once Poetry is installed, you can clone the repository and install the package using the following commands:
 
-```
-pip install -r requirements.txt
+``` 
+poetry install
 ```
 
-A `requirements.txt` file containing all required libraries is available in the GitHub repository.
+### Usage
+Poetry will handle the virtual environment automatically. if you want to use the virtual environment manually, you can use the following command:
+
+```
+poetry shell
+```
 
 ⚠️ Assuming Python 3.8 or higher is installed on the machine, these scripts should run well with the libraries installed.
-
-### 💻 Python script for Linux UNIX or Mac OS versions
-
-<u>Here is an example of how to run the script in Linux/UNIX or Mac OS:</u>
-1. After downloading the source code, go to the folder containing `main.py`. 
-2. If you do not have **virtualenv** installed, run `python3 -m pip install --user virtualenv`.
-3. Create a new virtual environment (venv) in your terminal using `python3 -m venv aPhyloGeo_env`.
-4. Still in the terminal, enter the new venv using `source aPhyloGeo_env/bin/activate`.
-5. Install the required libraries using `pip install cython` and `sudo apt install git`.
-6. Install the required libraries using `pip install -r aPhyloGeo/requirements.txt`.
-7. Install the package using `pip install -e ..`
-8. Navigate back to the previous folder using `cd ..`
-9. Launch aPhyloGeo using `python3 -m aPhyloGeo.main`.
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
 <u>**Here is a gif of the example above:**</u>
 ![](https://github.com/tahiri-lab/aPhyloGeo/blob/main/img/InstallationGuideLinux.gif)
-
-### 💻 Python script for Windows version
-
-<u>Here is an example of how to run the script in Windows:</u>
-1. After downloading the source code, navigate to the folder containing `main.py` using the Command Prompt.
-2. If you don't have **virtualenv** installed, run `python -m pip install --user virtualenv`.
-3. Create a new virtual environment (venv) by executing `python -m venv aPhyloGeo_env`.
-4. To activate the virtual environment, use the command `aPhyloGeo_env\Scripts\activate`.
-5. Install the required libraries using `pip install cython` and `pip install git`.
-6. Install the required libraries using `pip install -r aPhyloGeo\requirements.txt` within the activated virtual environment.
-7. Install the package using `pip install -e .` (note the period) within the activated virtual environment.
-8. Navigate back to the previous folder using `cd ..`
-9. Launch aPhyloGeo by running `python -m aPhyloGeo.main`.
 
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.

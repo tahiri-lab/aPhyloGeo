@@ -83,25 +83,23 @@ Dans ce travail, nous avons utilisé des packages logiciels des versions suivant
 `aPhyloGeo` est disponible en tant que script Python.
 
 ### Prérequis
-💡 Avant d'utiliser ce programme, assurez-vous d'avoir installé toutes les bibliothèques nécessaires pour qu'il fonctionne correctement. Pour ce faire, tapez simplement la commande suivante :
+Ce package utilise l'outil de gestion des dépendances et d'emballage ```Poetry``` pour Python. Vous pouvez trouver le guide d'installation de Poetry ici : [Installation de Poetry](https://python-poetry.org/docs/#installation)
+
+⚠️ Pour l'installation sous Windows, il est recommandé de lancer PowerShell en mode **Administrateur**.
+
+Une fois Poetry installé, vous pouvez cloner le référentiel et installer le package à l'aide des commandes suivantes :
+
+``` 
+poetry install
+```
+
+### Utilisation
+Poetry gérera automatiquement l'environnement virtuel. Si vous souhaitez utiliser l'environnement virtuel manuellement, vous pouvez utiliser la commande suivante :
 
 ```
-pip3 install -r requirements.txt
+poetry shell
 ```
-
-### 💻 Script python
-Un fichier `requirements.txt` contenant toutes les bibliothèques requises est disponible dans le dépôt GitHub.
-
 ⚠️ En supposant que Python 3.8 ou une version supérieure est installée sur la machine, le script devrait fonctionner correctement avec les bibliothèques installées.
-
-<u>Voici un exemple de la façon d'exécuter le script sous Linux/UNIX ou Mac OS:</u>
-1. Après avoir téléchargé le code source, allez dans le dossier contenant `main.py`.
-2. Si vous n'avez pas `virtualenv` installé, exécutez `python3 -m pip install --user virtualenv`.
-3. Créez un nouvel environnement virtuel (venv) dans votre terminal en utilisant `python3 -m venv aPhyloGeo_env`.
-4. Toujours dans le terminal, entrez dans le nouveau venv en utilisant `source aPhyloGeo_env/bin/activate`.
-5. Installez les bibliothèques requises en utilisant `pip install -r aPhyloGeo/requirements.txt`.
-6. Installez le package en utilisant `pip -e install .`.
-7. Lancez aPhyloGeo en utilisant `python3 -m aPhyloGeo.main`.
 
 Vous pouvez également lancer le package en utilisant la commande `make` depuis votre terminal lorsque vous êtes dans le `root`. Cette commande utilisera le fichier `Makefile` pour exécuter le script. Si vous utilisez la commande `make clean`, elle effacera le fichier `output.csv` précédemment créé avec la première commande.
 
