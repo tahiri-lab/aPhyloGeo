@@ -21,7 +21,7 @@ def climaticTreesSetup():
     return utils.climaticPipeline(pd.read_csv(p.file_name), p.names)
 
 
-@pytest.mark.skip(reason="Work in progress, new version matrix return 0.00000 instead than 0")
+#@pytest.mark.skip(reason="Work in progress, new version matrix return 0.00000 instead than 0")
 def test_climaticPipeline():
     '''
     This test is used to test the climaticPipeline function.
@@ -49,10 +49,11 @@ def test_climaticPipeline():
                 filename_without_ext = filename[0:-4]
                 file = Path(curent_dir / filename)
                 actual_matrix = utils.getDissimilaritiesMatrix(df, 'id', filename_without_ext) 
-
+                print(f'Actual matrix: {actual_matrix}')
                 with open(file, 'r') as expected_file:  
                     expected_matrix = expected_file.read()
 
+                print(f'Expected matrix: {expected_matrix}')
                 # test getDissimilaritiesMatrix
                 assert str(actual_matrix) == expected_matrix
 
