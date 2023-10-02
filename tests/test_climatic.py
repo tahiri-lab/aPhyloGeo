@@ -21,7 +21,6 @@ def climaticTreesSetup():
     return utils.climaticPipeline(pd.read_csv(p.file_name), p.names)
 
 
-
 def test_climaticPipeline():
     '''
     This test is used to test the climaticPipeline function.
