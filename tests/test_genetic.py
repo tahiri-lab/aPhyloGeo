@@ -5,9 +5,9 @@ from Bio import Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 import os
 from pathlib import Path
-from aPhyloGeo.params import Params
-from aPhyloGeo.alignement import AlignSequences
-from aPhyloGeo import utils
+from aphylogeo.params import Params
+from aphylogeo.alignement import AlignSequences
+from aphylogeo import utils
 import pandas as pd
 
 

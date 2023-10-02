@@ -1,5 +1,5 @@
-from aPhyloGeo.utils import geneticPipeline, climaticPipeline
-from aPhyloGeo.params import Params
+from aphylogeo.utils import geneticPipeline, climaticPipeline
+from aphylogeo.params import Params
 import pandas as pd 
 
 titleCard = r"""
@@ -12,7 +12,7 @@ titleCard = r"""
  \/__/\/_/ \/_/    \/_/\/_/`/___/> \/____/\/___/  \/___/  \/____/\/___/
                               /\___/
                               \/__/
-"""  # https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aPhyloGeo%20
+"""  # https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aphylogeo%20
 
 if __name__ == "__main__":
     print(titleCard + "\n")

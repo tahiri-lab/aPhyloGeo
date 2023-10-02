@@ -1,7 +1,7 @@
 import os
 import pandas as pd
-from aPhyloGeo.params import Params
-from aPhyloGeo import utils
+from aphylogeo.params import Params
+from aphylogeo import utils
 from pathlib import Path
 import pytest
 
@@ -21,7 +21,7 @@ def climaticTreesSetup():
     return utils.climaticPipeline(pd.read_csv(p.file_name), p.names)
 
 
-#@pytest.mark.skip(reason="Work in progress, new version matrix return 0.00000 instead than 0")
+
 def test_climaticPipeline():
     '''
     This test is used to test the climaticPipeline function.
