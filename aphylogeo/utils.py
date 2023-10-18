@@ -299,7 +299,7 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
 
     for leave in leavesName:
         for i, row in csv_data.iterrows():
-            if row[0] == leave:
+            if row.iloc[0] == leave:
                 return [reference_gene_filename, climaticList[index],
                         leave, genetic,
                         str(bootstrap), str(round(ls, 2))]
