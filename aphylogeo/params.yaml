@@ -12,3 +12,5 @@ reference_gene_file: 'seq very small.fasta'
 makeDebugFiles: True
 alignment_method: '2' #Please enter 1 for pairwise2 alignment or 2 for pymuscle5
 distance_method: '1' #Please enter 1 for Least-Square distance or 2 for Robinson-Foulds
+fit_method: '2' # 1:Wider Fit by elongating with Gap (starAlignment), 2:Narrow-fit prevent elongation with gap when possible
+tree_type: '2' # 1: BioPython consensus tree, 2: FastTree application

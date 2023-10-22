@@ -2,6 +2,9 @@ import sys
 import os
 import Bio.SeqIO
 import pymuscle5
+from itertools import combinations
+from collections import defaultdict
+import statistics as st
 
 from io import StringIO
 from Bio import pairwise2
@@ -16,7 +19,7 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
-    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method, reference_gene_file):
+    def __init__(self, sequences, window_size, step_size, makeDebugFiles, bootstrapAmount, alignment_method, reference_gene_file, fit_method):
         """
         Constructor if the alignment object.
         Makes all the necessary actions upon creation; no need to call any methods on the object.
@@ -59,17 +62,19 @@ class AlignSequences:
         self.step_size = step_size
         self.makeDebugFiles = makeDebugFiles
         self.bootstrapAmount = bootstrapAmount
-
         self.sequences = sequences
         self.alignment_method = alignment_method
         self.reference_gene_file = reference_gene_file
+        self.fit_method = fit_method
 
         if self.alignment_method == '1':
             self.centroidKey = self.getSequenceCentroid()[0]
             self.centroidSeq = self.sequences.pop(self.centroidKey)
-
             self.aligned = self.alignSequencesWithPairwise2()
-            self.heuristicMSA = self.starAlignement()
+            if self.fit_method == '1':
+                self.heuristicMSA = self.starAlignement()
+            elif self.fit_method == '2':
+                self.heuristicMSA = self.narrowFitPairwise()
             self.windowed = self.slidingWindow()
             self.msaSet = self.makeMSA()
 
@@ -77,6 +82,7 @@ class AlignSequences:
             self.aligned = self.alignSequencesWithPymuscle5()
             self.windowed = self.slidingWindow()
             self.msaSet = self.makeMSA()
+        
         else:
             raise ValueError("Invalid alignment method")
         
@@ -90,41 +96,28 @@ class AlignSequences:
             resultKey (String)
             resultSum (int)
         """
-        seqs = self.sequences
-        resultKey = ""
-        resultSum = sys.maxsize
+        seqs = list((self.sequences).items())
         print("\nSearching for the centroid")
 
         # formats input as a list for the Multiprocess
-        list = []
-        for seqID in seqs.keys():
-            for seqID2 in seqs.keys():
-                if seqID != seqID2:
-                    list.append([seqs[seqID], seqID, seqs[seqID2], seqID2])
-
+        seq_pairs_swapped = [((i[0][1], i[0][0]), (i[1][1], i[1][0])) for i in combinations(seqs, r=2)]
+        seq_pairs = [list(sum(i, ())) for i in seq_pairs_swapped]                    
+        
         # starts all the processes
-        results = Multi(list, self.ScoreSingle).processingLargeData()
+        align_scores = Multi(seq_pairs, self.ScoreSingle).processingLargeData()
 
         # formats the multiprocess output back in a dictionnary
-        rDict = {}
-        for tuple in results:
-            rDict[tuple[0]] = 0  # first pass to ensure all entries exist
-        for tuple in results:
-            # Increment the sum for each speciment
-            rDict[tuple[0]] = rDict[tuple[0]] + tuple[2]
+        scores = defaultdict(list)
+        for pair in align_scores:
+            for i in range(0,2):
+                scores[pair[i]].append(pair[2])
 
-        amount = 0  # minimum value
-        for k in rDict.keys():
-            amount += 1
-            if rDict[k] < resultSum:
-                resultSum = rDict[k]
-                resultKey = k
+        centroid_accession = max({key:st.median(val) for key,val in scores.items()})
+        centroid_score = st.median(scores[centroid_accession])
 
-        print("The centroid is \'", resultKey, "\' with a total score of ",
-              resultSum, " with an average score of ", resultSum / amount,
-              "\n")
-
-        return [resultKey, resultSum]
+        print(f"The centroid is \'{centroid_accession}\' with a median score of {centroid_score}\n")
+        
+        return [centroid_accession, centroid_score]
 
     def ScoreSingle(self, args):
         """
@@ -142,15 +135,13 @@ class AlignSequences:
             seqBID  see above
             score   (float) the resulting score of this couple of alignement
         """
-
-        seqA = args[0]
-        seqAID = args[1]
-        seqB = args[2]
-        seqBID = args[3]
+        seqA, seqB = args[0], args[2]
+        seqAID, seqBID = args[1], args[3]
+         
         score = pairwise2.align.globalxx(
-            str(seqA), str(seqB),
+            seqA, seqB,
             one_alignment_only=True,
-            score_only=True  # important line, reduces execution time by alot
+            score_only=True
         )
         return (seqAID, seqBID, score)
 
@@ -172,16 +163,15 @@ class AlignSequences:
         print("\nStarting sequence alignement")
         seqs = self.sequences
 
-        list = []
+        seq_pairs = []
         for seqXID in seqs.keys():
-            list.append([self.centroidKey, self.centroidSeq, seqXID,
-                         seqs[seqXID]])
+            seq_pairs.append([self.centroidKey, self.centroidSeq, seqXID, seqs[seqXID]])
 
-        result = Multi(list, self.alignSingle).processingLargeData()
+        align_scores = Multi(seq_pairs, self.alignSingle).processingLargeData()
         aligned = {}
 
         # reformats the output in a  dictionnary
-        for i in result:
+        for i in align_scores:
             temp = {}
             temp[i[2]] = Seq((i[1][0].seqA))
             temp[i[0]] = Seq((i[1][0].seqB))
@@ -259,13 +249,178 @@ class AlignSequences:
             aligned (List) The list containing the results.
             scID see above
         """
-        scID = args[0]
-        sc = args[1]
-        seqBID = args[2]
-        seqB = args[3]
-        aligned = pairwise2.align.globalxx(str(sc), str(seqB),
-                                           one_alignment_only=True)
+        scID, seqBID = args[0], args[2]
+        sc, seqB = args[1], args[3]
+        
+        aligned = pairwise2.align.globalxx(sc, seqB, one_alignment_only=True)
         return [seqBID, aligned, scID]
+
+    def narrowFitPairwise(self):
+        """Fit length of a centroid sequence and its pairwise aligned sequences
+        
+        The length of each sequence from the pairwise alignment are set equal by 
+        inserting dash (-) in most appropriate location of a given sequence.
+
+        Parameters:
+        -----------
+        alignment: dict of nested dict
+            {accession couple #1 : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #1: non-centroid Aligned Seq #1}, 
+            ... , 
+            {accession couple #n : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #n: non-centroid Aligned Seq #n}}
+        
+        Return:
+        -------
+        A dictionary of all accessions and their fitted aligned sequences.
+        """
+        seqs = self.getAlignSeqs()
+        max_len = max(self.getAlignSeqLens())
+        for nucleo_i in range(0, max_len):
+            for seq_i in range(0, len(seqs)):        
+                if self.isCurrentCharDash(seqs, seq_i, nucleo_i):
+                    seqs = self.insertDashToShorterSeq(seqs, nucleo_i)
+        seqs = self.appendDashToShorterSeqs(seqs, max_len)
+        return self.mergeFitPairwise(seqs)
+
+    def getAlignSeqs(self):
+        """Extract all sequences aligned using a pairwise alignment
+
+        Parameters:
+        -----------
+        alignment: see fitPairwise(alignment) docstring
+
+        Return:
+        -------
+        List of sequences aligned through pairwise alignment
+        """
+        seqs = []
+        for alignment in self.aligned:
+            seqs.append([str(seq) for seq in self.aligned[alignment].values()])
+        return list(sum(seqs, []))
+
+
+    def getAlignSeqLens(self):
+        """Get length of all sequences aligned using a pairwise alignment
+
+        Parameters:
+        -----------
+        alignment: see fitPairwise(alignment) docstring
+
+        Return:
+        -------
+        List of the length of each aligned sequences
+        """
+        return [len(seq) for seq in self.getAlignSeqs()]
+
+
+    def getAlignCouple(self):
+        """Get nested couple accessions and their respective sequences
+
+        Parameters:
+        -----------
+        alignment: see fitPairwise(alignment) docstring
+        
+        Return:
+        -------
+        List of paired accessions and their aligned sequences
+        """
+        return [val for val in list(self.aligned.values())]
+
+
+    def extractOneAlignAcc(self, nest_ord = 0):
+        """Extract the accession from a nested alignment couple
+
+        Parameters:
+        -----------
+        alignment: see fitPairwise(alignment) docstring
+        nest_ord, int, optional: 
+            The position of the nested accessions (Default = 0 (centroid), 1 (aligned sequence))
+
+        Return:
+        -------
+        The list of either centroid (nest_ord = 0 (Default)) or non-centroid (nest_ord = 1) 
+        accessions of a group of sequences aligned throug pairwise alignment.
+        """
+        try:
+            return [list(i)[nest_ord] for i in self.getAlignCouple()]
+        
+        # Return the centroid sequence if an invalid position is queried
+        except IndexError:
+            return [list(i)[0] for i in self.getAlignCouple()]
+
+
+    def isCurrentCharDash(self, seqs, seq_i, ch_i):
+        """Assess whether the character at current cursor position is a dash
+        
+        Parameters:
+        -----------
+        seqs,  list: aligned sequences to fit
+        seq_i, int:  index of the current sequence
+        ch_i,  int:  index of the currenct character
+
+        Return:
+        -------
+        True if the current character assessed is a dash, False otherwise
+        """
+        try:
+            return seqs[seq_i][ch_i] == '-'
+        except IndexError:
+            return False
+
+
+    def insertDashToShorterSeq(self, seqs, ch_i):
+        """Insert a dash at the current position of a sequence
+        
+        Insert a dash (-) character in a sequence if its length is shorter 
+        than the longest one in the group of aligned sequence.
+
+        Parameters:
+        -----------
+        seqs,  list:    aligned sequences to fit
+        seq_i, int:     index of the current sequence
+
+        Return:
+        -------
+        List, The fitted sequences of a pairwise alignment
+        """
+        for seq_j in range(0, len(seqs)):
+            try:
+                if (len(seqs[seq_j]) < max(self.getAlignSeqLens())) & (seqs[seq_j][ch_i] != '-'): 
+                    seqs[seq_j] = seqs[seq_j][:ch_i] + '-' + seqs[seq_j][ch_i:]
+            except IndexError:
+                    seqs[seq_j] = seqs[seq_j][:ch_i] + '-'
+        return seqs        
+
+
+    def mergeFitPairwise(self, seqs):
+        """Generate a dictionary of all accessions and their fitted sequences
+        
+        Parameters:
+        -----------
+        alignment: see fitPairwise(alignment) docstring
+        seqs,  list:    aligned sequences to fit
+
+        Return:
+        -------
+        Dict, Group of accessions and their fitted sequences from a pairwise alignment
+        """
+        centroid = {list(set(self.extractOneAlignAcc()))[0]:seqs[0]}
+        non_centroid = dict(zip(self.extractOneAlignAcc(1), seqs[1::2]))    
+        return centroid | non_centroid
+
+
+    def appendDashToShorterSeqs(self, seqs, max_len):
+        """Append dash to all sequences shorter than the longest one from a list of sequences
+        
+        Parameters:
+        -----------
+        seqs, list:  List of fitted sequences post pairwise alignment
+        max_len int: Length of the longest aligned sequence, including the blank/dash
+        
+        Return:
+        -------
+        List of sequences with dash appended where applicable
+        """
+        return [f"{str(seq):-<{max_len}}" for seq in seqs]
 
     def starAlignement(self):
         """
@@ -327,7 +482,6 @@ class AlignSequences:
 
             if len(starAlign) > 2:
                 starAlign = self.merge(starAlign, scKey, sNewKey)
-                starAlign = self.equalizeLength(starAlign)
 
             starAlign["temp"] = starAlign[scKey]  # SeqA, the *old* reference
         starAlign.pop("temp")
@@ -427,25 +581,6 @@ class AlignSequences:
             dict[k] = s
         return dict
 
-    def equalizeLength(self, unEqualSeqs):
-        """
-        Method that pads the the string in a dictionnaries values field to be equal to the longuest one.
-        Paddinf is made with "-"
-        Arguments:
-            unEqualSeqs (dict) contains many objects as:
-                key = (string)
-                values = (string)
-        Return:
-            equalizedSeqs (dict) see unEqualSeqs; but all the values have the same length
-        """
-        equalizedSeqs = {}
-        # number of chars in the longest string
-        maxLen = len(str(max(list(unEqualSeqs.values()))))
-
-        for k in unEqualSeqs.keys():
-            equalizedSeqs[k] = Seq(str(unEqualSeqs[k]).ljust(maxLen, '-'))
-
-        return equalizedSeqs
 
     def slidingWindow(self):
         """
@@ -471,40 +606,27 @@ class AlignSequences:
                     i = The starting position of the window, relative to the original sequence
                     j = The ending position of the window, relative to the original sequence
         """
-        alignedSequences = self.heuristicMSA
-        # before = time.time()
+        step = self.window_size
+        windowed_alignment = dict()
+        seq_len = max([len(h) for h in self.heuristicMSA.values()])
+        
+        paddedMSA = {key:str(val).ljust(seq_len, "-") for key,val in self.heuristicMSA.items()}
 
-        windowsDict = {}
-
-        longKey = max(alignedSequences, key=alignedSequences.get)
-        maxLength = len(alignedSequences[longKey])
-
-        stepStart = 0
-        stepEnd = self.window_size - 1
-
-        while stepStart < maxLength:
-            if stepEnd > maxLength:
-                stepEnd = maxLength
-            windowsBySpecies = {}
-            for key in alignedSequences.keys():
-                seq = alignedSequences[key]
-                winSeq = seq[stepStart: stepEnd]
-                winKey = str(key)
-                windowsBySpecies[winKey] = Seq(winSeq)
-            windowKey = str(stepStart) + "_" + str(stepEnd)
-            windowsDict[windowKey] = windowsBySpecies
-            stepStart += self.step_size
-            stepEnd += self.step_size
+        for i in range(0, seq_len, step):
+            if i + step < seq_len:
+                windowed_alignment[f"{i}_{i + step - 1}"] = {key:val[i:i + step - 1] for key, val in paddedMSA.items()}
+            else:
+                windowed_alignment[f"{i}_{seq_len-1}"] = {key:val[i:i + seq_len - 1] for key, val in paddedMSA.items()}
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
             os.mkdir("./debug/3_slidingWindow")
-            for w in windowsDict.keys():
-                self.dictToFile(windowsDict[w], "3_slidingWindow/" + w,
+            for w in windowed_alignment.keys():
+                self.dictToFile(windowed_alignment[w], "3_slidingWindow/" + w,
                                 ".fasta")
         # JUST TO MAKE THE DEBUG FILES
 
-        return windowsDict
+        return windowed_alignment
 
     def dictToFile(self, dict, filename, ext):
         """
