@@ -18,13 +18,15 @@ from .params import Params
 
 if Params().distance_method == '1':
     HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-                'Position in ASM', 'Bootstrap mean', 'Least-Square Distance']
+              'Position in ASM', 'Bootstrap mean', 'Least-Square Distance']
 elif Params().distance_method == '2':
     HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-                'Position in ASM', 'Bootstrap mean', 'Robinson-Foulds Distance', 'RF_MAX']
+              'Position in ASM', 'Bootstrap mean', 'Robinson-Foulds Distance', 'RF_MAX']
 else:
     HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-          'Position in ASM', 'Bootstrap mean', 'Distance']
+              'Position in ASM', 'Bootstrap mean', 'Distance']
+
+
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
     Creation of a list containing the names of specimens and minimums
@@ -128,15 +130,12 @@ def robinsonFoulds(tree1, tree2):
     tree1_newick = Tree(tree1.format("newick"), format=1)
     tree2_newick = Tree(tree2.format("newick"), format=1)
 
-    try:
-        rf, rf_max, common_leaves, x2, x3, x4, x5 = tree1_newick.robinson_foulds(tree2_newick,unrooted_trees=True)
-        if len(common_leaves) == 0:
-            rf = 0
-
-    except Exception as e:
-        rf = 0
+    rf, rf_max, common_leaves, x2, x3, x4, x5 = tree1_newick.robinson_foulds(tree2_newick, unrooted_trees=True)
+    if len(common_leaves) == 0:
+        rf = 0    
 
     return rf, (rf / rf_max)
+
 
 def drawTreesmake(trees, p):
     """
@@ -401,15 +400,15 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_thresho
         for i in range(len(climaticTrees.keys())):
             if distance_method == '1':
                 ls = leastSquare(geneticTrees[current_genetic],
-                                climaticTrees[climaticList[i]])
+                                 climaticTrees[climaticList[i]])
                 if ls is None:
                     raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
                 if ls <= dist_threshold:
                     data.append(getData(leavesName, ls, i, climaticList,
-                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, NULL))
+                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, None))
             elif distance_method == '2':
                 rf, rf_max = robinsonFoulds(geneticTrees[current_genetic],
-                                     climaticTrees[climaticList[i]])                       
+                                            climaticTrees[climaticList[i]])                       
                 if rf is None:
                     raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
                 if rf <= dist_threshold:
