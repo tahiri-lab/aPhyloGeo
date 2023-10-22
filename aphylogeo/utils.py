@@ -1,3 +1,4 @@
+
 import pandas as pd
 import os
 import shutil
@@ -9,14 +10,21 @@ from Bio import SeqIO
 from csv import writer as csv_writer
 import random
 
+from ete3 import Tree
+
 from .multiProcessor import Multi
 from .alignement import AlignSequences
 from .params import Params
 
-HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-          'Position in ASM', 'Bootstrap mean', 'Least-Square distance']
-
-
+if Params().distance_method == '1':
+    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
+                'Position in ASM', 'Bootstrap mean', 'Least-Square Distance']
+elif Params().distance_method == '2':
+    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
+                'Position in ASM', 'Bootstrap mean', 'Robinson-Foulds Distance', 'RF_MAX']
+else:
+    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
+          'Position in ASM', 'Bootstrap mean', 'Distance']
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
     Creation of a list containing the names of specimens and minimums
@@ -89,7 +97,6 @@ def leastSquare(tree1, tree2):
     leaves = tree1.get_terminals()
 
     leavesName = list(map(lambda x: x.name, leaves))
-
     for i in leavesName:
         leavesName.pop(0)
         for j in leavesName:
@@ -98,6 +105,38 @@ def leastSquare(tree1, tree2):
             ls += (abs(d1 - d2))
     return ls
 
+
+def robinsonFoulds(tree1, tree2):
+    """
+    Method that calculates the robinson foulds distance between two trees.
+    Trees must have the same number of leaves.
+    Leaves must all have a twin in each tree.
+    A tree must not have duplicate leaves
+     x   x
+    ╓╫╖ ╓╫╖
+    123 312
+
+    Args:
+        tree1 (distanceTree object from biopython converted to Newick)
+        tree2 (distanceTree object from biopython converted to Newick)
+
+    Return:
+        return result the final distance between the two
+
+    """
+    rf = 0    
+    tree1_newick = Tree(tree1.format("newick"), format=1)
+    tree2_newick = Tree(tree2.format("newick"), format=1)
+
+    try:
+        rf, rf_max, common_leaves, x2, x3, x4, x5 = tree1_newick.robinson_foulds(tree2_newick,unrooted_trees=True)
+        if len(common_leaves) == 0:
+            rf = 0
+
+    except Exception as e:
+        rf = 0
+
+    return rf, (rf / rf_max)
 
 def drawTreesmake(trees, p):
     """
@@ -283,7 +322,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename):
+def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, rf_max):
     '''
     Get data from a csv file a various parameters to store into a list
 
@@ -300,9 +339,14 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
     for leave in leavesName:
         for i, row in csv_data.iterrows():
             if row[0] == leave:
-                return [reference_gene_filename, climaticList[index],
-                        leave, genetic,
-                        str(bootstrap), str(round(ls, 2))]
+                if Params().distance_method == '2':
+                    return [reference_gene_filename, climaticList[index],
+                            leave, genetic,
+                            str(bootstrap), str(round(ls, 2)), str(rf_max)]
+                else:
+                    return [reference_gene_filename, climaticList[index],
+                            leave, genetic,
+                            str(bootstrap), str(round(ls, 2))]                   
 
 
 def writeOutputFile(data):
@@ -322,7 +366,7 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold, csv_data, reference_gene_filename, create_file=True):
+def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_threshold, csv_data, reference_gene_filename, distance_method, create_file=True):
     '''
     Create the final datas from the Climatic Tree and the Genetic Tree
 
@@ -330,7 +374,8 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
         climaticTrees (the dictionnary containing every climaticTrees)
         geneticTrees (the dictionnary containing every geneticTrees)
         bootstrap_threshold (the bootstrap threshold)
-        ls_threshold (the least square threshold)
+        dist_threshold (the least square threshold)
+        distance_method (the distance method)
         csv_data (dataframe containing the data from the csv file)
         reference_gene_filename (the name of the reference gene)
     '''
@@ -354,14 +399,25 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, ls_threshold
         leavesName = list(map(lambda x: x.name, leaves))
 
         for i in range(len(climaticTrees.keys())):
-            ls = leastSquare(geneticTrees[current_genetic],
-                             climaticTrees[climaticList[i]])
-            if ls is None:
-                raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
-            if ls <= ls_threshold:
-                data.append(getData(leavesName, ls, i, climaticList,
-                                    current_bootstrap, current_genetic, csv_data, reference_gene_filename))
-
+            if distance_method == '1':
+                ls = leastSquare(geneticTrees[current_genetic],
+                                climaticTrees[climaticList[i]])
+                if ls is None:
+                    raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
+                if ls <= dist_threshold:
+                    data.append(getData(leavesName, ls, i, climaticList,
+                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, NULL))
+            elif distance_method == '2':
+                rf, rf_max = robinsonFoulds(geneticTrees[current_genetic],
+                                     climaticTrees[climaticList[i]])                       
+                if rf is None:
+                    raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
+                if rf <= dist_threshold:
+                    data.append(getData(leavesName, rf, i, climaticList,
+                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, rf_max))
+            else:
+                raise ValueError("Invalid distance method")
+                
     if create_file:
         # We write the datas into an output csv file
         writeOutputFile(data)
@@ -415,7 +471,7 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
     msaSet = alignementObject.msaSet
     geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
-    return filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.ls_threshold, csv_data, p.reference_gene_filename)
+    return filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.dist_threshold, csv_data, p.reference_gene_filename, p.distance_method)
 
 
 def openFastaFile(file):

@@ -2,7 +2,7 @@ file_name: './datasets/5seq/geo.csv'
 specimen: 'id'   #"Please enter the name of the colum containing the specimens names: "
 names: ['id', 'ALLSKY_SFC_SW_DWN', 'T2M', 'PRECTOTCORR', 'QV2M', 'WS10M']
 bootstrap_threshold: 0
-ls_threshold: 60
+dist_threshold: 60
 window_size: 200
 step_size: 100
 bootstrap_amount: 100
@@ -11,3 +11,4 @@ reference_gene_dir: './datasets/5seq'
 reference_gene_file: 'seq very small.fasta'
 makeDebugFiles: False
 alignment_method: '1'
+distance_method: '1'

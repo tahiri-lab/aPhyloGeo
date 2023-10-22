@@ -17,6 +17,7 @@ pytest = "^7.4.2"
 numpy = "^1.26.0"
 cython = "^3.0.2"
 pymuscle5 = {git = "https://github.com/althonos/pymuscle5"}
+robinson-foulds = "^1.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"

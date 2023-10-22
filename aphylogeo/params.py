@@ -13,7 +13,7 @@ class Params:
             params = yaml.load(f, Loader=SafeLoader)
 
         self.bootstrap_threshold = params["bootstrap_threshold"]
-        self.ls_threshold = params["ls_threshold"]
+        self.dist_threshold = params["dist_threshold"]
         self.window_size = params["window_size"]
         self.step_size = params["step_size"]
         self.data_names = params["data_names"]
@@ -27,4 +27,5 @@ class Params:
         self.bootstrapAmount = params["bootstrap_amount"]
 
         self.alignment_method = params["alignment_method"]
+        self.distance_method = params["distance_method"]
         # self.fasta_path = params["fasta_path"]

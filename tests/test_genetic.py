@@ -152,7 +152,7 @@ class TestGenetic():
 
             df = pd.read_csv(p.file_name)
             climatic_trees = utils.climaticPipeline(df, p.names)
-            utils.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.ls_threshold, df, p.reference_gene_filename)
+            utils.filterResults(climatic_trees, genetic_trees, p.bootstrap_threshold, p.dist_threshold, df, p.reference_gene_filename, p.distance_method)
 
             with open(Path(current_file + "/testFiles/writeOutputFiles/" + test_case + ".csv"), 'r') as expected_file:
                 expected_output = [value for value in expected_file.readlines() if value != "\n"]
