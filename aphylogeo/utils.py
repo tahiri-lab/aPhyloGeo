@@ -339,15 +339,15 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
     for leave in leavesName:
         for i, row in csv_data.iterrows():
             if row[0] == leave:
-            if row.iloc[0] == leave:
-                if Params().distance_method == '2':
-                    return [reference_gene_filename, climaticList[index],
-                            leave, genetic,
-                            str(bootstrap), str(round(ls, 2)), str(rf_max)]
-                else:
-                    return [reference_gene_filename, climaticList[index],
-                            leave, genetic,
-                            str(bootstrap), str(round(ls, 2))]                   
+                if row.iloc[0] == leave:
+                    if Params().distance_method == '2':
+                        return [reference_gene_filename, climaticList[index],
+                                leave, genetic,
+                                str(bootstrap), str(round(ls, 2)), str(rf_max)]
+                    else:
+                        return [reference_gene_filename, climaticList[index],
+                                leave, genetic,
+                                str(bootstrap), str(round(ls, 2))]                   
 
 
 def writeOutputFile(data):
