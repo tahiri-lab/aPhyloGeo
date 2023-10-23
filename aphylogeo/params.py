@@ -28,4 +28,6 @@ class Params:
 
         self.alignment_method = params["alignment_method"]
         self.distance_method = params["distance_method"]
+        self.fit_method= params["fit_method"]
+        self.tree_type = params["tree_type"]
         # self.fasta_path = params["fasta_path"]

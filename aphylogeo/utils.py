@@ -2,12 +2,16 @@
 import ete3
 import pandas as pd
 import os
+import re
+import glob
 import shutil
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
 from Bio.Phylo.TreeConstruction import _DistanceMatrix
 from Bio.Phylo.Consensus import *
+from Bio.Phylo.Applications import _Fasttree
 from Bio import SeqIO
+from Bio import Phylo
 from csv import writer as csv_writer
 import random
 
@@ -283,6 +287,70 @@ def calculateAverageBootstrap(tree):
     averageBootsrap = totalConfidence / len(treeConfidences)
     return averageBootsrap
 
+def fasttreeCMD(input_fasta, boot, nt):
+    '''Create the command line executed to create a phylogenetic tree using FastTree application
+    
+    Parameters:
+    -----------
+    input_fasta (String): The input fasta file containing the multiple sequences alignment
+    output (String): The relative path of the output tree generated upon FastTree execution
+    boot (Int): The value of bootstrap to used for tree generation (Default = 100)
+    nt (Boolean): Whether or not the sequence are nucleotides (Default = True (nucleotide, set to False for Protein Sequence))
+    
+    Return:
+    -------
+    (FastTreeCommandline)
+    '''
+    fasttree_exe = r"bin/FastTree"
+    return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
+
+def createTmpFasta(msaset):
+    '''To create fasta files from multiple sequences alignment
+    
+    Parameters:
+    -----------
+    msaset (Dict): 
+        key (String) the window name
+        value (AlignIO) the MSA object
+    '''
+    [SeqIO.write(alignment, f"bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
+
+def fasttree(msaset, boot=1000, nt=True):
+    '''Create phylogenetic trees from a set of multiple alignments using FastTree application
+    The function creates temporary fasta files used as input for fastTree
+    Since FastTree output .tree file(s), the function reads them back inside the execution and 
+    remove the output tree files.
+
+    Parameters:
+    -----------
+    msaset (dict)
+        key (String) the window name
+        value (AlignIO) the MSA object
+    boot (int): The number of trees to create in bootstrap calculation
+    nt (Boolean): True if sequences are nucleotides, False if sequences are amino acids
+    
+    Return:
+    -------
+    trees: (dict) 
+        key (String) the window name
+        value (Tree) A tree in newick format
+    '''
+    createTmpFasta(msaset)
+    alignments = glob.glob("bin/tmp/*.fasta")
+    windows = [re.search('tmp/(.+?).fasta', fasta).group(1) for fasta in alignments]
+
+    # Sort windows and alignments ascendent order
+    sorted_windows = sorted(windows, key=lambda s: int(re.search(r'\d+', s).group()))
+    sortedindex = [windows.index(win) for win in sorted_windows]  
+    sorted_alignments = [alignments[i] for i in sortedindex]
+    
+    # Build FastTree command lines
+    cmds = [fasttreeCMD(fasta, boot, nt) for fasta in sorted_alignments]
+    
+    # Execute cmd lines and create trees
+    trees = {sorted_windows[i]:cmd()[0] for i, cmd in enumerate(cmds)}
+    [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")] # Remove temp fasta files
+    return trees
 
 def createGeneticList(geneticTrees, bootstrap_threshold):
     '''
@@ -467,10 +535,14 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
     if alignementObject is None:
         sequences = openFastaFile(p.reference_gene_file)
-        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount, p.alignment_method, p.reference_gene_file)
+        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount, p.alignment_method, p.reference_gene_file, p.fit_method)
 
     msaSet = alignementObject.msaSet
-    geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
+
+    if(p.tree_type == '1'):
+        geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
+    elif(p.tree_type == '2'):
+        geneticTrees = fasttree(msaSet, p.bootstrapAmount, True)
     return filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.dist_threshold, csv_data, p.reference_gene_filename, p.distance_method)
 
 
