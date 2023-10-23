@@ -10,5 +10,5 @@ data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCO
 reference_gene_dir: './datasets/5seq'
 reference_gene_file: 'seq very small.fasta'
 makeDebugFiles: True
-alignment_method: '2' #Please enter 1 for pairwise2 alignment or 2 for pymuscle5
-distance_method: '1' #Please enter 1 for Least-Square distance or 2 for Robinson-Foulds
+alignment_method: '1' #Please enter 1 for pairwise2 alignment or 2 for pymuscle5
+distance_method: '2' #Please enter 1 for Least-Square distance or 2 for Robinson-Foulds
