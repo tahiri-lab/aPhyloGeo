@@ -1,4 +1,4 @@
-aPhylogeo: 
+aPhylogeo:
 	python3 ./scripts/main.py
 
 .PHONY: clean

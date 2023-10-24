@@ -29,3 +29,21 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = "aphylogeo/"
+
+[tool.ruff]
+line-length = 130
+ignore = ["F405"]
+
+[tool.black]
+--line-length = 130
+exclude = '''
+(
+    tests/testFiles
+  | img
+  | bin
+  | build
+  | dist
+  | setup.py
+  | .venv
+)
+'''

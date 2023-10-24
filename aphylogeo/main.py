@@ -1,6 +1,7 @@
-from aphylogeo.utils import geneticPipeline, climaticPipeline
+import pandas as pd
+
 from aphylogeo.params import Params
-import pandas as pd 
+from aphylogeo.utils import climaticPipeline, geneticPipeline
 
 titleCard = r"""
         ____    __               ___           ____

@@ -1,35 +1,34 @@
+import glob
+import os
+import re
+import shutil
+from csv import writer as csv_writer
 
 import ete3
 import pandas as pd
-import os
-import re
-import glob
-import shutil
-from Bio.Phylo.TreeConstruction import DistanceCalculator
-from Bio.Phylo.TreeConstruction import DistanceTreeConstructor
-from Bio.Phylo.TreeConstruction import _DistanceMatrix
-from Bio.Phylo.Consensus import *
-from Bio.Phylo.Applications import _Fasttree
 from Bio import SeqIO
-from Bio import Phylo
-from csv import writer as csv_writer
-import random
+from Bio.Phylo.Applications import _Fasttree
+from Bio.Phylo.Consensus import bootstrap_consensus, majority_consensus
+from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, _DistanceMatrix
 
-#from ete3 import Tree
-
-from .multiProcessor import Multi
 from .alignement import AlignSequences
+from .multiProcessor import Multi
 from .params import Params
 
-if Params().distance_method == '1':
-    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootstrap mean', 'Least-Square Distance']
-elif Params().distance_method == '2':
-    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootstrap mean', 'Robinson-Foulds Distance', 'RF_MAX']
+if Params().distance_method == "1":
+    HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean", "Least-Square Distance"]
+elif Params().distance_method == "2":
+    HEADER = [
+        "Gene",
+        "Phylogeographic tree",
+        "Name of species",
+        "Position in ASM",
+        "Bootstrap mean",
+        "Robinson-Foulds Distance",
+        "RF_MAX",
+    ]
 else:
-    HEADER = ['Gene', 'Phylogeographic tree', 'Name of species',
-              'Position in ASM', 'Bootstrap mean', 'Distance']
+    HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean", "Distance"]
 
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
@@ -77,7 +76,7 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     dmDf = (tabDf - minValue) / (maxValue - minValue)
     dmDf = dmDf.round(6)
 
-    matrix = [dmDf.iloc[i, :i + 1].tolist() for i in range(len(dmDf))]
+    matrix = [dmDf.iloc[i, : i + 1].tolist() for i in range(len(dmDf))]
     dm = _DistanceMatrix(nomVar, matrix)
     return dm
 
@@ -107,9 +106,9 @@ def leastSquare(tree1, tree2):
     for i in leavesName:
         leavesName.pop(0)
         for j in leavesName:
-            d1 = (tree1.distance(tree1.find_any(i), tree1.find_any(j)))
-            d2 = (tree2.distance(tree2.find_any(i), tree2.find_any(j)))
-            ls += (abs(d1 - d2))
+            d1 = tree1.distance(tree1.find_any(i), tree1.find_any(j))
+            d2 = tree2.distance(tree2.find_any(i), tree2.find_any(j))
+            ls += abs(d1 - d2)
     return ls
 
 
@@ -131,67 +130,71 @@ def robinsonFoulds(tree1, tree2):
         return result the final distance between the two
 
     """
-    rf = 0    
+    rf = 0
     tree1_newick = ete3.Tree(tree1.format("newick"), format=1)
     tree2_newick = ete3.Tree(tree2.format("newick"), format=1)
 
     rf, rf_max, common_leaves, x2, x3, x4, x5 = tree1_newick.robinson_foulds(tree2_newick, unrooted_trees=True)
     if len(common_leaves) == 0:
-        rf = 0    
+        rf = 0
 
     return rf, (rf / rf_max)
 
 
-def drawTreesmake(trees, p):
-    """
-    Function that will draw the trees for each climatic variable.
-    The DistanceTreeConstructor object is transformed to Newick format and
-    loaded as a toytree MulTitree object. Some stylings are applied and the
-    resulting trees are drawed into a .pdf in the viz/ dir.
+# G.M. Commented tree section out because it was not used
+# def drawTreesmake(trees, p):
+#     """
+#     Function that will draw the trees for each climatic variable.
+#     The DistanceTreeConstructor object is transformed to Newick format and
+#     loaded as a toytree MulTitree object. Some stylings are applied and the
+#     resulting trees are drawed into a .pdf in the viz/ dir.
 
-    Args:
-        trees (Dictionnary of DistanceTreeConstructor object with climatic
-        variable for keys)
-        p (Params object)
+#     Args:
+#         trees (Dictionnary of DistanceTreeConstructor object with climatic
+#         variable for keys)
+#         p (Params object)
 
-    """
-    treesNewick = {}
-    toytrees = []
+#     """
+#     treesNewick = {}
+#     toytrees = []
 
-    for k, v in trees.items():
-        treesNewick[k] = v.format('newick')
-        ttree = toytree.tree(treesNewick[k], tree_format=1)
-        toytrees.append(ttree)
-    mtree = toytree.mtree(toytrees)
 
-    # Setting up the stylings for nodes
-    for tree in mtree.treelist:
-        tree.style.edge_align_style = {'stroke': 'black', 'stroke-width': 1}
-        for node in tree.treenode.traverse():
-            if node.is_leaf():
-                node.add_feature('color', toytree.colors[7])
-            else:
-                node.add_feature('color', toytree.colors[1])
-    colors = tree.get_node_values('color', show_root=1, show_tips=1)
+#     for k, v in trees.items():
+#         treesNewick[k] = v.format("newick")
+#         ttree = toytree.tree(treesNewick[k], tree_format=1)
+#         toytrees.append(ttree)
+#     mtree = toytree.mtree(toytrees)
 
-    # Draw the climatic trees
-    canvas, axes, mark = mtree.draw(nrows=round(len(mtree) / 5),
-                                    ncols=len(mtree), height=400, width=1000,
-                                    node_sizes=8, node_colors=colors,
-                                    tip_labels_align=True)
+#     # Setting up the stylings for nodes
+#     for tree in mtree.treelist:
+#         tree.style.edge_align_style = {"stroke": "black", "stroke-width": 1}
+#         for node in tree.treenode.traverse():
+#             if node.is_leaf():
+#                 node.add_feature("color", toytree.colors[7])
+#             else:
+#                 node.add_feature("color", toytree.colors[1])
+#     colors = tree.get_node_values("color", show_root=1, show_tips=1)
 
-    for i in range(len(mtree)):
-        randColor = "#%03x" % random.randint(0, 0xFFF)
-        axes[i].text(0, mtree.ntips, p.names[i + 1], style={'fill': randColor,
-                                                            'font-size': '10px',
-                                                            'font-weight': 'bold'
-                                                            })
+#     # Draw the climatic trees
+#     canvas, axes, mark = mtree.draw(
+#         nrows=round(len(mtree) / 5),
+#         ncols=len(mtree),
+#         height=400,
+#         width=1000,
+#         node_sizes=8,
+#         node_colors=colors,
+#         tip_labels_align=True,
+#     )
 
-    toyplot.pdf.render(canvas, '../viz/climactic_trees.pdf')
+#     for i in range(len(mtree)):
+#         randColor = "#%03x" % random.randint(0, 0xFFF)
+#         axes[i].text(0, mtree.ntips, p.names[i + 1], style={"fill": randColor, "font-size": "10px", "font-weight": "bold"})
+
+#     toyplot.pdf.render(canvas, "../viz/climactic_trees.pdf")
 
 
 def createTree(dm):
-    '''
+    """
     Create a dna tree from content coming from a fasta file.
 
     Args:
@@ -199,14 +202,14 @@ def createTree(dm):
 
     Return:
         tree (the new tree)
-    '''
+    """
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
     return tree
 
 
 def climaticPipeline(df, names):
-    '''
+    """
     Creates a dictionnary with the climatic Trees
     Args:
         df (contains the data to use)
@@ -214,7 +217,7 @@ def climaticPipeline(df, names):
 
     Return:
         trees (the climatic tree dictionnary)
-    '''
+    """
     trees = {}
     for i in range(1, len(names)):
         dm = getDissimilaritiesMatrix(df, names[0], names[i])
@@ -223,7 +226,7 @@ def climaticPipeline(df, names):
 
 
 def createBoostrap(msaSet: dict, bootstrapAmount):
-    '''
+    """
     Create a tree structure from sequences given by a dictionnary.
     Args:
         msaSet (dictionnary with multiple sequences alignment to transform into
@@ -231,8 +234,8 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
         bootstrapAmount
     Return:
         A dictionary with the trees for each sequence
-    '''
-    constructor = DistanceTreeConstructor(DistanceCalculator('identity'))
+    """
+    constructor = DistanceTreeConstructor(DistanceCalculator("identity"))
 
     # creation of intermidiary array
     # each array is a process
@@ -241,43 +244,41 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
         array.append([msaSet, constructor, key, bootstrapAmount])
 
     # multiprocessing
-    print("Creating bootstrap variations with multiplyer of : ",
-          bootstrapAmount)
+    print("Creating bootstrap variations with multiplyer of : ", bootstrapAmount)
 
     result = Multi(array, bootSingle).processingSmallData()
 
-    result = sorted(result, key=lambda x: int(x[1].split('_')[0]))
+    result = sorted(result, key=lambda x: int(x[1].split("_")[0]))
 
     # reshaping the output into a readble dictionary
     return {i[1]: i[0] for i in result}
 
 
 def bootSingle(args):
-    '''
+    """
     Args:
         args (list of arguments)
     Return:
         *********TO WRITE**********
-    '''
+    """
     msaSet = args[0]
     constructor = args[1]
     key = args[2]
     bootstrapAmount = args[3]
 
-    result = bootstrap_consensus(msaSet[key], bootstrapAmount, constructor,
-                                 majority_consensus)
+    result = bootstrap_consensus(msaSet[key], bootstrapAmount, constructor, majority_consensus)
     return [result, key]
 
 
 def calculateAverageBootstrap(tree):
-    '''
+    """
     Calculate if the average confidence of a tree
 
     Args:
         tree (The tree to get the average confidence from)
     Return :
         averageBootstrap (the average Bootstrap (confidence))
-    '''
+    """
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda x: x.confidence, leaves))
     treeConfidences.pop(0)
@@ -287,38 +288,41 @@ def calculateAverageBootstrap(tree):
     averageBootsrap = totalConfidence / len(treeConfidences)
     return averageBootsrap
 
+
 def fasttreeCMD(input_fasta, boot, nt):
-    '''Create the command line executed to create a phylogenetic tree using FastTree application
-    
+    """Create the command line executed to create a phylogenetic tree using FastTree application
+
     Parameters:
     -----------
     input_fasta (String): The input fasta file containing the multiple sequences alignment
     output (String): The relative path of the output tree generated upon FastTree execution
     boot (Int): The value of bootstrap to used for tree generation (Default = 100)
     nt (Boolean): Whether or not the sequence are nucleotides (Default = True (nucleotide, set to False for Protein Sequence))
-    
+
     Return:
     -------
     (FastTreeCommandline)
-    '''
+    """
     fasttree_exe = r"bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
 
+
 def createTmpFasta(msaset):
-    '''To create fasta files from multiple sequences alignment
-    
+    """To create fasta files from multiple sequences alignment
+
     Parameters:
     -----------
-    msaset (Dict): 
+    msaset (Dict):
         key (String) the window name
         value (AlignIO) the MSA object
-    '''
+    """
     [SeqIO.write(alignment, f"bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
 
+
 def fasttree(msaset, boot=1000, nt=True):
-    '''Create phylogenetic trees from a set of multiple alignments using FastTree application
+    """Create phylogenetic trees from a set of multiple alignments using FastTree application
     The function creates temporary fasta files used as input for fastTree
-    Since FastTree output .tree file(s), the function reads them back inside the execution and 
+    Since FastTree output .tree file(s), the function reads them back inside the execution and
     remove the output tree files.
 
     Parameters:
@@ -328,32 +332,33 @@ def fasttree(msaset, boot=1000, nt=True):
         value (AlignIO) the MSA object
     boot (int): The number of trees to create in bootstrap calculation
     nt (Boolean): True if sequences are nucleotides, False if sequences are amino acids
-    
+
     Return:
     -------
-    trees: (dict) 
+    trees: (dict)
         key (String) the window name
         value (Tree) A tree in newick format
-    '''
+    """
     createTmpFasta(msaset)
     alignments = glob.glob("bin/tmp/*.fasta")
-    windows = [re.search('tmp/(.+?).fasta', fasta).group(1) for fasta in alignments]
+    windows = [re.search("tmp/(.+?).fasta", fasta).group(1) for fasta in alignments]
 
     # Sort windows and alignments ascendent order
-    sorted_windows = sorted(windows, key=lambda s: int(re.search(r'\d+', s).group()))
-    sortedindex = [windows.index(win) for win in sorted_windows]  
+    sorted_windows = sorted(windows, key=lambda s: int(re.search(r"\d+", s).group()))
+    sortedindex = [windows.index(win) for win in sorted_windows]
     sorted_alignments = [alignments[i] for i in sortedindex]
-    
+
     # Build FastTree command lines
     cmds = [fasttreeCMD(fasta, boot, nt) for fasta in sorted_alignments]
-    
+
     # Execute cmd lines and create trees
-    trees = {sorted_windows[i]:cmd()[0] for i, cmd in enumerate(cmds)}
-    [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")] # Remove temp fasta files
+    trees = {sorted_windows[i]: cmd()[0] for i, cmd in enumerate(cmds)}
+    [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
     return trees
 
+
 def createGeneticList(geneticTrees, bootstrap_threshold):
-    '''
+    """
     Create a list of Trees if the bootstrap Average is higher than
     the threshold
 
@@ -363,7 +368,7 @@ def createGeneticList(geneticTrees, bootstrap_threshold):
     Return :
         geneticList (a sorted list with the geneticTrees)
         bootstrapList (a list with the bootstrap average of each tree)
-    '''
+    """
     bootstrapList = []
     geneticList = []
 
@@ -376,14 +381,14 @@ def createGeneticList(geneticTrees, bootstrap_threshold):
 
 
 def createClimaticList(climaticTrees):
-    '''
+    """
     Create a list of climaticTrees
 
     Args :
         climaticTrees (a dictionnary of climatic trees)
     Return :
         climaticList(a list with the climaticTrees)
-    '''
+    """
     climaticList = []
     for key in climaticTrees:
         climaticList.append(key)
@@ -391,7 +396,7 @@ def createClimaticList(climaticTrees):
 
 
 def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, rf_max):
-    '''
+    """
     Get data from a csv file a various parameters to store into a list
 
     Args :
@@ -402,28 +407,32 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
         genetic  (genetic tree)
         csv_data (the pf containing the data)
         reference_gene_filename
-    '''
+    """
 
     for leave in leavesName:
         for i, row in csv_data.iterrows():
             if row.iloc[0] == leave:
-                if Params().distance_method == '2':
-                    return [reference_gene_filename, climaticList[index],
-                            leave, genetic,
-                            str(bootstrap), str(round(ls, 2)), str(rf_max)]
+                if Params().distance_method == "2":
+                    return [
+                        reference_gene_filename,
+                        climaticList[index],
+                        leave,
+                        genetic,
+                        str(bootstrap),
+                        str(round(ls, 2)),
+                        str(rf_max),
+                    ]
                 else:
-                    return [reference_gene_filename, climaticList[index],
-                            leave, genetic,
-                            str(bootstrap), str(round(ls, 2))]                   
+                    return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(ls, 2))]
 
 
 def writeOutputFile(data):
-    '''
+    """
     Write the datas from data list into a new csv file
 
     Args :
         data (the list contaning the final data)
-    '''
+    """
     print("Writing the output file")
 
     with open("output.csv", "w", encoding="UTF8") as f:
@@ -434,8 +443,17 @@ def writeOutputFile(data):
         f.close
 
 
-def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_threshold, csv_data, reference_gene_filename, distance_method, create_file=True):
-    '''
+def filterResults(
+    climaticTrees,
+    geneticTrees,
+    bootstrap_threshold,
+    dist_threshold,
+    csv_data,
+    reference_gene_filename,
+    distance_method,
+    create_file=True,
+):
+    """
     Create the final datas from the Climatic Tree and the Genetic Tree
 
     Args :
@@ -446,7 +464,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_thresho
         distance_method (the distance method)
         csv_data (dataframe containing the data from the csv file)
         reference_gene_filename (the name of the reference gene)
-    '''
+    """
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
     geneticList, bootstrapList = createGeneticList(geneticTrees, bootstrap_threshold)
@@ -458,8 +476,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_thresho
     # Compare every genetic trees with every climatic trees. If the returned
     # value is inferior or equal to the (Least-Square distance) LS threshold,
     # we keep the data
-    while (len(geneticList) > 0):
-
+    while len(geneticList) > 0:
         current_genetic = geneticList.pop(0)
         current_bootstrap = bootstrapList.pop(0)
 
@@ -467,25 +484,45 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_thresho
         leavesName = list(map(lambda x: x.name, leaves))
 
         for i in range(len(climaticTrees.keys())):
-            if distance_method == '1':
-                ls = leastSquare(geneticTrees[current_genetic],
-                                 climaticTrees[climaticList[i]])
+            if distance_method == "1":
+                ls = leastSquare(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if ls is None:
-                    raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
+                    raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
                 if ls <= dist_threshold:
-                    data.append(getData(leavesName, ls, i, climaticList,
-                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, None))
-            elif distance_method == '2':
-                rf, rf_max = robinsonFoulds(geneticTrees[current_genetic],
-                                            climaticTrees[climaticList[i]])                       
+                    data.append(
+                        getData(
+                            leavesName,
+                            ls,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            reference_gene_filename,
+                            None,
+                        )
+                    )
+            elif distance_method == "2":
+                rf, rf_max = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if rf is None:
-                    raise Exception('The LS distance is not calculable' + 'pour {aligned_file}.')
+                    raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
                 if rf <= dist_threshold:
-                    data.append(getData(leavesName, rf, i, climaticList,
-                                        current_bootstrap, current_genetic, csv_data, reference_gene_filename, rf_max))
+                    data.append(
+                        getData(
+                            leavesName,
+                            rf,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            reference_gene_filename,
+                            rf_max,
+                        )
+                    )
             else:
                 raise ValueError("Invalid distance method")
-                
+
     if create_file:
         # We write the datas into an output csv file
         writeOutputFile(data)
@@ -493,7 +530,7 @@ def filterResults(climaticTrees, geneticTrees, bootstrap_threshold, dist_thresho
 
 
 def format_to_csv(data):
-    '''
+    """
     Format the data to a csv file
 
     Args:
@@ -501,7 +538,7 @@ def format_to_csv(data):
 
     Returns:
         result: dict with key header and value array of data
-    '''
+    """
     result = {}
 
     for h in HEADER:
@@ -515,7 +552,7 @@ def format_to_csv(data):
 
 
 def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
-    '''
+    """
     Get the genetic Trees from the initial file datas so we
     can compare every valid tree with the climatic ones. In the
     end it calls a method that create a final csv file with all
@@ -525,7 +562,7 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
         climaticTrees (the dictionnary of climaticTrees)
         p (the Params object)[optionnal]
         aligneementObject (the AlignSequences object)[optionnal]
-    '''
+    """
     # JUST TO MAKE THE DEBUG FILES
     if os.path.exists("./debug"):
         shutil.rmtree("./debug")
@@ -535,19 +572,36 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
 
     if alignementObject is None:
         sequences = openFastaFile(p.reference_gene_file)
-        alignementObject = AlignSequences(sequences, p.window_size, p.step_size, p.makeDebugFiles, p.bootstrapAmount, p.alignment_method, p.reference_gene_file, p.fit_method)
+        alignementObject = AlignSequences(
+            sequences,
+            p.window_size,
+            p.step_size,
+            p.makeDebugFiles,
+            p.bootstrapAmount,
+            p.alignment_method,
+            p.reference_gene_file,
+            p.fit_method,
+        )
 
     msaSet = alignementObject.msaSet
 
-    if(p.tree_type == '1'):
+    if p.tree_type == "1":
         geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
-    elif(p.tree_type == '2'):
+    elif p.tree_type == "2":
         geneticTrees = fasttree(msaSet, p.bootstrapAmount, True)
-    return filterResults(climaticTrees, geneticTrees, p.bootstrap_threshold, p.dist_threshold, csv_data, p.reference_gene_filename, p.distance_method)
+    return filterResults(
+        climaticTrees,
+        geneticTrees,
+        p.bootstrap_threshold,
+        p.dist_threshold,
+        csv_data,
+        p.reference_gene_filename,
+        p.distance_method,
+    )
 
 
 def openFastaFile(file):
-    '''
+    """
     Reads the .fasta file. Extract sequence ID and sequences.
 
     Args:
@@ -555,7 +609,7 @@ def openFastaFile(file):
 
     Return:
         sequences (dictionnary)
-    '''
+    """
     sequences = {}
     with open(file) as sequencesFile:
         for sequence in SeqIO.parse(sequencesFile, "fasta"):

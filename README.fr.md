@@ -1,5 +1,5 @@
-﻿﻿﻿﻿﻿﻿<h1  align="center"> aPhyloGeo <p align='center'> 
-        [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+﻿﻿﻿﻿﻿﻿<h1  align="center"> aPhyloGeo <p align='center'>
+        [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
         [![Contributions](https://img.shields.io/badge/contributions-welcome-blue.svg)](https://pysd.readthedocs.io/en/latest/development/development_index.html)
         [![Py version](https://img.shields.io/pypi/pyversions/pysd.svg)](https://pypi.python.org/pypi/pysd/)
         [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Ftahiri-lab%2FaPhylogeo&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
@@ -89,7 +89,7 @@ Ce package utilise l'outil de gestion des dépendances et d'emballage ```Poetry`
 
 Une fois Poetry installé, vous pouvez cloner le référentiel et installer le package à l'aide des commandes suivantes :
 
-``` 
+```
 poetry install
 ```
 
@@ -139,7 +139,7 @@ L'algorithme retournera un fichier csv contenant des informations de toutes les 
 
 2️⃣ Calcul de la distance entre l'arbre phylogénétique: `Métrique Robinson-Foulds`
 + [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
-    
+
 3️⃣ Description complète de l'ensemble de données : `Analyse des données génétiques et climatiques de SARS-CoV-2`
 + [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
 
