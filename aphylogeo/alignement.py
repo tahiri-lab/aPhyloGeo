@@ -1,11 +1,14 @@
 import sys
 import os
+import subprocess
+import glob
 import Bio.SeqIO
-import pymuscle5
+import statistics as st
+# import pymuscle5
 from itertools import combinations
 from collections import defaultdict
-import statistics as st
-
+from Bio.Align.Applications import ClustalwCommandline
+from Bio.Align.Applications import MafftCommandline
 from io import StringIO
 from Bio import pairwise2
 from Bio.Seq import Seq
@@ -75,16 +78,18 @@ class AlignSequences:
                 self.heuristicMSA = self.starAlignement()
             elif self.fit_method == '2':
                 self.heuristicMSA = self.narrowFitPairwise()
-            self.windowed = self.slidingWindow()
-            self.msaSet = self.makeMSA()
-
-        elif self.alignment_method == '2':
-            self.aligned = self.alignSequencesWithPymuscle5()
-            self.windowed = self.slidingWindow()
-            self.msaSet = self.makeMSA()
         
+        elif self.alignment_method == '2':
+            self.heuristicMSA = self.muscleAlign()
+        elif self.alignment_method == '3':
+            self.heuristicMSA = self.clustalAlign()
+        elif self.alignment_method == '4':
+            self.heuristicMSA = self.mafftAlign()
+
         else:
             raise ValueError("Invalid alignment method")
+        self.windowed = self.slidingWindow()
+        self.msaSet = self.makeMSA()
         
     def getSequenceCentroid(self):
         """
@@ -187,6 +192,36 @@ class AlignSequences:
 
         return aligned
     
+    def muscleAlign(self):
+        muscle_exe = r'bin/muscle5.1.linux_intel64'
+        in_file = self.reference_gene_file
+        out_dir = r"bin/tmp/"
+        out_file = os.path.splitext(os.path.basename(self.reference_gene_file))[0]
+        out_fullname =str(out_dir + out_file + "_muscle_aligned.fasta")
+        result = subprocess.run([muscle_exe, "-align", in_file, "-output", out_fullname])
+        records = Bio.SeqIO.parse(out_fullname, 'fasta')
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")] # Remove temp fasta files
+        return {rec.id: str(rec.seq) for rec in records}
+
+    def clustalAlign(self):
+        clustal_exe = r"bin/clustalw2"
+        in_file = self.reference_gene_file
+        fasta_out = r'bin/tmp/clustal_alignment.fasta'
+        clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
+        out, err = clustalw_cline()
+        records = Bio.SeqIO.parse(fasta_out, 'fasta')
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")] # Remove temp fasta files
+        return {rec.id: str(rec.seq) for rec in records}
+
+    def mafftAlign(self):
+        mafft_exe = r"bin/mafft-linux64/mafft.bat"
+        in_file = self.reference_gene_file
+        mafft_cline = MafftCommandline(mafft_exe, input=in_file)
+        out, err = mafft_cline()
+        fasta_io = StringIO(out)
+        records = Bio.SeqIO.parse(fasta_io, 'fasta')
+        return {rec.id: str(rec.seq) for rec in records}
+
     def alignSequencesWithPymuscle5(self):
         """
         Method that aligns multiple DNA sequences using pymuscle5.
