@@ -1,4 +1,5 @@
 
+import ete3
 import pandas as pd
 import os
 import re
@@ -14,7 +15,7 @@ from Bio import Phylo
 from csv import writer as csv_writer
 import random
 
-from ete3 import Tree
+#from ete3 import Tree
 
 from .multiProcessor import Multi
 from .alignement import AlignSequences
@@ -131,8 +132,8 @@ def robinsonFoulds(tree1, tree2):
 
     """
     rf = 0    
-    tree1_newick = Tree(tree1.format("newick"), format=1)
-    tree2_newick = Tree(tree2.format("newick"), format=1)
+    tree1_newick = ete3.Tree(tree1.format("newick"), format=1)
+    tree2_newick = ete3.Tree(tree2.format("newick"), format=1)
 
     rf, rf_max, common_leaves, x2, x3, x4, x5 = tree1_newick.robinson_foulds(tree2_newick, unrooted_trees=True)
     if len(common_leaves) == 0:

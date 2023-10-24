@@ -61,11 +61,16 @@ def test_climaticPipeline():
 
                 with open(file2, 'r') as expected_create_tree:
                     # test createTree
-                    assert str(utils.createTree(actual_matrix)) == expected_create_tree.read()
+                    assert str(utils.createTree(actual_matrix)) == expected_create_tree.read()        
 
         # test leastSquare
         expected_least_square = 2.1550089999999997
         assert utils.leastSquare(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == expected_least_square
+       
+        # test robinsonFlouds
+        expected_robinson_foulds = 4
+        expected_robinson_fouldsMAX = 1.0
+        assert utils.robinsonFoulds(trees['ALLSKY_SFC_SW_DWN'], trees['T2M']) == (expected_robinson_foulds, expected_robinson_fouldsMAX)
 
 
 def test_createClimaticList(climaticTreesSetup):
