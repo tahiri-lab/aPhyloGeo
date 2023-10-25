@@ -25,7 +25,7 @@ elif Params().distance_method == "2":
         "Position in ASM",
         "Bootstrap mean",
         "Robinson-Foulds Distance",
-        "RF_MAX",
+        "RF Normalisé",
     ]
 else:
     HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean", "Distance"]
@@ -395,7 +395,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, rf_max):
+def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, rf_norm):
     """
     Get data from a csv file a various parameters to store into a list
 
@@ -420,7 +420,7 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
                         genetic,
                         str(bootstrap),
                         str(round(ls, 2)),
-                        str(rf_max),
+                        str(rf_norm),
                     ]
                 else:
                     return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(ls, 2))]
@@ -503,7 +503,7 @@ def filterResults(
                         )
                     )
             elif distance_method == "2":
-                rf, rf_max = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if rf is None:
                     raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
                 if rf <= dist_threshold:
@@ -517,7 +517,7 @@ def filterResults(
                             current_genetic,
                             csv_data,
                             reference_gene_filename,
-                            rf_max,
+                            rf_norm,
                         )
                     )
             else:

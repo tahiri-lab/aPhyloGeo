@@ -68,8 +68,8 @@ def test_climaticPipeline():
 
         # test robinsonFlouds
         expected_robinson_foulds = 4
-        expected_robinson_fouldsMAX = 1.0
-        assert utils.robinsonFoulds(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == (expected_robinson_foulds, expected_robinson_fouldsMAX)
+        expected_robinson_foulds_Norm = 1.0
+        assert utils.robinsonFoulds(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == (expected_robinson_foulds, expected_robinson_foulds_Norm)
 
 
 def test_createClimaticList(climaticTreesSetup):
