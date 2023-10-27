@@ -1,5 +1,7 @@
 import glob
 import os
+import sys
+import signal
 import statistics as st
 import subprocess
 from collections import defaultdict
@@ -94,9 +96,9 @@ class AlignSequences:
             self.heuristicMSA = self.clustalAlign()
         elif self.alignment_method == "4":
             self.heuristicMSA = self.mafftAlign()
-
         else:
             raise ValueError("Invalid alignment method")
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
         self.windowed = self.slidingWindow()
         self.msaSet = self.makeMSA()
 
@@ -197,29 +199,61 @@ class AlignSequences:
         return aligned
 
     def muscleAlign(self):
-        muscle_exe = r"bin/muscle5.1.linux_intel64"
+        """Method to perform a multiple DNA sequence alignment using Muscle Algorithm
+        
+        Return:
+        -------
+        (Dict): heuristicMSA 
+            Keys: accession ID
+            Values: Aligned sequences
+        """
+        if sys.platform == 'win32':
+            muscle_exe = r"bin/muscle5.1.win64.exe"
+            out_dir = r"bin/tmp/"
+        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+            muscle_exe = r"bin/muscle5.1.linux_intel64"
+            out_dir = r"bin/tmp/"
         in_file = self.reference_gene_file
-        out_dir = r"bin/tmp/"
         out_file = os.path.splitext(os.path.basename(self.reference_gene_file))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
-        subprocess.run([muscle_exe, "-align", in_file, "-output", out_fullname])
-        # result = subprocess.run([muscle_exe, "-align", in_file, "-output", out_fullname])
+        subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
         records = Bio.SeqIO.parse(out_fullname, "fasta")
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
         return {rec.id: str(rec.seq) for rec in records}
 
     def clustalAlign(self):
-        clustal_exe = r"bin/clustalw2"
+        """Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm
+        
+        Return:
+        -------
+        (Dict): heuristicMSA 
+            Keys: accession ID
+            Values: Aligned sequences
+        """
+        if sys.platform == 'win32':
+            clustal_exe = r"bin\\clustalw2.exe"
+            fasta_out = r"bin\\tmp\\clustal_alignment.fasta"        
+        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+            clustal_exe = r"bin/clustalw2"
+            fasta_out = r"bin/tmp/clustal_alignment.fasta"        
         in_file = self.reference_gene_file
-        fasta_out = r"bin/tmp/clustal_alignment.fasta"
         clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
         out, err = clustalw_cline()
         records = Bio.SeqIO.parse(fasta_out, "fasta")
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
         return {rec.id: str(rec.seq) for rec in records}
 
     def mafftAlign(self):
-        mafft_exe = r"bin/mafft-linux64/mafft.bat"
+        """Method to perform a multiple DNA sequence alignment using MAFFT Algorithm
+        
+        Return:
+        -------
+        (Dict): heuristicMSA 
+            Keys: accession ID
+            Values: Aligned sequences
+        """
+        if sys.platform == 'win32':
+            mafft_exe = r"bin\\mafft-win\\mafft.bat"
+        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+            mafft_exe = r"bin/mafft-linux64/mafft.bat"
         in_file = self.reference_gene_file
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
         out, err = mafft_cline()

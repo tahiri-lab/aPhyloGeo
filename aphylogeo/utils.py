@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import sys
 import shutil
 from csv import writer as csv_writer
 
@@ -303,7 +304,10 @@ def fasttreeCMD(input_fasta, boot, nt):
     -------
     (FastTreeCommandline)
     """
-    fasttree_exe = r"bin/FastTree"
+    if sys.platform == 'win32':
+        fasttree_exe = r"bin\\FastTree.exe"
+    elif sys.platform == 'linux1' | sys.platform == 'linux2':
+        fasttree_exe = r"bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
 
 
@@ -341,7 +345,11 @@ def fasttree(msaset, boot=1000, nt=True):
     """
     createTmpFasta(msaset)
     alignments = glob.glob("bin/tmp/*.fasta")
-    windows = [re.search("tmp/(.+?).fasta", fasta).group(1) for fasta in alignments]
+    
+    if sys.platform == 'win32':
+        windows = [re.search("tmp\\\\(.+?).fasta", fasta).group(1) for fasta in alignments]
+    elif sys.platform == 'linux1' | sys.platform == 'linux2':
+        windows = [re.search("tmp\\(.+?).fasta", fasta).group(1) for fasta in alignments]
 
     # Sort windows and alignments ascendent order
     sorted_windows = sorted(windows, key=lambda s: int(re.search(r"\d+", s).group()))
