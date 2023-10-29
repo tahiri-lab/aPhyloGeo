@@ -10,7 +10,7 @@ from itertools import combinations
 from pathlib import Path
 
 import Bio.SeqIO
-import pymuscle5
+#import pymuscle5
 from Bio import AlignIO, pairwise2
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
