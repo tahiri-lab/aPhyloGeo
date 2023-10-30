@@ -87,10 +87,19 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 - **Bootstrap threshold**: Number of replicates threshold to be generated for each sub-MSA (each position of the sliding window)
 - **Window length**: Size of the sliding window
 - **Step**: Sliding window advancement step
-- **Distance choice**: distance selection ('1' for Least Square (LS) distance (version 1.0), '2' for Robinson and Foulds distance, and '3' for Euclidean distance)
+- **Distance choice**: distance selection 
+    - '1' for Least Square (LS) distance (version 1.0)
+    - '2' for Robinson and Foulds (RF) distance
+    - '3' for Euclidean distance
 - **Distance threshold**: LS distance threshold at which the results are most significant
-- **Alignment method**: algorithm selection for sequence alignment ('1' for pairwise2, '2' for MUSCLE, '3' for CLUSTALW, and '4' for MAFFT)
-- **Fit method**: gap selection elongation ('1' for Wider Fit by elongating with Gap (starAlignment) and '2' for Narrow-fit prevent elongation with gap when possible)
+- **Alignment method**: algorithm selection for sequence alignment 
+    - '1' for pairwise2
+    - '2' for MUSCLE
+    - '3' for CLUSTALW
+    - '4' for MAFFT
+- **Fit method**: gap selection elongation
+    - '1' for Wider Fit by elongating with Gap (starAlignment)
+    - '2' for Narrow-fit prevent elongation with gap when possible)
 
 
 # ✔️ References
