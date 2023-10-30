@@ -99,7 +99,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
     - '4' for MAFFT
 - **Fit method**: gap selection elongation
     - '1' for Wider Fit by elongating with Gap (starAlignment)
-    - '2' for Narrow-fit prevent elongation with gap when possible)
+    - '2' for Narrow-fit prevent elongation with gap when possible
 
 
 # ✔️ References
