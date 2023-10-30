@@ -13,12 +13,12 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About the project</a>
+      <a href="#-about-the-project">About the project</a>
     </li>
     <li>
-      <a href="#Installation">Installation</a>
+      <a href="#%EF%B8%8F-installation">Installation</a>
       <ul>
-        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
+        <li><a href="#linux-unix-mac-os--windows-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
       </ul>
     </li>
     <!--<li> Available analyses</li>
@@ -31,13 +31,13 @@
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>-->
      <li>
-      <a href="#Settings">Settings</a>
+      <a href="#-settings">Settings</a>
     </li>
     <li>
-      <a href="#References">References</a>
+      <a href="#%EF%B8%8F-references">References</a>
     </li>
     <li>
-      <a href="#contact">Contact</a>
+      <a href="#-contact">Contact</a>
     </li>
   </ol>
 </details>
@@ -45,9 +45,7 @@
 
 # 📝 About the project
 
-`aPhyloGeo` is a bioinformatics pipeline dedicated to the analysis of phylogeography. `aPhyloGeo` is an open-source multi-platform application designed by the team of Professor [Nadia Tahiri](https://tahirinadia.github.io/) (University of Sherbrooke, Quebec, Canada). It is implemented in Python. This tool can be used to obtain trees from climatic data of the regions where the samples have been collected. Those climatic trees are then used for topological and evolutionary comparison against phylogenetic trees from multiple sequence alignments (MSAs) using the [Least Square (LS) metric](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/). MSAs that yield trees with a significant `LS` value are then optionally saved in folders with their respective tree. The `output.csv` file contains the information of all the significant MSAs information (see Workflow Section for more details).
-
-In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pyMUSCLE5 algorithm.
+`aPhyloGeo` is a powerful and versatile bioinformatics pipeline specifically designed for the analysis of phylogeography. Developed by the dedicated team led by Professor [Nadia Tahiri](https://tahirinadia.github.io/) at the University of Sherbrooke in Quebec, Canada, this open-source multi-platform application is implemented in Python. It serves as a valuable tool for researchers and scientists interested in unraveling the intricate relationships between genetic sequences and geographic locations.
 
 💡 If you are using our algorithm in your research, please cite our recent papers:
 

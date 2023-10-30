@@ -315,7 +315,7 @@ class AlignSequences:
         if sys.platform == "win32":
             muscle_exe = r"bin/muscle5.1.win64.exe"
             out_dir = r"bin/tmp/"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
         in_file = self.reference_gene_file
