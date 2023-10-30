@@ -34,13 +34,6 @@
       <a href="#Settings">Settings</a>
     </li>
     <li>
-      <a href="#Example">Example</a>
-      <ul>
-        <li><a href="#Input">Input</a></li>
-        <li><a href="#Output">Output</a></li>
-      </ul>
-    </li>
-    <li>
       <a href="#References">References</a>
     </li>
     <li>
@@ -56,34 +49,13 @@
 
 In the context of performing multiple sequence alignments, two distinct methodologies present themselves. The initial approach involves the utilization of the pairwise2 algorithm, whereas the subsequent alternative entails the application of the pyMUSCLE5 algorithm.
 
-💡 If you are using our algorithm in your research, please cite our recent paper:
-Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
+💡 If you are using our algorithm in your research, please cite our recent papers:
+
+1️⃣  Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
+[Proceeding in SciPy 2023, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2023/pdfs/nadia_tahiri.pdf)
+
+2️⃣ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
 [Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
-
-
-## Workflow
-
-![](./img/workflow.png)
-
-
-Figure 1: The workflow of the algorithm. The operations within this workflow include several blocks. The blocks are highlighted with three different colors.
-- **The first block** (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file).
-- **The second block** (the light green color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file).
-- **The third block** (the light pink color) allows the comparison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step using Least Square distance (see Equation below).
-
-$$LS(T_1, T_2) = \sum_{i=1}^{n-1} \sum_{j=i}^{n} \lvert \delta(i,j) - \xi(i,j) \rvert$$
-
-
-where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ and $j$ are two species, $\delta(i,j)$ is the distance between specie $i$ and specie $j$ in $T_1$, $\xi(i,j)$ is the distance between specie $i$ and specie $j$ in $T_2$, and $n$ is the total number of species.
-
-This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
-
-Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the workflow below).
-**Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
-
-In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License).
-
-
 
 # ⚒️ Installation
 
@@ -111,9 +83,6 @@ poetry shell
 
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
-<u>**Here is a gif of the example above:**</u>
-![](https://github.com/tahiri-lab/aPhyloGeo/blob/main/img/InstallationGuideLinux.gif)
-
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
 
@@ -123,27 +92,6 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 - **Distance choice**: Least Square (LS) distance (version 1.0) will be extended to [Robinson-Foulds (RF) metric](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
 - **Least Square distance threshold**: LS distance threshold at which the results are most significant
 - **Alignment method**: algorithm selection for sequence alignment ('1' for pairwise2 and '2' for pymuscle)
-
-
-# 📁 Example
-
-## Description
-We selected only 5 of 38 lineages with regional characteristics for further study (see Koshkarov et al., 2022). Based on location information, complete nucleotide sequencing data for these 5 lineages was collected from the [NCBI Virus website](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/). In the case of the availability of multiple sequencing results for the same lineage in the same country, we selected the sequence whose collection date was closest to the earliest date presented. If there are several sequencing results for the same country on the same date, the sequence with the least number of ambiguous characters (N per
-nucleotide) is selected.
-
-Although the selection of samples was based on the phylogenetic cluster of lineage and transmission, most of the sites involved represent different meteorological conditions. As shown in Figure 2, the 5 samples involved temperatures ranging from -4 C to 32.6 C, with an average temperature of 15.3 C. The Specific humidity
-ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability of Wind speed and All sky surface shortwave downward irradiance was relatively small across samples compared to other parameters. The Wind speed ranged from 0.7 m/s to 9.3 m/s with an average of 4.0 m/s, and All sky surface shortwave downward irradiance ranged from 0.8 kW-hr/m2/day to 8.6 kW-hr/m2/day with an average of 4.5 kW-hr/m2/day. In contrast to the other parameters, 75% of the cities involved receive less than 2.2 mm of precipitation per day, and only 5 cities have more than 5 mm of precipitation per day. The minimum precipitation is 0 mm/day, the maximum precipitation is 12 mm/day, and the average value is 2.1 mm/day.
-
-
-## Input
-
-The algorithm takes two files as input with the following definitions:
-
-- 🧬 **Genetic file** with fasta extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature gene_name.fasta.
-- ⛅ **Climatic file** with csv extension. The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition.
-
-## Output
-The algorithm will return a csv file that contains information from all relevant MSAs (see Workflow Section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the `LS` value). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.
 
 
 # ✔️ References
