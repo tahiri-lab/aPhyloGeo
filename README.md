@@ -34,13 +34,6 @@
       <a href="#Settings">Settings</a>
     </li>
     <li>
-      <a href="#Example">Example</a>
-      <ul>
-        <li><a href="#Input">Input</a></li>
-        <li><a href="#Output">Output</a></li>
-      </ul>
-    </li>
-    <li>
       <a href="#References">References</a>
     </li>
     <li>
