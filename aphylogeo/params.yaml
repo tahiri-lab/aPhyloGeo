@@ -10,7 +10,7 @@ data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCO
 reference_gene_dir: './datasets/example'
 reference_gene_file: 'sequences.fasta'
 makeDebugFiles: True
-alignment_method: '2' #Select one 1:pairwise2, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
-distance_method: '3' #Please enter 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)
+alignment_method: '1' #Select one 1:pairwise2, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
+distance_method: '1' #Please enter 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)
 fit_method: '1' # 1:Wider Fit by elongating with Gap (starAlignment), 2:Narrow-fit prevent elongation with gap when possible
 tree_type: '1' # 1: BioPython consensus tree, 2: FastTree application
