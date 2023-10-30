@@ -21,20 +21,11 @@
         <li><a href="#linux-unix-mac-os--windows-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
       </ul>
     </li>
-    <!--<li> Available analyses</li>
-      <ul>
-        <li><a href="#Group-creation">Group creation</a></li>
-        <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
-        <li><a href="#Similarity-networks">Similarity networks</a></li>
-        <li><a href="#BootScan-analysis">BootScan analysis</a></li>
-        <li><a href="#Findsites">Findsites</a></li>
-        <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
-      </ul>-->
      <li>
       <a href="#-settings">Settings</a>
     </li>
     <li>
-      <a href="#%EF%B8%8F-references">References</a>
+      <a href=#%EF%B8%8F-references">References</a>
     </li>
     <li>
       <a href="#-contact">Contact</a>
