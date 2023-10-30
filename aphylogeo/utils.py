@@ -1,9 +1,11 @@
+from errno import EDEADLOCK
 import glob
 import os
 import re
 import sys
 from csv import writer as csv_writer
 
+import dendropy
 import ete3
 import pandas as pd
 from Bio import SeqIO
@@ -14,20 +16,14 @@ from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstruct
 from .multiProcessor import Multi
 from .params import Params
 
+HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean"]
+
 if Params().distance_method == "1":
-    HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean", "Least-Square Distance"]
+    HEADER.extend(["Least-Square Distance"])
 elif Params().distance_method == "2":
-    HEADER = [
-        "Gene",
-        "Phylogeographic tree",
-        "Name of species",
-        "Position in ASM",
-        "Bootstrap mean",
-        "Robinson-Foulds Distance",
-        "RF Normalisé",
-    ]
+    HEADER.extend(["Robinson-Foulds Distance", "RF Normalise"])
 else:
-    HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", "Bootstrap mean", "Distance"]
+    HEADER.extend(["Euclidean Distance"])
 
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
@@ -138,6 +134,46 @@ def robinsonFoulds(tree1, tree2):
         rf = 0
 
     return rf, (rf / rf_max)
+
+
+def euclideanDist(tree1, tree2):
+    """
+    Method that calculate the Euclidean distance (a.k.a. Felsenstein's 2004 "branch length
+    distance") between two trees based on ``edge_weight_attr``.
+
+    Trees need to share the same |TaxonNamespace| reference.
+    The bipartition bitmasks of the trees must be correct for the current tree
+    structures (by calling :meth:`Tree.encode_bipartitions()` method) or the
+    ``is_bipartitions_updated`` argument must be |False| to force recalculation of
+    bipartitions.
+
+     x   x
+    ╓╫╖ ╓╫╖
+    123 312
+
+    Args:
+        tree1 (distanceTree object from biopython converted to DendroPY format Newick)
+        tree2 (distanceTree object from biopython converted to DendroPY format Newick)
+
+    Return:
+        return result the final Euclidean distance between the two
+
+    """
+    ed = 0
+    tns = dendropy.TaxonNamespace()
+    tree1_tc = dendropy.Tree.get(
+            data=tree1.format("newick"),
+            schema='newick',
+            taxon_namespace=tns)    
+    tree2_tc = dendropy.Tree.get(
+            data=tree2.format("newick"),
+            schema='newick',
+            taxon_namespace=tns)    
+    tree1_tc.encode_bipartitions()
+    tree2_tc.encode_bipartitions()
+    ed = dendropy.calculate.treecompare.euclidean_distance(tree1_tc, tree2_tc)
+
+    return ed
 
 
 # G.M. Commented tree section out because it was not used
@@ -402,7 +438,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, rf_norm):
+def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, dist_norm):
     """
     Get data from a csv file a various parameters to store into a list
 
@@ -426,11 +462,11 @@ def getData(leavesName, ls, index, climaticList, bootstrap, genetic, csv_data, r
                         leave,
                         genetic,
                         str(bootstrap),
-                        str(round(ls, 2)),
-                        str(rf_norm),
+                        str(round(dist, 2)),
+                        str(dist_norm)
                     ]
                 else:
-                    return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(ls, 2))]
+                    return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2))]
 
 
 def writeOutputFile(data):
@@ -491,7 +527,7 @@ def filterResults(
             if Params().distance_method == "1":
                 ls = leastSquare(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if ls is None:
-                    raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
+                    raise Exception("The LS distance is not calculable" + " for {aligned_file}.")
                 if ls <= Params().dist_threshold:
                     data.append(
                         getData(
@@ -503,13 +539,13 @@ def filterResults(
                             current_genetic,
                             csv_data,
                             Params().reference_gene_filename,
-                            None,
+                            None
                         )
                     )
             elif Params().distance_method == "2":
                 rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if rf is None:
-                    raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
+                    raise Exception("The RF distance is not calculable" + " for {aligned_file}.")
                 if rf <= Params().dist_threshold:
                     data.append(
                         getData(
@@ -521,7 +557,25 @@ def filterResults(
                             current_genetic,
                             csv_data,
                             Params().reference_gene_filename,
-                            rf_norm,
+                            rf_norm
+                        )
+                    )
+            elif Params().distance_method == "3":
+                ed = euclideanDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                if ed is None:
+                    raise Exception("The Euclidean (DendroPY) distance is not calculable" + " for {aligned_file}.")
+                if ed <= Params().dist_threshold:
+                    data.append(
+                        getData(
+                            leavesName,
+                            ed,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params().reference_gene_filename,
+                            None
                         )
                     )
             else:
