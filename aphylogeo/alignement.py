@@ -10,7 +10,6 @@ from itertools import combinations
 from pathlib import Path
 
 import Bio.SeqIO
-#import pymuscle5
 from Bio import AlignIO, pairwise2
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
@@ -318,7 +317,7 @@ class AlignSequences:
         if sys.platform == "win32":
             muscle_exe = r"bin/muscle5.1.win64.exe"
             out_dir = r"bin/tmp/"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
         in_file = self.reference_gene_file
@@ -340,7 +339,7 @@ class AlignSequences:
         if sys.platform == "win32":
             clustal_exe = r"bin\\clustalw2.exe"
             fasta_out = r"bin\\tmp\\clustal_alignment.fasta"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             clustal_exe = r"bin/clustalw2"
             fasta_out = r"bin/tmp/clustal_alignment.fasta"
         in_file = self.reference_gene_file
@@ -360,7 +359,7 @@ class AlignSequences:
         """
         if sys.platform == "win32":
             mafft_exe = r"bin\\mafft-win\\mafft.bat"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             mafft_exe = r"bin/mafft-linux64/mafft.bat"
         in_file = self.reference_gene_file
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
@@ -369,48 +368,6 @@ class AlignSequences:
         records = Bio.SeqIO.parse(fasta_io, "fasta")
         return {rec.id: str(rec.seq) for rec in records}
 
-    def alignSequencesWithPymuscle5(self):
-        """
-        Method that aligns multiple DNA sequences using pymuscle5.
-        Similar to alignSequenceWithPairwise2, but we've reformatted the return to match the input to the SlidingWindow method.
-
-        Variables:
-            fasta_path (str): Path to the FASTA file containing sequences to align.
-            records (list): List of SeqRecord objects containing sequences from the FASTA file.
-            sequences (list): List of pymuscle5.Sequence objects for alignment.
-            aligned (dict): Dictionary to store aligned sequences.
-            aligner (pymuscle5.Aligner): PyMuscle5 aligner object.
-            msa (pymuscle5._muscle.Alignment): Result of the sequence alignment.
-            seq (pymuscle5._muscle.Sequence): Aligned sequence object.
-            seq_id (str): Decoded identifier of the aligned sequence.
-            seq_data (str): Decoded aligned sequence data.
-            heuristicMSA (dict): Dictionary to store the aligned sequences (see self.heuristicMSA).
-
-        Return:
-            heuristicMSA (dict): Dictionary containing aligned sequences (see self.heuristicMSA).
-        """
-
-        print("\nStarting sequence alignment with pymuscle5")
-        # Lecture des séquences à partir du fichier FASTA
-        fasta_path = self.reference_gene_file
-        records = list(Bio.SeqIO.parse(fasta_path, "fasta"))
-
-        # Création des séquences PyMuscle5
-        sequences = [pymuscle5.Sequence(record.id.encode(), bytes(record.seq)) for record in records]
-
-        aligned = {}
-
-        # Alignement des séquences
-        aligner = pymuscle5.Aligner()
-        msa = aligner.align(sequences)
-
-        for seq in msa.sequences:
-            seq_id = seq.name.decode()
-            seq_data = seq.sequence.decode()
-            aligned[seq_id] = seq_data
-
-        self.heuristicMSA = aligned
-        return self.heuristicMSA
 
     def alignSingle(self, args):
         """
