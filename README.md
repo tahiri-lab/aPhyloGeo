@@ -13,12 +13,12 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About the project</a>
+      <a href="#-about-the-project">About the project</a>
     </li>
     <li>
-      <a href="#Installation">Installation</a>
+      <a href="#%EF%B8%8F-installation">Installation</a>
       <ul>
-        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
+        <li><a href="#linux-unix-mac-os--windows-versions">Linux/UNIX, Mac OS and Windows versions</a></li>
       </ul>
     </li>
     <!--<li> Available analyses</li>
@@ -31,13 +31,13 @@
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>-->
      <li>
-      <a href="#Settings">Settings</a>
+      <a href="#-settings">Settings</a>
     </li>
     <li>
-      <a href="#References">References</a>
+      <a href="#%EF%B8%8F-references">References</a>
     </li>
     <li>
-      <a href="#contact">Contact</a>
+      <a href="#-contact">Contact</a>
     </li>
   </ol>
 </details>
