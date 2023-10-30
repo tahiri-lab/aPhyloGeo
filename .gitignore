@@ -24,3 +24,6 @@ build
 
 #Ignore the distribution directory
 dist
+
+#tree
+*.nwk

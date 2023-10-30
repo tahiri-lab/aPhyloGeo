@@ -10,7 +10,7 @@ from itertools import combinations
 from pathlib import Path
 
 import Bio.SeqIO
-#import pymuscle5
+
 from Bio import AlignIO, pairwise2
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
@@ -21,22 +21,49 @@ from .multiProcessor import Multi
 
 
 class Alignment:
+    """
+    Class that contains the data of a multiple sequence alignment.
+    """
+
     def __init__(self, alignment_method: str, msa):
+        """
+        init method
+        args:
+            alignment_method (str): The method used to align the sequences
+            msa (dict): The multiple sequence alignment data
+        """
         self.type = "Alignment"
         self.alignment_method = alignment_method
         self.msa = msa
 
     def to_dict(self):
+        """
+        Method that converts the alignment data to a dictionary
+        args:
+            None
+        """
         # Convert the msa data to string format
         msa_str_dict = {key: self.msa_to_string(self.msa[key]) for key in self.msa}
         return {"type": self.type, "alignment_method": self.alignment_method, "msa": msa_str_dict}
 
     @staticmethod
     def msa_to_string(msa_obj):
+        """
+        Method that converts the alignment data to a string
+
+        Args:
+            MSA (AlignIO): The multiple sequence alignment data
+        """
         return "\n".join([f">{record.id}\n{str(record.seq)}" for record in msa_obj])
 
     @staticmethod
     def msa_from_string(msa_str):
+        """
+        Method that converts the alignment string to MSA
+
+        Args:
+            MSA string
+        """
         return AlignIO.read(StringIO(msa_str), "fasta")
 
     @classmethod
@@ -46,76 +73,46 @@ class Alignment:
         return cls(d["alignment_method"], msa_dict)
 
     def save_to_json(self, filename):
+        """
+        Method that saves a json sequence file
+
+        Args:
+            filename (str): The name of the json file to save
+        """
         with open(filename, "w") as f:
             json.dump(self.to_dict(), f)
 
     @classmethod
     def load_from_json(cls, filename):
+        """
+        Method that loads a json sequence file
+
+        Args:
+            filename (str): The name of the json file to load
+
+        Returns:
+            alignment class
+        """
         with open(filename, "r") as f:
             data = json.load(f)
             return cls.from_dict(data)
 
     @classmethod
     def from_fasta_file(cls, filename, alignment_method):
+        """
+        Method that loads a sequence from a fasta file
+
+        Args:
+            filename (str): The name of the fasta file to load
+            alignment_method: The method used to align the sequences
+
+        Returns:
+            _type_: MSA
+        """
         with open(filename, "r") as f:
             msa = AlignIO.read(f, "fasta")
         msa_dict = {msa.id: msa}
         return cls(alignment_method, msa_dict)
-
-
-# class Alignment:
-#     """
-#     Class that encapsulate a sequence alignment.
-#     """
-#     def __init__(self, alignment_method: str, msa):
-#         self.type = "Alignment"
-#         self.alignment_method = alignment_method
-#         self.msa = msa
-
-#     # def to_json(self):
-#     #     msa_records = [SeqRecord(Seq(str(seq)), id=id) for id, seq in self.msa.items()]
-#     #     return json.dumps({
-#     #         "type": self.type,
-#     #         "alignment_method": self.alignment_method,
-#     #         "msa": [str(record.seq) for record in msa_records],  # Convert MSA to a list of sequences
-#     #     })
-
-#     def to_json(self):
-#         return json.dumps({
-#             "type": self.type,
-#             "alignment_method": self.alignment_method,
-#             "msa": str(self.msa),
-#         })
-
-#     def get_msa(self):
-#         if self.msa is None:
-#             raise ValueError("Load the alignment first")
-#         return self.msa
-
-#     @classmethod
-#     def from_json(cls, json_str):
-#         json_data = json.loads(json_str)
-#         msa_content = json_data['msa']
-#         msa_file = "msa.fasta"
-#         with open(msa_file, "w") as msa_file:
-#             msa_file.write(msa_content)
-#         msa = AlignIO.read(msa_file, "fasta")
-#         return cls(json_data['alignment_method'], msa)
-
-#     def save_to_file(self, file_path):
-#         with open(file_path, 'w') as file:
-#             json.dump(self.to_json(), file)
-
-#     @classmethod
-#     def load_from_file(cls, file_path):
-#         with open(file_path, 'r') as file:
-#             data = json.load(file)
-#         msa_content = data['msa']
-#         msa_file = "msa.fasta"
-#         with open(msa_file, "w") as msa_file:
-#             msa_file.write(msa_content)
-#         msa = AlignIO.read(msa_file, "fasta")
-#         return cls(data['alignment_method'], msa)
 
 
 class AlignSequences:
@@ -340,7 +337,7 @@ class AlignSequences:
         if sys.platform == "win32":
             clustal_exe = r"bin\\clustalw2.exe"
             fasta_out = r"bin\\tmp\\clustal_alignment.fasta"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             clustal_exe = r"bin/clustalw2"
             fasta_out = r"bin/tmp/clustal_alignment.fasta"
         in_file = self.reference_gene_file
@@ -360,7 +357,7 @@ class AlignSequences:
         """
         if sys.platform == "win32":
             mafft_exe = r"bin\\mafft-win\\mafft.bat"
-        elif sys.platform == "linux1" | sys.platform == "linux2":
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
             mafft_exe = r"bin/mafft-linux64/mafft.bat"
         in_file = self.reference_gene_file
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
@@ -368,49 +365,6 @@ class AlignSequences:
         fasta_io = StringIO(out)
         records = Bio.SeqIO.parse(fasta_io, "fasta")
         return {rec.id: str(rec.seq) for rec in records}
-
-    def alignSequencesWithPymuscle5(self):
-        """
-        Method that aligns multiple DNA sequences using pymuscle5.
-        Similar to alignSequenceWithPairwise2, but we've reformatted the return to match the input to the SlidingWindow method.
-
-        Variables:
-            fasta_path (str): Path to the FASTA file containing sequences to align.
-            records (list): List of SeqRecord objects containing sequences from the FASTA file.
-            sequences (list): List of pymuscle5.Sequence objects for alignment.
-            aligned (dict): Dictionary to store aligned sequences.
-            aligner (pymuscle5.Aligner): PyMuscle5 aligner object.
-            msa (pymuscle5._muscle.Alignment): Result of the sequence alignment.
-            seq (pymuscle5._muscle.Sequence): Aligned sequence object.
-            seq_id (str): Decoded identifier of the aligned sequence.
-            seq_data (str): Decoded aligned sequence data.
-            heuristicMSA (dict): Dictionary to store the aligned sequences (see self.heuristicMSA).
-
-        Return:
-            heuristicMSA (dict): Dictionary containing aligned sequences (see self.heuristicMSA).
-        """
-
-        print("\nStarting sequence alignment with pymuscle5")
-        # Lecture des séquences à partir du fichier FASTA
-        fasta_path = self.reference_gene_file
-        records = list(Bio.SeqIO.parse(fasta_path, "fasta"))
-
-        # Création des séquences PyMuscle5
-        sequences = [pymuscle5.Sequence(record.id.encode(), bytes(record.seq)) for record in records]
-
-        aligned = {}
-
-        # Alignement des séquences
-        aligner = pymuscle5.Aligner()
-        msa = aligner.align(sequences)
-
-        for seq in msa.sequences:
-            seq_id = seq.name.decode()
-            seq_data = seq.sequence.decode()
-            aligned[seq_id] = seq_data
-
-        self.heuristicMSA = aligned
-        return self.heuristicMSA
 
     def alignSingle(self, args):
         """
