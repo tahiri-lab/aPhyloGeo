@@ -1,7 +1,7 @@
 import glob
 import os
 import sys
-import signal
+import json
 import statistics as st
 import subprocess
 from collections import defaultdict
@@ -15,7 +15,107 @@ from Bio import AlignIO, pairwise2
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
 
+from aphylogeo.params import Params
+
 from .multiProcessor import Multi
+
+
+class Alignment:
+    def __init__(self, alignment_method: str, msa):
+        self.type = "Alignment"
+        self.alignment_method = alignment_method
+        self.msa = msa
+
+    def to_dict(self):
+        # Convert the msa data to string format
+        msa_str_dict = {key: self.msa_to_string(self.msa[key]) for key in self.msa}
+        return {"type": self.type, "alignment_method": self.alignment_method, "msa": msa_str_dict}
+
+    @staticmethod
+    def msa_to_string(msa_obj):
+        return "\n".join([f">{record.id}\n{str(record.seq)}" for record in msa_obj])
+
+    @staticmethod
+    def msa_from_string(msa_str):
+        return AlignIO.read(StringIO(msa_str), "fasta")
+
+    @classmethod
+    def from_dict(cls, d):
+        # Convert msa data back to its original format
+        msa_dict = {key: cls.msa_from_string(d["msa"][key]) for key in d["msa"]}
+        return cls(d["alignment_method"], msa_dict)
+
+    def save_to_json(self, filename):
+        with open(filename, "w") as f:
+            json.dump(self.to_dict(), f)
+
+    @classmethod
+    def load_from_json(cls, filename):
+        with open(filename, "r") as f:
+            data = json.load(f)
+            return cls.from_dict(data)
+
+    @classmethod
+    def from_fasta_file(cls, filename, alignment_method):
+        with open(filename, "r") as f:
+            msa = AlignIO.read(f, "fasta")
+        msa_dict = {msa.id: msa}
+        return cls(alignment_method, msa_dict)
+
+
+# class Alignment:
+#     """
+#     Class that encapsulate a sequence alignment.
+#     """
+#     def __init__(self, alignment_method: str, msa):
+#         self.type = "Alignment"
+#         self.alignment_method = alignment_method
+#         self.msa = msa
+
+#     # def to_json(self):
+#     #     msa_records = [SeqRecord(Seq(str(seq)), id=id) for id, seq in self.msa.items()]
+#     #     return json.dumps({
+#     #         "type": self.type,
+#     #         "alignment_method": self.alignment_method,
+#     #         "msa": [str(record.seq) for record in msa_records],  # Convert MSA to a list of sequences
+#     #     })
+
+#     def to_json(self):
+#         return json.dumps({
+#             "type": self.type,
+#             "alignment_method": self.alignment_method,
+#             "msa": str(self.msa),
+#         })
+
+#     def get_msa(self):
+#         if self.msa is None:
+#             raise ValueError("Load the alignment first")
+#         return self.msa
+
+#     @classmethod
+#     def from_json(cls, json_str):
+#         json_data = json.loads(json_str)
+#         msa_content = json_data['msa']
+#         msa_file = "msa.fasta"
+#         with open(msa_file, "w") as msa_file:
+#             msa_file.write(msa_content)
+#         msa = AlignIO.read(msa_file, "fasta")
+#         return cls(json_data['alignment_method'], msa)
+
+#     def save_to_file(self, file_path):
+#         with open(file_path, 'w') as file:
+#             json.dump(self.to_json(), file)
+
+#     @classmethod
+#     def load_from_file(cls, file_path):
+#         with open(file_path, 'r') as file:
+#             data = json.load(file)
+#         msa_content = data['msa']
+#         msa_file = "msa.fasta"
+#         with open(msa_file, "w") as msa_file:
+#             msa_file.write(msa_content)
+#         msa = AlignIO.read(msa_file, "fasta")
+#         return cls(data['alignment_method'], msa)
 
 
 class AlignSequences:
@@ -26,17 +126,16 @@ class AlignSequences:
     def __init__(
         self,
         sequences,
-        window_size,
-        step_size,
-        makeDebugFiles,
-        bootstrapAmount,
-        alignment_method,
-        reference_gene_file,
-        fit_method,
+        window_size=Params().window_size,
+        step_size=Params().step_size,
+        makeDebugFiles=Params().makeDebugFiles,
+        bootstrapAmount=Params().bootstrapAmount,
+        alignment_method=Params().alignment_method,
+        reference_gene_file=Params().reference_gene_file,
+        fit_method=Params().fit_method,
     ):
         """
         Constructor if the alignment object.
-        Makes all the necessary actions upon creation; no need to call any methods on the object.
         All parts of the process are available as variables.
 
         Inputs:
@@ -81,6 +180,11 @@ class AlignSequences:
         self.reference_gene_file = reference_gene_file
         self.fit_method = fit_method
 
+        """
+        Method that align sequences
+        """
+
+    def align(self) -> Alignment:
         if self.alignment_method == "1":
             self.centroidKey = self.getSequenceCentroid()[0]
             self.centroidSeq = self.sequences.pop(self.centroidKey)
@@ -100,7 +204,9 @@ class AlignSequences:
             raise ValueError("Invalid alignment method")
         [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
         self.windowed = self.slidingWindow()
-        self.msaSet = self.makeMSA()
+        self.msa = self.makeMSA()
+        self.alignment = Alignment(self.alignment_method, self.msa)
+        return self.alignment
 
     def getSequenceCentroid(self):
         """
@@ -191,7 +297,9 @@ class AlignSequences:
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
-            os.mkdir("./debug/1_alignSequences")
+            directory = os.path.abspath("./debug/1_alignSequences")
+            os.makedirs(directory, exist_ok=True)
+            # os.mkdir("./debug/1_alignSequences")
             for w in aligned.keys():
                 self.dictToFile(aligned[w], str("1_alignSequences/" + w), ".fasta")
         # JUST TO MAKE THE DEBUG FILES
@@ -200,17 +308,17 @@ class AlignSequences:
 
     def muscleAlign(self):
         """Method to perform a multiple DNA sequence alignment using Muscle Algorithm
-        
+
         Return:
         -------
-        (Dict): heuristicMSA 
+        (Dict): heuristicMSA
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             muscle_exe = r"bin/muscle5.1.win64.exe"
             out_dir = r"bin/tmp/"
-        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+        elif sys.platform == "linux1" | sys.platform == "linux2":
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
         in_file = self.reference_gene_file
@@ -222,19 +330,19 @@ class AlignSequences:
 
     def clustalAlign(self):
         """Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm
-        
+
         Return:
         -------
-        (Dict): heuristicMSA 
+        (Dict): heuristicMSA
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             clustal_exe = r"bin\\clustalw2.exe"
-            fasta_out = r"bin\\tmp\\clustal_alignment.fasta"        
-        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+            fasta_out = r"bin\\tmp\\clustal_alignment.fasta"
+        elif sys.platform == "linux1" | sys.platform == "linux2":
             clustal_exe = r"bin/clustalw2"
-            fasta_out = r"bin/tmp/clustal_alignment.fasta"        
+            fasta_out = r"bin/tmp/clustal_alignment.fasta"
         in_file = self.reference_gene_file
         clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
         out, err = clustalw_cline()
@@ -243,16 +351,16 @@ class AlignSequences:
 
     def mafftAlign(self):
         """Method to perform a multiple DNA sequence alignment using MAFFT Algorithm
-        
+
         Return:
         -------
-        (Dict): heuristicMSA 
+        (Dict): heuristicMSA
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             mafft_exe = r"bin\\mafft-win\\mafft.bat"
-        elif sys.platform == 'linux1' | sys.platform == 'linux2':
+        elif sys.platform == "linux1" | sys.platform == "linux2":
             mafft_exe = r"bin/mafft-linux64/mafft.bat"
         in_file = self.reference_gene_file
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
@@ -552,7 +660,8 @@ class AlignSequences:
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
-            os.mkdir("./debug/2_starAlignement")
+            directory_path = "./debug/2_starAlignement"
+            os.makedirs(directory_path, exist_ok=True)
             self.dictToFile(starAlign, "2_starAlignement/starAligned", ".fasta")
         # JUST TO MAKE THE DEBUG FILES
 
@@ -690,7 +799,8 @@ class AlignSequences:
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
-            os.mkdir("./debug/3_slidingWindow")
+            directory_path = "./debug/3_slidingWindow"
+            os.makedirs(directory_path, exist_ok=True)
             for w in windowed_alignment.keys():
                 self.dictToFile(windowed_alignment[w], "3_slidingWindow/" + w, ".fasta")
         # JUST TO MAKE THE DEBUG FILES

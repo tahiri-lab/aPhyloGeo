@@ -28,7 +28,7 @@ class TestGenetic:
         # small = AlignSequences(params_small.reference_gene_file, params_small.window_size, params_small.step_size,
         #                        params_small.makeDebugFiles, params_small.bootstrapAmount)
         params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-        sequences_very_small = utils.openFastaFile(params_very_small.reference_gene_file)
+        sequences_very_small = utils.loadSequenceFile(params_very_small.reference_gene_file)
         very_small = AlignSequences(
             sequences_very_small,
             params_very_small.window_size,
@@ -37,8 +37,9 @@ class TestGenetic:
             params_very_small.bootstrapAmount,
             params_very_small.alignment_method,
             params_very_small.reference_gene_file,
+            params_very_small.distance_method,
         )
-
+        very_small.align()
         self.alignementSetup = [very_small]  # , small]
         self.paramSetup = [params_very_small]  # , params_small]
 

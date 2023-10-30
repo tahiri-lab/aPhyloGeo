@@ -2,7 +2,6 @@ import glob
 import os
 import re
 import sys
-import shutil
 from csv import writer as csv_writer
 
 import ete3
@@ -12,7 +11,6 @@ from Bio.Phylo.Applications import _Fasttree
 from Bio.Phylo.Consensus import bootstrap_consensus, majority_consensus
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, _DistanceMatrix
 
-from .alignement import AlignSequences
 from .multiProcessor import Multi
 from .params import Params
 
@@ -209,7 +207,7 @@ def createTree(dm):
     return tree
 
 
-def climaticPipeline(df, names):
+def climaticPipeline(df):
     """
     Creates a dictionnary with the climatic Trees
     Args:
@@ -219,6 +217,7 @@ def climaticPipeline(df, names):
     Return:
         trees (the climatic tree dictionnary)
     """
+    names = Params().names
     trees = {}
     for i in range(1, len(names)):
         dm = getDissimilaritiesMatrix(df, names[0], names[i])
@@ -304,9 +303,9 @@ def fasttreeCMD(input_fasta, boot, nt):
     -------
     (FastTreeCommandline)
     """
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         fasttree_exe = r"bin\\FastTree.exe"
-    elif sys.platform == 'linux1' | sys.platform == 'linux2':
+    elif sys.platform == "linux1" | sys.platform == "linux2":
         fasttree_exe = r"bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
 
@@ -345,10 +344,10 @@ def fasttree(msaset, boot=1000, nt=True):
     """
     createTmpFasta(msaset)
     alignments = glob.glob("bin/tmp/*.fasta")
-    
-    if sys.platform == 'win32':
+
+    if sys.platform == "win32":
         windows = [re.search("tmp\\\\(.+?).fasta", fasta).group(1) for fasta in alignments]
-    elif sys.platform == 'linux1' | sys.platform == 'linux2':
+    elif sys.platform == "linux1" | sys.platform == "linux2":
         windows = [re.search("tmp\\(.+?).fasta", fasta).group(1) for fasta in alignments]
 
     # Sort windows and alignments ascendent order
@@ -454,11 +453,7 @@ def writeOutputFile(data):
 def filterResults(
     climaticTrees,
     geneticTrees,
-    bootstrap_threshold,
-    dist_threshold,
     csv_data,
-    reference_gene_filename,
-    distance_method,
     create_file=True,
 ):
     """
@@ -473,9 +468,10 @@ def filterResults(
         csv_data (dataframe containing the data from the csv file)
         reference_gene_filename (the name of the reference gene)
     """
+
     # Create a list of the tree if the bootstrap is superior to the
     # bootstrap treshold
-    geneticList, bootstrapList = createGeneticList(geneticTrees, bootstrap_threshold)
+    geneticList, bootstrapList = createGeneticList(geneticTrees, Params().bootstrap_threshold)
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
@@ -492,11 +488,11 @@ def filterResults(
         leavesName = list(map(lambda x: x.name, leaves))
 
         for i in range(len(climaticTrees.keys())):
-            if distance_method == "1":
+            if Params().distance_method == "1":
                 ls = leastSquare(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if ls is None:
                     raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
-                if ls <= dist_threshold:
+                if ls <= Params().dist_threshold:
                     data.append(
                         getData(
                             leavesName,
@@ -506,15 +502,15 @@ def filterResults(
                             current_bootstrap,
                             current_genetic,
                             csv_data,
-                            reference_gene_filename,
+                            Params().reference_gene_filename,
                             None,
                         )
                     )
-            elif distance_method == "2":
+            elif Params().distance_method == "2":
                 rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 if rf is None:
                     raise Exception("The LS distance is not calculable" + "pour {aligned_file}.")
-                if rf <= dist_threshold:
+                if rf <= Params().dist_threshold:
                     data.append(
                         getData(
                             leavesName,
@@ -524,7 +520,7 @@ def filterResults(
                             current_bootstrap,
                             current_genetic,
                             csv_data,
-                            reference_gene_filename,
+                            Params().reference_gene_filename,
                             rf_norm,
                         )
                     )
@@ -559,7 +555,7 @@ def format_to_csv(data):
     return result
 
 
-def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
+def geneticPipeline(seq_alignement):
     """
     Get the genetic Trees from the initial file datas so we
     can compare every valid tree with the climatic ones. In the
@@ -571,44 +567,24 @@ def geneticPipeline(climaticTrees, csv_data, p=Params(), alignementObject=None):
         p (the Params object)[optionnal]
         aligneementObject (the AlignSequences object)[optionnal]
     """
+
+    # GM no more needed
     # JUST TO MAKE THE DEBUG FILES
-    if os.path.exists("./debug"):
-        shutil.rmtree("./debug")
-    if p.makeDebugFiles:
-        os.mkdir("./debug")
+    # if os.path.exists("./debug"):
+    #     shutil.rmtree("./debug")
+    # if Params().makeDebugFiles:
+    #     os.mkdir("./debug")
     # JUST TO MAKE THE DEBUG FILES
 
-    if alignementObject is None:
-        sequences = openFastaFile(p.reference_gene_file)
-        alignementObject = AlignSequences(
-            sequences,
-            p.window_size,
-            p.step_size,
-            p.makeDebugFiles,
-            p.bootstrapAmount,
-            p.alignment_method,
-            p.reference_gene_file,
-            p.fit_method,
-        )
+    if Params().tree_type == "1":
+        geneticTrees = createBoostrap(seq_alignement, Params().bootstrapAmount)
+    elif Params().tree_type == "2":
+        geneticTrees = fasttree(seq_alignement, Params().bootstrapAmount, True)
 
-    msaSet = alignementObject.msaSet
-
-    if p.tree_type == "1":
-        geneticTrees = createBoostrap(msaSet, p.bootstrapAmount)
-    elif p.tree_type == "2":
-        geneticTrees = fasttree(msaSet, p.bootstrapAmount, True)
-    return filterResults(
-        climaticTrees,
-        geneticTrees,
-        p.bootstrap_threshold,
-        p.dist_threshold,
-        csv_data,
-        p.reference_gene_filename,
-        p.distance_method,
-    )
+    return geneticTrees
 
 
-def openFastaFile(file):
+def loadSequenceFile(file):
     """
     Reads the .fasta file. Extract sequence ID and sequences.
 

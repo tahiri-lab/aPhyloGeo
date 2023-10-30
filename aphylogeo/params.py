@@ -5,12 +5,21 @@ from yaml.loader import SafeLoader
 
 
 class Params:
-    def __init__(self, params_file=os.path.join(os.path.dirname(__file__), "params.yaml")):
-        # We open the params.yaml file and put it in the params variable
-        # We use the absolute path to the file so that we can run the script from anywhere
-        with open(params_file) as f:
-            params = yaml.load(f, Loader=SafeLoader)
+    _instance = None
 
+    def __new__(cls, params_file=os.path.join(os.path.dirname(__file__), "params.yaml"), params_content=None):
+        if cls._instance is None:
+            cls._instance = super(Params, cls).__new__(cls)
+            cls._instance.params_file = params_file
+            if params_content is None:
+                with open(params_file) as f:
+                    params = yaml.load(f, Loader=SafeLoader)
+            else:
+                params = params_content
+            cls._instance.__init_params(**params)
+        return cls._instance
+
+    def __init_params(self, **params):
         self.bootstrap_threshold = params["bootstrap_threshold"]
         self.dist_threshold = params["dist_threshold"]
         self.window_size = params["window_size"]

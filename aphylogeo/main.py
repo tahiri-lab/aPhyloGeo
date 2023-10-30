@@ -1,7 +1,10 @@
 import pandas as pd
+from aphylogeo.alignement import AlignSequences, Alignment
 
 from aphylogeo.params import Params
-from aphylogeo.utils import climaticPipeline, geneticPipeline
+from aphylogeo import utils
+
+# from aphylogeo.utils import climaticPipeline, geneticPipeline, filterResults, loadSequenceFile
 
 titleCard = r"""
         ____    __               ___           ____
@@ -17,7 +20,18 @@ titleCard = r"""
 
 if __name__ == "__main__":
     print(titleCard + "\n")
-    p = Params()
-    df = pd.read_csv(p.file_name)
-    climaticTrees = climaticPipeline(df, p.names)
-    geneticPipeline(climaticTrees, df, p)
+
+    sequenceFile = utils.loadSequenceFile(Params().reference_gene_file)
+    seq_alignment = AlignSequences(sequenceFile).align()
+    # Phylo.write(tree1, "data/tree1.nwk", "newick")
+    seq_alignment.save_to_json("./sequences_aligned.json")
+
+    loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
+
+    geneticTrees = utils.geneticPipeline(seq_alignment.msa)
+
+    # Todo get trees in geneticTrees dict
+    # Phylo.write(geneticTrees, "./tree1.nwk", "newick")
+    df = pd.read_csv(Params().file_name)
+    climaticTrees = utils.climaticPipeline(df)
+    utils.filterResults(climaticTrees, geneticTrees, df)

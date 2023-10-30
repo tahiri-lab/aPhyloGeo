@@ -12,3 +12,5 @@ reference_gene_file: 'seq very small.fasta'
 makeDebugFiles: False
 alignment_method: '1'
 distance_method: '1'
+fit_method: '1'
+tree_type: '1'
