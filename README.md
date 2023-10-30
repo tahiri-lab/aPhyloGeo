@@ -8,7 +8,7 @@
 
 
 <h2  align="center"> 🌳 Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
-﻿﻿﻿﻿﻿﻿﻿﻿<h3  align="center"> Welcome to the aPhyloGeo GitHub repository!</h3>
+
 <details open>
   <summary>Table of Contents</summary>
   <ol>
