@@ -10,7 +10,8 @@ from itertools import combinations
 from pathlib import Path
 
 import Bio.SeqIO
-from Bio import AlignIO, pairwise2
+from Bio import AlignIO
+from Bio.Align import PairwiseAligner
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
 
@@ -187,7 +188,7 @@ class AlignSequences:
         if self.alignment_method == "1":
             self.centroidKey = self.getSequenceCentroid()[0]
             self.centroidSeq = self.sequences.pop(self.centroidKey)
-            self.aligned = self.alignSequencesWithPairwise2()
+            self.aligned = self.alignSequencesWithPairwise()
             if self.fit_method == "1":
                 self.heuristicMSA = self.starAlignement()
             elif self.fit_method == "2":
@@ -258,11 +259,11 @@ class AlignSequences:
         """
         seqA, seqB = args[0], args[2]
         seqAID, seqBID = args[1], args[3]
-
-        score = pairwise2.align.globalxx(seqA, seqB, one_alignment_only=True, score_only=True)
+        aligner = PairwiseAligner()
+        score = aligner.score(seqA, seqB)
         return (seqAID, seqBID, score)
 
-    def alignSequencesWithPairwise2(self):
+    def alignSequencesWithPairwise(self):
         """
         Method that aligns multiple DNA sequences.
         The first speciment of the dataset is used as the main pivot.
@@ -290,8 +291,8 @@ class AlignSequences:
         # reformats the output in a  dictionnary
         for i in align_scores:
             temp = {}
-            temp[i[2]] = Seq((i[1][0].seqA))
-            temp[i[0]] = Seq((i[1][0].seqB))
+            temp[i[2]] = Seq((i[1][0]))
+            temp[i[0]] = Seq((i[1][1]))
             aligned[str(i[0] + " vs " + i[2])] = temp
 
         # JUST TO MAKE THE DEBUG FILES
@@ -388,7 +389,9 @@ class AlignSequences:
         scID, seqBID = args[0], args[2]
         sc, seqB = args[1], args[3]
 
-        aligned = pairwise2.align.globalxx(sc, seqB, one_alignment_only=True)
+        # Must return Alignment at index [0] of BioPairwiseAlignment 
+        aligner = PairwiseAligner()
+        aligned = aligner.align(sc, seqB)[0]
         return [seqBID, aligned, scID]
 
     def narrowFitPairwise(self):
