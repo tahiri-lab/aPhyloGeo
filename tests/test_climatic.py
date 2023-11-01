@@ -71,6 +71,10 @@ def test_climaticPipeline():
         expected_robinson_foulds_Norm = 1.0
         assert utils.robinsonFoulds(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == (expected_robinson_foulds, expected_robinson_foulds_Norm)
 
+         # test Euclidean
+        expected_euclidean_dist = 0.5831890302466259
+        assert utils.euclideanDist(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == expected_euclidean_dist
+
 
 def test_createClimaticList(climaticTreesSetup):
     """
