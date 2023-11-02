@@ -4,11 +4,13 @@ import os
 import re
 import sys
 from csv import writer as csv_writer
+from io import StringIO
 
 import dendropy
 import ete3
 import pandas as pd
 from Bio import SeqIO
+from Bio import Phylo
 from Bio.Phylo.Applications import _Fasttree
 from Bio.Phylo.Consensus import bootstrap_consensus, majority_consensus
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, _DistanceMatrix
@@ -341,7 +343,7 @@ def fasttreeCMD(input_fasta, boot, nt):
     """
     if sys.platform == "win32":
         fasttree_exe = r"bin\\FastTree.exe"
-    elif sys.platform == "linux1" | sys.platform == "linux2":
+    elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
         fasttree_exe = r"bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
 
@@ -383,8 +385,8 @@ def fasttree(msaset, boot=1000, nt=True):
 
     if sys.platform == "win32":
         windows = [re.search("tmp\\\\(.+?).fasta", fasta).group(1) for fasta in alignments]
-    elif sys.platform == "linux1" | sys.platform == "linux2":
-        windows = [re.search("tmp\\(.+?).fasta", fasta).group(1) for fasta in alignments]
+    elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
+        windows = [re.search("tmp/(.+?).fasta", fasta).group(1) for fasta in alignments]
 
     # Sort windows and alignments ascendent order
     sorted_windows = sorted(windows, key=lambda s: int(re.search(r"\d+", s).group()))
@@ -395,7 +397,7 @@ def fasttree(msaset, boot=1000, nt=True):
     cmds = [fasttreeCMD(fasta, boot, nt) for fasta in sorted_alignments]
 
     # Execute cmd lines and create trees
-    trees = {sorted_windows[i]: cmd()[0] for i, cmd in enumerate(cmds)}
+    trees = {sorted_windows[i]: Phylo.read(StringIO(cmd()[0]), 'newick') for i, cmd in enumerate(cmds)}
     [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
     return trees
 
