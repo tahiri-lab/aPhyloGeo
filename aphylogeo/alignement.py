@@ -10,13 +10,8 @@ from itertools import combinations
 from pathlib import Path
 
 import Bio.SeqIO
-<<<<<<< HEAD
 from Bio import AlignIO
 from Bio.Align import PairwiseAligner
-=======
-
-from Bio import AlignIO, pairwise2
->>>>>>> 82d738dc0cdf187009543b98b783709f24c5849b
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
 
@@ -320,13 +315,14 @@ class AlignSequences:
         if sys.platform == "win32":
             muscle_exe = r"bin/muscle5.1.win64.exe"
             out_dir = r"bin/tmp/"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
         in_file = self.reference_gene_file
         out_file = os.path.splitext(os.path.basename(self.reference_gene_file))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
-        subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
+        process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
+        process.wait()
         records = Bio.SeqIO.parse(out_fullname, "fasta")
         return {rec.id: str(rec.seq) for rec in records}
 
@@ -342,7 +338,7 @@ class AlignSequences:
         if sys.platform == "win32":
             clustal_exe = r"bin\\clustalw2.exe"
             fasta_out = r"bin\\tmp\\clustal_alignment.fasta"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             clustal_exe = r"bin/clustalw2"
             fasta_out = r"bin/tmp/clustal_alignment.fasta"
         in_file = self.reference_gene_file
@@ -362,14 +358,14 @@ class AlignSequences:
         """
         if sys.platform == "win32":
             mafft_exe = r"bin\\mafft-win\\mafft.bat"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux"):
+        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             mafft_exe = r"bin/mafft-linux64/mafft.bat"
         in_file = self.reference_gene_file
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
         out, err = mafft_cline()
         fasta_io = StringIO(out)
         records = Bio.SeqIO.parse(fasta_io, "fasta")
-        return {rec.id: str(rec.seq) for rec in records}
+        return {rec.id: str(rec.seq).upper() for rec in records}
 
     def alignSingle(self, args):
         """
@@ -610,8 +606,8 @@ class AlignSequences:
             a.remove(scKey)
             sNewKey = a[0]  # SeqB ID, *not* the reference
 
-            starAlign[scKey] = couple[scKey]  # SeqA, the reference
-            starAlign[sNewKey] = couple[sNewKey]  # SeqB, *not* the reference
+            starAlign[scKey] = str(couple[scKey])  # SeqA, the reference
+            starAlign[sNewKey] = str(couple[sNewKey])  # SeqB, *not* the reference
 
             if len(starAlign) > 2:
                 starAlign = self.merge(starAlign, scKey, sNewKey)
