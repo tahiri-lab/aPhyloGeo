@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aphylogeo"
-version = "0.2.2"
+version = "0.3.2"
 description = "A phylogenetic and geographic analysis tool"
 authors = ["'Tahiri Lab'"]
 license = "MIT"
