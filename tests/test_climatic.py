@@ -8,7 +8,7 @@ from aphylogeo import utils
 from aphylogeo.params import Params
 
 current_file = Path(os.path.dirname(__file__))
-df = pd.read_csv("./datasets/5seq/geo.csv")
+df = pd.read_csv("./datasets/example/geo.csv")
 climatic_test_cases = ["geo.csv"]
 
 
