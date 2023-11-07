@@ -1,5 +1,5 @@
 import pandas as pd
-from aphylogeo.alignement import AlignSequences, Alignment
+from aphylogeo.alignement import AlignSequences
 
 from aphylogeo.params import Params
 from aphylogeo import utils
@@ -24,9 +24,9 @@ if __name__ == "__main__":
     sequenceFile = utils.loadSequenceFile(Params().reference_gene_file)
     seq_alignment = AlignSequences(sequenceFile).align()
     # Phylo.write(tree1, "data/tree1.nwk", "newick")
-    seq_alignment.save_to_json("./debug/sequences_aligned.json")
+    # seq_alignment.save_to_json("./debug/sequences_aligned.json")
 
-    loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
+    # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
     geneticTrees = utils.geneticPipeline(seq_alignment.msa)
 
