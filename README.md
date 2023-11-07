@@ -84,7 +84,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
     - '3' for Euclidean distance
 - **Distance threshold**: LS distance threshold at which the results are most significant
 - **Alignment method**: algorithm selection for sequence alignment 
-    - '1' for pairwise2
+    - '1' for pairwiseAligner
     - '2' for MUSCLE
     - '3' for CLUSTALW
     - '4' for MAFFT
