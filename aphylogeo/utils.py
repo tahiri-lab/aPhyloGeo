@@ -319,11 +319,20 @@ def calculateAverageBootstrap(tree):
     """
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda x: x.confidence, leaves))
-    treeConfidences.pop(0)
+    treeConfidences = [conf for conf in treeConfidences if conf is not None]
+
+    # Convert confidences to % if FastTree is used
+    if Params().tree_type == '2':
+        treeConfidences = [int(conf * 100) for conf in treeConfidences]
+    
     totalConfidence = 0
-    for confidences in treeConfidences:
-        totalConfidence += confidences
-    averageBootsrap = totalConfidence / len(treeConfidences)
+    if treeConfidences:
+        for confidences in treeConfidences:
+            totalConfidence += confidences
+        averageBootsrap = totalConfidence / len(treeConfidences)
+    else:
+        averageBootsrap = 100.
+    
     return averageBootsrap
 
 
