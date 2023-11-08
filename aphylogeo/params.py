@@ -38,4 +38,5 @@ class Params:
         self.distance_method = params["distance_method"]
         self.fit_method = params["fit_method"]
         self.tree_type = params["tree_type"]
-        # self.fasta_path = params["fasta_path"]
+        self.rate_similarity = params["rate_similarity"]
+        self.method_similarity = params["method_similarity"]
