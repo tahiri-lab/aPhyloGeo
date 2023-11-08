@@ -15,10 +15,11 @@ from Bio.Align import PairwiseAligner
 from Bio.Align.Applications import ClustalwCommandline, MafftCommandline
 from Bio.Seq import Seq
 
-from aphylogeo.params import Params
-
+from .params import Params
 from .multiProcessor import Multi
 
+import itertools
+import textdistance as td
 
 class Alignment:
     """
@@ -130,6 +131,8 @@ class AlignSequences:
         alignment_method=Params().alignment_method,
         reference_gene_file=Params().reference_gene_file,
         fit_method=Params().fit_method,
+        rate_similarity=Params().rate_similarity,
+        method_similarity=Params().method_similarity,
     ):
         """
         Constructor if the alignment object.
@@ -167,6 +170,8 @@ class AlignSequences:
 
             ##todo
             self.msa (AlignIO())
+            self.rate_similarity
+            self.method_similarity
         """
         self.window_size = window_size
         self.step_size = step_size
@@ -176,7 +181,8 @@ class AlignSequences:
         self.alignment_method = alignment_method
         self.reference_gene_file = reference_gene_file
         self.fit_method = fit_method
-
+        self.rate_similarity = rate_similarity,
+        self.method_similarity = method_similarity,
         """
         Method that align sequences
         """
@@ -751,8 +757,15 @@ class AlignSequences:
         for i in range(0, seq_len, step):
             if i + step < seq_len:
                 windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
+                combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(),2)   
             else:
                 windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
+                combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(),2)
+            df = pd.DataFrame(list(combinations))
+            
+            #if self.rate_similarity[0] < self.similarity(df):
+            #    windowed_alignment.pop(f"{i}_{seq_len-1}")
+            #    print(self.rate_similarity)
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
@@ -852,3 +865,51 @@ class AlignSequences:
         f.close()
         alignIO = AlignIO.read(StringIO(data), "fasta")
         return alignIO
+
+    def similarity(self, df):
+        """
+        Method that compute similarity in all string in dataframe (df)
+        Method source: 
+        https://yassineelkhal.medium.com/the-complete-guide-to-string-similarity-algorithms-1290ad07c6b7 
+
+        arguments:
+            method (int) similarity method
+                1: Hamming distance
+                2: Levenshtein distance
+                3: Damerau-Levenshtein distance
+                4: Jaro similarity
+                5: Jaro-Winkler similarity
+                6: Smith–Waterman similarity
+                7: Jaccard similarity
+                8: Sørensen-Dice similarity
+                --NOT IMPLEMENTED--
+                9: Tversky similarity
+                10: Overlap similarity
+                11: Cosine similarity
+                12: N-gram similarity
+                13: Ratcliff-Obershelp similarity
+                14: Longest common substring/subsequence similarity
+            df    (dataframe)    dataframe of all string sequances
+
+        return:
+            percentage similarity     (float)   the similarity between the dataframe of all strings elements
+        """
+        rateSimilarity = 0.0
+        if self.method_similarity[0] == "1":
+            rateSimilarity = df.apply(lambda x: td.hamming.normalized_similarity(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "2":
+            rateSimilarity = df.apply(lambda x: td.levenshtein.normalized_similarity(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "3":
+            rateSimilarity = df.apply(lambda x: td.damerau_levenshtein.normalized_similarity(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "4":
+            rateSimilarity = df.apply(lambda x: td.jaro(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "5":
+            rateSimilarity = df.apply(lambda x: td.jaro_winkler(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "6":
+            rateSimilarity = df.apply(lambda x: td.smith_waterman(x[0],x[1]), axis=1).mean()*100
+        elif self.method_similarity[0] == "7":
+            rateSimilarity = df.apply(lambda x: td.jaccard(x[0],x[1]), axis=1).mean()*100   
+        elif self.method_similarity[0] == "8":
+            rateSimilarity = df.apply(lambda x: td.sorencen(x[0],x[1]), axis=1).mean()*100   
+
+        return rateSimilarity
