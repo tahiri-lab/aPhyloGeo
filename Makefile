@@ -1,5 +1,5 @@
 aPhylogeo:
-	python3 ./scripts/main.py
+	python aPhylogeo/main.py
 
 .PHONY: clean
 
