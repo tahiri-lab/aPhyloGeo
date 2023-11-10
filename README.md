@@ -48,7 +48,7 @@
 
 # ⚒️ Installation
 
-## Linux UNIX, Mac OS & Windows versions
+## Linux UNIX & Windows versions 
 `aPhyloGeo` is available as a Python script.
 
 ### Prerequisites
@@ -73,24 +73,7 @@ poetry shell
 You can also launch the package using the `make` command from your terminal when you are in the `root`. This command will use the `Makefile` to run the script. If you use the command `make clean`, it will erase the `output.csv` file previously created with the first command.
 
 # 🚀 Settings
-The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling.
-
-- **Bootstrap threshold**: Number of replicates threshold to be generated for each sub-MSA (each position of the sliding window)
-- **Window length**: Size of the sliding window
-- **Step**: Sliding window advancement step
-- **Distance choice**: distance selection 
-    - '1' for Least Square (LS) distance (version 1.0)
-    - '2' for Robinson and Foulds (RF) distance
-    - '3' for Euclidean distance
-- **Distance threshold**: LS distance threshold at which the results are most significant
-- **Alignment method**: algorithm selection for sequence alignment 
-    - '1' for pairwiseAligner
-    - '2' for MUSCLE
-    - '3' for CLUSTALW
-    - '4' for MAFFT
-- **Fit method**: gap selection elongation
-    - '1' for Wider Fit by elongating with Gap (starAlignment)
-    - '2' for Narrow-fit prevent elongation with gap when possible
+The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling (see [Wiki documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki/User-Preference)).
 
 
 # ✔️ References
