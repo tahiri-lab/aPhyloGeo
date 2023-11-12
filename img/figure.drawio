@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-09T16:24:27.471Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="oqVFrX7xUiRXP9vXjNUd" version="22.0.8" type="github" pages="21">
+<mxfile host="app.diagrams.net" modified="2023-11-12T20:27:04.254Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="ORMG5Jzh_f-cectmu59X" version="22.0.8" type="github" pages="21">
   <diagram name="Copy of Copy of Copy of Copy of Workflow081123-2_with_breakpoints" id="U9jppQCGVcvS6sDKuiP0">
-    <mxGraphModel dx="6406" dy="4757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="4820" dy="3853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="OO_gPQAOQgBNtSQFW3Af-0" />
         <mxCell id="OO_gPQAOQgBNtSQFW3Af-1" parent="OO_gPQAOQgBNtSQFW3Af-0" />
@@ -110,15 +110,6 @@
         </mxCell>
         <mxCell id="OO_gPQAOQgBNtSQFW3Af-27" value="bootstrap &amp;lt; threshold" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=15;fillColor=#60a917;strokeColor=#2D7600;fontColor=#333333;opacity=80;" vertex="1" parent="OO_gPQAOQgBNtSQFW3Af-1">
           <mxGeometry x="9" y="-212" width="200" height="72.86" as="geometry" />
-        </mxCell>
-        <mxCell id="OO_gPQAOQgBNtSQFW3Af-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="OO_gPQAOQgBNtSQFW3Af-1" source="OO_gPQAOQgBNtSQFW3Af-29" target="OO_gPQAOQgBNtSQFW3Af-72">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="250" y="-887" />
-              <mxPoint x="250" y="-1237" />
-              <mxPoint x="794" y="-1237" />
-            </Array>
-          </mxGeometry>
         </mxCell>
         <mxCell id="OO_gPQAOQgBNtSQFW3Af-29" value="Multiple Sequence Alignment (MSA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#333333;fontSize=18;opacity=80;" vertex="1" parent="OO_gPQAOQgBNtSQFW3Af-1">
           <mxGeometry x="9" y="-927.31" width="200" height="80" as="geometry" />
@@ -570,6 +561,17 @@
         </mxCell>
         <mxCell id="OO_gPQAOQgBNtSQFW3Af-137" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.502;entryY=0.027;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="OO_gPQAOQgBNtSQFW3Af-1" source="OO_gPQAOQgBNtSQFW3Af-43" target="OO_gPQAOQgBNtSQFW3Af-43">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T2OKuFVJN34s6Dnir2TU-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="OO_gPQAOQgBNtSQFW3Af-1" source="OO_gPQAOQgBNtSQFW3Af-29" target="OO_gPQAOQgBNtSQFW3Af-72">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="-887" />
+              <mxPoint x="240" y="-1240" />
+              <mxPoint x="794" y="-1240" />
+            </Array>
+            <mxPoint x="119" y="-660" as="sourcePoint" />
+            <mxPoint x="119" y="-612" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
