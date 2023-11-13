@@ -1,4 +1,3 @@
-from errno import EDEADLOCK
 import glob
 import os
 import re
@@ -163,14 +162,8 @@ def euclideanDist(tree1, tree2):
     """
     ed = 0
     tns = dendropy.TaxonNamespace()
-    tree1_tc = dendropy.Tree.get(
-            data=tree1.format("newick"),
-            schema='newick',
-            taxon_namespace=tns)    
-    tree2_tc = dendropy.Tree.get(
-            data=tree2.format("newick"),
-            schema='newick',
-            taxon_namespace=tns)    
+    tree1_tc = dendropy.Tree.get(data=tree1.format("newick"), schema="newick", taxon_namespace=tns)
+    tree2_tc = dendropy.Tree.get(data=tree2.format("newick"), schema="newick", taxon_namespace=tns)
     tree1_tc.encode_bipartitions()
     tree2_tc.encode_bipartitions()
     ed = dendropy.calculate.treecompare.euclidean_distance(tree1_tc, tree2_tc)
@@ -322,17 +315,17 @@ def calculateAverageBootstrap(tree):
     treeConfidences = [conf for conf in treeConfidences if conf is not None]
 
     # Convert confidences to % if FastTree is used
-    if Params().tree_type == '2':
+    if Params().tree_type == "2":
         treeConfidences = [int(conf * 100) for conf in treeConfidences]
-    
+
     totalConfidence = 0
     if treeConfidences:
         for confidences in treeConfidences:
             totalConfidence += confidences
         averageBootsrap = totalConfidence / len(treeConfidences)
     else:
-        averageBootsrap = 100.
-    
+        averageBootsrap = 100.0
+
     return averageBootsrap
 
 
@@ -406,7 +399,7 @@ def fasttree(msaset, boot=1000, nt=True):
     cmds = [fasttreeCMD(fasta, boot, nt) for fasta in sorted_alignments]
 
     # Execute cmd lines and create trees
-    trees = {sorted_windows[i]: Phylo.read(StringIO(cmd()[0]), 'newick') for i, cmd in enumerate(cmds)}
+    trees = {sorted_windows[i]: Phylo.read(StringIO(cmd()[0]), "newick") for i, cmd in enumerate(cmds)}
     [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
     return trees
 
@@ -467,15 +460,7 @@ def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data,
         for i, row in csv_data.iterrows():
             if row.iloc[0] == leave:
                 if Params().distance_method == "2":
-                    return [
-                        reference_gene_filename,
-                        climaticList[index],
-                        leave,
-                        genetic,
-                        str(bootstrap),
-                        str(round(dist, 2)),
-                        str(dist_norm)
-                    ]
+                    return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2)), str(dist_norm)]
                 else:
                     return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2))]
 
@@ -541,17 +526,7 @@ def filterResults(
                     raise Exception("The LS distance is not calculable" + " for {aligned_file}.")
                 if ls <= Params().dist_threshold:
                     data.append(
-                        getData(
-                            leavesName,
-                            ls,
-                            i,
-                            climaticList,
-                            current_bootstrap,
-                            current_genetic,
-                            csv_data,
-                            Params().reference_gene_filename,
-                            None
-                        )
+                        getData(leavesName, ls, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, None)
                     )
             elif Params().distance_method == "2":
                 rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
@@ -560,15 +535,7 @@ def filterResults(
                 if rf <= Params().dist_threshold:
                     data.append(
                         getData(
-                            leavesName,
-                            rf,
-                            i,
-                            climaticList,
-                            current_bootstrap,
-                            current_genetic,
-                            csv_data,
-                            Params().reference_gene_filename,
-                            rf_norm
+                            leavesName, rf, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, rf_norm
                         )
                     )
             elif Params().distance_method == "3":
@@ -577,17 +544,7 @@ def filterResults(
                     raise Exception("The Euclidean (DendroPY) distance is not calculable" + " for {aligned_file}.")
                 if ed <= Params().dist_threshold:
                     data.append(
-                        getData(
-                            leavesName,
-                            ed,
-                            i,
-                            climaticList,
-                            current_bootstrap,
-                            current_genetic,
-                            csv_data,
-                            Params().reference_gene_filename,
-                            None
-                        )
+                        getData(leavesName, ed, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, None)
                     )
             else:
                 raise ValueError("Invalid distance method")

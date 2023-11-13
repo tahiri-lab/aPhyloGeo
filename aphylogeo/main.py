@@ -29,7 +29,9 @@ if __name__ == "__main__":
     # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
     geneticTrees = utils.geneticPipeline(seq_alignment.msa)
-
+    with open("debug/res3.txt", "w") as f:
+        f.write(str(geneticTrees))
+        f.close()
     # Todo get trees in geneticTrees dict
     # Phylo.write(geneticTrees, "./tree1.nwk", "newick")
     df = pd.read_csv(Params().file_name)
