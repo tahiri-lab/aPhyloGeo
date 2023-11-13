@@ -67,11 +67,10 @@ class TestGenetic:
         print("Begin test_aligned...")
 
         for alignement, p in zip(self.alignementSetup, self.paramSetup):
-            test_case = p.reference_gene_filename[0:-6]
             aligned = alignement.aligned
 
             for key in aligned.keys():
-                expected = AlignSequences.fileToDict(current_file + "/testFiles/alignSequence/" + test_case + "/" + key, ".fasta")
+                expected = AlignSequences.fileToDict(current_file + "/testFiles/alignSequence/seq very small/" + key, ".fasta")
                 assert aligned[key] == expected
 
     def test_heuristicMSA(self):
@@ -82,9 +81,8 @@ class TestGenetic:
         print("Begin test_heuristicMSA...")
 
         for alignement, p in zip(self.alignementSetup, self.paramSetup):
-            test_case = p.reference_gene_filename[0:-6]
             starAlignement = alignement.heuristicMSA
-            expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/" + test_case, ".fasta")
+            expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/seq very small", ".fasta")
             assert starAlignement == expected
 
     def test_windowed(self):
@@ -111,7 +109,7 @@ class TestGenetic:
 
         for alignement, p in zip(self.alignementSetup, self.paramSetup):
             test_case = p.reference_gene_filename[0:-6]
-            msa = alignement.msaSet
+            msa = alignement.msa
 
             for key in msa.keys():
                 filename = Path(current_file + "/testFiles/makeMSA/" + test_case + "/" + (key + ".fasta"))
