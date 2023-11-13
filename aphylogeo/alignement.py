@@ -183,8 +183,8 @@ class AlignSequences:
         self.alignment_method = alignment_method
         self.reference_gene_file = reference_gene_file
         self.fit_method = fit_method
-        self.rate_similarity = (rate_similarity,)
-        self.method_similarity = (method_similarity,)
+        self.rate_similarity = rate_similarity
+        self.method_similarity = method_similarity
         """
         Method that align sequences
         """
@@ -726,7 +726,7 @@ class AlignSequences:
             dict[k] = s
         return dict
 
-    def slidingWindow(self, optimized=False):
+    def slidingWindow(self, optimized=True):
         """
         Method that slices all the sequences in a dictionary to a specific window (substring)
 
@@ -763,13 +763,13 @@ class AlignSequences:
                     windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if self.rate_similarity[0] < self.similarity(df):
+                    if self.rate_similarity > self.similarity(df):
                         windowed_alignment.pop(f"{i}_{i + step - 1}")
                 else:
                     windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if self.rate_similarity[0] < self.similarity(df):
+                    if self.rate_similarity > self.similarity(df):
                         windowed_alignment.pop(f"{i}_{seq_len-1}")
         else:
             for i in range(0, seq_len, step):
