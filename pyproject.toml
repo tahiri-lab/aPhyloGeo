@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9.0,<=3.11.5"
+python = ">=3.9.0"
 bio = "^1.5.9"
 multiprocess = "^0.70.15"
 pandas = "^2.1.1"
