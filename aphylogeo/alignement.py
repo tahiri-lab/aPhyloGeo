@@ -726,7 +726,7 @@ class AlignSequences:
             dict[k] = s
         return dict
 
-    def slidingWindow(self):
+    def slidingWindow(self, optimized=False):
         """
         Method that slices all the sequences in a dictionary to a specific window (substring)
 
@@ -751,24 +751,36 @@ class AlignSequences:
                     j = The ending position of the window, relative to the original sequence
         """
         step = self.window_size
+
         windowed_alignment = dict()
         seq_len = max([len(h) for h in self.heuristicMSA.values()])
 
         paddedMSA = {key: str(val).ljust(seq_len, "-") for key, val in self.heuristicMSA.items()}
 
-        for i in range(0, seq_len, step):
-            if i + step < seq_len:
-                windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
-                combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
-                df = pd.DataFrame(list(combinations))
-                if self.rate_similarity[0] < self.similarity(df):
-                    windowed_alignment.pop(f"{i}_{i + step - 1}")
-            else:
-                windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
-                combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
-                df = pd.DataFrame(list(combinations))
-                if self.rate_similarity[0] < self.similarity(df):
-                    windowed_alignment.pop(f"{i}_{seq_len-1}")
+        if optimized:
+            for i in range(0, seq_len, step):
+                if i + step < seq_len:
+                    windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
+                    combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
+                    df = pd.DataFrame(list(combinations))
+                    if self.rate_similarity[0] < self.similarity(df):
+                        windowed_alignment.pop(f"{i}_{i + step - 1}")
+                else:
+                    windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
+                    combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
+                    df = pd.DataFrame(list(combinations))
+                    if self.rate_similarity[0] < self.similarity(df):
+                        windowed_alignment.pop(f"{i}_{seq_len-1}")
+        else:
+            for i in range(0, seq_len, step):
+                if i + step < seq_len:
+                    windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
+                else:
+                    windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
+
+            # if self.rate_similarity[0] < self.similarity(df):
+            #    windowed_alignment.pop(f"{i}_{seq_len-1}")
+            #    print(self.rate_similarity)
 
         # JUST TO MAKE THE DEBUG FILES
         if self.makeDebugFiles:
