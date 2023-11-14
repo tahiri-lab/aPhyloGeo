@@ -14,3 +14,5 @@ alignment_method: '1'
 distance_method: '1'
 fit_method: '1'
 tree_type: '1'
+rate_similarity: 90
+method_similarity: '1'

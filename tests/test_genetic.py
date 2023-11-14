@@ -2,6 +2,7 @@ import ast
 import os
 from io import StringIO
 from pathlib import Path
+from Bio import SeqIO
 
 import pandas as pd
 from Bio import AlignIO, Phylo
@@ -108,11 +109,11 @@ class TestGenetic:
         print("Begin test_msaSet...")
 
         for alignement, p in zip(self.alignementSetup, self.paramSetup):
-            test_case = p.reference_gene_filename[0:-6]
             msa = alignement.msa
-
+            
             for key in msa.keys():
-                filename = Path(current_file + "/testFiles/makeMSA/" + test_case + "/" + (key + ".fasta"))
+
+                filename = Path(current_file + "/testFiles/makeMSA/seq very small/" + (key + ".fasta"))
                 f = open(filename, "r")
                 data = f.read()
                 f.close()
