@@ -25,7 +25,7 @@
       <a href="#-settings">Settings</a>
     </li>
     <li>
-      <a href=#%EF%B8%8F-references">References</a>
+      <a href="#%EF%B8%8F-references">References</a>
     </li>
     <li>
       <a href="#-contact">Contact</a>
