@@ -25,7 +25,7 @@
       <a href="#-settings">Settings</a>
     </li>
     <li>
-      <a href=#%EF%B8%8F-references">References</a>
+      <a href="#%EF%B8%8F-references">References</a>
     </li>
     <li>
       <a href="#-contact">Contact</a>
@@ -37,14 +37,6 @@
 # 📝 About the project
 
 `aPhyloGeo` is a powerful and versatile bioinformatics pipeline specifically designed for the analysis of phylogeography. Developed by the dedicated team led by Professor [Nadia Tahiri](https://tahirinadia.github.io/) at the University of Sherbrooke in Quebec, Canada, this open-source multi-platform application is implemented in Python. It serves as a valuable tool for researchers and scientists interested in unraveling the intricate relationships between genetic sequences and geographic locations.
-
-💡 If you are using our algorithm in your research, please cite our recent papers:
-
-1️⃣  Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
-[Proceeding in SciPy 2023, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2023/pdfs/nadia_tahiri.pdf)
-
-2️⃣ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
-[Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
 
 # ⚒️ Installation
 
@@ -78,17 +70,13 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 
 # ✔️ References
 
-1️⃣ Calculation of distance between phylogenetic tree: `Least Square metric`
-+ [Cavalli-Sforza, L. L., & Edwards, A. W. (1967). Phylogenetic analysis. Models and estimation procedures. American journal of human genetics, 19(3 Pt 1), 233.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1706274/)
-+ [Felsenstein, J. (1997). An alternating least squares approach to inferring phylogenies from pairwise distances. Systematic biology, 46(1), 101-111.](https://pubmed.ncbi.nlm.nih.gov/11975348/)
-+ [Makarenkov, V., & Lapointe, F. J. (2004). A weighted least-squares approach for inferring phylogenies from incomplete distance matrices. Bioinformatics, 20(13), 2113-2121.](https://pubmed.ncbi.nlm.nih.gov/15059836/)
+💡 If you are using our algorithm in your research, please cite our recent papers:
 
-2️⃣ Calculation of distance between phylogenetic tree: `Robinson-Foulds metric`
-+ [Robinson, D.F. and Foulds, L.R., 1981. Comparison of phylogenetic trees. Mathematical biosciences, 53(1-2), pp.131-147.](https://www.sciencedirect.com/science/article/abs/pii/0025556481900432?via%3Dihub)
+1️⃣  Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
+[Proceeding in SciPy 2023, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2023/pdfs/nadia_tahiri.pdf)
 
-3️⃣ Dataset full description: `Analysis of genetic and climatic data of SARS-CoV-2`
-+ [Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.](https://conference.scipy.org/proceedings/scipy2022/nadia_tahiri.html)
-+ [Li, W., & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.](https://conference.scipy.org/proceedings/scipy2023/nadia_tahiri.html)
+2️⃣ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
+[Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
 
 # 📧 Contact
 Please email us at: <Nadia.Tahiri@USherbrooke.ca> for any questions or feedback.

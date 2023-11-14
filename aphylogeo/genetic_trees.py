@@ -1,4 +1,5 @@
 import json
+import io
 
 from Bio import Phylo
 
@@ -46,17 +47,55 @@ class GeneticTrees:
             json.dump(genetic_trees, f)
 
     @classmethod
-    def load_trees_from_json(cls, file_name: str, format: str = "newick"):
+    def load_trees_from_file(cls, file_name: str, format: str = "newick"):
         """
         Load the trees from json format.
 
         args:
             file_name (str): the name of the file
             format (str): the format of the trees - default: newick
+                Can be called with None as format and Biopython will identitfy the format.
+
+        return:
+            GeneticTrees: dict of windows, with the trees in biopython format.
         """
         with open(file_name, "r") as f:
-            genetic_trees = json.load(f)
+            str_trees = f.read()
+        trees = cls.load_trees_from_json(str_trees)
+        return cls(trees)
+
+    @classmethod
+    def load_trees_from_json(cls, trees: str, format: str = "newick"):
+        """
+        Load the trees from json format.
+
+        args:
+            trees (str): the trees in json format
+            format (str): the format of the trees - default: newick
+                Can be called with None as format and Biopython will identitfy the format.
+
+        return:
+            GeneticTrees: dict of windows, with the trees in biopython format.
+        """
+
+        genetic_trees = json.loads(trees)
         trees = {}
         for key, value in genetic_trees.items():
-            trees[key] = Phylo.read(value, format)
+            with io.StringIO(value.strip()) as file:
+                trees[key] = Phylo.read(file, format=format)
+        return cls(trees)
+
+    @classmethod
+    def testtrees(cls, file_name: str, format: str = "newick"):
+        """
+        Load the trees from json format.
+
+        args:
+            file_name (str): the name of the file
+            format (str): the format of the trees - default: newick
+                Can be called with None as format and Biopython will identitfy the format.
+        """
+        with open(file_name, "r") as f:
+            str_trees = f.read()
+        trees = cls.load_trees_from_json(str_trees)
         return cls(trees)
