@@ -1,6 +1,5 @@
 import pandas as pd
-from aphylogeo.alignement import AlignSequences
-
+from aphylogeo.alignement import Alignment
 from aphylogeo.params import Params
 from aphylogeo import utils
 from aphylogeo.genetic_trees import GeneticTrees
@@ -22,19 +21,21 @@ titleCard = r"""
 if __name__ == "__main__":
     print(titleCard + "\n")
 
-    sequenceFile = utils.loadSequenceFile(Params().reference_gene_file)
-    seq_alignment = AlignSequences(sequenceFile).align()
+    # load GeneticTrees from json
+
+    # geneticTrees = GeneticTrees.load_trees_from_file("./debug/geneticTreesTest.json")
+
+    # sequenceFile = utils.loadSequenceFile(Params().reference_gene_file)
+    # seq_alignment = AlignSequences(sequenceFile).align()
     # Phylo.write(tree1, "data/tree1.nwk", "newick")
-    seq_alignment.save_to_json("./debug/sequences_aligned.json")
+    # seq_alignment.save_to_json("./debug/sequences_aligned.json")
 
-    # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
+    loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
-    geneticTrees = utils.geneticPipeline(seq_alignment.msa)
+    geneticTrees = utils.geneticPipeline(loaded_seq_alignment.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
-    trees.save_trees_to_json("./debug/geneticTreesTest.json")
-    with open("debug/res3.txt", "w") as f:
-        f.write(str(geneticTrees))
-        f.close()
+    # trees.save_trees_to_json("./debug/geneticTreesTest.json")
+
     # Todo get trees in geneticTrees dict
     # Phylo.write(geneticTrees, "./tree1.nwk", "newick")
     df = pd.read_csv(Params().file_name)
