@@ -22,8 +22,12 @@ HEADER = ["Gene", "Phylogeographic tree", "Name of species", "Position in ASM", 
 if Params().distance_method == "1":
     HEADER.extend(["Least-Square Distance"])
 elif Params().distance_method == "2":
-    HEADER.extend(["Robinson-Foulds Distance", "RF Normalise"])
+    HEADER.extend(["Robinson-Foulds Distance", "Normalised RF Dist"])
+elif Params().distance_method == "3":
+    HEADER.extend(["Euclidean Distance"])
 else:
+    HEADER.extend(["Least-Square Distance"])
+    HEADER.extend(["Robinson-Foulds Distance", "Normalised RF Dist"])
     HEADER.extend(["Euclidean Distance"])
 
 
@@ -442,7 +446,7 @@ def createClimaticList(climaticTrees):
     return climaticList
 
 
-def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, dist_norm):
+def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data, reference_gene_filename, dist_norm, dist2, dist3):
     """
     Get data from a csv file a various parameters to store into a list
 
@@ -460,7 +464,27 @@ def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data,
         for i, row in csv_data.iterrows():
             if row.iloc[0] == leave:
                 if Params().distance_method == "2":
-                    return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2)), str(dist_norm)]
+                    return [
+                        reference_gene_filename,
+                        climaticList[index],
+                        leave,
+                        genetic,
+                        str(bootstrap),
+                        str(round(dist, 2)),
+                        str(dist_norm)
+                    ]
+                elif Params().distance_method == "0":
+                    return [
+                        reference_gene_filename,
+                        climaticList[index],
+                        leave,
+                        genetic,
+                        str(bootstrap),
+                        str(round(dist, 2)),
+                        str(dist2),
+                        str(dist_norm),
+                        str(round(dist3, 2)),
+                    ]
                 else:
                     return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2))]
 
@@ -510,7 +534,7 @@ def filterResults(
 
     data = []
     # Compare every genetic trees with every climatic trees. If the returned
-    # value is inferior or equal to the (Least-Square distance) LS threshold,
+    # value is inferior or equal to the distance threshold,
     # we keep the data
     while len(geneticList) > 0:
         current_genetic = geneticList.pop(0)
@@ -526,7 +550,19 @@ def filterResults(
                     raise Exception("The LS distance is not calculable" + " for {aligned_file}.")
                 if ls <= Params().dist_threshold:
                     data.append(
-                        getData(leavesName, ls, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, None)
+                        getData(
+                            leavesName,
+                            ls,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params().reference_gene_filename,
+                            None,
+                            None,
+                            None
+                        )
                     )
             elif Params().distance_method == "2":
                 rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
@@ -535,7 +571,17 @@ def filterResults(
                 if rf <= Params().dist_threshold:
                     data.append(
                         getData(
-                            leavesName, rf, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, rf_norm
+                            leavesName,
+                            rf,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params().reference_gene_filename,
+                            rf_norm,
+                            None,
+                            None
                         )
                     )
             elif Params().distance_method == "3":
@@ -544,8 +590,42 @@ def filterResults(
                     raise Exception("The Euclidean (DendroPY) distance is not calculable" + " for {aligned_file}.")
                 if ed <= Params().dist_threshold:
                     data.append(
-                        getData(leavesName, ed, i, climaticList, current_bootstrap, current_genetic, csv_data, Params().reference_gene_filename, None)
+                        getData(
+                            leavesName,
+                            ed,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params().reference_gene_filename,
+                            None,
+                            None,
+                            None
+                        )
                     )
+            elif Params().distance_method == "0":
+                ls = leastSquare(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                ed = euclideanDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                if ls is None or rf is None or ed is None:
+                    raise Exception("The LS distance is not calculable" + " for {aligned_file}.")
+                if ls <= Params().dist_threshold:
+                     data.append(
+                        getData(
+                            leavesName,
+                            ls,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params().reference_gene_filename,
+                            rf_norm,
+                            rf,
+                            ed
+                        )
+                    )    
             else:
                 raise ValueError("Invalid distance method")
 

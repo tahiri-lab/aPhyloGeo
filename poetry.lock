@@ -57,13 +57,13 @@ numpy = "*"
 
 [[package]]
 name = "biothings-client"
-version = "0.3.0"
+version = "0.3.1"
 description = "Python Client for BioThings API services."
 optional = false
 python-versions = ">=2.7"
 files = [
-    {file = "biothings_client-0.3.0-py2.py3-none-any.whl", hash = "sha256:3f80b20663874b22f01ee582fdb60cd24edfff61325ea7eca2e73311245db2e3"},
-    {file = "biothings_client-0.3.0.tar.gz", hash = "sha256:ac96eea62f3b8cdba9ad35a34ac787516f1aa89dd1cc860f7f9734e77d789018"},
+    {file = "biothings_client-0.3.1-py2.py3-none-any.whl", hash = "sha256:c08437f652d9282da785e098288ef7cf3aa2a79f5d90c480eadfce96b846013e"},
+    {file = "biothings_client-0.3.1.tar.gz", hash = "sha256:c972bf2e02b6f9cc78f7f2fbc5ef02cc56fe4f8a2adcb8801ec902f4ab7011e6"},
 ]
 
 [package.dependencies]
