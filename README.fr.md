@@ -59,7 +59,7 @@ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis
 
 ## Workflow
 
-![](./img/worflow_fr.png)
+![](./img/workflow_fr.png)
 
 Figure 1: Le workflow de l'algorithme. Les opérations de ce workflow comprennent plusieurs blocs. Les blocs sont mis en évidence par trois couleurs différentes.
 - **Le premier bloc** (couleur bleu clair) est responsable de la création des arbres basés sur les données climatiques - effectue la fonction de validation des paramètres d'entrée (voir le fichier YAML).
