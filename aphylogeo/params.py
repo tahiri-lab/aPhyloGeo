@@ -40,3 +40,7 @@ class Params:
         self.tree_type = params["tree_type"]
         self.rate_similarity = params["rate_similarity"]
         self.method_similarity = params["method_similarity"]
+
+    @classmethod
+    def UpdateParams(cls, **params):
+        cls._instance.__init_params(**params)
