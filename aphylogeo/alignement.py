@@ -123,27 +123,13 @@ class AlignSequences:
     Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.
     """
 
-    def __init__(
-        self,
-        sequences,
-        window_size=Params().window_size,
-        step_size=Params().step_size,
-        makeDebugFiles=Params().makeDebugFiles,
-        bootstrapAmount=Params().bootstrapAmount,
-        alignment_method=Params().alignment_method,
-        reference_gene_file=Params().reference_gene_file,
-        fit_method=Params().fit_method,
-        rate_similarity=Params().rate_similarity,
-        method_similarity=Params().method_similarity,
-    ):
+    def __init__(self, sequences, makeDebugFiles=False):
         """
         Constructor if the alignment object.
         All parts of the process are available as variables.
 
         Inputs:
             sequences (dict) key = Sequence ID, value = Seq()
-            window_size (Integer) the size of the window
-            step_size (Integer) the size of the step
             makeDebugFiles (Boolean) if True, will create a folder with all the intermediate files
 
 
@@ -175,42 +161,37 @@ class AlignSequences:
             self.rate_similarity
             self.method_similarity
         """
-        self.window_size = window_size
-        self.step_size = step_size
-        self.makeDebugFiles = makeDebugFiles
-        self.bootstrapAmount = bootstrapAmount
         self.sequences = sequences
-        self.alignment_method = alignment_method
-        self.reference_gene_file = reference_gene_file
-        self.fit_method = fit_method
-        self.rate_similarity = rate_similarity
-        self.method_similarity = method_similarity
-        """
-        Method that align sequences
-        """
+        self.makeDebugFiles = makeDebugFiles
 
     def align(self) -> Alignment:
-        if self.alignment_method == "1":
+        """
+        Method that align sequences
+
+        Returns:
+            Alignment: The alignment object
+        """
+        if Params.alignment_method == "1":
             self.centroidKey = self.getSequenceCentroid()[0]
             self.centroidSeq = self.sequences.pop(self.centroidKey)
             self.aligned = self.alignSequencesWithPairwise()
-            if self.fit_method == "1":
+            if Params.fit_method == "1":
                 self.heuristicMSA = self.starAlignement()
-            elif self.fit_method == "2":
+            elif Params.fit_method == "2":
                 self.heuristicMSA = self.narrowFitPairwise()
 
-        elif self.alignment_method == "2":
+        elif Params.alignment_method == "2":
             self.heuristicMSA = self.muscleAlign()
-        elif self.alignment_method == "3":
+        elif Params.alignment_method == "3":
             self.heuristicMSA = self.clustalAlign()
-        elif self.alignment_method == "4":
+        elif Params.alignment_method == "4":
             self.heuristicMSA = self.mafftAlign()
         else:
             raise ValueError("Invalid alignment method")
         [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
         self.windowed = self.slidingWindow()
         self.msa = self.makeMSA()
-        self.alignment = Alignment(self.alignment_method, self.msa)
+        self.alignment = Alignment(Params.alignment_method, self.msa)
         return self.alignment
 
     def getSequenceCentroid(self):
@@ -326,8 +307,8 @@ class AlignSequences:
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
-        in_file = self.reference_gene_file
-        out_file = os.path.splitext(os.path.basename(self.reference_gene_file))[0]
+        in_file = Params.reference_gene_file
+        out_file = os.path.splitext(os.path.basename(Params.reference_gene_file))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
         process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
         process.wait()
@@ -750,7 +731,7 @@ class AlignSequences:
                     i = The starting position of the window, relative to the original sequence
                     j = The ending position of the window, relative to the original sequence
         """
-        step = self.window_size
+        step = Params.window_size
 
         windowed_alignment = dict()
         seq_len = max([len(h) for h in self.heuristicMSA.values()])
@@ -763,13 +744,13 @@ class AlignSequences:
                     windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if self.rate_similarity > self.similarity(df):
+                    if Params.rate_similarity > self.similarity(df):
                         windowed_alignment.pop(f"{i}_{i + step - 1}")
                 else:
                     windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if self.rate_similarity > self.similarity(df):
+                    if Params.rate_similarity > self.similarity(df):
                         windowed_alignment.pop(f"{i}_{seq_len-1}")
         else:
             for i in range(0, seq_len, step):
@@ -910,21 +891,21 @@ class AlignSequences:
             percentage similarity     (float)   the similarity between the dataframe of all strings elements
         """
         rateSimilarity = 0.0
-        if self.method_similarity[0] == "1":
+        if Params.method_similarity[0] == "1":
             rateSimilarity = df.apply(lambda x: td.hamming.normalized_similarity(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "2":
+        elif Params.method_similarity[0] == "2":
             rateSimilarity = df.apply(lambda x: td.levenshtein.normalized_similarity(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "3":
+        elif Params.method_similarity[0] == "3":
             rateSimilarity = df.apply(lambda x: td.damerau_levenshtein.normalized_similarity(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "4":
+        elif Params.method_similarity[0] == "4":
             rateSimilarity = df.apply(lambda x: td.jaro(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "5":
+        elif Params.method_similarity[0] == "5":
             rateSimilarity = df.apply(lambda x: td.jaro_winkler(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "6":
+        elif Params.method_similarity[0] == "6":
             rateSimilarity = df.apply(lambda x: td.smith_waterman(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "7":
+        elif Params.method_similarity[0] == "7":
             rateSimilarity = df.apply(lambda x: td.jaccard(x[0], x[1]), axis=1).mean() * 100
-        elif self.method_similarity[0] == "8":
+        elif Params.method_similarity[0] == "8":
             rateSimilarity = df.apply(lambda x: td.sorencen(x[0], x[1]), axis=1).mean() * 100
 
         return rateSimilarity

@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
 from aphylogeo import utils
@@ -28,13 +29,14 @@ if __name__ == "__main__":
     # seq_alignment.save_to_json("./debug/sequences_aligned.json")
     # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
-    sequenceFile = utils.loadSequenceFile(Params().reference_gene_file)
+    Params.load_config_from_file()
+    sequenceFile = utils.loadSequenceFile(os.path.join(Params.reference_gene_dir, Params.reference_gene_file))
     seq_alignment = AlignSequences(sequenceFile).align()
 
     geneticTrees = utils.geneticPipeline(seq_alignment.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
     # trees.save_trees_to_json("./debug/geneticTreesTest.json")
 
-    df = pd.read_csv(Params().file_name)
+    df = pd.read_csv(Params.file_name)
     climaticTrees = utils.climaticPipeline(df)
     utils.filterResults(climaticTrees, geneticTrees, df)
