@@ -175,58 +175,6 @@ def euclideanDist(tree1, tree2):
     return ed
 
 
-# G.M. Commented tree section out because it was not used
-# def drawTreesmake(trees, p):
-#     """
-#     Function that will draw the trees for each climatic variable.
-#     The DistanceTreeConstructor object is transformed to Newick format and
-#     loaded as a toytree MulTitree object. Some stylings are applied and the
-#     resulting trees are drawed into a .pdf in the viz/ dir.
-
-#     Args:
-#         trees (Dictionnary of DistanceTreeConstructor object with climatic
-#         variable for keys)
-#         p (Params object)
-
-#     """
-#     treesNewick = {}
-#     toytrees = []
-
-
-#     for k, v in trees.items():
-#         treesNewick[k] = v.format("newick")
-#         ttree = toytree.tree(treesNewick[k], tree_format=1)
-#         toytrees.append(ttree)
-#     mtree = toytree.mtree(toytrees)
-
-#     # Setting up the stylings for nodes
-#     for tree in mtree.treelist:
-#         tree.style.edge_align_style = {"stroke": "black", "stroke-width": 1}
-#         for node in tree.treenode.traverse():
-#             if node.is_leaf():
-#                 node.add_feature("color", toytree.colors[7])
-#             else:
-#                 node.add_feature("color", toytree.colors[1])
-#     colors = tree.get_node_values("color", show_root=1, show_tips=1)
-
-#     # Draw the climatic trees
-#     canvas, axes, mark = mtree.draw(
-#         nrows=round(len(mtree) / 5),
-#         ncols=len(mtree),
-#         height=400,
-#         width=1000,
-#         node_sizes=8,
-#         node_colors=colors,
-#         tip_labels_align=True,
-#     )
-
-#     for i in range(len(mtree)):
-#         randColor = "#%03x" % random.randint(0, 0xFFF)
-#         axes[i].text(0, mtree.ntips, p.names[i + 1], style={"fill": randColor, "font-size": "10px", "font-weight": "bold"})
-
-#     toyplot.pdf.render(canvas, "../viz/climactic_trees.pdf")
-
-
 def createTree(dm):
     """
     Create a dna tree from content coming from a fasta file.

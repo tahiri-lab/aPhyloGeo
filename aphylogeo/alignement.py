@@ -195,20 +195,20 @@ class AlignSequences:
             self.centroidSeq = self.sequences.pop(self.centroidKey)
             self.aligned = self.alignSequencesWithPairwise()
             if self.fit_method == "1":
-                self.heuristicMSA = self.starAlignement()
+                heuristicMSA = self.starAlignement()
             elif self.fit_method == "2":
-                self.heuristicMSA = self.narrowFitPairwise()
+                heuristicMSA = self.narrowFitPairwise()
 
         elif self.alignment_method == "2":
-            self.heuristicMSA = self.muscleAlign()
+            heuristicMSA = self.muscleAlign()
         elif self.alignment_method == "3":
-            self.heuristicMSA = self.clustalAlign()
+            heuristicMSA = self.clustalAlign()
         elif self.alignment_method == "4":
-            self.heuristicMSA = self.mafftAlign()
+            heuristicMSA = self.mafftAlign()
         else:
             raise ValueError("Invalid alignment method")
         [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
-        self.windowed = self.slidingWindow()
+        self.windowed = self.slidingWindow(heuristicMSA)
         self.msa = self.makeMSA()
         self.alignment = Alignment(self.alignment_method, self.msa)
         return self.alignment
@@ -726,7 +726,7 @@ class AlignSequences:
             dict[k] = s
         return dict
 
-    def slidingWindow(self, optimized=True):
+    def slidingWindow(self, heuristicMSA, optimized=True):
         """
         Method that slices all the sequences in a dictionary to a specific window (substring)
 
@@ -753,9 +753,9 @@ class AlignSequences:
         step = self.window_size
 
         windowed_alignment = dict()
-        seq_len = max([len(h) for h in self.heuristicMSA.values()])
+        seq_len = max([len(h) for h in heuristicMSA.values()])
 
-        paddedMSA = {key: str(val).ljust(seq_len, "-") for key, val in self.heuristicMSA.items()}
+        paddedMSA = {key: str(val).ljust(seq_len, "-") for key, val in heuristicMSA.items()}
 
         if optimized:
             for i in range(0, seq_len, step):
