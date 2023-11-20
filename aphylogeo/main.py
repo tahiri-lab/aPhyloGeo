@@ -28,11 +28,12 @@ if __name__ == "__main__":
     # seq_alignment.save_to_json("./debug/sequences_aligned.json")
     # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
-    Params.load_config_from_file()
+    Params.load_from_file()
     sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
-    seq_alignment = AlignSequences(sequenceFile).align()
+    align_sequence = AlignSequences(sequenceFile)
+    alignements = align_sequence.align()
 
-    geneticTrees = utils.geneticPipeline(seq_alignment.msa)
+    geneticTrees = utils.geneticPipeline(alignements.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
     # trees.save_trees_to_json("./debug/geneticTreesTest.json")
 
