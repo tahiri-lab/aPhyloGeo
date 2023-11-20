@@ -12,26 +12,26 @@ class Params:
 
     _instance = None
 
-    PARAMETER_KEYS = [
-        "bootstrap_threshold",
-        "dist_threshold",
-        "window_size",
-        "step_size",
-        "data_names",
-        "reference_gene_dir",
-        "reference_gene_file",
-        "file_name",
-        "specimen",
-        "names",
-        "makeDebugFiles",
-        "bootstrap_amount",
-        "alignment_method",
-        "distance_method",
-        "fit_method",
-        "tree_type",
-        "rate_similarity",
-        "method_similarity",
-    ]
+    PARAMETER_KEYS = {
+        "bootstrap_threshold": 0,
+        "dist_threshold": 60,
+        "window_size": 20,
+        "step_size": 100,
+        "data_names": ["ALLSKY_SFC_SW_DWN_newick", "T2M_newick", "QV2M_newick", "PRECTOTCORR_newick", "WS10M_newick"],
+        "reference_gene_dir": "./datasets/example",
+        "reference_gene_file": "sequences.fasta",
+        "file_name": "./datasets/example/geo.csv",
+        "specimen": "id",
+        "names": ["id", "ALLSKY_SFC_SW_DWN", "T2M", "PRECTOTCORR", "QV2M", "WS10M"],
+        "makeDebugFiles": False,
+        "bootstrap_amount": 100,
+        "alignment_method": "2",
+        "distance_method": "0",
+        "fit_method": "1",
+        "tree_type": "2",
+        "rate_similarity": 90,
+        "method_similarity": "1",
+    }
 
     def __new__(cls):
         """
@@ -39,6 +39,7 @@ class Params:
         """
         if cls._instance is None:
             cls._instance = super(Params, cls).__new__(cls)
+            cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)
         return cls._instance
 
     @classmethod
@@ -76,3 +77,5 @@ class Params:
                 setattr(cls, key, value)
             else:
                 raise ValueError(f"Invalid parameter: {key}")
+
+        cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)

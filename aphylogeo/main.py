@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
 from aphylogeo import utils
@@ -30,7 +29,7 @@ if __name__ == "__main__":
     # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
 
     Params.load_config_from_file()
-    sequenceFile = utils.loadSequenceFile(os.path.join(Params.reference_gene_dir, Params.reference_gene_file))
+    sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
     seq_alignment = AlignSequences(sequenceFile).align()
 
     geneticTrees = utils.geneticPipeline(seq_alignment.msa)

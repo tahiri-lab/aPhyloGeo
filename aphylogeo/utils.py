@@ -474,7 +474,6 @@ def filterResults(
 
     # Create a list with the climatic trees name
     climaticList = createClimaticList(climaticTrees)
-    reference_gene_filepath = os.path.join(Params.reference_gene_dir, Params.reference_gene_file)
 
     data = []
     # Compare every genetic trees with every climatic trees. If the returned
@@ -495,7 +494,17 @@ def filterResults(
                 if ls <= Params.dist_threshold:
                     data.append(
                         getData(
-                            leavesName, ls, i, climaticList, current_bootstrap, current_genetic, csv_data, reference_gene_filepath, None, None, None
+                            leavesName,
+                            ls,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params.reference_gene_filepath,
+                            None,
+                            None,
+                            None,
                         )
                     )
             elif Params.distance_method == "2":
@@ -512,7 +521,7 @@ def filterResults(
                             current_bootstrap,
                             current_genetic,
                             csv_data,
-                            reference_gene_filepath,
+                            Params.reference_gene_filepath,
                             rf_norm,
                             None,
                             None,
@@ -525,7 +534,17 @@ def filterResults(
                 if ed <= Params.dist_threshold:
                     data.append(
                         getData(
-                            leavesName, ed, i, climaticList, current_bootstrap, current_genetic, csv_data, reference_gene_filepath, None, None, None
+                            leavesName,
+                            ed,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params.reference_gene_filepath,
+                            None,
+                            None,
+                            None,
                         )
                     )
             elif Params.distance_method == "0":
@@ -537,7 +556,17 @@ def filterResults(
                 if ls <= Params.dist_threshold:
                     data.append(
                         getData(
-                            leavesName, ls, i, climaticList, current_bootstrap, current_genetic, csv_data, reference_gene_filepath, rf_norm, rf, ed
+                            leavesName,
+                            ls,
+                            i,
+                            climaticList,
+                            current_bootstrap,
+                            current_genetic,
+                            csv_data,
+                            Params.reference_gene_filepath,
+                            rf_norm,
+                            rf,
+                            ed,
                         )
                     )
             else:

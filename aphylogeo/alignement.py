@@ -307,8 +307,8 @@ class AlignSequences:
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
-        in_file = Params.reference_gene_file
-        out_file = os.path.splitext(os.path.basename(Params.reference_gene_file))[0]
+        in_file = Params.reference_gene_filepath
+        out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
         process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
         process.wait()
