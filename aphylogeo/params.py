@@ -43,7 +43,7 @@ class Params:
         return cls._instance
 
     @classmethod
-    def load_config_from_file(cls, params_file=os.path.join(os.path.dirname(__file__), "params.yaml")):
+    def load_from_file(cls, params_file=os.path.join(os.path.dirname(__file__), "params.yaml")):
         """
         Method that loads the parameters from a yaml file.
 
@@ -55,7 +55,7 @@ class Params:
             cls.validate_and_set_params(params)
 
     @classmethod
-    def update_config_from_dict(cls, params_content):
+    def update_from_dict(cls, params_content):
         """
         Method that updates the parameters from a dictionary.
 
