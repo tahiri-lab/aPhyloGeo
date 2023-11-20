@@ -13,7 +13,6 @@ from aphylogeo.params import Params
 
 current_file = os.path.dirname(__file__)
 
-
 class TestGenetic:
     def setup_class(self):
         """
@@ -37,7 +36,9 @@ class TestGenetic:
             params_very_small.bootstrapAmount,
             params_very_small.alignment_method,
             params_very_small.reference_gene_file,
-            params_very_small.distance_method,
+            params_very_small.fit_method,
+            params_very_small.rate_similarity,
+            params_very_small.method_similarity
         )
         very_small.align()
         self.alignementSetup = [very_small]  # , small]
@@ -50,10 +51,9 @@ class TestGenetic:
 
         print("Begin test_centroidKey...")
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
-            test_case = p.reference_gene_filename[0:-6]
+        for alignement in self.alignementSetup:
             actual_centroid = alignement.centroidKey
-            filename = Path(current_file + "/testFiles/getSequenceCentroid/" + test_case)
+            filename = current_file + "/testFiles/getSequenceCentroid/seq very small"
 
             with open(filename, "r") as expected_file:
                 expected_centroid = expected_file.read()
@@ -66,7 +66,7 @@ class TestGenetic:
 
         print("Begin test_aligned...")
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
+        for alignement in self.alignementSetup:
             aligned = alignement.aligned
 
             for key in aligned.keys():
@@ -80,8 +80,8 @@ class TestGenetic:
 
         print("Begin test_heuristicMSA...")
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
-            starAlignement = alignement.heuristicMSA
+        for alignement in self.alignementSetup:
+            starAlignement = alignement.starAlignement()
             expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/seq very small", ".fasta")
             assert starAlignement == expected
 
@@ -92,7 +92,7 @@ class TestGenetic:
 
         print("Begin test_windowed...")
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
+        for alignement in self.alignementSetup:
             windowed = alignement.windowed
 
             for key in windowed.keys():
@@ -106,7 +106,7 @@ class TestGenetic:
 
         print("Begin test_msaSet...")
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
+        for alignement in self.alignementSetup:
             msa = alignement.msa
             
             for key in msa.keys():

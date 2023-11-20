@@ -20,7 +20,7 @@ def climaticTreesSetup():
         climaticTrees (dict): A dictionary containing the climatic trees.
     """
     p = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-    return utils.climaticPipeline(pd.read_csv(p.file_name), p.names)
+    return utils.climaticPipeline(pd.read_csv(p.file_name))
 
 
 def test_climaticPipeline():
