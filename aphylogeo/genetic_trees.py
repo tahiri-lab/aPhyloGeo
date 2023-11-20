@@ -6,7 +6,8 @@ from Bio import Phylo
 
 class GeneticTrees:
     """
-    Class that contains the data of Window.
+    Class that contains the genetic trees. It can save and load the trees from file or json format.
+    The trees are stored in a dictionary {str(window), biopython tree}
     """
 
     def __init__(self, trees_dict: dict, format: str = "newick"):
@@ -19,7 +20,7 @@ class GeneticTrees:
         self.trees = trees_dict
         self.format = format
 
-    def get_trees_str(self):
+    def get_trees_str(self) -> dict:
         """
         Get the trees in string format.
 
@@ -47,7 +48,7 @@ class GeneticTrees:
             json.dump(genetic_trees, f)
 
     @classmethod
-    def load_trees_from_file(cls, file_name: str, format: str = "newick"):
+    def load_trees_from_file(cls, file_name: str, format: str = "newick") -> dict:
         """
         Load the trees from json format.
 
@@ -65,7 +66,7 @@ class GeneticTrees:
         return cls(trees)
 
     @classmethod
-    def load_trees_from_json(cls, trees: str, format: str = "newick"):
+    def load_trees_from_json(cls, trees: str, format: str = "newick") -> dict:
         """
         Load the trees from json format.
 
@@ -86,7 +87,7 @@ class GeneticTrees:
         return cls(trees)
 
     @classmethod
-    def testtrees(cls, file_name: str, format: str = "newick"):
+    def testtrees(cls, file_name: str, format: str = "newick") -> dict:
         """
         Load the trees from json format.
 
