@@ -172,13 +172,13 @@ class AlignSequences:
             Alignment: The alignment object
         """
         if Params.alignment_method == "1":
-            self.centroidKey = self.getSequenceCentroid()[0]
-            self.centroidSeq = self.sequences.pop(self.centroidKey)
-            self.aligned = self.alignSequencesWithPairwise()
+            centroidKey = self.getSequenceCentroid()[0]
+            centroidSeq = self.sequences.pop(centroidKey)
+            aligned = self.alignSequencesWithPairwise(centroidKey, centroidSeq)
             if Params.fit_method == "1":
-                heuristicMSA = self.starAlignement()
+                heuristicMSA = self.starAlignement(centroidKey, aligned)
             elif Params.fit_method == "2":
-                heuristicMSA = self.narrowFitPairwise()
+                heuristicMSA = self.narrowFitPairwise(aligned)
 
         elif Params.alignment_method == "2":
             heuristicMSA = self.muscleAlign()
@@ -249,7 +249,7 @@ class AlignSequences:
         score = aligner.score(seqA, seqB)
         return (seqAID, seqBID, score)
 
-    def alignSequencesWithPairwise(self):
+    def alignSequencesWithPairwise(self, centroidKey, centroidSeq):
         """
         Method that aligns multiple DNA sequences.
         The first speciment of the dataset is used as the main pivot.
@@ -269,7 +269,7 @@ class AlignSequences:
 
         seq_pairs = []
         for seqXID in seqs.keys():
-            seq_pairs.append([self.centroidKey, self.centroidSeq, seqXID, seqs[seqXID]])
+            seq_pairs.append([centroidKey, centroidSeq, seqXID, seqs[seqXID]])
 
         align_scores = Multi(seq_pairs, self.alignSingle).processingLargeData()
         aligned = {}
@@ -380,7 +380,7 @@ class AlignSequences:
         aligned = aligner.align(sc, seqB)[0]
         return [seqBID, aligned, scID]
 
-    def narrowFitPairwise(self):
+    def narrowFitPairwise(self, aligned):
         """Fit length of a centroid sequence and its pairwise aligned sequences
 
         The length of each sequence from the pairwise alignment are set equal by
@@ -397,16 +397,16 @@ class AlignSequences:
         -------
         A dictionary of all accessions and their fitted aligned sequences.
         """
-        seqs = self.getAlignSeqs()
-        max_len = max(self.getAlignSeqLens())
+        seqs = self.getAlignSeqs(aligned)
+        max_len = max(self.getAlignSeqLens(aligned))
         for nucleo_i in range(0, max_len):
             for seq_i in range(0, len(seqs)):
                 if self.isCurrentCharDash(seqs, seq_i, nucleo_i):
-                    seqs = self.insertDashToShorterSeq(seqs, nucleo_i)
+                    seqs = self.insertDashToShorterSeq(seqs, nucleo_i, aligned)
         seqs = self.appendDashToShorterSeqs(seqs, max_len)
-        return self.mergeFitPairwise(seqs)
+        return self.mergeFitPairwise(aligned, seqs)
 
-    def getAlignSeqs(self):
+    def getAlignSeqs(self, aligned):
         """Extract all sequences aligned using a pairwise alignment
 
         Parameters:
@@ -418,11 +418,11 @@ class AlignSequences:
         List of sequences aligned through pairwise alignment
         """
         seqs = []
-        for alignment in self.aligned:
-            seqs.append([str(seq) for seq in self.aligned[alignment].values()])
+        for alignment in aligned:
+            seqs.append([str(seq) for seq in aligned[alignment].values()])
         return list(sum(seqs, []))
 
-    def getAlignSeqLens(self):
+    def getAlignSeqLens(self, aligned):
         """Get length of all sequences aligned using a pairwise alignment
 
         Parameters:
@@ -433,9 +433,9 @@ class AlignSequences:
         -------
         List of the length of each aligned sequences
         """
-        return [len(seq) for seq in self.getAlignSeqs()]
+        return [len(seq) for seq in self.getAlignSeqs(aligned)]
 
-    def getAlignCouple(self):
+    def getAlignCouple(self, aligned):
         """Get nested couple accessions and their respective sequences
 
         Parameters:
@@ -446,9 +446,9 @@ class AlignSequences:
         -------
         List of paired accessions and their aligned sequences
         """
-        return [val for val in list(self.aligned.values())]
+        return [val for val in list(aligned.values())]
 
-    def extractOneAlignAcc(self, nest_ord=0):
+    def extractOneAlignAcc(self, aligned, nest_ord=0):
         """Extract the accession from a nested alignment couple
 
         Parameters:
@@ -463,11 +463,11 @@ class AlignSequences:
         accessions of a group of sequences aligned throug pairwise alignment.
         """
         try:
-            return [list(i)[nest_ord] for i in self.getAlignCouple()]
+            return [list(i)[nest_ord] for i in self.getAlignCouple(aligned)]
 
         # Return the centroid sequence if an invalid position is queried
         except IndexError:
-            return [list(i)[0] for i in self.getAlignCouple()]
+            return [list(i)[0] for i in self.getAlignCouple(aligned)]
 
     def isCurrentCharDash(self, seqs, seq_i, ch_i):
         """Assess whether the character at current cursor position is a dash
@@ -487,7 +487,7 @@ class AlignSequences:
         except IndexError:
             return False
 
-    def insertDashToShorterSeq(self, seqs, ch_i):
+    def insertDashToShorterSeq(self, seqs, ch_i, aligned):
         """Insert a dash at the current position of a sequence
 
         Insert a dash (-) character in a sequence if its length is shorter
@@ -504,13 +504,13 @@ class AlignSequences:
         """
         for seq_j in range(0, len(seqs)):
             try:
-                if (len(seqs[seq_j]) < max(self.getAlignSeqLens())) & (seqs[seq_j][ch_i] != "-"):
+                if (len(seqs[seq_j]) < max(self.getAlignSeqLens(aligned))) & (seqs[seq_j][ch_i] != "-"):
                     seqs[seq_j] = seqs[seq_j][:ch_i] + "-" + seqs[seq_j][ch_i:]
             except IndexError:
                 seqs[seq_j] = seqs[seq_j][:ch_i] + "-"
         return seqs
 
-    def mergeFitPairwise(self, seqs):
+    def mergeFitPairwise(self, aligned, seqs):
         """Generate a dictionary of all accessions and their fitted sequences
 
         Parameters:
@@ -522,8 +522,8 @@ class AlignSequences:
         -------
         Dict, Group of accessions and their fitted sequences from a pairwise alignment
         """
-        centroid = {list(set(self.extractOneAlignAcc()))[0]: seqs[0]}
-        non_centroid = dict(zip(self.extractOneAlignAcc(1), seqs[1::2]))
+        centroid = {list(set(self.extractOneAlignAcc(aligned)))[0]: seqs[0]}
+        non_centroid = dict(zip(self.extractOneAlignAcc(aligned, 1), seqs[1::2]))
         return centroid | non_centroid
 
     def appendDashToShorterSeqs(self, seqs, max_len):
@@ -540,7 +540,7 @@ class AlignSequences:
         """
         return [f"{str(seq):-<{max_len}}" for seq in seqs]
 
-    def starAlignement(self):
+    def starAlignement(self, centroidKey, aligned):
         """
         Method that combs through all the pairwise alignments couples and makes
         it so that every sequenced is aligned with every other sequences. If a
@@ -584,12 +584,12 @@ class AlignSequences:
         Return:
             starAlign (dict) see self.heuristicMSA
         """
-        scKey = self.centroidKey
+        scKey = centroidKey
         starAlign = {}
 
-        for k in self.aligned.keys():
+        for k in aligned.keys():
             # couple is SeqA and SeqB of a pairwise alignement
-            couple = self.aligned[k]
+            couple = aligned[k]
 
             a = list(couple.keys())
             a.remove(scKey)

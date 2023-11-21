@@ -1,9 +1,7 @@
-import ast
 import os
 from io import StringIO
 from pathlib import Path
 
-import pandas as pd
 from Bio import AlignIO, Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 
@@ -22,42 +20,36 @@ class TestGenetic:
 
         print("Begin setup for test class test_genetic...")
 
-        # params_small = Params(os.path.join(os.path.dirname(__file__), "params_small.yaml"))
-        # sequences_small = aPhyloGeo.readFastaFile(params_small.reference_gene_file)
-        # small = AlignSequences(params_small.reference_gene_file, params_small.window_size, params_small.step_size,
-        #                        params_small.makeDebugFiles, params_small.bootstrapAmount)
-        params_very_small = Params(os.path.join(os.path.dirname(__file__), "params_very_small.yaml"))
-        sequences_very_small = utils.loadSequenceFile(params_very_small.reference_gene_file)
-        very_small = AlignSequences(
-            sequences_very_small,
-            params_very_small.window_size,
-            params_very_small.step_size,
-            params_very_small.makeDebugFiles,
-            params_very_small.bootstrapAmount,
-            params_very_small.alignment_method,
-            params_very_small.reference_gene_file,
-            params_very_small.fit_method,
-            params_very_small.rate_similarity,
-            params_very_small.method_similarity
-        )
-        very_small.align()
-        self.alignementSetup = [very_small]  # , small]
-        self.paramSetup = [params_very_small]  # , params_small]
+        Params.load_from_file(params_file = "tests/pairwise_align.yaml")
+        
+        # Load parameters
+        ref_gene_dir = Params.reference_gene_dir
+        ref_gene_file = Params.reference_gene_file
+        sequences_very_small = utils.loadSequenceFile(os.path.join(ref_gene_dir, ref_gene_file))
+        
+        # Build AlignSequence object
+        self.sequences = sequences_very_small.copy()
+        self.seq_alignment = AlignSequences(self.sequences)
+        
+        # Get centroid key
+        self.centroid = self.seq_alignment.getSequenceCentroid()[0]
+        self.centroidSeqs = self.sequences.pop(self.centroid)
 
+        # Get pairwise alignment
+        self.aligned = self.seq_alignment.alignSequencesWithPairwise(self.centroid, self.centroidSeqs)
+        
     def test_centroidKey(self):
         """
         This test is used to test the centroidKey function.
         """
 
         print("Begin test_centroidKey...")
-
-        for alignement in self.alignementSetup:
-            actual_centroid = alignement.centroidKey
-            filename = current_file + "/testFiles/getSequenceCentroid/seq very small"
-
-            with open(filename, "r") as expected_file:
-                expected_centroid = expected_file.read()
-                assert actual_centroid == expected_centroid
+        # actual_centroid = self.seq_alignment.getSequenceCentroid()[0]
+        
+        filename = current_file + "/testFiles/getSequenceCentroid/seq very small"
+        with open(filename, "r") as expected_file:
+            expected_centroid = expected_file.read()
+            assert self.centroid == expected_centroid
 
     def test_aligned(self):
         """
@@ -66,13 +58,13 @@ class TestGenetic:
 
         print("Begin test_aligned...")
 
-        for alignement in self.alignementSetup:
-            aligned = alignement.aligned
-
-            for key in aligned.keys():
+        for key in self.aligned.keys():
+            filename = current_file + "/testFiles/alignSequence/seq very small/" + key + ".fasta"
+            with open(filename, "r") as expected_file:
+                expected_file = expected_file.read()
                 expected = AlignSequences.fileToDict(current_file + "/testFiles/alignSequence/seq very small/" + key, ".fasta")
-                assert aligned[key] == expected
-
+                assert self.aligned[key] == expected               
+                
     def test_heuristicMSA(self):
         """
         This test is used to test the heuristicMSA function.
@@ -80,10 +72,10 @@ class TestGenetic:
 
         print("Begin test_heuristicMSA...")
 
-        for alignement in self.alignementSetup:
-            starAlignement = alignement.starAlignement()
-            expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/seq very small", ".fasta")
-            assert starAlignement == expected
+        # for alignement in self.alignementSetup:
+        starAlignement = self.aligned.starAlignement()
+        expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/seq very small", ".fasta")
+        assert starAlignement == expected
 
     def test_windowed(self):
         """
