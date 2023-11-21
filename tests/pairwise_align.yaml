@@ -1,0 +1,26 @@
+file_name: './datasets/example/geo.csv'
+specimen: 'id' #"Please enter the name of the colum containing the specimens names: "
+names: ['id', 'ALLSKY_SFC_SW_DWN', 'T2M', 'PRECTOTCORR', 'QV2M', 'WS10M']
+bootstrap_threshold: 0
+dist_threshold: 60
+window_size: 200
+step_size: 100
+bootstrap_amount: 100
+data_names: ['ALLSKY_SFC_SW_DWN_newick', 'T2M_newick', 'QV2M_newick', 'PRECTOTCORR_newick', 'WS10M_newick']
+reference_gene_dir: './datasets/example'
+reference_gene_file: 'sequences.fasta'
+makeDebugFiles: True
+alignment_method: '2' #Please select one ~ 1:pairwiseAligner, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
+distance_method: '0' #Please select one  ~ 0: All distance methods, 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)
+fit_method: '1' #Please select one ~ 1:Wider Fit by elongating with Gap (starAlignment), 2:Narrow-fit prevent elongation with gap when possible
+tree_type: '2' #Please select one ~ 1: BioPython consensus tree, 2: FastTree application
+rate_similarity: 90
+method_similarity: '1' #Please select one :
+    # 1: Hamming distance
+    # 2: Levenshtein distance
+    # 3: Damerau-Levenshtein distance
+    # 4: Jaro similarity
+    # 5: Jaro-Winkler similarity
+    # 6: Smith–Waterman similarity
+    # 7: Jaccard similarity
+    # 8: Sørensen-Dice similarity
