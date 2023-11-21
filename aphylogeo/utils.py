@@ -440,8 +440,9 @@ def writeOutputFile(data):
         data (the list contaning the final data)
     """
     print("Writing the output file")
-
-    with open("output.csv", "w", encoding="UTF8") as f:
+    directory = os.path.abspath("./results")
+    os.makedirs(directory, exist_ok=True)
+    with open("./results/output.csv", "w", encoding="UTF8") as f:
         writer = csv_writer(f)
         writer.writerow(header())
         for i in range(len(data)):

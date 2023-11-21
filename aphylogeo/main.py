@@ -21,12 +21,8 @@ titleCard = r"""
 if __name__ == "__main__":
     print(titleCard + "\n")
 
-    # load GeneticTrees from json
-    # Params.UpdateParams(params_content={"rate_similarity": 322})
-    # geneticTrees = GeneticTrees.load_trees_from_file("./debug/geneticTreesTest.json")
-    # Phylo.write(tree1, "data/tree1.nwk", "newick")
-    # seq_alignment.save_to_json("./debug/sequences_aligned.json")
-    # loaded_seq_alignment = Alignment.load_from_json("./debug/sequences_aligned.json")
+    # geneticTrees = GeneticTrees.load_trees_from_file("./results/geneticTreesTest.json")
+    # loaded_seq_alignment = Alignment.load_from_json("./results/aligned_sequences.json")
 
     Params.load_from_file()
     sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
@@ -35,8 +31,9 @@ if __name__ == "__main__":
 
     geneticTrees = utils.geneticPipeline(alignements.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
-    # trees.save_trees_to_json("./debug/geneticTreesTest.json")
 
     df = pd.read_csv(Params.file_name)
     climaticTrees = utils.climaticPipeline(df)
     utils.filterResults(climaticTrees, geneticTrees, df)
+    alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
+    trees.save_trees_to_json("./results/geneticTrees.json")

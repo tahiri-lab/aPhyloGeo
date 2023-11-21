@@ -19,11 +19,10 @@ ENV/
 /scripts/aPhyloGeo_env
 /aPhyloGeoEnv
 
-#Ignore the build directory (and its sub-directories):
+#Ignore folders
 build
-
-#Ignore the distribution directory
 dist
+results
 
 #tree
 *.nwk
