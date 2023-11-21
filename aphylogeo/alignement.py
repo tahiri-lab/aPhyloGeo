@@ -599,7 +599,7 @@ class AlignSequences:
             starAlign[sNewKey] = str(couple[sNewKey])  # SeqB, *not* the reference
 
             if len(starAlign) > 2:
-                starAlign = self.merge(starAlign, scKey, sNewKey)
+                starAlign = self.merge(starAlign, scKey, sNewKey, centroidKey)
 
             starAlign["temp"] = starAlign[scKey]  # SeqA, the *old* reference
         starAlign.pop("temp")
@@ -613,7 +613,7 @@ class AlignSequences:
 
         return starAlign
 
-    def merge(self, result, k1, k2):
+    def merge(self, result, k1, k2, centroidKey):
         """
         Method that loops through each position of two strings ans compares the Chars.
 
@@ -671,7 +671,7 @@ class AlignSequences:
                         + "Please check the previous methods"
                         + " and ensure the pairwise alignemnt is correct"
                         + "\nCentroid ID: "
-                        + str(self.centroidKey)
+                        + str(centroidKey)
                         + "\nPairwise seq ID"
                         + " last inserted: "
                         + str(k2)
