@@ -37,7 +37,16 @@ class TestGenetic:
 
         # Get pairwise alignment
         self.aligned = self.seq_alignment.alignSequencesWithPairwise(self.centroid, self.centroidSeqs)
-        
+
+        # Get Heuristic MSA
+        self.heuristicMSA = self.seq_alignment.starAlignement(self.centroid, self.aligned)
+
+        # Get windowed alignment
+        self.windowed = self.seq_alignment.slidingWindow(self.heuristicMSA)
+
+        # MakeMSA
+        self.msa = self.seq_alignment.makeMSA(self.windowed)
+
     def test_centroidKey(self):
         """
         This test is used to test the centroidKey function.
@@ -73,9 +82,8 @@ class TestGenetic:
         print("Begin test_heuristicMSA...")
 
         # for alignement in self.alignementSetup:
-        starAlignement = self.aligned.starAlignement()
         expected = AlignSequences.fileToDict(current_file + "/testFiles/starAlignement/seq very small", ".fasta")
-        assert starAlignement == expected
+        assert self.heuristicMSA == expected
 
     def test_windowed(self):
         """
@@ -84,12 +92,9 @@ class TestGenetic:
 
         print("Begin test_windowed...")
 
-        for alignement in self.alignementSetup:
-            windowed = alignement.windowed
-
-            for key in windowed.keys():
-                expected = AlignSequences.fileToDict(current_file + "/testFiles/slidingWindow/seq very small/" + key, ".fasta")
-                assert windowed[key] == expected
+        for key in self.windowed.keys():
+            expected = AlignSequences.fileToDict(current_file + "/testFiles/slidingWindow/seq very small/" + key, ".fasta")
+            assert self.windowed[key] == expected
 
     def test_msaSet(self):
         """
@@ -97,39 +102,34 @@ class TestGenetic:
         """
 
         print("Begin test_msaSet...")
-
-        for alignement in self.alignementSetup:
-            msa = alignement.msa
             
-            for key in msa.keys():
+        for key in self.msa.keys():
 
-                filename = Path(current_file + "/testFiles/makeMSA/seq very small/" + (key + ".fasta"))
-                f = open(filename, "r")
-                data = f.read()
-                f.close()
+            filename = Path(current_file + "/testFiles/makeMSA/seq very small/" + (key + ".fasta"))
+            f = open(filename, "r")
+            data = f.read()
+            f.close()
 
-                expected = str(AlignIO.read(StringIO(data), "fasta"))
-                actual = str(msa[key])
+            expected = str(AlignIO.read(StringIO(data), "fasta"))
+            actual = str(self.msa[key])
 
-                for line in expected:
-                    assert line in actual
+            for line in expected:
+                assert line in actual
 
     def test_filterResults(self):
         """
         This test is used to test the filterResults function.
         """
 
-        for alignement, p in zip(self.alignementSetup, self.paramSetup):
-           
-            # Test the createBootstrap function
-            genetic_trees = utils.createBoostrap(alignement.msa, p.bootstrapAmount)
-            actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
+        # Test the createBootstrap function
+        genetic_trees = utils.createBoostrap(self.msa, Params.bootstrap_amount)
+        actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
 
-            trees = Phylo.parse("tests/testFiles/createBootstrap/seq very small.xml", "phyloxml")
-            expected_bootstrap = [str(tree) for tree in trees]
+        trees = Phylo.parse("tests/testFiles/createBootstrap/seq very small.xml", "phyloxml")
+        expected_bootstrap = [str(tree) for tree in trees]
 
-            for tree in actual_bootstrap:
-                assert tree in expected_bootstrap
+        for tree in actual_bootstrap:
+            assert tree in expected_bootstrap
 
             # test of the createGeneticList function
             # actual_list, actual_bootstrap_list = utils.createGeneticList(genetic_trees, p.bootstrap_threshold)
