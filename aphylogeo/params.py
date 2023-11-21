@@ -6,11 +6,9 @@ from yaml.loader import SafeLoader
 
 class Params:
     """
-    Singleton Class that contains the parameters of the program.
+    Class that contains the parameters of the program.
     Loads the parameters from a yaml file or from a dictionary.
     """
-
-    _instance = None
 
     PARAMETER_KEYS = {
         "bootstrap_threshold": 0,
@@ -32,15 +30,6 @@ class Params:
         "rate_similarity": 90,
         "method_similarity": "1",
     }
-
-    def __new__(cls):
-        """
-        Method that creates a singleton of the class.
-        """
-        if cls._instance is None:
-            cls._instance = super(Params, cls).__new__(cls)
-            cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)
-        return cls._instance
 
     @classmethod
     def load_from_file(cls, params_file=os.path.join(os.path.dirname(__file__), "params.yaml")):
@@ -78,4 +67,5 @@ class Params:
             else:
                 raise ValueError(f"Invalid parameter: {key}")
 
-        cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)
+        if hasattr(cls, "reference_gene_dir") and hasattr(cls, "reference_gene_file"):
+            cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)
