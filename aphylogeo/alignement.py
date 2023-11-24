@@ -101,6 +101,20 @@ class Alignment:
             return cls.from_dict(data)
 
     @classmethod
+    def from_json_string(cls, json_string):
+        """
+        Method that loads an Alignment object from a JSON string.
+
+        Args:
+            json_string (str): The JSON string to load.
+
+        Returns:
+            An instance of the Alignment class.
+        """
+        data = json.loads(json_string)
+        return cls.from_dict(data)
+
+    @classmethod
     def from_fasta_file(cls, filename, alignment_method):
         """
         Method that loads a sequence from a fasta file
