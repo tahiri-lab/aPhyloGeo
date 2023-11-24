@@ -203,8 +203,8 @@ class AlignSequences:
         else:
             raise ValueError("Invalid alignment method")
         [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
-        self.windowed = self.slidingWindow(heuristicMSA)
-        self.msa = self.makeMSA()
+        windowed = self.slidingWindow(heuristicMSA)
+        self.msa = self.makeMSA(windowed)
         self.alignment = Alignment(Params.alignment_method, self.msa)
         return self.alignment
 
@@ -812,7 +812,7 @@ class AlignSequences:
             f.write(str(dict[key] + "\n"))
         return dict
 
-    def makeMSA(self):
+    def makeMSA(self, windowed):
         """
         Method that create a dictionnary of Multiple Sequence Alignment(MSA)
         objects from bioPython. Each entry in the dictionnary is a MSA object
@@ -824,9 +824,9 @@ class AlignSequences:
                 value (AlignIO) the MSA object
         """
         msaSet = {}
-        for windowSet in self.windowed.keys():
+        for windowSet in windowed.keys():
             data = ""
-            window = self.windowed[windowSet]
+            window = windowed[windowSet]
             for seq in window.keys():
                 data += str(">" + seq + "\n" + window[seq] + "\n")
             msaSet[windowSet] = AlignIO.read(StringIO(data), "fasta")
