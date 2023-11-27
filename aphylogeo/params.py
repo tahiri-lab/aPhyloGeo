@@ -69,3 +69,5 @@ class Params:
 
         if hasattr(cls, "reference_gene_dir") and hasattr(cls, "reference_gene_file"):
             cls.reference_gene_filepath = os.path.join(cls.reference_gene_dir, cls.reference_gene_file)
+        else:
+            cls.reference_gene_filepath = None
