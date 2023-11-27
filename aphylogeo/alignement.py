@@ -344,7 +344,7 @@ class AlignSequences:
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             clustal_exe = r"bin/clustalw2"
             fasta_out = r"bin/tmp/clustal_alignment.fasta"
-        in_file = self.reference_gene_file
+        in_file = Params.reference_gene_filepath
         clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
         out, err = clustalw_cline()
         records = Bio.SeqIO.parse(fasta_out, "fasta")
@@ -363,7 +363,7 @@ class AlignSequences:
             mafft_exe = r"bin\\mafft-win\\mafft.bat"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             mafft_exe = r"bin/mafft-linux64/mafft.bat"
-        in_file = self.reference_gene_file
+        in_file = Params.reference_gene_filepath
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
         out, err = mafft_cline()
         fasta_io = StringIO(out)

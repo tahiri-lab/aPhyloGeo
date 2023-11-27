@@ -1,7 +1,9 @@
 import os
 from io import StringIO
 from pathlib import Path
+import glob
 
+import Bio.SeqIO
 from Bio import AlignIO, Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 
@@ -72,7 +74,7 @@ class TestGenetic:
             with open(filename, "r") as expected_file:
                 expected_file = expected_file.read()
                 expected = AlignSequences.fileToDict(current_file + "/testFiles/alignSequence/seq very small/" + key, ".fasta")
-                assert self.aligned[key] == expected               
+                assert self.aligned[key] == expected
                 
     def test_heuristicMSA(self):
         """
@@ -131,20 +133,82 @@ class TestGenetic:
         for tree in actual_bootstrap:
             assert tree in expected_bootstrap
 
-            # test of the createGeneticList function
-            # actual_list, actual_bootstrap_list = utils.createGeneticList(genetic_trees, p.bootstrap_threshold)
-            # with open(Path(current_file + "/testFiles/createGeneticList/" + test_case + ".txt"), "r") as f:
-            #     expected_list = ast.literal_eval(f.read())
-            # assert actual_list == expected_list
+    def test_clustal(self):
+        """
+        This test is used to test the clustalAlign function.
+        """
+        Params.load_from_file(params_file = "tests/clustal_align.yaml")
 
-            # df = pd.read_csv(p.file_name)
-            # climatic_trees = utils.climaticPipeline(df, p.names)
-            # utils.filterResults(
-            #     climatic_trees, genetic_trees, p.bootstrap_threshold, p.dist_threshold, df, p.reference_gene_filename, p.distance_method
-            # )
+        # load parameters
+        ref_gene_dir = Params.reference_gene_dir
+        ref_gene_file = Params.reference_gene_file
+        sequences_very_small = utils.loadSequenceFile(os.path.join(ref_gene_dir, ref_gene_file))
+        
+        # Build AlignSequence object
+        self.sequences = sequences_very_small.copy()
+        self.seq_alignment = AlignSequences(self.sequences)
 
-            # with open(Path(current_file + "/testFiles/writeOutputFiles/" + test_case + ".csv"), "r") as expected_file:
-            #     expected_output = [value for value in expected_file.readlines() if value != "\n"]
-            # with open("output.csv", "r") as actual_file:
-            #     actual_output = [value for value in actual_file.readlines() if value != "\n"]
-            # assert len(actual_output) == len(expected_output)
+        # Call clustal Alignment
+        clustal_alignment = self.seq_alignment.clustalAlign()
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+
+        # Load expected alignment
+        fasta_out = "tests/testFiles/clustalAlign/clustal_alignment.fasta"
+        records = Bio.SeqIO.parse(fasta_out, "fasta")
+        expected = {rec.id: str(rec.seq) for rec in records}
+        
+        # Assert
+        assert clustal_alignment == expected
+
+    def test_muscle(self):
+        """
+        This test is used to test the muscleAlign function.
+        """
+        Params.load_from_file(params_file = "tests/muscle_align.yaml")
+
+        # load parameters
+        ref_gene_dir = Params.reference_gene_dir
+        ref_gene_file = Params.reference_gene_file
+        sequences_very_small = utils.loadSequenceFile(os.path.join(ref_gene_dir, ref_gene_file))
+        
+        # Build AlignSequence object
+        self.sequences = sequences_very_small.copy()
+        self.seq_alignment = AlignSequences(self.sequences)
+
+        # Call muscle Alignment
+        muscle_alignment = self.seq_alignment.muscleAlign()
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+
+        # Load expected alignment
+        fasta_out = "tests/testFiles/muscleAlign/muscle_alignment.fasta"
+        records = Bio.SeqIO.parse(fasta_out, "fasta")
+        expected = {rec.id: str(rec.seq) for rec in records}
+
+        # Assert
+        assert muscle_alignment == expected
+
+    def test_mafft(self):
+        """
+        This test is used to test the mafftAlign function.
+        """
+        Params.load_from_file(params_file = "tests/mafft_align.yaml")
+
+        # load parameters
+        ref_gene_dir = Params.reference_gene_dir
+        ref_gene_file = Params.reference_gene_file
+        sequences_very_small = utils.loadSequenceFile(os.path.join(ref_gene_dir, ref_gene_file))
+        
+        # Build AlignSequence object
+        self.sequences = sequences_very_small.copy()
+        self.seq_alignment = AlignSequences(self.sequences)
+
+        # Call muscle Alignment
+        muscle_alignment = self.seq_alignment.mafftAlign()
+        
+        # Load expected alignment
+        fasta_out = "tests/testFiles/mafftAlign/mafft_alignment.fasta"
+        records = Bio.SeqIO.parse(fasta_out, "fasta")
+        expected = {rec.id: str(rec.seq) for rec in records}
+
+        # Assert
+        assert muscle_alignment == expected
