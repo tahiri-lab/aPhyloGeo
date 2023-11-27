@@ -8,8 +8,10 @@ from Bio import AlignIO, Phylo
 from Bio.Phylo.PhyloXML import Phylogeny
 
 from aphylogeo import utils
+from aphylogeo.alignement import Alignment
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
+from aphylogeo.utils import fasttree
 
 current_file = os.path.dirname(__file__)
 
@@ -212,3 +214,44 @@ class TestGenetic:
 
         # Assert
         assert muscle_alignment == expected
+
+    def test_fasttree(self):
+        """
+        This test is used to test the fastTree function.
+        """
+        Params.load_from_file(params_file = "tests/clustal_align.yaml")
+
+        # load parameters
+        ref_gene_dir = Params.reference_gene_dir
+        ref_gene_file = Params.reference_gene_file
+        sequences_very_small = utils.loadSequenceFile(os.path.join(ref_gene_dir, ref_gene_file))
+        
+        # Build AlignSequence object
+        sequences = sequences_very_small.copy()
+        seq_alignment = AlignSequences(sequences)
+
+        # Call clustal Alignment and msa
+        clustal_alignment = seq_alignment.clustalAlign()
+        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+        windowed = self.seq_alignment.slidingWindow(clustal_alignment)
+        msa = self.seq_alignment.makeMSA(windowed)
+        alignment = Alignment(Params.alignment_method, msa)
+
+        # Generate Tree using fasttree algorithm
+        trees = fasttree(alignment.msa, Params.bootstrap_amount, True)
+
+        # To generate test files (keep commented out unless another batch of test files needs to be generated)
+        # [Phylo.write(tree, f"tests/testFiles/fasttree/tree_{window}.xml", "phyloxml") for window, tree in trees.items()]
+
+        # Assert
+        for window, tree in trees.items():
+            
+            expected = Phylo.read(f"tests/testFiles/fasttree/tree_{window}.xml", "phyloxml")
+            expected_str = str(expected).split("\n")[1:]
+            expected_strip = list(map(str.strip, expected_str))
+            
+            tree_str = str(tree).split("\n")[1:]
+            tree_str_strip = list(map(str.strip, tree_str))
+
+            for tree in tree_str_strip:
+                assert tree in expected_strip
