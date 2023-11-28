@@ -7,6 +7,8 @@ import pytest
 from aphylogeo import utils
 from aphylogeo.params import Params
 
+import csv
+
 current_file = Path(os.path.dirname(__file__))
 df = pd.read_csv("./datasets/example/geo.csv")
 climatic_test_cases = ["geo.csv"]
@@ -116,9 +118,18 @@ def test_leastSquare():
                 actual_matrix = utils.getDissimilaritiesMatrix(df, "id", filename_without_ext)
                 trees[filename_without_ext] = utils.createTree(actual_matrix)
 
-        # test leastSquare
-        expected_least_square = 2.1550089999999997
-        assert utils.leastSquare(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == expected_least_square
+        expected_ls_file_csv = Path(current_file / "testFiles/leastSquare" / test_case / "leastsquare.csv")
+        for tree1 in trees:
+            for tree2 in trees:
+                if tree1 != tree2:   
+                    with open(expected_ls_file_csv, 'r', newline='') as csvfile:
+                        csv_reader = csv.reader(csvfile)
+                        # Read each row in the CSV file
+                        for row in csv_reader:
+                            if row[0] == tree1 and row[1] == tree2:
+                                # test leastSquare
+                                # expected_least_square = 2.1550089999999997
+                                assert utils.leastSquare(trees[tree1], trees[tree2]) == float(row[2])
 
 
 def test_robinsonFoulds():
@@ -139,11 +150,18 @@ def test_robinsonFoulds():
                 filename_without_ext = filename[0:-4]                
                 actual_matrix = utils.getDissimilaritiesMatrix(df, "id", filename_without_ext)
                 trees[filename_without_ext] = utils.createTree(actual_matrix)
-
-        # test robinsonFlouds
-        expected_robinson_foulds = 4
-        expected_robinson_foulds_Norm = 1.0
-        assert utils.robinsonFoulds(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == (expected_robinson_foulds, expected_robinson_foulds_Norm)
+        
+        expected_rf_file_csv = Path(current_file / "testFiles/robinsonFoulds" / test_case / "robinsonfoulds.csv")
+        for tree1 in trees:
+            for tree2 in trees:
+                if tree1 != tree2:   
+                    with open(expected_rf_file_csv, 'r', newline='') as csvfile:
+                        csv_reader = csv.reader(csvfile)
+                        # Read each row in the CSV file
+                        for row in csv_reader:
+                            if row[0] == tree1 and row[1] == tree2:
+                                # test robinsonFlouds
+                                assert utils.robinsonFoulds(trees[tree1], trees[tree2]) == (float(row[2]), float(row[3]))       
 
 
 def test_euclideanDist():
@@ -165,6 +183,14 @@ def test_euclideanDist():
                 actual_matrix = utils.getDissimilaritiesMatrix(df, "id", filename_without_ext)
                 trees[filename_without_ext] = utils.createTree(actual_matrix)
 
-         # test Euclidean
-        expected_euclidean_dist = 0.5831890302466259
-        assert utils.euclideanDist(trees["ALLSKY_SFC_SW_DWN"], trees["T2M"]) == expected_euclidean_dist        
+        expected_eu_file_csv = Path(current_file / "testFiles/euclideanDist" / test_case / "euclideandist.csv")
+        for tree1 in trees:
+            for tree2 in trees:
+                if tree1 != tree2:   
+                    with open(expected_eu_file_csv, 'r', newline='') as csvfile:
+                        csv_reader = csv.reader(csvfile)
+                        # Read each row in the CSV file
+                        for row in csv_reader:
+                            if row[0] == tree1 and row[1] == tree2:
+                                # test Euclidean
+                                assert utils.euclideanDist(trees[tree1], trees[tree2]) == float(row[2])          

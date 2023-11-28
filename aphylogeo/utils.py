@@ -141,7 +141,7 @@ def robinsonFoulds(tree1, tree2):
     if len(common_leaves) == 0:
         rf = 0
 
-    return rf, (rf / rf_max)
+    return rf, rf / rf_max
 
 
 def euclideanDist(tree1, tree2):
