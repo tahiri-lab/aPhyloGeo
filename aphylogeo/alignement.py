@@ -175,6 +175,7 @@ class AlignSequences:
             self.rate_similarity
             self.method_similarity
         """
+
         self.sequences = sequences
         self.makeDebugFiles = makeDebugFiles
 
@@ -316,8 +317,8 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            muscle_exe = r"bin/muscle5.1.win64.exe"
-            out_dir = r"bin/tmp/"
+            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\bin\\muscle5.1.win64.exe"
+            out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\bin\\tmp"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             muscle_exe = r"bin/muscle5.1.linux_intel64"
             out_dir = r"bin/tmp/"
