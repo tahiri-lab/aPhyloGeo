@@ -69,6 +69,14 @@ You can also launch the package using the `make` command from your terminal when
 # 🚀 Settings
 The `aPhyloGeo` software can be encapsulated in other applications and applied to other data by providing a YAML file. This file will include a set of parameters for easy handling (see [Wiki documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki)).
 
+# 📚 Tutorials
+
+We provide several tutorials to help you get started with the package. 
+
+# 📖 Documentation
+
+You can also refer to the [documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki) for more details.
+
 
 # ✔️ References
 
