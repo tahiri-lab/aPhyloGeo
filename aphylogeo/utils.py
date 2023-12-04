@@ -353,7 +353,10 @@ def fasttree(msaset, boot=1000, nt=True):
 
     # Execute cmd lines and create trees
     trees = {sorted_windows[i]: Phylo.read(StringIO(cmd()[0]), "newick") for i, cmd in enumerate(cmds)}
-    [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]  # Remove temp fasta files
+    if sys.platform == "win32":
+        [os.remove(file) for file in glob.glob(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\*.fasta")]  # Remove temp fasta files
+    elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
+        [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]  # Remove temp fasta files
     return trees
 
 
