@@ -297,7 +297,7 @@ def fasttreeCMD(input_fasta, boot, nt):
     (FastTreeCommandline)
     """
     if sys.platform == "win32":
-        fasttree_exe = r"aphylogeo\\bin\\FastTree.exe"
+        fasttree_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\FastTree.exe"
     elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
         fasttree_exe = r"aphylogeo/bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
