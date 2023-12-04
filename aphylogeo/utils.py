@@ -151,9 +151,7 @@ def euclideanDist(tree1, tree2):
 
     Trees need to share the same |TaxonNamespace| reference.
     The bipartition bitmasks of the trees must be correct for the current tree
-    structures (by calling :meth:`Tree.encode_bipartitions()` method) or the
-    ``is_bipartitions_updated`` argument must be |False| to force recalculation of
-    bipartitions.
+    structures (by calling :meth:`Tree.encode_bipartitions()` method)
 
      x   x
     ╓╫╖ ╓╫╖
