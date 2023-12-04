@@ -338,11 +338,11 @@ def fasttree(msaset, boot=1000, nt=True):
         value (Tree) A tree in newick format
     """
     createTmpFasta(msaset)
-    alignments = glob.glob("aphylogeo/bin/tmp/*.fasta")
-
     if sys.platform == "win32":
+        alignments = glob.glob(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\*.fasta")
         windows = [re.search("tmp\\\\(.+?).fasta", fasta).group(1) for fasta in alignments]
     elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
+        alignments = glob.glob("aphylogeo/bin/tmp/*.fasta")
         windows = [re.search("tmp/(.+?).fasta", fasta).group(1) for fasta in alignments]
 
     # Sort windows and alignments ascendent order

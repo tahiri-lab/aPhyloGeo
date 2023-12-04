@@ -340,8 +340,8 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            clustal_exe = r"aphylogeo\\bin\\clustalw2.exe"
-            fasta_out = r"aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
+            clustal_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\clustalw2.exe"
+            fasta_out = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             clustal_exe = r"aphylogeo/bin/clustalw2"
             fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
@@ -361,7 +361,7 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            mafft_exe = r"aphylogeo\\bin\\mafft-win\\mafft.bat"
+            mafft_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\mafft-win\\mafft.bat"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
             mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
         in_file = Params.reference_gene_filepath
