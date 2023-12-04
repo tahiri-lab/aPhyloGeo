@@ -312,8 +312,11 @@ def createTmpFasta(msaset):
         key (String) the window name
         value (AlignIO) the MSA object
     """
-    [SeqIO.write(alignment, f"aphylogeo/bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
-
+    
+    if sys.platform == "win32":
+        [SeqIO.write(alignment, os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\{window}.fasta", "fasta") for window, alignment in msaset.items()]
+    elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
+        [SeqIO.write(alignment, f"aphylogeo/bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
 
 def fasttree(msaset, boot=1000, nt=True):
     """Create phylogenetic trees from a set of multiple alignments using FastTree application
