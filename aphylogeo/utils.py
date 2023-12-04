@@ -299,9 +299,9 @@ def fasttreeCMD(input_fasta, boot, nt):
     (FastTreeCommandline)
     """
     if sys.platform == "win32":
-        fasttree_exe = r"bin\\FastTree.exe"
+        fasttree_exe = r"aphylogeo\\bin\\FastTree.exe"
     elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
-        fasttree_exe = r"bin/FastTree"
+        fasttree_exe = r"aphylogeo/bin/FastTree"
     return _Fasttree.FastTreeCommandline(fasttree_exe, input=input_fasta, nt=nt, boot=boot)
 
 
@@ -314,7 +314,7 @@ def createTmpFasta(msaset):
         key (String) the window name
         value (AlignIO) the MSA object
     """
-    [SeqIO.write(alignment, f"bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
+    [SeqIO.write(alignment, f"aphylogeo/bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
 
 
 def fasttree(msaset, boot=1000, nt=True):
@@ -338,7 +338,7 @@ def fasttree(msaset, boot=1000, nt=True):
         value (Tree) A tree in newick format
     """
     createTmpFasta(msaset)
-    alignments = glob.glob("bin/tmp/*.fasta")
+    alignments = glob.glob("aphylogeo/bin/tmp/*.fasta")
 
     if sys.platform == "win32":
         windows = [re.search("tmp\\\\(.+?).fasta", fasta).group(1) for fasta in alignments]
@@ -355,7 +355,7 @@ def fasttree(msaset, boot=1000, nt=True):
 
     # Execute cmd lines and create trees
     trees = {sorted_windows[i]: Phylo.read(StringIO(cmd()[0]), "newick") for i, cmd in enumerate(cmds)}
-    [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
+    [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]  # Remove temp fasta files
     return trees
 
 

@@ -152,7 +152,7 @@ class TestGenetic:
 
         # Call clustal Alignment
         clustal_alignment = self.seq_alignment.clustalAlign()
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+        [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]
 
         # Load expected alignment
         fasta_out = "tests/testFiles/clustalAlign/clustal_alignment.fasta"
@@ -179,7 +179,7 @@ class TestGenetic:
 
         # Call muscle Alignment
         muscle_alignment = self.seq_alignment.muscleAlign()
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+        [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]
 
         # Load expected alignment
         fasta_out = "tests/testFiles/muscleAlign/muscle_alignment.fasta"
@@ -232,7 +232,7 @@ class TestGenetic:
 
         # Call clustal Alignment and msa
         clustal_alignment = seq_alignment.clustalAlign()
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]
+        [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]
         windowed = self.seq_alignment.slidingWindow(clustal_alignment)
         msa = self.seq_alignment.makeMSA(windowed)
         alignment = Alignment(Params.alignment_method, msa)

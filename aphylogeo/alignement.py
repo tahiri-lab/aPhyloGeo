@@ -203,7 +203,7 @@ class AlignSequences:
             heuristicMSA = self.mafftAlign()
         else:
             raise ValueError("Invalid alignment method")
-        [os.remove(file) for file in glob.glob("bin/tmp/*.fasta")]  # Remove temp fasta files
+        [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]  # Remove temp fasta files
         windowed = self.slidingWindow(heuristicMSA)
         self.msa = self.makeMSA(windowed)
         self.alignment = Alignment(Params.alignment_method, self.msa)
@@ -317,11 +317,11 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\bin\\muscle5.1.win64.exe"
-            out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\bin\\tmp"
+            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle5.1.win64.exe"
+            out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            muscle_exe = r"bin/muscle5.1.linux_intel64"
-            out_dir = r"bin/tmp/"
+            muscle_exe = r"aphylogeo/bin/muscle5.1.linux_intel64"
+            out_dir = r"aphylogeo/bin/tmp/"
         in_file = Params.reference_gene_filepath
         out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
@@ -340,11 +340,11 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            clustal_exe = r"bin\\clustalw2.exe"
-            fasta_out = r"bin\\tmp\\clustal_alignment.fasta"
+            clustal_exe = r"aphylogeo\\bin\\clustalw2.exe"
+            fasta_out = r"aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            clustal_exe = r"bin/clustalw2"
-            fasta_out = r"bin/tmp/clustal_alignment.fasta"
+            clustal_exe = r"aphylogeo/bin/clustalw2"
+            fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
         in_file = Params.reference_gene_filepath
         clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
         out, err = clustalw_cline()
@@ -361,9 +361,9 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            mafft_exe = r"bin\\mafft-win\\mafft.bat"
+            mafft_exe = r"aphylogeo\\bin\\mafft-win\\mafft.bat"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            mafft_exe = r"bin/mafft-linux64/mafft.bat"
+            mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
         in_file = Params.reference_gene_filepath
         mafft_cline = MafftCommandline(mafft_exe, input=in_file)
         out, err = mafft_cline()
