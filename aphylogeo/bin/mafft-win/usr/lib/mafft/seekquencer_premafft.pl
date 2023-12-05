@@ -597,4 +597,3 @@ HELPME
 
     bail($str);
 }
-
