@@ -459,6 +459,3 @@ HELPME
 
     &bail($str);
 }
-
-
-
