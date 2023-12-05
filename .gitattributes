@@ -1,1 +1,4 @@
 *.pl text eol=lf
+*.1 text eol=lf
+*.rb text eol=lf
+/aphylogeo/bin/mafft-win/usr/bin/mafft text eol=lf
