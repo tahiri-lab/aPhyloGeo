@@ -2,12 +2,14 @@ import glob
 import os
 import sys
 import json
+import time
 import statistics as st
 import subprocess
 from collections import defaultdict
 from io import StringIO
 from itertools import combinations
 from pathlib import Path
+
 
 import Bio.SeqIO
 from Bio import AlignIO
@@ -196,11 +198,29 @@ class AlignSequences:
                 heuristicMSA = self.narrowFitPairwise(aligned)
 
         elif Params.alignment_method == "2":
+            print("\nStarting Muscle alignement")
+            start_time = time.time()
             heuristicMSA = self.muscleAlign()
+            end_time = time.time()
+            elapsed_time = round(end_time - start_time, 3)
+            print(f"Elapsed time: {elapsed_time} seconds")
+
         elif Params.alignment_method == "3":
+            print("\nStarting ClustalW alignement")
+            start_time = time.time()
             heuristicMSA = self.clustalAlign()
+            end_time = time.time()
+            elapsed_time = round(end_time - start_time, 3)
+            print(f"Elapsed time: {elapsed_time} seconds")
+
         elif Params.alignment_method == "4":
+            print("\nStarting Mafft alignement")
+            start_time = time.time()
             heuristicMSA = self.mafftAlign()
+            end_time = time.time()
+            elapsed_time = round(end_time - start_time, 3)
+            print(f"Elapsed time: {elapsed_time} seconds")
+
         else:
             raise ValueError("Invalid alignment method")
         [os.remove(file) for file in glob.glob("aphylogeo/bin/tmp/*.fasta")]  # Remove temp fasta files

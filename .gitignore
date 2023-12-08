@@ -26,3 +26,6 @@ results
 
 #tree
 *.nwk
+
+#Output
+*.dnd
