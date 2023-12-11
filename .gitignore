@@ -23,6 +23,7 @@ ENV/
 build
 dist
 results
+aphylogeo/bin/*.fasta
 
 #tree
 *.nwk

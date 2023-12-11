@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
 from aphylogeo import utils
@@ -27,13 +28,21 @@ if __name__ == "__main__":
     Params.load_from_file()
     sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
     align_sequence = AlignSequences(sequenceFile)
+
+    climatic_data = pd.read_csv(Params.file_name)
+
+    print("\nStarting alignement")
+    start_time = time.time()
     alignements = align_sequence.align()
 
     geneticTrees = utils.geneticPipeline(alignements.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
+    end_time = time.time()
+    elapsed_time = round(end_time - start_time, 3)
+    print(f"Elapsed time: {elapsed_time} seconds")
 
-    df = pd.read_csv(Params.file_name)
-    climaticTrees = utils.climaticPipeline(df)
-    utils.filterResults(climaticTrees, geneticTrees, df)
+    climaticTrees = utils.climaticPipeline(climatic_data)
+    utils.filterResults(climaticTrees, geneticTrees, climatic_data)
+
     alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
     trees.save_trees_to_json("./results/geneticTrees.json")
