@@ -77,7 +77,6 @@ We provide several tutorials to help you get started with the package.
 
 You can also refer to the [documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki) for more details.
 
-
 # ✔️ References
 
 💡 If you are using our algorithm in your research, please cite our recent papers:
