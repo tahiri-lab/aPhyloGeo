@@ -26,11 +26,11 @@ def header():
     elif Params.distance_method == "2":
         header.extend(["Robinson-Foulds Distance", "Normalised RF Dist"])
     elif Params.distance_method == "3":
-        header.extend(["Bipartition Distance"])
+        header.extend(["Euclidean Distance"])
     else:
         header.extend(["Least-Square Distance"])
         header.extend(["Robinson-Foulds Distance", "Normalised RF Dist"])
-        header.extend(["Bipartition Distance"])
+        header.extend(["Euclidean Distance"])
     return header
 
 
@@ -144,7 +144,7 @@ def robinsonFoulds(tree1, tree2):
     return rf, rf / rf_max
 
 
-def bipartitionDist(tree1, tree2):
+def euclideanDist(tree1, tree2):
     """
     Method that calculate the Euclidean distance (a.k.a. Felsenstein's 2004 "branch length
     distance") between two trees based on ``edge_weight_attr``.
@@ -533,14 +533,14 @@ def filterResults(
                         )
                     )
             elif Params.distance_method == "3":
-                bd = bipartitionDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
-                if bd is None:
-                    raise Exception("The Bipartition (DendroPY) distance is not calculable" + " for {aligned_file}.")
-                if bd <= Params.dist_threshold:
+                ed = euclideanDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                if ed is None:
+                    raise Exception("The Euclidean (DendroPY) distance is not calculable" + " for {aligned_file}.")
+                if ed <= Params.dist_threshold:
                     data.append(
                         getData(
                             leavesName,
-                            bd,
+                            ed,
                             i,
                             climaticList,
                             current_bootstrap,
@@ -555,8 +555,8 @@ def filterResults(
             elif Params.distance_method == "0":
                 ls = leastSquare(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
                 rf, rf_norm = robinsonFoulds(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
-                bd = bipartitionDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
-                if ls is None or rf is None or bd is None:
+                ed = euclideanDist(geneticTrees[current_genetic], climaticTrees[climaticList[i]])
+                if ls is None or rf is None or ed is None:
                     raise Exception("The LS distance is not calculable" + " for {aligned_file}.")
                 if ls <= Params.dist_threshold:
                     data.append(
@@ -571,7 +571,7 @@ def filterResults(
                             Params.reference_gene_filepath,
                             rf_norm,
                             rf,
-                            bd,
+                            ed,
                         )
                     )
             else:

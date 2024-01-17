@@ -164,14 +164,14 @@ def test_robinsonFoulds():
                                 assert utils.robinsonFoulds(trees[tree1], trees[tree2]) == (float(row[2]), float(row[3]))       
 
 
-def test_bipartitionDist():
+def test_euclideanDist():
     """
-    This test is used to test the Bipartition distance calculation function.
+    This test is used to test the Euclidean Bipartion distance calculation function.
     It contains the following tests:
-        - bipartitionDist
+        - euclideanDist
     """
 
-    print("Begin test_bipartitionDist...")
+    print("Begin test_euclideanDist...")
     
 
     for test_case in climatic_test_cases:
@@ -183,7 +183,7 @@ def test_bipartitionDist():
                 actual_matrix = utils.getDissimilaritiesMatrix(df, "id", filename_without_ext)
                 trees[filename_without_ext] = utils.createTree(actual_matrix)
 
-        expected_eu_file_csv = Path(current_file / "testFiles/bipartitionDist" / test_case / "bipartitiondist.csv")
+        expected_eu_file_csv = Path(current_file / "testFiles/euclideanDist" / test_case / "euclideandist.csv")
         for tree1 in trees:
             for tree2 in trees:
                 if tree1 != tree2:   
@@ -192,5 +192,5 @@ def test_bipartitionDist():
                         # Read each row in the CSV file
                         for row in csv_reader:
                             if row[0] == tree1 and row[1] == tree2:
-                                # test Bipartition
-                                assert utils.bipartitionDist(trees[tree1], trees[tree2]) == float(row[2])          
+                                # test Euclidean
+                                assert utils.euclideanDist(trees[tree1], trees[tree2]) == float(row[2])          

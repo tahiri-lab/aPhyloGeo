@@ -11,7 +11,7 @@ reference_gene_dir: './datasets/example'
 reference_gene_file: 'sequences.fasta'
 makeDebugFiles: True
 alignment_method: '1' #Please select one ~ 1:pairwiseAligner, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
-distance_method: '0' #Please select one  ~ 0: All distance methods, 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Bipartition distance (DendroPY)
+distance_method: '0' #Please select one  ~ 0: All distance methods, 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)
 fit_method: '1' #Please select one ~ 1:Wider Fit by elongating with Gap (starAlignment), 2:Narrow-fit prevent elongation with gap when possible
 tree_type: '2' #Please select one ~ 1: BioPython consensus tree, 2: FastTree application
 rate_similarity: 90
