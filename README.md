@@ -77,6 +77,19 @@ We provide several tutorials to help you get started with the package.
 
 You can also refer to the [documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki) for more details.
 
+# Credits
+Muscle5:
+Edgar, RC (2021), MUSCLE v5 enables improved estimates of phylogenetic tree confidence by ensemble bootstrapping, bioRxiv 2021.06.20.449169. https://doi.org/10.1101/2021.06.20.449169.
+
+Fastree:
+Price, MN, Dehal, PS, and Arkin, AP (2010), FastTree 2 – Approximately Maximum-Likelihood Trees for Large Alignments, PLoS ONE 5(3): e9490. https://doi.org/10.1371/journal.pone.0009490.
+
+ClustalW:
+Larkin, MA, Blackshields, G, Brown, NP, Chenna, R, McGettigan, PA, McWilliam, H, Valentin, F, Wallace, IM, Wilm, A, Lopez, R, Thompson, JD, Gibson, TJ, and Higgins, DG (2007), Clustal W and Clustal X version 2.0, Bioinformatics 23(21): 2947-2948. https://doi.org/10.1093/bioinformatics/btm404.
+
+Mafft:
+Katoh, K, Rozewicki, J, and Yamada, KD (2019), MAFFT online service: multiple sequence alignment, interactive sequence choice and visualization, Briefings in Bioinformatics 20(4): 1160-1166. https://doi.org/10.1093/bib/bbx108.
+
 # ✔️ References
 
 💡 If you are using our algorithm in your research, please cite our recent papers:
