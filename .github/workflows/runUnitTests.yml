@@ -38,7 +38,7 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - run: |
-          # python -m pip install --upgrade pip
+          # run tests
           poetry install --no-interaction
           source .venv/bin/activate
           pytest tests/
