@@ -1,4 +1,4 @@
-name: Test aPhyloGeo
+name: Old Test aPhyloGeo using Dev reqs
 
 on: [push]
 
