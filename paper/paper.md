@@ -96,15 +96,6 @@ $$
 
 where $Q$ is a set of all possible bipartitions in the phylogenetic tree (denoted $T_1$), $P$ is a set of all possible bipartitions in the reference tree (denoted $T_2$), and $n$ is the number of leaves in $T_1$ (or $T_2$). It is often relevant to normalize this distance by the maximum possible value of _RF_ (equal to $2n-6$ for two binary trees with $n$ common leaves).
 
-This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
-
-Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the workflow below).
-
-**Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
-
-In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License).
-
-
 # Conclusion
 
 The `aPhyloGeo` pipeline stands as an all-encompassing solution, offering an extensive array of phylogeographic analyses tailored for diverse datasets, spanning both genetic and climatic dimensions. Consolidating these analyses into a single package eliminates the need for users to navigate and download multiple tools and programs, ensuring not only user-friendly accessibility but also enhancing the pipeline's reproducibility.
