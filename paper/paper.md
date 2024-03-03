@@ -3,7 +3,7 @@ title: 'aPhyloGeo: Multi-platform application for analyze phylogenetic trees wit
 tags:
   - bioinformatics
   - consensus
-  - least Square distance
+  - metrics
   - multiple sequence alignment
   - phylogeny
   - phylogeography
@@ -16,7 +16,7 @@ authors:
 affiliations:
   - name: département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
     index: 1
-date: 14 December 2022
+date: 02 March 2024
 bibliography: paper.bib
 
 # Optional fields if submitting to a AAS journal too, see this blog post:
@@ -30,11 +30,7 @@ The cross-platform application for phylogenetic tree analysis with climate param
 
 By utilizing the `aPhyloGeo` Python API, users can programmatically implement sophisticated phylogenetic analyses without the need for a graphical interface. This API provides a powerful and flexible toolset for conducting analyses, allowing users to tailor the application to their specific research needs. Through this approach, aPhyloGeo facilitates a nuanced understanding of the interplay between genetic evolution and environmental factors in the context of species adaptation, all within the Python programming environment.
 
-
-
-
-
-A cross-platform application for phylogenetic tree analysis with climate parameters (`aPhyloGeo`) is a pipeline for performing phylogenetic analyses from genetic and climate data. The pipeline provides a suite of analyses adapted to different scenarios, designed to allow the analysis of data sets represented by three different levels: 1) genetic, 2) climatic, and 3) biogeography correlation, all in one package. These levels of similarity (assessed by least squares distance in \autoref{eq:ls}, Robinson and Foulds distance) influence the assumptions used to consider a correlation between the genetics of a species and its habitat during the reconstruction of the multiple alignment required for phylogenetic inference. By selecting an appropriate gene list for the available data defined on a set of species to explain the adaptation of the species according to the Darwinian hypothesis, the user can be confident that these assumptions are taken into account in `aPhyloGeo`.
+By selecting an appropriate gene list for the available data defined on a set of species to explain the adaptation of the species according to the Darwinian hypothesis, the user can be confident that these assumptions are taken into account in `aPhyloGeo`.
 
 # Statement of need
 
