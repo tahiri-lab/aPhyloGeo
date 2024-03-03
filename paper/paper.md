@@ -1,20 +1,29 @@
-# Title
-'aPhyloGeo: A Multi-platform Application for Analyzing Phylogenetic Trees with Climatic Parameters'
+---
+title: 'aPhyloGeo: Multi-platform application for analyze phylogenetic trees with climatic parameters'
+tags:
+  - bioinformatics
+  - consensus
+  - metrics
+  - multiple sequence alignment
+  - phylogeny
+  - phylogeography
+authors:
+  - name: Nadia Tahiri
+    affiliation: 1
+    orcid: 0000-0002-1818-208X
+    corresponding: true
+    email: Nadia.Tahiri@USherbrooke.ca
+affiliations:
+  - name: département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
+    index: 1
+date: 03 March 2024
+bibliography: paper.bib
 
-## Tags
-- bioinformatics
-- consensus
-- metrics
-- multiple sequence alignment
-- phylogeny
-- phylogeography
-
-## Authors
-- Name: Nadia Tahiri
-  - Affiliation: Département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
-  - ORCID: 0000-0002-1818-208X
-  - Corresponding: true
-  - Email: Nadia.Tahiri@USherbrooke.ca
+# Optional fields if submitting to a AAS journal too, see this blog post:
+# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
+aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
+aas-journal: Astrophysical Journal <- The name of the AAS journal.
+---
 
 ## Affiliations
 - Département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
