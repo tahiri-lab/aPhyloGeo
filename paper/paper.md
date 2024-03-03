@@ -96,16 +96,26 @@ $$
 
 where $Q$ is a set of all possible bipartitions in the phylogenetic tree (denoted $T_1$), $P$ is a set of all possible bipartitions in the reference tree (denoted $T_2$), and $n$ is the number of leaves in $T_1$ (or $T_2$). It is often relevant to normalize this distance by the maximum possible value of _RF_ (equal to $2n-6$ for two binary trees with $n$ common leaves).
 
+
+# Editing Multiple Sequence Alignment Methods
+Multiple Sequence Alignment (MSA) is a crucial step in bioinformatics for comparing and analyzing biological sequences. Here's an overview of some commonly used MSA methods, including pairwise alignment and popular tools like MUSCLE, CLUSTALW, and MAFFT:
+
+- Pairwise Alignment
+- MUSCLE (Multiple Sequence Comparison by Log-Expectation)
+- CLUSTALW
+- MAFFT (Multiple Alignment using Fast Fourier Transform)
+
+
 # Conclusion
 
-The `aPhyloGeo` pipeline stands as an all-encompassing solution, offering an extensive array of phylogeographic analyses tailored for diverse datasets, spanning both genetic and climatic dimensions. Consolidating these analyses into a single package eliminates the need for users to navigate and download multiple tools and programs, ensuring not only user-friendly accessibility but also enhancing the pipeline's reproducibility.
+The `aPhyloGeo` pipeline represents an integrative framework, synthesizing an expansive repertoire of advanced analytical methodologies suited to diverse datasets, encompassing both genetic and climatic dimensions. By consolidating these multifaceted analyses within a unified platform, users benefit not only from simplifying the intricacies associated with navigating diverse tools but also from the assurance of heightened reproducibility in research outcomes.
 
-Anticipating future developments, `aPhyloGeo` envisions incorporating advanced features. Among these prospective enhancements are the integration of the Nextflow framework, facilitating seamless workflow management. Furthermore, the addition of clustering based on multiple sequence alignment similarity is on the horizon, accompanied by the introduction of an efficient alignment method. To augment the analytical toolkit, novel metrics such as Quartet metric, and bipartition will be integrated, empowering users to make informed decisions about their data by robustly assessing genetic diversity.
+In the anticipation of forthcoming advancements, `aPhyloGeo`  aims to integrate of cutting-edge functionalities. This includes the incorporation of clustering techniques predicated upon similarity derived from multiple sequence alignments, concomitant with the introduction of a more computationally efficient alignment methodology. To fortify the analytical arsenal, the integration of novel metrics, such as the Quartet metric and bipartition, aims to endow users with enhanced discernment for making nuanced decisions concerning their datasets through a comprehensive and robust assessment of genetic diversity.
 
-By consistently adhering to the highest standards in software development, this research not only aims to provide an immediate solution but also positions `aPhyloGeo` as a dynamic and evolving platform. It aspires to serve as a benchmark in the phylogeographic analysis domain, ensuring that users have access to a comprehensive suite of tools that continually evolve to meet the ever-changing demands of genetic research. Through these advancements, the pipeline aims to contribute significantly to the scholarly discourse and elevate the standards of reproducibility and usability within the scientific community.
+By adhering resolutely adhering to the pinnacle of standards in software development, this research not only aspires to furnish an immediate solution but also endeavors to position `aPhyloGeo` as a dynamic and evolving platform. Aspiring to be a vanguard in the field of phylogeographic analysis, the pipeline is dedicated to furnishing users with a sophisticated suite of tools that seamlessly adapt to the evolving landscape of genetic research. Through these advancements, the pipeline seeks to make a substantial and enduring contribution to the corpus of scientific knowledge, elevating the benchmarks of reproducibility and usability within the broader scientific community.
 
 # Acknowledgements
 
-This work was supported by the Natural Sciences and Engineering Research Council of Canada, Fonds de recherche du Québec - Nature et technologie, the University of Sherbrooke grant, and the Centre de recherche en écologie de l'UdeS (CREUS). The author would like to thank the Department of Computer Science, University of Sherbrooke, Quebec, Canada for providing the necessary resources to conduct this research. The computations were performed on resources provided by Compute Canada and Compute Quebec - the National and Provincial Infrastructure for High-Performance Computing and Data Storage. The author would like to thank the students of the Université du Québec à Montréal for their great contribution to the development of the software.
+This work was supported by the Natural Sciences and Engineering Research Council of Canada, Fonds de recherche du Québec - Nature et technologie, the University of Sherbrooke grant, and the Centre de recherche en écologie de l'UdeS (CREUS). The author would like to thank the Department of Computer Science, University of Sherbrooke, Quebec, Canada for providing the necessary resources to conduct this research. The computations were performed on resources provided by Compute Canada and Compute Quebec - the National and Provincial Infrastructure for High-Performance Computing and Data Storage. The author would like to thank the students of the University of Sherbrooke and the Université du Québec à Montréal for their great contribution to the development of the software.
 
 # References
