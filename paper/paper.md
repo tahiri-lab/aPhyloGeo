@@ -98,12 +98,22 @@ where $Q$ is a set of all possible bipartitions in the phylogenetic tree (denote
 
 
 # Editing Multiple Sequence Alignment Methods
+
 Multiple Sequence Alignment (MSA) is a crucial step in bioinformatics for comparing and analyzing biological sequences. Here's an overview of some commonly used MSA methods, including pairwise alignment and popular tools like MUSCLE, CLUSTALW, and MAFFT:
 
-- Pairwise Alignment
-- MUSCLE (Multiple Sequence Comparison by Log-Expectation)
-- CLUSTALW
-- MAFFT (Multiple Alignment using Fast Fourier Transform)
+## Pairwise Alignment
+Pairwise alignment forms the bedrock of MSA, focusing on aligning two sequences to uncover similarities and differences. It provides a foundation for more complex multiple sequence alignment methodologies and aids in identifying conserved regions across evolutionary lineages.
+
+## MUSCLE (Multiple Sequence Comparison by Log-Expectation)
+MUSCLE stands out as a robust tool for multiple sequence alignment, leveraging a progressive approach to align sequences. Its algorithm employs iterative refinement, enhancing accuracy by considering evolutionary relationships between sequences. MUSCLE is recognized for its efficiency in handling large datasets while maintaining high alignment quality.
+
+## CLUSTALW
+CLUSTALW is a widely-used MSA tool known for its versatility and user-friendly interface. It employs a progressive alignment method, iteratively aligning sequences based on pairwise alignments. CLUSTALW accommodates a range of sequence types and is often chosen for its ease of use in diverse bioinformatics applications.
+
+## MAFFT (Multiple Alignment using Fast Fourier Transform)
+MAFFT utilizes a Fast Fourier Transform algorithm to align multiple sequences efficiently. Its progressive alignment strategy ensures accurate alignment, particularly in cases involving distantly related sequences. MAFFT is known for its speed and scalability, making it suitable for handling large datasets and accommodating the diverse demands of sequence analysis.
+
+Understanding these MSA methods and tools equips researchers with the flexibility to choose the most suitable approach based on the characteristics of their biological data and the specific goals of their analyses.
 
 
 # Conclusion
