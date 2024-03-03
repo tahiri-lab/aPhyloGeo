@@ -46,7 +46,7 @@ In 2012, Tahiri initially developed the algorithm written in JAVA [@tahiri2012no
 
 The `aPhyloGeo` pipeline (\autoref{fig:figure1}) is written in python3.9, and the code and documentation are publicly available on GitHub  (https://github.com/tahiri-lab/aPhyloGeo). The user has the option of running the pipeline using different cparameterss, such as docker, bootstrap threshold, or least square distance threshold. 
 
-![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/Fig_1.png)
+![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
 The blocks are highlighted by three different colors.
 
