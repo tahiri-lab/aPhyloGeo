@@ -56,35 +56,35 @@ The blocks are highlighted by three different colors.
 
 # Metrics
 
-## Tree comparaison
+## Tree Comparison
 
 The comparison between phylogenetic trees (i.e., trees based on genetic data) and climatic trees involves a phylogeography step using Robinson and Foulds distance (i.e., topology distance) and Least Square distance (i.e., branch length distance).
 
-### Least squares distance
-
-$$LS(T_1, T_2) = \sum_{i=1}^{n-1} \sum_{j=i}^{n} \lvert \delta(i,j) - \xi(i,j) \rvert$$
-
-where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ and $j$ are two species, $\delta(i,j)$ is the distance between specie $i$ and specie $j$ in $T_1$, $\xi(i,j)$ is the distance between specie $i$ and specie $j$ in $T_2$, and $n$ is the total number of species.
-
-### Robinson-Foulds distance
-The _RF_ distance between the phylogenetic tree ($T_1$) and reference tree ($T_2$) is the number of non-trivial bipartitions of $T_1$ that are not in $T_2$ plus the number of non-trivial bipartitions of $T_2$ that are not in $T_1$. This distance _RF_ between $T_1$ and $T_2$ is computed by the following formula:
+### Least Squares Distance
 
 $$
-RF(T_1,T_2) = \frac{|(Q \backslash P) \cup (P \backslash Q)|}{2n-6},
+LS(T_1, T_2) = \sum_{i=1}^{n-1} \sum_{j=i}^{n} | \delta(i,j) - \xi(i,j) |
 $$
 
-where $Q$ is a set of all possible bipartitions in phylogenetic tree (denoted $T_1$), $P$ is a set of all possible bipartitions in reference tree (denoted $T_2$), and $n$ the number of leaves in $T_1$ (or $T_2$). It is often relevant to normalize this distance by the maximum possible value of \textit{RF} (equal to $2n-6$ for two binary trees with $n$ common leaves).
+where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ and $j$ are two species, $\delta(i,j)$ is the distance between species $i$ and species $j$ in $T_1$, $\xi(i,j)$ is the distance between species $i$ and species $j$ in $T_2$, and $n$ is the total number of species.
 
+### Robinson-Foulds Distance
 
+The _RF_ distance between the phylogenetic tree $T_1$ and reference tree $T_2$ is the number of non-trivial bipartitions of $$ T_1 $$ that are not in $T_2$ plus the number of non-trivial bipartitions of $T_2$ that are not in $T_1$. This distance _RF_ between $T_1$ and $T_2$ is computed by the following formula:
+
+$$
+RF(T_1,T_2) = \frac{|(Q \backslash P) \cup (P \backslash Q)|}{2n-6}
+$$
+
+where $Q$ is a set of all possible bipartitions in the phylogenetic tree (denoted $T_1$), $P$ is a set of all possible bipartitions in the reference tree (denoted $T_2$), and $n$ is the number of leaves in $T_1$ (or $T_2$). It is often relevant to normalize this distance by the maximum possible value of _RF_ (equal to $2n-6$ for two binary trees with $n$ common leaves).
 
 This is the most important block and the basis of this study, through the results of which the user receives the output data with the necessary calculations.
 
-Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the worflow below).
+Moreover, our approach is optimal since it is elastic and adapts to any computer by using parallelism and available GPUs/CPUs according to the resource usage per unit of computation (i.e., to realize the processing of a single genetic window - see the workflow below).
+
 **Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
 
 In this work, we applied software packages of the following versions: [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License), [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License), and [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License).
-
-
 
 
 # Conclusion
