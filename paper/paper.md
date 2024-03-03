@@ -32,27 +32,27 @@ By utilizing the `aPhyloGeo` Python API, users can programmatically implement so
 
 By selecting an appropriate gene list for the available data defined on a set of species to explain the adaptation of the species according to the Darwinian hypothesis, the user can be confident that these assumptions are taken into account in `aPhyloGeo`.
 
-# Statement of need
+# Statement of Need
 
 The rapid impacts of climate change and anthropogenic variables on biodiversity and population dynamics underscore the need for more advanced tools capable of resolving the complexities of ecosystems under perturbation. Biologists use phylogeographic approaches to closely examine the interplay between the genetic structures of study populations and their geographic distributions, taking into account both current and historical geoclimatic contexts.
 
 This software package is dedicated to advancing state-of-the-art bioinformatics tools specifically designed for detailed phylogeographic analysis. Given the urgency of the current climate crisis (COP27 - Climate Change and COP15 - Convention on Biological Diversity) and the anticipated future challenges, there is an urgent need to develop tools that not only meet but exceed bioinformatics software development standards. These tools will be designed to allow accurate characterization of genetic diversity and phenotypic traits in strict accordance with environmental conditions. By maintaining the highest standards, this research aims to make a significant contribution to our understanding of the evolving ecological landscape and provide the scientific community with robust tools for comprehensive analysis and interpretation.
 
-# State of the field
+# State of the Field
 
-In 2021, Tahiri lab team [@nadia_tahiri-proc-scipy-2022] proposed a new algorithm to allow finding sub-sequences of genes giving an increased topological similarity between the reference tree (obtained from gene sequences) and the phylogenetic tree (obtained from genome sequences). It can help find which genes or subparts of a gene are sensitive or favourable to a given environment. Finaly, [@nadia_tahiri-proc-scipy-2023] explored this algorithm with SARS-CoV-2 data. 
+In 2021, Tahiri lab team [@nadia_tahiri-proc-scipy-2022] proposed a new algorithm to allow finding sub-sequences of genes giving an increased topological similarity between the reference tree (obtained from gene sequences) and the phylogenetic tree (obtained from genome sequences). It can help find which genes or subparts of a gene are sensitive or favourable to a given environment. Finally, [@nadia_tahiri-proc-scipy-2023] explored this algorithm with SARS-CoV-2 data.
 
 # Pipeline
 
-The `aPhyloGeo` pipeline (\autoref{fig:figure1}) is written in python3.9, and the code and documentation are publicly available on GitHub  (https://github.com/tahiri-lab/aPhyloGeo). The user has the option of running the pipeline using different cparameterss, such as docker, bootstrap threshold, or least square distance threshold. 
+The `aPhyloGeo` pipeline (\autoref{fig:figure1}) is written in python3.9, and the code and documentation are publicly available on GitHub (https://github.com/tahiri-lab/aPhyloGeo). The user has the option of running the pipeline using different parameters, such as docker, bootstrap threshold, or least square distance threshold.
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
 The blocks are highlighted by three different colors.
 
-* The first block (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file) and using Neighbor-joining algorithm (see [@gascuel2006neighbor]).
-* The second block (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file).
-* The third block (the light green color) allows the comparaison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step. The phylogeographic step examines how patterns of divergence within species coincide with geographic features, such as climatic features.
+- The first block (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file) and using Neighbor-joining algorithm (see [@gascuel2006neighbor]).
+- The second block (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file).
+- The third block (the light green color) allows the comparison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step. The phylogeographic step examines how patterns of divergence within species coincide with geographic features, such as climatic features.
 
 # Metrics
 
