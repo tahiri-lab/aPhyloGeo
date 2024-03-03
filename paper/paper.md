@@ -44,15 +44,33 @@ In 2021, Tahiri lab team [@nadia_tahiri-proc-scipy-2022] proposed a new algorith
 
 # Pipeline
 
-The `aPhyloGeo` pipeline (\autoref{fig:figure1}) is written in python3.9, and the code and documentation are publicly available on GitHub (https://github.com/tahiri-lab/aPhyloGeo). The user has the option of running the pipeline using different parameters, such as docker, bootstrap threshold, or least square distance threshold.
+Exploring the aPhyloGeo workflow (\autoref{fig:figure1}) is essential to harness the full potential of this bioinformatics pipeline. Follow these steps to perform phylogeographic analysis effectively:
+
+## Algorithm Workflow
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
-The blocks are highlighted by three different colors.
+The diagram below illustrates the workflow of the algorithm, consisting of several key blocks, each highlighted with a distinct color.
 
-- The first block (the light blue color) is responsible for creating the trees based on the climate data - performs the function of input parameter validation (see YAML file) and using Neighbor-joining algorithm (see [@gascuel2006neighbor]).
-- The second block (the dark yellow color) is responsible for creating the trees based on the genetic data - performs the function of input parameter validation (see YAML file).
-- The third block (the light green color) allows the comparison between the phylogenetic trees (i.e., with genetic data) and the climatic trees - denoted phylogeography step. The phylogeographic step examines how patterns of divergence within species coincide with geographic features, such as climatic features.
+- **First Block (Light Blue):** This block is responsible for creating trees based on climate data and performs input parameter validation (refer to the YAML file).
+
+- **Second Block (Light Green):** This block focuses on creating trees based on genetic data and conducts input parameter validation (refer to the YAML file).
+
+- **Third Block (Light Pink):** The third block facilitates the comparison between phylogenetic trees (genetic data) and climatic trees, denoted as the phylogeography step. It utilizes the Robison and Foulds distance or Least Square distance.
+
+This third block is pivotal to the study, forming the basis from which users obtain output data with essential calculations. Our approach is optimal, adapting to various computing environments through elasticity and utilizing parallelism and available GPUs/CPUs based on resource usage per unit of computation. This flexibility enables efficient processing of a single genetic window, as outlined in the workflow below.
+
+## Multiprocessing
+
+The algorithm supports multiprocessing, allowing simultaneous analysis of multiple windows. This feature is particularly recommended for large datasets.
+
+## Dependencies
+
+This work relies on the following software packages:
+
+- [Biopython](https://biopython.org/) version 1.79 (BSD 3-Clause License)
+- [Bio](https://pandas.pydata.org/) version 1.5.2 (New BSD License)
+- [numpy](https://numpy.org/) version 1.21.6 (BSD 3-Clause License)
 
 # Metrics
 
