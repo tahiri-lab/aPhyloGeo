@@ -1,5 +1,5 @@
 ---
-title: 'aPhyloGeo: Multi-platform application for analyze phylogenetic trees with climatic parameters'
+title: 'aPhyloGeo: a multi-platform Python package for analyzing phylogenetic trees with climatic parameters'
 tags:
   - bioinformatics
   - consensus
