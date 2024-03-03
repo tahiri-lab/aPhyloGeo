@@ -88,7 +88,7 @@ where $T_1$ is the phylogenetic tree 1, $T_2$ is the phylogenetic tree 2, $i$ an
 
 ### Robinson-Foulds Distance
 
-The _RF_ distance between the phylogenetic tree $T_1$ and reference tree $T_2$ is the number of non-trivial bipartitions of $$ T_1 $$ that are not in $T_2$ plus the number of non-trivial bipartitions of $T_2$ that are not in $T_1$. This distance _RF_ between $T_1$ and $T_2$ is computed by the following formula:
+The _RF_ distance between the phylogenetic tree $T_1$ and reference tree $T_2$ is the number of non-trivial bipartitions of $T_1$ that are not in $T_2$ plus the number of non-trivial bipartitions of $T_2$ that are not in $T_1$. This distance _RF_ between $T_1$ and $T_2$ is computed by the following formula:
 
 $$
 RF(T_1,T_2) = \frac{|(Q \backslash P) \cup (P \backslash Q)|}{2n-6}
