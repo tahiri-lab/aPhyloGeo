@@ -46,7 +46,7 @@ Subsequently, the team extended their research, applying the algorithm to SARS-C
 
 # Pipeline
 
-Exploring the *aPhyloGeo* workflow (\autoref{fig:figure1}) is essential to harness the full potential of this bioinformatics pipeline. Follow these steps to perform phylogeographic analysis effectively:
+Navigating the *aPhyloGeo* workflow (refer to \autoref{fig:figure1}) is indispensable to fully harness the potential of this bioinformatics pipeline. The visual representation in \autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis with optimal effectiveness.
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
@@ -77,13 +77,32 @@ This work relies on the following main software packages:
 
 ## Tree Comparison
 
-The comparison between phylogenetic trees (i.e., trees based on genetic data) and climatic trees involves a phylogeography step using Robinson and Foulds distance (i.e., topology distance) and Least Square distance (i.e., branch length distance).
+In the comparison of phylogenetic trees, which are constructed based on genetic data, with climatic trees, a crucial step involves applying a phylogeography approach. This includes the utilization of Robinson and Foulds distance for topology evaluation and Least Squares distance for assessing branch length differences.
 
 ## Editing Multiple Sequence Alignment Methods
 
-Multiple Sequence Alignment (MSA) is a crucial step in bioinformatics for comparing and analyzing biological sequences. Here's an overview of some commonly used MSA methods, including pairwise alignment and popular tools like MUSCLE, CLUSTALW, and MAFFT.
+Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods:
 
-## 
+- **Pairwise Alignment**: Fundamental in comparing two sequences.
+- **MUSCLE**: Multiple Sequence Comparison by Log-Expectation, a popular tool for high-quality MSA.
+- **CLUSTALW**: A widely-used software for multiple sequence alignment.
+- **MAFFT**: Multiple Alignment using Fast Fourier Transform, known for its accuracy and efficiency.
+
+## Similarity Methods
+
+To enhance the algorithm's performance, a meticulous approach was adopted. Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics:
+
+1. **Hamming distance**: Measures the difference between two strings of equal length.
+2. **Levenshtein distance**: Evaluates the minimum number of single-character edits required to transform one sequence into another.
+3. **Damerau-Levenshtein distance**: Similar to Levenshtein distance, with an additional operation allowing transpositions of adjacent characters.
+4. **Jaro similarity**: Computes the similarity between two strings, considering the number of matching characters and transpositions.
+5. **Jaro-Winkler similarity**: An enhancement of Jaro similarity, giving more weight to common prefixes.
+6. **Smith–Waterman similarity**: Utilizes local sequence alignment to identify similar regions within sequences.
+7. **Jaccard similarity**: Measures the similarity between finite sample sets.
+8. **Sørensen-Dice similarity**: Particularly useful for comparing the similarity of two samples.
+
+This comprehensive methodology ensures a nuanced and high-quality analysis, contributing to a deeper understanding of sequence distinctions.
+
 
 # Conclusion
 
