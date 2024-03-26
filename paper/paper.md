@@ -14,13 +14,15 @@ authors:
     corresponding: true
     email: Nadia.Tahiri@USherbrooke.ca
   - name: Georges Marceau
-    affiliation: 1
+    affiliation: 2
     orcid: 0009-0005-9827-5735
     corresponding: true
     email: gmaccounts@icloud.com
 affiliations:
   - name: département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
     index: 1
+  - name: département d’Informatique, Université du Québec à Montréal, 201, avenue du Président-Kennedy, Montréal, Québec H2X 3Y7, Canada
+    index: 2
 date: 02 March 2024
 bibliography: paper.bib
 
