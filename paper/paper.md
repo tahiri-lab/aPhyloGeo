@@ -14,7 +14,7 @@ authors:
     corresponding: true
     email: Nadia.Tahiri@USherbrooke.ca
   - name: Georges Marceau
-    affiliation: -
+    affiliation: NA
     orcid: 0009-0005-9827-5735
     corresponding: true
     email: gmaccounts@icloud.com
