@@ -18,6 +18,11 @@ authors:
     orcid: 0009-0005-9827-5735
     corresponding: true
     email: gmaccounts@icloud.com
+  - name: David Beauchemin
+    affiliation: 3
+    orcid: 0009-0009-1338-9012
+    corresponding: true
+    email: david.beauchemin.3@courrier.uqam.ca
 affiliations:
   - name: département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
     index: 1
