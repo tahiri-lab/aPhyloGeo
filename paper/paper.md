@@ -19,7 +19,7 @@ authors:
     corresponding: true
     email: gmaccounts@icloud.com
   - name: David Beauchemin
-    affiliation: 3
+    affiliation: 2
     orcid: 0009-0009-1338-9012
     corresponding: true
     email: david.beauchemin.3@courrier.uqam.ca
