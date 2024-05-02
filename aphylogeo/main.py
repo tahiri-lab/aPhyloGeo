@@ -25,6 +25,7 @@ if __name__ == "__main__":
     # geneticTrees = GeneticTrees.load_trees_from_file("./results/geneticTreesTest.json")
     # loaded_seq_alignment = Alignment.load_from_json("./results/aligned_sequences.json")
 
+    # load params 
     Params.load_from_file()
     sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
     align_sequence = AlignSequences(sequenceFile)
