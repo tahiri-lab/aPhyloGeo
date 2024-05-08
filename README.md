@@ -43,9 +43,17 @@
 # ⚒️ Installation
 
 ## Linux UNIX & Windows versions
-`aPhyloGeo` is available as a Python script.
+`aPhyloGeo` is available as a Python package.
 
-### Prerequisites
+### Installation from PyPI via pip
+
+`aPhyloGeo` can be installed directly from the Python Packaging Index,
+
+```python3
+python3 -m pip install aPhyloGeo
+```
+
+### Installation from Source via Poetry
 This package use ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation)
 ⚠️ For windows installation it's recommended to launch powershell in **Administrator mode**.
 
