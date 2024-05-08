@@ -9,7 +9,7 @@
         </p>
 
 
-<h2  align="center"> 🌳 Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
+<h2  align="center"> 🌳 Multi-platform application for analyzing phylogenetic trees with climatic parameters</h2>
 
 <details open>
   <summary>Table of Contents</summary>
