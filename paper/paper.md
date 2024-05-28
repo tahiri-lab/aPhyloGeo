@@ -133,7 +133,7 @@ The *aPhyloGeo* pipeline serves as an integrative framework, bringing together a
 
 Looking ahead, *aPhyloGeo* aims to integrate new functionalities, including clustering techniques based on similarity derived from multiple sequence alignments and a more computationally efficient alignment methodology. The incorporation of novel metrics, such as the Quartet metric and bipartition, aims to provide users with improved insight for making nuanced decisions regarding their datasets through a comprehensive assessment of genetic diversity.
 
-Adhering strictly to high standards in software development, this research not only seeks to provide immediate solutions but also aims to position *aPhyloGeo* as a reliable and adaptable platform. Striving to contribute meaningfully to the field of phylogeographic analysis, the pipeline is committed to offering users a sophisticated suite of tools that seamlessly adapt to the evolving landscape of genetic research. Through these improvements, the pipeline aims to make a valuable and enduring contribution to the scientific community, enhancing the standards of reproducibility and usability.
+Adhering strictly to best practices in software development, this research not only seeks to provide immediate solutions but also aims to position *aPhyloGeo* as a reliable and adaptable platform. Striving to contribute meaningfully to the field of phylogeographic analysis, the pipeline is committed to offering users a sophisticated suite of tools that seamlessly adapt to the evolving landscape of genetic research. Through these improvements, the pipeline aims to make a valuable and enduring contribution to the scientific community, enhancing the standards of reproducibility and usability.
 
 # Acknowledgements
 
