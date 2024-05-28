@@ -76,10 +76,9 @@ The diagram below illustrates the workflow of the algorithm, consisting of sever
 - **Second Block (Light Green):** This block creates phylogenetic trees based on input genetic data and performs input parameter validation (refer to the [YAML file](../aphylogeo/params.yaml)). This entails aligning DNA or amino acid sequences, inferring phylogenetic relationships using various methods (e.g., maximum likelihood, Bayesian inference), and assessing the statistical support for the inferred tree topology.
 
 - **Third Block (Light Pink):**  The third block, referred to as the phylogeography step, is the crux of the analysis. It compares the genetic trees (representing evolutionary relationships) with the climate trees (representing environmental similarity). This comparison utilizes either the Robinson-Foulds distance or the Least Squares distance to quantify the degree of congruence between the two tree types.  The output of this step includes:
-
-- Topological congruence statistics: Quantifying the degree of similarity between the genetic and climate trees.
-- Co-phylogenetic visualizations: Graphical representations highlighting the associations between genetic lineages and climatic niches.
-- Statistical tests: Assessing the significance of the observed phylogeographic patterns.
+  - Topological congruence statistics: Quantifying the degree of similarity between the genetic and climate trees.
+  - Co-phylogenetic visualizations: Graphical representations highlighting the associations between genetic lineages and climatic niches.
+  - Statistical tests: Assessing the significance of the observed phylogeographic patterns.
 This third block is pivotal, forming the basis from which users obtain output data with essential calculations. Our approach is optimized to adapt to various computing environments through elasticity and utilize parallelism and available GPUs/CPUs based on resource usage per unit of computation. This flexibility enables efficient processing of a single genetic window, as outlined in the workflow below.
 
 ## Multiprocessing
