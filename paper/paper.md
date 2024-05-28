@@ -73,7 +73,7 @@ The diagram below illustrates the workflow of the algorithm, consisting of sever
 
 - **First Block (Light Blue):** This block creates climate trees based on input climate data and validates the input parameters using a YAML file. This involves processing climatic variables such as temperature, precipitation, and elevation to construct phylogenetic trees that represent the relationships between geographic locations based on their climatic similarity.
 
-- **Second Block (Light Green):** This block creates phylogenetic trees based on input genetic data and performs input parameter validation (refer to the YAML file). This entails aligning DNA or amino acid sequences, inferring phylogenetic relationships using various methods (e.g., maximum likelihood, Bayesian inference), and assessing the statistical support for the inferred tree topology.
+- **Second Block (Light Green):** This block creates phylogenetic trees based on input genetic data and performs input parameter validation (refer to the [YAML file](../aphylogeo/params.yaml)). This entails aligning DNA or amino acid sequences, inferring phylogenetic relationships using various methods (e.g., maximum likelihood, Bayesian inference), and assessing the statistical support for the inferred tree topology.
 
 - **Third Block (Light Pink):**  The third block, referred to as the phylogeography step, is the crux of the analysis. It compares the genetic trees (representing evolutionary relationships) with the climate trees (representing environmental similarity). This comparison utilizes either the Robinson-Foulds distance or the Least Squares distance to quantify the degree of congruence between the two tree types.  The output of this step includes:
 
