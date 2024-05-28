@@ -93,11 +93,10 @@ pen_spark
 
 This work relies on the following main software packages:
 
-- [ete3](https://pypi.org/project/ete3/) version 3.1.3 (GNU General Public License (GPL) (GPLv3))
-- [Bio](https://pypi.org/project/bio/) version 1.5.9 (New BSD License)
-- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 (GNU General Public License v3 (GPLv3))
-- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 (BSD License (BSD))
-
+- [ete3](https://pypi.org/project/ete3/) version 3.1.3 (Huerta-Cepas, Serra & Bork, 2016), available under the GNU General Public License (GPL) (GPLv3), is used for phylogenetic tree manipulation and visualization.
+- [Bio](https://pypi.org/project/bio/) version 1.5.9 (Cock et al., 2009), available under the New BSD License, provides a wide range of bioinformatics tools and functionalities.
+- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 (Than & Ruths, 2008), available under the GNU General Public License v3 (GPLv3), is utilized for calculating the Robinson-Foulds distance between phylogenetic trees.
+- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 (Sukumaran & Holder, 2010), available under the BSD License (BSD), is employed for phylogenetic tree manipulation and analysis.
 # Methods
 
 ## Tree Comparison
