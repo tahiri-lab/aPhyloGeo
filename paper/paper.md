@@ -59,7 +59,7 @@ By maintaining the highest standards, this research aims to make a significant c
 
 # State of the Field - Advancements in Genomic Analysis
 
-In 2021, the Tahiri lab team introduced an algorithm aimed at identifying sub-sequences within genes, enhancing the topological similarity between reference trees (constructed from gene sequences) and phylogenetic trees (derived from genome sequences) [@nadia_tahiri-proc-scipy-2022]. This algorithm proves instrumental in pinpointing genes or gene segments sensitive or favorable to specific environments.
+In 2021, the Tahiri lab team introduced an algorithm aimed at identifying sub-sequences within genes, enhancing the topological agreement between reference trees (constructed from gene sequences) and phylogenetic trees (derived from genome sequences) [@nadia_tahiri-proc-scipy-2022]. This algorithm proves instrumental in pinpointing genes or gene segments sensitive or favorable to specific environments.
 
 Subsequently, the team extended their research, applying the algorithm to SARS-CoV-2 data in 2023 [@nadia_tahiri-proc-scipy-2023]. These developments contribute significantly to the methodological landscape, shedding light on genetic factors influencing adaptability in diverse environments. The ongoing dedication to refining tools and methodologies by the Tahiri lab ensures continuous progress and elevates the overall quality of genomic analysis within the scientific community.
 
