@@ -85,9 +85,6 @@ This third block is pivotal, forming the basis from which users obtain output da
 
 The algorithm supports multiprocessing, allowing the simultaneous analysis of multiple sliding windows within the genetic data. This feature is particularly recommended for large datasets, as it significantly speeds up the analysis by dividing the input sequences into smaller chunks that can be processed in parallel.
 
-pen_spark
-
-
 ## Dependencies
 
 This work relies on the following main software packages:
