@@ -38,7 +38,7 @@ aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
-*aPhyloGeo*, a versatile and open-source Python application available at [PyPI] (https://pypi.org/project/aphylogeo/), is designed to elucidate the complex relationship between species evolution and environmental pressures, with a particular focus on climate. By integrating genetic and climatic data, *aPhyloGeo* empowers researchers to investigate the mechanisms of evolutionary adaptation and pinpoint genetic regions potentially influenced by environmental factors.
+*aPhyloGeo*, a versatile and open-source Python application available at (PyPI)[https://pypi.org/project/aphylogeo/], is designed to elucidate the complex relationship between species evolution and environmental pressures, with a particular focus on climate. By integrating genetic and climatic data, *aPhyloGeo* empowers researchers to investigate the mechanisms of evolutionary adaptation and pinpoint genetic regions potentially influenced by environmental factors.
 
 The software's core strength lies in its comprehensive phylogenetic analysis pipeline, encompassing three distinct levels of investigation: genetic relationships, climatic impact assessment, and biogeographic correlations. This multi-faceted approach facilitates a holistic understanding of how species evolve and adapt to their environments. For example, researchers studying the genetic basis of high-altitude adaptation in birds could utilize aPhyloGeo to construct phylogenetic trees from genetic data, analyze oxygen levels across different altitudes, and identify correlations between specific genes and hypoxic conditions.
 
