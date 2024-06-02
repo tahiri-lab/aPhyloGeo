@@ -55,10 +55,9 @@ The rapid impacts of climate change and anthropogenic variables on biodiversity 
 
 This software package, aPhyloGeo, is dedicated to advancing state-of-the-art bioinformatics tools specifically designed for detailed phylogeographic analysis. Given the urgency of the current climate crisis and the anticipated future challenges, there is a pressing need to develop tools that not only meet but also exceed bioinformatics software development standards. These tools will be crafted to enable accurate characterization of genetic diversity and phenotypic traits in strict accordance with environmental conditions, thus empowering researchers to address critical questions in the field, such as:
 - How have past climatic fluctuations shaped the current patterns of genetic diversity and geographic distribution within species?
-- How will species distributions shift under various future climate scenarios, and can we identify potential refugia where they may persist?
+- How will species distribution evolve under different future climate scenarios? Is it possible to identify potential refuges where species could persist?
 - Which populations are most vulnerable to climate-related extinction based on their genetic diversity and adaptive potential?
 - Are there genetic signatures of local adaptation that reveal how populations have evolved in response to specific environmental pressures?
-- How can genetic information be used to prioritize populations for conservation and guide the design of effective protected areas?
 
 By maintaining the highest standards, this research aims to make a significant contribution to our understanding of the evolving ecological landscape and provide the scientific community with robust tools for comprehensive analysis and interpretation. aPhyloGeo will enable researchers to unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of ongoing environmental change.
 
