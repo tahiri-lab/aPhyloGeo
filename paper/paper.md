@@ -86,7 +86,7 @@ The diagram below illustrates the workflow of the algorithm, consisting of sever
   - Topological congruence statistics: Quantifying the degree of similarity between the genetic and climate trees.
   - Co-phylogenetic visualizations: Graphical representations highlighting the associations between genetic lineages and climatic niches.
   - Statistical tests: Assessing the significance of the observed phylogeographic patterns.
-This third block is pivotal, forming the basis from which users obtain output data with essential calculations. Our approach is optimized to adapt to various computing environments through elasticity and utilize parallelism and available GPUs/CPUs based on resource usage per unit of computation. This flexibility enables efficient processing of a single genetic window, as outlined in the workflow below.
+This third block is pivotal, forming the basis from which users obtain output data (i.e., name of gene, name of climate parameter, bootstrap value, Robinson-Foulds distance, entropy distance, least-square distance, the starting position and the ending position of windows, and climatic and genetic trees) with essential calculations (i.e., distances, tree inference, sequence alignment). Our approach is optimized to adapt to various computing environments through elasticity and utilize parallelism and available GPUs/CPUs based on resource usage per unit of computation. This flexibility enables efficient processing of a single genetic window, as outlined in the workflow below.
 
 ## Multiprocessing
 
