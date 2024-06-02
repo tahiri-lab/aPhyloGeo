@@ -90,7 +90,7 @@ This third block is pivotal, forming the basis from which users obtain output da
 
 ## Multiprocessing
 
-The algorithm supports multiprocessing, allowing the simultaneous analysis of multiple sliding windows within the genetic data. This feature is particularly recommended for large datasets, as it significantly speeds up the analysis by dividing the input sequences into smaller chunks that can be processed in parallel.
+The algorithm supports multiprocessing, allowing the simultaneous analysis of multiple sliding windows (i.e., corresponds to the alignment sub-sequence where the starting point is located after the first position of the alignment, and the ending point is located before the last position of the alignment) within the genetic data. This feature is particularly recommended for large datasets, as it significantly speeds up the analysis by dividing the input sequences into smaller chunks that can be processed in parallel.
 
 ## Dependencies
 
