@@ -6,10 +6,11 @@
         [![GitHub release](https://img.shields.io/github/v/release/tahiri-lab/aPhylogeo.svg?maxAge=3600)](https://github.com/tahiri-lab/aPhylogeo/releases/)
         [![build and test](https://github.com/tahiri-lab/aPhyloGeo/actions/workflows/runUnitTests.yml/badge.svg)]([https://github.com/tahiri-lab/aPhyloGeo/actions/workflows/runUnitTests.yml](https://github.com/tahiri-lab/aPhyloGeo/actions/workflows/runUnitTests.yml))
         [![PyPI version](https://badge.fury.io/py/aphylogeo.svg)](https://badge.fury.io/py/aphylogeo)
+        [![documentation - GitHub Wiki](https://img.shields.io/badge/Documentation%20-%20GitHub%20Wiki-green?style=flat)](https://github.com/tahiri-lab/aPhyloGeo/wiki)
         </p>
 
 
-<h2  align="center"> 🌳 Multi-platform application for analyze phylogenetic trees with climatic parameters</h2>
+<h2  align="center"> 🌳 Multi-platform application for analyzing phylogenetic trees with climatic parameters</h2>
 
 <details open>
   <summary>Table of Contents</summary>
