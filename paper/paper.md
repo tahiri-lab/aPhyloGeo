@@ -68,7 +68,7 @@ By maintaining the highest standards, this research aims to make a significant c
 # State of the Field - Advancements in Genomic Analysis
 The field of genomic analysis has progressed significantly in recent years, notably in the creation of tools and algorithms to explore the intricate relationship between genetic variation and environmental factors. The Tahiri lab team's innovative 2021 algorithm for identifying sub-sequences within genes [@nadia_tahiri-proc-scipy-2022], and its subsequent application to SARS-CoV-2 data in 2023 [@nadia_tahiri-proc-scipy-2023], stand out as substantial contributions to this field, enhancing our comprehension of the genetic underpinnings of adaptation across various species and environments.
 
-In the broader field of phylogeography, substantial methodological advancements have also occurred. Several Python packages provide functionalities pertinent to phylogeographic analysis, but often in a fragmented way. Biopython, a cornerstone in bioinformatics, excels at handling genetic sequences and basic phylogenetic tasks, yet falls short in integrating environmental data. DendroPy, a robust library for phylogenetic trees, aids in visualizing phylogeographic patterns but requires additional tools for comprehensive analysis. While SciPy's statistical prowess could be harnessed for custom analyses, its complexity demands a strong background in statistical programming. GeoPandas, adept at handling geospatial data, is useful for mapping genetic or environmental distributions, but lacks seamless integration with genetic data analysis tools. In summary, while powerful individual tools exist, a comprehensive and user-friendly Python package specifically designed for phylogeographic analysis remains a gap to be filled.
+In the broader field of phylogeography, substantial methodological advancements have also occurred. Several Python packages provide functionalities pertinent to phylogeographic analysis, but often in a fragmented way. Biopython [@cornish2021biopython], a cornerstone in bioinformatics, excels at handling genetic sequences and basic phylogenetic tasks, yet falls short in integrating environmental data. DendroPy, a robust library for phylogenetic trees, aids in visualizing phylogeographic patterns but requires additional tools for comprehensive analysis. While SciPy's statistical prowess could be harnessed for custom analyses, its complexity demands a strong background in statistical programming. GeoPandas, adept at handling geospatial data, is useful for mapping genetic or environmental distributions, but lacks seamless integration with genetic data analysis tools. In summary, while powerful individual tools exist, a comprehensive and user-friendly Python package specifically designed for phylogeographic analysis remains a gap to be filled.
 
 Statistical approaches, including generalized linear models (GLMs) and mixed models, are increasingly used to investigate the relationship between genetic variation and environmental variables. These methods enable researchers to quantify the relative influence of various factors, such as climate, geography, and demography, on observed patterns of genetic diversity.
 
@@ -100,10 +100,10 @@ The algorithm supports multiprocessing, allowing the simultaneous analysis of mu
 
 This work relies on the following main software packages:
 
-- [ete3](https://pypi.org/project/ete3/) version 3.1.3 (Huerta-Cepas, Serra & Bork, 2016), available under the GNU General Public License (GPL) (GPLv3), is used for phylogenetic tree manipulation and visualization.
-- [Bio](https://pypi.org/project/bio/) version 1.5.9 (Cock et al., 2009), available under the New BSD License, provides a wide range of bioinformatics tools and functionalities.
-- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 (Than & Ruths, 2008), available under the GNU General Public License v3 (GPLv3), is utilized for calculating the Robinson-Foulds distance between phylogenetic trees.
-- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 (Sukumaran & Holder, 2010), available under the BSD License (BSD), is employed for phylogenetic tree manipulation and analysis.
+- [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete], available under the GNU General Public License (GPL) (GPLv3), is used for phylogenetic tree manipulation and visualization.
+- [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython], available under the New BSD License, provides a wide range of bioinformatics tools and functionalities.
+- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 [@huerta2016ete], available under the GNU General Public License v3 (GPLv3), is utilized for calculating the Robinson-Foulds distance between phylogenetic trees.
+- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 [@sukumaran2010dendropy], available under the BSD License (BSD), is employed for phylogenetic tree manipulation and analysis.
 # Methods
 
 ## Tree Comparison
@@ -114,23 +114,23 @@ In the comparison of phylogenetic trees, which are constructed based on genetic 
 
 Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods:
 
-- **Pairwise Alignment**: Fundamental in comparing two sequences.
-- **MUSCLE**: Multiple Sequence Comparison by Log-Expectation, a popular tool for high-quality MSA.
-- **CLUSTALW**: A widely-used software for multiple sequence alignment.
-- **MAFFT**: Multiple Alignment using Fast Fourier Transform, known for its accuracy and efficiency.
+- **Pairwise Alignment**: Fundamental in comparing two sequences [@li2018minimap2].
+- **MUSCLE**: Multiple Sequence Comparison by Log-Expectation, a popular tool for high-quality MSA [@edgar2004muscle].
+- **CLUSTALW**: A widely-used software for multiple sequence alignment [@hung2016sequence].
+- **MAFFT**: Multiple Alignment using Fast Fourier Transform, known for its accuracy and efficiency [@katoh2013mafft].
 
 ## Similarity Methods
 
 To enhance the algorithm's performance, a meticulous approach was adopted. Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics:
 
-1. **Hamming distance**: Measures the difference between two strings of equal length.
-2. **Levenshtein distance**: Evaluates the minimum number of single-character edits required to transform one sequence into another.
-3. **Damerau-Levenshtein distance**: Similar to Levenshtein distance, with an additional operation allowing transpositions of adjacent characters.
-4. **Jaro similarity**: Computes the similarity between two strings, considering the number of matching characters and transpositions.
-5. **Jaro-Winkler similarity**: An enhancement of Jaro similarity, giving more weight to common prefixes.
-6. **Smith–Waterman similarity**: Utilizes local sequence alignment to identify similar regions within sequences.
-7. **Jaccard similarity**: Measures the similarity between finite sample sets.
-8. **Sørensen-Dice similarity**: Particularly useful for comparing the similarity of two samples.
+1. **Hamming distance**: Measures the difference between two strings of equal length [@labib2019hamming].
+2. **Levenshtein distance**: Evaluates the minimum number of single-character edits required to transform one sequence into another [@yujian2007normalized].
+3. **Damerau-Levenshtein distance**: Similar to Levenshtein distance, with an additional operation allowing transpositions of adjacent characters [@zhao2019string].
+4. **Jaro similarity**: Computes the similarity between two strings, considering the number of matching characters and transpositions [@pradhan2015review].
+5. **Jaro-Winkler similarity**: An enhancement of Jaro similarity, giving more weight to common prefixes [@pradhan2015review].
+6. **Smith–Waterman similarity**: Utilizes local sequence alignment to identify similar regions within sequences [@waterman1978similarity].
+7. **Jaccard similarity**: Measures the similarity between finite sample sets [@bag2019efficient].
+8. **Sørensen-Dice similarity**: Particularly useful for comparing the similarity of two samples [@li2020generic].
 
 This comprehensive methodology ensures a nuanced and high-quality analysis, contributing to a deeper understanding of sequence distinctions.
 
