@@ -41,7 +41,7 @@ aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
 aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
-# Summary
+# Abstract
 *aPhyloGeo*, a versatile and open-source Python application available at [PyPI](https://pypi.org/project/aphylogeo/), is designed to elucidate the complex relationship between species evolution and environmental pressures, with a particular focus on climate. By integrating genetic and climatic data, *aPhyloGeo* empowers researchers to investigate the mechanisms of evolutionary adaptation and pinpoint genetic regions potentially influenced by environmental factors.
 
 The software's core strength lies in its comprehensive phylogenetic analysis pipeline, encompassing three distinct levels of investigation: genetic relationships, climatic impact assessment, and biogeographic correlations. This multi-faceted approach facilitates a holistic understanding of how species evolve and adapt to their environments. For example, researchers studying the genetic basis of high-altitude adaptation in birds could utilize aPhyloGeo to construct phylogenetic trees from genetic data, analyze oxygen levels across different altitudes, and identify correlations between specific genes and hypoxic conditions.
@@ -49,7 +49,7 @@ The software's core strength lies in its comprehensive phylogenetic analysis pip
 In another scenario, scientists investigating the impact of climate change on marine biodiversity could employ *aPhyloGeo* to examine the genetic diversity of coral species, assess changes in sea surface temperatures over time, and pinpoint genetic markers associated with thermal tolerance.
 These examples demonstrate the wide range of research questions that *aPhyloGeo* can address, making it an invaluable tool for evolutionary biologists, ecologists, and conservationists alike.
 
-Underlying *aPhyloGeo*'s analyses are robust algorithms employing metrics such as least squares distance [@felsenstein1997alternating] , Euclidean distance, and Robinson-Foulds distance [@robinson1981comparison] to quantify similarity across different levels. This rigorous approach ensures that the identification of correlations is statistically sound, while adhering to the principles of phylogenetic inference [@gascuel2006neighbor]. The software's modular design and Python interface offer flexibility, allowing users to tailor analyses to their specific research questions and datasets. Additionally, *aPhyloGeo*'s open-source nature fosters collaboration and transparency within the scientific community.
+Underlying *aPhyloGeo*'s analyses are robust algorithms employing metrics such as least squares distance [@felsenstein1997alternating], Euclidean distance, and Robinson-Foulds distance [@robinson1981comparison] to quantify similarity across different levels. This rigorous approach ensures that the identification of correlations is statistically sound, while adhering to the principles of phylogenetic inference [@gascuel2006neighbor]. The software's modular design and Python interface offer flexibility, allowing users to tailor analyses to their specific research questions and datasets. Additionally, *aPhyloGeo*'s open-source nature fosters collaboration and transparency within the scientific community.
 
 By enabling researchers to explore the complex interplay between genetics and environment, *aPhyloGeo* contributes to a deeper understanding of evolutionary processes. This knowledge not only enhances our appreciation of the natural world but also informs conservation efforts in the face of climate change and other environmental challenges. By identifying genetic adaptations to changing environments, *aPhyloGeo* can help prioritize species and populations for conservation, ultimately contributing to the preservation of biodiversity on our planet.
 
@@ -77,6 +77,7 @@ The continuous refinement of these tools and methodologies, coupled with the gro
 # Pipeline
 
 Navigating the *aPhyloGeo* workflow (refer to \autoref{fig:figure1}) is indispensable to fully harness the potential of this bioinformatics pipeline. The visual representation in \autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis with optimized effectiveness.
+For a more detailed understanding, please refer to the comprehensive tutorial available at the following link: [tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial).
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
