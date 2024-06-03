@@ -8,21 +8,25 @@ tags:
   - phylogeny
   - phylogeography
 authors:
+  - name: My-Linh Luu
+    affiliation: 2
+    corresponding: false
+    email: mylinh_93@hotmail.com
+  - name: Georges Marceau
+    affiliation: 2
+    orcid: 0009-0005-9827-5735
+    corresponding: false
+    email: gmaccounts@icloud.com
+  - name: David Beauchemin
+    affiliation: 2
+    orcid: 0009-0009-1338-9012
+    corresponding: false
+    email: david.beauchemin.3@courrier.uqam.ca
   - name: Nadia Tahiri
     affiliation: 1
     orcid: 0000-0002-1818-208X
     corresponding: true
     email: Nadia.Tahiri@USherbrooke.ca
-  - name: Georges Marceau
-    affiliation: 2
-    orcid: 0009-0005-9827-5735
-    corresponding: true
-    email: gmaccounts@icloud.com
-  - name: David Beauchemin
-    affiliation: 2
-    orcid: 0009-0009-1338-9012
-    corresponding: true
-    email: david.beauchemin.3@courrier.uqam.ca
 affiliations:
   - name: département d’Informatique, Université de Sherbrooke, 2500 Boulevard de l’Université, Sherbrooke, Québec J1K 2R1, Canada
     index: 1
