@@ -76,6 +76,12 @@ We provide several tutorials to help you get started with the package.
 # 📖 Documentation
 
 You can also refer to the [documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki) for more details.
+Some useful links:
+
+* [Installation guide](https://github.com/tahiri-lab/aPhyloGeo/wiki/Installation-guide)
+* [Tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial)
+* [Worflow](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)
+* [Contribution Guidelines](https://github.com/tahiri-lab/aPhyloGeo/wiki/Contribution-Guidelines)
 
 # ✔️ References
 
