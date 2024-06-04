@@ -67,7 +67,7 @@ poetry install
 ### Usage
 Poetry will handle the virtual environment automatically. if you want to use the virtual environment manually, you can use the following command:
 
-```
+```python3
 poetry shell
 ```
 
