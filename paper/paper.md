@@ -52,22 +52,28 @@ Available as a PyPI package, *aPhyloGeo* enhances understanding of evolutionary 
 
 # Statement of Need
 
-The rapid impacts of climate change and anthropogenic variables on biodiversity and population dynamics underscore the necessity for more advanced tools capable of resolving the complexities of ecosystems under perturbation. Biologists utilize phylogeographic approaches to closely examine the interplay between the genetic structures of study populations and their geographic distributions, considering both current and historical geoclimatic contexts.
+Climate change and human activities are rapidly impacting biodiversity and population dynamics. To understand these complexities, biologists use phylogeography, which examines the interplay between genetics, geography, and past/present climate.
 
-This software package, *aPhyloGeo*, is designed for detailed phylogeographic analysis (i.e., Genetic dataset and climatic dataset).
-Given the urgency of the current climate crisis and the anticipated future challenges, there is a pressing need to develop tools that not only meet but also exceed bioinformatics software development standards. These tools will be crafted to enable accurate characterization of genetic diversity and phenotypic traits in strict accordance with environmental conditions, thus empowering researchers to address critical questions in the field, such as:
+## aPhyloGeo: A Software Solution
 
-- How have past climatic fluctuations shaped the current patterns of genetic diversity and geographic distribution within species?
-- How will species distribution evolve under different future climate scenarios? Is it possible to identify potential refuges where species could persist?
-- Which populations are most vulnerable to climate-related extinction based on their genetic diversity and adaptive potential?
-- Are there genetic signatures of local adaptation that reveal how populations have evolved in response to specific environmental pressures?
+*aPhyloGeo* is a software package designed for detailed phylogeographic analysis, considering both genetic and climatic data.
 
-This research aims to make a significant contribution to our understanding of the evolving ecological landscape and provide the scientific community with robust tools for comprehensive analysis and interpretation. *aPhyloGeo* will enable researchers to unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of ongoing environmental change.
+## Addressing Critical Questions
+
+Given the urgency of climate change, new bioinformatics tools are needed. *aPhyloGeo* will help researchers address critical questions like:
+
+* How has past climate shaped current genetic diversity and distribution?
+* How will species distributions evolve under future climates?
+* Which populations are most vulnerable to extinction?
+* Are there genetic signatures of local adaptation?
+
+## Contribution and Impact
+
+This research aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of climate change.
+
 
 # State of the Field - Advancements in Genomic Analysis
-Advances in genomic analysis, notably in identifying gene sub-sequences [@nadia_tahiri-proc-scipy-2022], and applying them to SARS-CoV-2 data [@nadia_tahiri-proc-scipy-2023], enhance understanding of genetic adaptation across species and environments. In phylogeography, though various Python packages provide easy analysis, none seamlessly integrates genetic and environmental data. While Biopython handles genetic sequences well [@cornish2021biopython], it lacks environmental integration. DendroPy visualizes phylogeographic patterns but needs additional tools (actually our team works on [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus), a software). SciPy offers statistical utilities but requires expertise. GeoPandas manages geospatial data but lacks genetic integration. A user-friendly Python package specifically for phylogeography is needed.
-
-Statistical methods like generalized linear models and mixed models help quantify the relationship between genetic variation and environmental factors. The evolution of these tools alongside high-throughput sequencing and environmental data availability creates opportunities in evolutionary biology, ecology, and conservation. *aPhyloGeo* integrates genetic and climatic data, aiming to enhance understanding of biodiversity dynamics.
+Advances in genomic analysis, notably in identifying gene sub-sequences [@nadia_tahiri-proc-scipy-2022], and applying them to SARS-CoV-2 data [@nadia_tahiri-proc-scipy-2023], enhance understanding of genetic adaptation across species and environments. In phylogeography, though various Python packages provide easy analysis, none seamlessly integrates genetic and environmental data. While Biopython handles genetic sequences well [@cornish2021biopython], it lacks environmental integration. DendroPy visualizes phylogeographic patterns but needs additional tools (actually our team works on [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus) software). A user-friendly Python package specifically for phylogeography is needed.
 
 # Pipeline
 
@@ -104,8 +110,6 @@ Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics a
 ## Similarity Methods
 
 Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics: 1) **Hamming distance** [@labib2019hamming], 2) **Levenshtein distance** [@yujian2007normalized], 3) **Damerau-Levenshtein distance** [@zhao2019string], 4) **Jaro similarity** [@pradhan2015review], 5) **Jaro-Winkler similarity** [@pradhan2015review], 6) **Smith–Waterman similarity** [@waterman1978similarity], 7) **Jaccard similarity** [@bag2019efficient], and 8) **Sørensen-Dice similarity** [@li2020generic].
-
-This comprehensive methodology ensures a nuanced and high-quality analysis, contributing to a deeper understanding of sequence distinctions.
 
 
 # Conclusion
