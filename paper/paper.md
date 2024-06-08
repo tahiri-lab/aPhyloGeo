@@ -71,10 +71,6 @@ Given the urgency of climate change, new bioinformatics tools are needed. *aPhyl
 
 This research aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of climate change.
 
-
-# State of the Field - Advancements in Genomic Analysis
-Advances in genomic analysis, notably in identifying gene sub-sequences [@nadia_tahiri-proc-scipy-2022], and applying them to SARS-CoV-2 data [@nadia_tahiri-proc-scipy-2023], enhance understanding of genetic adaptation across species and environments. In phylogeography, though various Python packages provide easy analysis, none seamlessly integrates genetic and environmental data. While Biopython handles genetic sequences well [@cornish2021biopython], it lacks environmental integration. DendroPy visualizes phylogeographic patterns but needs additional tools (actually our team works on [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus) software). A user-friendly Python package specifically for phylogeography is needed.
-
 # Pipeline
 
 Navigating the *aPhyloGeo* workflow (refer to \autoref{fig:figure1}) is indispensable to fully harness the potential of this bioinformatics pipeline. The visual representation in \autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis with optimized effectiveness.
