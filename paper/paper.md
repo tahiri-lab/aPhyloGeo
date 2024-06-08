@@ -118,25 +118,11 @@ In the comparison of phylogenetic trees, which are constructed based on genetic 
 
 ## Editing Multiple Sequence Alignment Methods
 
-Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods:
-
-- **Pairwise Alignment**: Fundamental in comparing two sequences [@li2018minimap2].
-- **MUSCLE**: Multiple Sequence Comparison by Log-Expectation, a popular tool for high-quality MSA [@edgar2004muscle].
-- **CLUSTALW**: A widely-used software for multiple sequence alignment [@hung2016sequence].
-- **MAFFT**: Multiple Alignment using Fast Fourier Transform, known for its accuracy and efficiency [@katoh2013mafft].
+Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods: 1) **Pairwise Alignment** [@li2018minimap2], 2) **MUSCLE** [@edgar2004muscle], 3) **CLUSTALW** [@hung2016sequence], and **MAFFT** [@katoh2013mafft].
 
 ## Similarity Methods
 
-Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics:
-
-1. **Hamming distance**: Measures the difference between two strings of equal length [@labib2019hamming].
-2. **Levenshtein distance**: Evaluates the minimum number of single-character edits required to transform one sequence into another [@yujian2007normalized].
-3. **Damerau-Levenshtein distance**: Similar to Levenshtein distance, with an additional operation allowing transpositions of adjacent characters [@zhao2019string].
-4. **Jaro similarity**: Computes the similarity between two strings, considering the number of matching characters and transpositions [@pradhan2015review].
-5. **Jaro-Winkler similarity**: An enhancement of Jaro similarity, giving more weight to common prefixes [@pradhan2015review].
-6. **Smith–Waterman similarity**: Utilizes local sequence alignment to identify similar regions within sequences [@waterman1978similarity].
-7. **Jaccard similarity**: Measures the similarity between finite sample sets [@bag2019efficient].
-8. **Sørensen-Dice similarity**: Particularly useful for comparing the similarity of two samples [@li2020generic].
+Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics: 1) **Hamming distance** [@labib2019hamming], 2) **Levenshtein distance** [@yujian2007normalized], 3) **Damerau-Levenshtein distance** [@zhao2019string], 4) **Jaro similarity** [@pradhan2015review], 5) **Jaro-Winkler similarity** [@pradhan2015review], 6) **Smith–Waterman similarity** [@waterman1978similarity], 7) **Jaccard similarity** [@bag2019efficient], and 8) **Sørensen-Dice similarity** [@li2020generic].
 
 This comprehensive methodology ensures a nuanced and high-quality analysis, contributing to a deeper understanding of sequence distinctions.
 
