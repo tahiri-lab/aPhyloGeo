@@ -86,10 +86,10 @@ The algorithm supports multiprocessing, allowing the simultaneous analysis of mu
 
 This work relies on the following main software packages:
 
-- [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete], available under the GNU General Public License (GPL) (GPLv3), is used for phylogenetic tree manipulation and visualization.
-- [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython], available under the New BSD License, provides a wide range of bioinformatics tools and functionalities.
-- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 [@huerta2016ete], available under the GNU General Public License v3 (GPLv3), is utilized for calculating the Robinson-Foulds distance between phylogenetic trees.
-- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 [@sukumaran2010dendropy], available under the BSD License (BSD), is employed for phylogenetic tree manipulation and analysis.
+- [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete].
+- [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython].
+- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 [@huerta2016ete].
+- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 [@sukumaran2010dendropy].
 
 # Methods
 
