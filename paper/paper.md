@@ -78,7 +78,7 @@ For a more detailed understanding, please refer to the comprehensive tutorial [p
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
-The diagram below illustrates the workflow of the algorithm, consisting of several key blocks, each highlighted with a distinct color (refer to the [wiki page](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow).
+The diagram below illustrates the workflow of the algorithm, consisting of several key blocks, each highlighted with a distinct color (refer to the [wiki page](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)).
 
 ## Multiprocessing
 
