@@ -90,8 +90,6 @@ This work relies on the following main software packages (refer to [pyproject.to
 
 - [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete].
 - [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython].
-- [robinson-foulds](https://pypi.org/project/robinson-foulds/) version 1.2 [@huerta2016ete].
-- [dendropy](https://pypi.org/project/DendroPy/) version 4.6.1 [@sukumaran2010dendropy].
 
 # Methods
 
