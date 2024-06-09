@@ -115,6 +115,6 @@ The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced a
 
 # Acknowledgements
 
-This work was supported by the Natural Sciences and Engineering Research Council of Canada, Fonds de recherche du Québec – Nature et technologies, the University of Sherbrooke grant, and the Centre de recherche en écologie de l'UdeS (CREUS). The computations were performed on resources provided by Compute Canada and Compute Quebec, the national and provincial infrastructure for high-performance computing and data storage. The authors would like to thank the students of the University of Sherbrooke and the Université du Québec à Montréal for their significant contributions to the development of the software. Finally, the authors would like to thank the reviewers and the editor for their valuable comments.
+This work was supported by the Natural Sciences and Engineering Research Council of Canada and Fonds de recherche du Québec – Nature et technologies. The computations were performed on resources provided by Compute Canada and Compute Quebec, the national and provincial infrastructure for high-performance computing and data storage. The authors would like to thank the students of the University of Sherbrooke and the Université du Québec à Montréal for their significant contributions to the development of the software. Finally, the authors would like to thank the reviewers and the editor for their valuable comments.
 
 # References
