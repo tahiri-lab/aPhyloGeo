@@ -86,7 +86,7 @@ The algorithm supports multiprocessing, allowing the simultaneous analysis of mu
 
 ## Dependencies
 
-This work relies on the following main software packages:
+This work relies on the following main software packages (refer to [pyproject.toml file]([https://github.com/tahiri-lab/aPhyloGeo/blob/main/setup.py](https://github.com/tahiri-lab/aPhyloGeo/blob/main/pyproject.toml))):
 
 - [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete].
 - [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython].
