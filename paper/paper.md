@@ -52,11 +52,13 @@ Available as a PyPI package, *aPhyloGeo* enhances understanding of evolutionary 
 
 # Statement of Need
 
-While BEAST and MrBayes are primarily used for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both analyses, with a streamlined workflow.
 Phylogeography, the study of the interplay between evolution and environment, has long been hindered by the challenges of integrating complex phylogenetic and environmental datasets. aPhyloGeo revolutionizes this field by offering a user-friendly Python package that streamlines phylogeographic analysis. 
-This comprehensive tool seamlessly combines diverse phylogenetic and environmental data formats into an integrated workflow. Its customizable toolkit empowers researchers to conduct various statistical tests and create informative visualizations, even when dealing with large datasets. 
 By facilitating the investigation of the intricate relationship between genetic variation and environmental factors, aPhyloGeo is poised to advance our understanding of evolution, biogeography, and conservation efforts. This powerful package makes phylogeographic analysis more accessible and efficient, opening new avenues for research and discovery.
+The aPhyloGeo package is designed for versatile integration, offering flexibility to be incorporated into various environments. It can be seamlessly embedded within Python scripts for custom workflows, deployed on cloud platforms for scalable analysis, or integrated into web and desktop applications for user-friendly access. This adaptability makes it a valuable tool for diverse research and development needs, from individual projects to large-scale applications.
 
+# Statement of Field
+
+While BEAST \ref{drummond2007beast} and MrBayes \ref{ronquist2012mrbayes} are primarily used for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS \ref{scott2009spatial} focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both analyses, with a streamlined workflow.
 
 ## aPhyloGeo: A Software Solution
 
