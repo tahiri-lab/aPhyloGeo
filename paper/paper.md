@@ -58,7 +58,7 @@ The aPhyloGeo package is designed for versatile integration, offering flexibilit
 
 # Statement of Field
 
-While BEAST \ref{drummond2007beast} and MrBayes \ref{ronquist2012mrbayes} are primarily used for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS \ref{scott2009spatial} focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both analyses, with a streamlined workflow.
+While BEAST [@drummond2007beast] and MrBayes [@ronquist2012mrbayes] are primarily used for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS [@scott2009spatial] focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both analyses, with a streamlined workflow.
 
 ## aPhyloGeo: A Software Solution
 
