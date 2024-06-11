@@ -98,7 +98,7 @@ This work relies on the following main software packages (refer to [pyproject.to
 - [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython].
 
 # Methods
-
+The methods validate input parameters to ensure data accuracy and prevent errors (refer to the [YAML file]([../aphylogeo/params.yaml](https://github.com/tahiri-lab/aPhyloGeo/blob/0889da4f2858320484db324e627e20b198703e5d/aphylogeo/params.yaml))).
 ## Tree Comparison
 
 In the comparison of phylogenetic trees, which are constructed based on genetic data, with climatic trees, a crucial step involves applying a phylogeography approach. This includes the utilization of Robinson and Foulds distance for topology evaluation and Least Squares distance for assessing branch length differences.
@@ -114,7 +114,7 @@ Sequences with notable variability were specifically retained for analysis. The 
 
 # Conclusion
 
-The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like Quarted and bipartition distances for better genetic diversity assessment. Emphasizing software development best practices and open-source principles (e.g., iPhyloGeo++), \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
+The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like Quarted and bipartition distances for better genetic diversity assessment. Emphasizing software development best practices and open-source principles (e.g., [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus)), \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
 
 
 # Acknowledgements
