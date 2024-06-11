@@ -45,5 +45,6 @@ if __name__ == "__main__":
     climaticTrees = utils.climaticPipeline(climatic_data)
     utils.filterResults(climaticTrees, geneticTrees, climatic_data)
 
+    # save results
     alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
     trees.save_trees_to_json("./results/geneticTrees.json")
