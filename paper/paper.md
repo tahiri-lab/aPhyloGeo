@@ -75,7 +75,7 @@ Given the urgency of climate change, new bioinformatics tools are needed. *aPhyl
 
 ## Contribution and Impact
 
-This research aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of climate change.
+*aPhyloGeo* aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of climate change.
 
 # Pipeline
 
