@@ -94,8 +94,8 @@ The algorithm supports multiprocessing, allowing the simultaneous analysis of mu
 
 This work relies on the following main software packages (refer to [pyproject.toml file]([https://github.com/tahiri-lab/aPhyloGeo/blob/main/setup.py](https://github.com/tahiri-lab/aPhyloGeo/blob/main/pyproject.toml))):
 
-- [ete3](https://pypi.org/project/ete3/) version 3.1.3 [@huerta2016ete].
-- [Bio](https://pypi.org/project/bio/) version 1.5.9 [@cock2009biopython].
+- [ete3](https://pypi.org/project/ete3/) [@huerta2016ete].
+- [Bio](https://pypi.org/project/bio/) [@cock2009biopython].
 
 # Methods
 The methods validate input parameters to ensure data accuracy and prevent errors (refer to the [YAML file]([../aphylogeo/params.yaml](https://github.com/tahiri-lab/aPhyloGeo/blob/0889da4f2858320484db324e627e20b198703e5d/aphylogeo/params.yaml))).
