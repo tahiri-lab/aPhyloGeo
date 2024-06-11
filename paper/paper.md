@@ -52,7 +52,10 @@ Available as a PyPI package, *aPhyloGeo* enhances understanding of evolutionary 
 
 # Statement of Need
 
-Climate change and human activities are rapidly impacting biodiversity and population dynamics. To understand these complexities, biologists use phylogeography, which examines the interplay between genetics, geography, and past/present climate.
+Phylogeography, the study of the interplay between evolution and environment, has long been hindered by the challenges of integrating complex phylogenetic and environmental datasets. aPhyloGeo revolutionizes this field by offering a user-friendly Python package that streamlines phylogeographic analysis. 
+This comprehensive tool seamlessly combines diverse phylogenetic and environmental data formats into an integrated workflow. Its customizable toolkit empowers researchers to conduct various statistical tests and create informative visualizations, even when dealing with large datasets. 
+By facilitating the investigation of the intricate relationship between genetic variation and environmental factors, aPhyloGeo is poised to advance our understanding of evolution, biogeography, and conservation efforts. This powerful package makes phylogeographic analysis more accessible and efficient, opening new avenues for research and discovery.
+
 
 ## aPhyloGeo: A Software Solution
 
