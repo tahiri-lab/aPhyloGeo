@@ -80,7 +80,7 @@ The `aPhyloGeo` software can be encapsulated in other applications and applied t
 
 # 📚 Tutorials
 
-We provide several tutorials to help you get started with the package.
+We offer several comprehensive tutorials to help users get started with the package.
 
 # 📖 Documentation
 
