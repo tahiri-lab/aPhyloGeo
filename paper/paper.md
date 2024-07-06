@@ -52,13 +52,13 @@ Available as a PyPI package, *aPhyloGeo* enhances understanding of evolutionary 
 
 # Statement of Need
 
-Phylogeography, the study of the interplay between evolution and environment, has long been hindered by the challenges of integrating complex phylogenetic and environmental datasets. aPhyloGeo revolutionizes this field by offering a user-friendly Python package that streamlines phylogeographic analysis. 
+Phylogeography, the study of the interplay between evolution and environment, has long been hindered by the challenges of integrating complex phylogenetic and environmental datasets. aPhyloGeo contributes to this field by offering a user-friendly Python package that streamlines phylogeographic analysis. 
 By facilitating the investigation of the intricate relationship between genetic variation and environmental factors, aPhyloGeo is poised to advance our understanding of evolution, biogeography, and conservation efforts. This powerful package makes phylogeographic analysis more accessible and efficient, opening new avenues for research and discovery.
 The aPhyloGeo package is designed for versatile integration, offering flexibility to be incorporated into various environments. It can be seamlessly embedded within Python scripts for custom workflows, deployed on cloud platforms for scalable analysis, or integrated into web and desktop applications for user-friendly access. This adaptability makes it a valuable tool for diverse research and development needs, from individual projects to large-scale applications.
 
-# Statement of Field
+# Related Software Packages
 
-While BEAST [@drummond2007beast] and MrBayes [@ronquist2012mrbayes] are primarily used for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS [@scott2009spatial] focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both analyses, with a streamlined workflow.
+While BEAST [@drummond2007beast] and MrBayes [@ronquist2012mrbayes] are popular for phylogenetic analyses, they lack integrated tools for analyzing climatic data. Other software like ArcGIS [@scott2009spatial] focuses on geospatial analysis but may not be tailored for phylogeographic research. aPhyloGeo bridges this gap by providing a unified platform for both types of analysis, with a streamlined workflow.
 
 ## aPhyloGeo: A Software Solution
 
@@ -75,24 +75,22 @@ Given the urgency of climate change, new bioinformatics tools are needed. *aPhyl
 
 ## Contribution and Impact
 
-*aPhyloGeo* aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting the impacts of climate change.
+*aPhyloGeo* aims to provide robust tools for analyzing and interpreting phylogeographic data. *aPhyloGeo* will help unravel the complex interplay between genetics, geography, and environment, informing conservation strategies and predicting impacts of climate change.
 
 # Pipeline
 
-Navigating the *aPhyloGeo* workflow (refer to \autoref{fig:figure1}) is indispensable to fully harness the potential of this bioinformatics pipeline. The visual representation in \autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis with optimized effectiveness.
-For a more detailed understanding, please refer to the comprehensive tutorial [provided with the software](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial).
+\autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis using *aPhyloGeo*.
+For a more detailed understanding, please refer to the [comprehensive tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial) and [provided with the software](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow).
 
 ![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
 
-The diagram below illustrates the workflow of the algorithm, consisting of several key blocks, each highlighted with a distinct color (refer to the [wiki page](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)).
-
 ## Multiprocessing
 
-The algorithm supports multiprocessing, allowing the simultaneous analysis of multiple sliding windows (i.e., corresponds to the alignment sub-sequence where the starting point is located after the first position of the alignment, and the ending point is located before the last position of the alignment) within the genetic data. This feature is particularly recommended for large datasets, as it significantly speeds up the analysis by dividing the input sequences into smaller chunks that can be processed in parallel.
+The algorithm supports multiprocessing, allowing the simultaneous analysis of multiple sliding windows (i.e., corresponds to the alignment sub-sequence where the starting point is located after the first position of the alignment, and the ending point is located before the last position of the alignment) within genetic data. This feature is particularly recommended for large datasets, as it significantly speeds up the analysis by dividing the input sequences into smaller chunks that can be processed in parallel.
 
 ## Dependencies
 
-This work relies on the following main software packages (refer to [pyproject.toml file]([https://github.com/tahiri-lab/aPhyloGeo/blob/main/setup.py](https://github.com/tahiri-lab/aPhyloGeo/blob/main/pyproject.toml))):
+This work relies on the following main software packages (refer to [pyproject.toml file](https://github.com/tahiri-lab/aPhyloGeo/blob/0889da4f2858320484db324e627e20b198703e5d/pyproject.toml)):
 
 - [ete3](https://pypi.org/project/ete3/) [@huerta2016ete].
 - [Bio](https://pypi.org/project/bio/) [@cock2009biopython].
@@ -115,7 +113,7 @@ Sequences with notable variability were specifically retained for analysis. The 
 
 # Conclusion
 
-The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like Quarted and bipartition distances for better genetic diversity assessment. Emphasizing software development best practices and open-source principles (e.g., [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus)), \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
+The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced co-analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like quartet and bipartition distances for better genetic diversity assessment. Emphasizing software development best practices and open-source principles (e.g., [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus)), \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
 
 
 # Acknowledgements
