@@ -100,7 +100,13 @@ The methods validate input parameters to ensure data accuracy and prevent errors
 
 ## Tree Comparison
 
-In the comparison of phylogenetic trees, which are constructed based on genetic data, with climatic trees, a crucial step involves applying a phylogeography approach. This includes the utilization of Robinson and Foulds distance for topology evaluation and Least Squares distance for assessing branch length differences.
+In the comparison of phylogenetic trees, which are constructed based on genetic data, with climatic trees, a crucial step involves applying a phylogeography approach. Climatic trees are novel constructs that represent the evolutionary relationships among species or populations based on climatic parameters instead of genetic data. This methodology, developed by our group, allows for the assessment of how environmental factors, particularly climate, influence the evolutionary trajectories of species.
+
+Climatic trees are constructed by analyzing climatic data associated with the geographical locations of the species or populations under study. By using algorithms that correlate climatic variables with genetic data, these trees help identify patterns of adaptation to environmental pressures. This method provides a unique perspective on the evolutionary processes driven by climate, offering insights that are not possible through genetic data alone.
+
+## Tree Comparison Methodology
+
+In comparing these trees, aPhyloGeo uses the Robinson and Foulds distance for topology evaluation and the Least Squares distance for assessing branch length differences. This dual approach ensures that both the structural and quantitative aspects of the evolutionary relationships are rigorously analyzed, providing a comprehensive understanding of the interplay between genetics and climate.
 
 ## Spatial Proximity Confounding Effects
 
