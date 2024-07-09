@@ -82,7 +82,7 @@ Given the urgency of climate change, new bioinformatics tools are needed. *aPhyl
 \autoref{fig:figure1} outlines the key steps for conducting phylogeographic analysis using *aPhyloGeo*.
 For a more detailed understanding, please refer to the [comprehensive tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial) and [provided with the software](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow).
 
-![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/workflow_en.png)
+![The workflow of the algorithm. The operations within this workflow include several blocks.\label{fig:figure1}](../img/Figure1_joss.png)
 
 ## Multiprocessing
 
