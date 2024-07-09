@@ -44,9 +44,9 @@ aas-journal: Astrophysical Journal <- The name of the AAS journal.
 # Abstract
 *aPhyloGeo* is a Python library that explores the relationship between species evolution and environmental pressures, particularly climate. By integrating genetic and climatic data, it helps researchers investigate evolutionary adaptations and identify genetic regions influenced by environmental factors.
 
-The core feature of the software is a comprehensive phylogenetic analysis pipeline with three investigation levels: 1) genetic relationships, 2) climatic impact assessment, and 3) biogeographic correlations. This approach facilitates understanding how species adapt to their environments. 
+The core feature of the software is a comprehensive phylogenetic analysis pipeline with three investigation levels: 1) genetic relationships, 2) climatic impact assessment, and 3) biogeographic correlations. This approach facilitates understanding how species adapt to their environments.
 
-*aPhyloGeo* employs algorithms using metrics like least squares [@felsenstein1997alternating], Euclidean, and Robinson-Foulds [@robinson1981comparison] distances to ensure statistically sound correlations. Its modular structure offers flexibility, and its open-source nature promotes collaboration.
+*aPhyloGeo* employs robust algorithms to ensure statistically sound correlations, providing flexibility through its modular structure and promoting collaboration through its open-source nature.
 
 Available as a PyPI package, *aPhyloGeo* enhances understanding of evolutionary processes and informs conservation efforts, helping prioritize species and populations for preservation in the face of climate change.
 
@@ -112,13 +112,12 @@ Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics a
 
 ## Similarity Methods
 
-Sequences with notable variability were specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics: 1) **Hamming distance** [@labib2019hamming], 2) **Levenshtein distance** [@yujian2007normalized], 3) **Damerau-Levenshtein distance** [@zhao2019string], 4) **Jaro similarity** [@pradhan2015review], 5) **Jaro-Winkler similarity** [@pradhan2015review], 6) **Smith–Waterman similarity** [@waterman1978similarity], 7) **Jaccard similarity** [@bag2019efficient], and 8) **Sørensen-Dice similarity** [@li2020generic].
+Sequences with notable variability are specifically retained for analysis. The dissimilarity assessment between each sequence pair involved the application of an extensive set of 8 metrics: 1) **Hamming distance** [@labib2019hamming], 2) **Levenshtein distance** [@yujian2007normalized], 3) **Damerau-Levenshtein distance** [@zhao2019string], 4) **Jaro similarity** [@pradhan2015review], 5) **Jaro-Winkler similarity** [@pradhan2015review], 6) **Smith–Waterman similarity** [@waterman1978similarity], 7) **Jaccard similarity** [@bag2019efficient], and 8) **Sørensen-Dice similarity** [@li2020generic].
 
 
 # Conclusion
 
-The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced co-analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like quartet and bipartition distances for better genetic diversity assessment. Emphasizing software development best practices and open-source principles (e.g., [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus)), \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
-
+The \textit{aPhyloGeo} pipeline provides an integrative framework for advanced co-analysis of genetic and climatic data, promoting simplicity and reproducibility. Future enhancements include clustering techniques and improved alignment methods, alongside novel metrics like quartet and bipartition distances for better genetic diversity assessment. By emphasizing software development best practices and open-source principles, \textit{aPhyloGeo} ensures reliability and sets the stage for ongoing innovation. Notably, projects such as [iPhyloGeo++](https://github.com/tahiri-lab/iPhyloGeo_plus_plus) demonstrate the practical application and impact of aPhyloGeo in phylogeographic research. This underscores its utility and potential for broad adoption in the research community. By prioritizing user empowerment and comprehensive analysis, it aims to advance phylogeographic research and deepen our understanding of species-environment interactions.
 
 # Acknowledgements
 
