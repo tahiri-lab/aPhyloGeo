@@ -102,6 +102,10 @@ The methods validate input parameters to ensure data accuracy and prevent errors
 
 In the comparison of phylogenetic trees, which are constructed based on genetic data, with climatic trees, a crucial step involves applying a phylogeography approach. This includes the utilization of Robinson and Foulds distance for topology evaluation and Least Squares distance for assessing branch length differences.
 
+## Spatial Proximity Confounding Effects
+
+An important limitation of the current *aPhyloGeo* analysis pipeline is the potential confounding effects of spatial proximity on both genetic relatedness and climate similarity. Spatial autocorrelation can introduce biases, as geographically close samples may exhibit similar genetic and climatic characteristics due to their proximity. Future versions of *aPhyloGeo* could address this by incorporating spatial autocorrelation analysis and spatial regression models.
+
 ## Editing Multiple Sequence Alignment Methods
 
 Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods: 1) **Pairwise Alignment** [@li2018minimap2], 2) **MUSCLE** [@edgar2004muscle], 3) **CLUSTALW** [@hung2016sequence], and **MAFFT** [@katoh2013mafft].
