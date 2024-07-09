@@ -114,7 +114,7 @@ An important limitation of the current *aPhyloGeo* analysis pipeline is the pote
 
 ## Editing Multiple Sequence Alignment Methods
 
-Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods: 1) **Pairwise Alignment** [@li2018minimap2], 2) **MUSCLE** [@edgar2004muscle], 3) **CLUSTALW** [@hung2016sequence], and **MAFFT** [@katoh2013mafft].
+Multiple Sequence Alignment (MSA) holds immense significance in bioinformatics as it serves as a foundational step for the comparison and analysis of biological sequences. Here is an in-depth overview of some widely used MSA methods: 1) **Pairwise Alignment** [@li2018minimap2], 2) **MUSCLE** [@edgar2004muscle], 3) **CLUSTALW** [@hung2016sequence], and 4) **MAFFT** [@katoh2013mafft].
 
 ## Similarity Methods
 
