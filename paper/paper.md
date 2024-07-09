@@ -96,7 +96,7 @@ This work relies on the following main software packages (refer to [pyproject.to
 - [Bio](https://pypi.org/project/bio/) [@cock2009biopython].
 
 # Methods
-The methods validate input parameters to ensure data accuracy and prevent errors. These parameters, such as file names, specimen identifiers, bootstrap thresholds, distance methods, and alignment methods, are detailed in the YAML configuration file (refer to the [YAML file](https://github.com/tahiri-lab/aPhyloGeo/blob/0889da4f2858320484db324e627e20b198703e5d/aphylogeo/params.yaml).
+The methods validate input parameters to ensure data accuracy and prevent errors. These parameters, such as file names, specimen identifiers, bootstrap thresholds, distance methods, and alignment methods, are detailed in the YAML configuration file (refer to the [YAML file](https://github.com/tahiri-lab/aPhyloGeo/blob/0889da4f2858320484db324e627e20b198703e5d/aphylogeo/params.yaml)).
 
 ## Tree Comparison
 
