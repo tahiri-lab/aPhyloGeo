@@ -750,8 +750,7 @@ class AlignSequences:
                     i = The starting position of the window, relative to the original sequence
                     j = The ending position of the window, relative to the original sequence
         """
-        step = Params.step_size
-        window = Params.window_size
+        step = Params.window_size
 
         windowed_alignment = dict()
         seq_len = max([len(h) for h in heuristicMSA.values()])
@@ -761,11 +760,11 @@ class AlignSequences:
         if optimized:
             for i in range(0, seq_len, step):
                 if i + step < seq_len:
-                    windowed_alignment[f"{i}_{i + window - 1}"] = {key: val[i : i + window - 1] for key, val in paddedMSA.items()}
-                    combinations = itertools.combinations(windowed_alignment[f"{i}_{i + window - 1}"].values(), 2)
+                    windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
+                    combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
                     if Params.rate_similarity > self.similarity(df):
-                        windowed_alignment.pop(f"{i}_{i + window - 1}")
+                        windowed_alignment.pop(f"{i}_{i + step - 1}")
                 else:
                     windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
@@ -775,7 +774,7 @@ class AlignSequences:
         else:
             for i in range(0, seq_len, step):
                 if i + step < seq_len:
-                    windowed_alignment[f"{i}_{i + window - 1}"] = {key: val[i : i + window - 1] for key, val in paddedMSA.items()}
+                    windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
                 else:
                     windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
 
