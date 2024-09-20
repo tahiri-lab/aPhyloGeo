@@ -73,7 +73,7 @@ poetry install
 ### Usage
 Poetry automatically manages the virtual environment. If manual activation is preferred, the following command can be used
 
-```python3
+```
 poetry shell
 ```
 
