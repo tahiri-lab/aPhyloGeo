@@ -71,11 +71,18 @@ poetry install
 ```
 
 ### Usage
-Poetry will handle the virtual environment automatically. if you want to use the virtual environment manually, you can use the following command:
+Poetry automatically manages the virtual environment. If manual activation is preferred, the following command can be used
 
 ```python3
 poetry shell
 ```
+
+### Run the application
+Launch the application and tutorial example using the following command:
+
+    ```bash
+    make
+    ```
 
 ⚠️ Assuming Python 3.8 or higher is installed on the machine, these scripts should run well with the libraries installed.
 
