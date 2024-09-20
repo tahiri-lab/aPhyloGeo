@@ -80,7 +80,7 @@ poetry shell
 ### Run the application
 Launch the application and tutorial example using the following command:
 
-    ```bash
+    ```
     make
     ```
 
