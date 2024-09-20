@@ -80,9 +80,9 @@ poetry shell
 ### Run the application
 Launch the application and tutorial example using the following command:
 
-    ```
-    make
-    ```
+```
+make
+```
 
 ⚠️ Assuming Python 3.8 or higher is installed on the machine, these scripts should run well with the libraries installed.
 
