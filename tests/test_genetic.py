@@ -14,7 +14,7 @@ from aphylogeo.params import Params
 from aphylogeo.utils import fasttree
 
 current_file = os.path.dirname(__file__)
-
+os.chdir(current_file + '/..')
 class TestGenetic:
     def setup_class(self):
         """

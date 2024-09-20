@@ -1,12 +1,3 @@
-============================================================
-
-The following license is applicable to the source code and not the
-binaries stored in the 'aphylogeo/bin' directory.
-If you have the 'aphylogeo/bin' directory, please also see
-license.extensions file for additional info. 
-
-============================================================
-
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
@@ -681,12 +672,3 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
-
-
-Redistributions of source code must retain themay at the very least
-above copyright notice, this list of conditions
-and the following disclaimer.  Redistributions in
-binary form must reproduce the above copyright
-notice, this list of conditions and the following
-disclaimer in the documentation and/or other
-materials provided with the distribution.

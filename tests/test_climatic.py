@@ -10,6 +10,7 @@ from aphylogeo.params import Params
 import csv
 
 current_file = Path(os.path.dirname(__file__))
+os.chdir(current_file / '..')
 df = pd.read_csv("./datasets/example/geo.csv")
 climatic_test_cases = ["geo.csv"]
 dir = Path(current_file / "testFiles/dissimilarity")
@@ -129,7 +130,7 @@ def test_leastSquare():
                             if row[0] == tree1 and row[1] == tree2:
                                 # test leastSquare
                                 # expected_least_square = 2.1550089999999997
-                                assert utils.leastSquare(trees[tree1], trees[tree2]) == float(row[2])
+                                assert utils.leastSquare(trees[tree1], trees[tree2]) == pytest.approx(float(row[2]),abs=1e-14)
 
 
 def test_robinsonFoulds():
@@ -193,4 +194,4 @@ def test_euclideanDist():
                         for row in csv_reader:
                             if row[0] == tree1 and row[1] == tree2:
                                 # test Euclidean
-                                assert utils.euclideanDist(trees[tree1], trees[tree2]) == float(row[2])          
+                                assert utils.euclideanDist(trees[tree1], trees[tree2]) == pytest.approx(float(row[2]),abs=1e-14)        
