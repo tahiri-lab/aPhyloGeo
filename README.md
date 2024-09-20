@@ -55,8 +55,14 @@ python3 -m pip install aPhyloGeo
 ```
 
 ### Installation from Source via Poetry
-This package use ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation)
+This package use ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation). 
 ⚠️ For windows installation it's recommended to launch powershell in **Administrator mode**.
+
+Installation of Poetry is using the following commands:
+
+```
+pip install poetry
+```
 
 Once Poetry is installed, you can clone the repository and install the package using the following commands:
 
