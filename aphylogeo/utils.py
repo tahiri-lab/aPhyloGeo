@@ -36,17 +36,15 @@ def header():
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
-    Creation of a list containing the names of specimens and minimums
-    tempratures
+    Create a list containing the names of specimens and their corresponding minimum temperatures.
 
-    Args:
-        df (content of CSV file)
-        columnWithSpecimenName (first column of names)
-        columnToSearch (column to compare with the first one)
+    :param df: The content of the CSV file.
+    :param columnWithSpecimenName: The first column containing specimen names.
+    :type columnWithSpecimenName: str
+    :param columnToSearch: The column to compare with the first one.
+    :type columnToSearch: str
 
-    Return:
-        The dissimilarities matrix
-
+    :return: The dissimilarities matrix.
     """
     meteoData = df[columnToSearch].tolist()
     nomVar = df[columnWithSpecimenName].tolist()
@@ -86,21 +84,24 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
 
 def leastSquare(tree1, tree2):
     """
-    Method that calculates the least square distance between two trees.
-    Trees must have the same number of leaves.
-    Leaves must all have a twin in each tree.
-    A tree must not have duplicate leaves
-     x   x
-    ╓╫╖ ╓╫╖
-    123 312
+    Calculate the least square distance between two trees.
 
-    Args:
-        tree1 (distanceTree object from biopython)
-        tree2 (distanceTree object from biopython)
+    - Trees must have the same number of leaves. 
+    - Leaves must all have a twin in each tree. 
+    - A tree must not have duplicate leaves.
 
-    Return:
-        return result (double) the final distance between the two
+    Example:
+        x      x \n  
+       ╓╫╖    ╓╫╖ \n
+       123    312 
 
+    :param tree1: The first tree to compare.
+    :type tree1: distanceTree (from Biopython)
+    :param tree2: The second tree to compare.
+    :type tree2: distanceTree (from Biopython)
+
+    :return: The final distance between the two trees.
+    :rtype: float
     """
     ls = 0.00
     leaves = tree1.get_terminals()
@@ -118,20 +119,23 @@ def leastSquare(tree1, tree2):
 def robinsonFoulds(tree1, tree2):
     """
     Method that calculates the robinson foulds distance between two trees.
-    Trees must have the same number of leaves.
-    Leaves must all have a twin in each tree.
-    A tree must not have duplicate leaves
-     x   x
-    ╓╫╖ ╓╫╖
+    
+    - Trees must have the same number of leaves.
+    - Leaves must all have a twin in each tree.
+    - A tree must not have duplicate leaves
+    
+    Example:
+     x   x \n
+    ╓╫╖ ╓╫╖ \n
     123 312
 
-    Args:
-        tree1 (distanceTree object from biopython converted to Newick)
-        tree2 (distanceTree object from biopython converted to Newick)
-
-    Return:
-        return result the final distance between the two
-
+    :param tree1: The first tree to compare
+    :type tree1: distanceTree object from biopython converted to Newick
+    :param tree2: The second tree to compare
+    :type tree2: distanceTree object from biopython converted to Newick
+    
+    :return: The final distance between the two
+    :rtype: float
     """
     rf = 0
     tree1_newick = ete3.Tree(tree1.format("newick"), format=1)
@@ -153,17 +157,17 @@ def euclideanDist(tree1, tree2):
     The bipartition bitmasks of the trees must be correct for the current tree
     structures (by calling :meth:`Tree.encode_bipartitions()` method)
 
-     x   x
-    ╓╫╖ ╓╫╖
+     x   x \n
+    ╓╫╖ ╓╫╖ \n
     123 312
 
-    Args:
-        tree1 (distanceTree object from biopython converted to DendroPY format Newick)
-        tree2 (distanceTree object from biopython converted to DendroPY format Newick)
-
-    Return:
-        return result the final Euclidean distance between the two
-
+    :param tree1: The first tree to compare
+    :type tree1: distanceTree object from biopython converted to DendroPY format Newick
+    :param tree2: The second tree to compare
+    :type tree2: distanceTree object from biopython converted to DendroPY format Newick
+    
+    :return: The final Euclidean distance between the two
+    :rtype: float
     """
     ed = 0
     tns = dendropy.TaxonNamespace()
@@ -180,11 +184,8 @@ def createTree(dm):
     """
     Create a dna tree from content coming from a fasta file.
 
-    Args:
-        dm (content used to create the tree)
-
-    Return:
-        tree (the new tree)
+    :param dm: The content used to create the tree.
+    :return: The tree created.
     """
     constructor = DistanceTreeConstructor()
     tree = constructor.nj(dm)
@@ -193,13 +194,11 @@ def createTree(dm):
 
 def climaticPipeline(df):
     """
-    Creates a dictionnary with the climatic Trees
-    Args:
-        df (contains the data to use)
-        names (list of names of the columns to use)
-
-    Return:
-        trees (the climatic tree dictionnary)
+    Creates a dictionnary containing the climatic Trees
+    
+    :param df: Data to use to create the trees
+    :return: The climatic tree dictionnary
+    :rtype: dict
     """
     names = Params.names
     trees = {}
@@ -212,12 +211,14 @@ def climaticPipeline(df):
 def createBoostrap(msaSet: dict, bootstrapAmount):
     """
     Create a tree structure from sequences given by a dictionnary.
-    Args:
-        msaSet (dictionnary with multiple sequences alignment to transform into
-                trees)
-        bootstrapAmount
-    Return:
-        A dictionary with the trees for each sequence
+    
+    :param msaSet: A dictionary containing the multiple sequence alignments.
+    :type msaSet: dict
+    :param bootstrapAmount:
+    :type bootstrapAmount: int
+    
+    :return: A dictionary with the trees for each sequence.
+    :rtype: dict
     """
     constructor = DistanceTreeConstructor(DistanceCalculator("identity"))
 
@@ -240,10 +241,21 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
 
 def bootSingle(args):
     """
-    Args:
-        args (list of arguments)
-    Return:
-        *********TO WRITE**********
+    Perform a bootstrap consensus analysis on a multiple sequence alignment (MSA).
+
+    :param args: A list of arguments, which includes:
+    
+        - msaSet (dict): A dictionary of multiple sequence alignments.
+        - constructor (function): A function used to construct trees from the MSA.
+        - key (str): The key to access a specific MSA from the msaSet.
+        - bootstrapAmount (int): The number of bootstrap samples to generate.
+    
+    :returns: 
+    
+        - result (Tree): The consensus tree obtained from the bootstrap analysis.
+        - key (str): The key corresponding to the MSA used for this result.
+        
+    :rtype: list
     """
     msaSet = args[0]
     constructor = args[1]
@@ -256,12 +268,12 @@ def bootSingle(args):
 
 def calculateAverageBootstrap(tree):
     """
-    Calculate if the average confidence of a tree
+    Calculate the average bootstrap confidence of a tree.
 
-    Args:
-        tree (The tree to get the average confidence from)
-    Return :
-        averageBootstrap (the average Bootstrap (confidence))
+    :param tree: The tree from which to calculate the average confidence.
+
+    :return: The average bootstrap (confidence) value of the tree.
+    :rtype: float
     """
     leaves = tree.get_nonterminals()
     treeConfidences = list(map(lambda x: x.confidence, leaves))
@@ -283,18 +295,20 @@ def calculateAverageBootstrap(tree):
 
 
 def fasttreeCMD(input_fasta, boot, nt):
-    """Create the command line executed to create a phylogenetic tree using FastTree application
+    """
+    Create the command line executed to create a phylogenetic tree using FastTree application
 
-    Parameters:
-    -----------
-    input_fasta (String): The input fasta file containing the multiple sequences alignment
-    output (String): The relative path of the output tree generated upon FastTree execution
-    boot (Int): The value of bootstrap to used for tree generation (Default = 100)
-    nt (Boolean): Whether or not the sequence are nucleotides (Default = True (nucleotide, set to False for Protein Sequence))
-
-    Return:
-    -------
-    (FastTreeCommandline)
+    :param input_fasta: The input FASTA file containing the multiple sequence alignment.
+    :type input_fasta: str
+    :param output: The relative path of the output tree generated upon FastTree execution.
+    :type output: str
+    :param boot: The value of bootstrap to be used for tree generation (default is 100).
+    :type boot: int, optional
+    :param nt: Whether the sequences are nucleotides (default is True for nucleotide sequences, set to False for protein sequences).
+    :type nt: bool, optional
+    
+    :return: The FastTree command line object.
+    :rtype: FastTreeCommandline
     """
     if sys.platform == "win32":
         fasttree_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\FastTree.exe"
@@ -304,39 +318,33 @@ def fasttreeCMD(input_fasta, boot, nt):
 
 
 def createTmpFasta(msaset):
-    """To create fasta files from multiple sequences alignment
-
-    Parameters:
-    -----------
-    msaset (Dict):
-        key (String) the window name
-        value (AlignIO) the MSA object
     """
-    
+    Create fasta files from multiple sequences alignment
+
+    :param msaset: A dictionary where the key is the window name, and the value is the MSA object.
+    :type msaset: dict(str, AlignIO)
+    """
     if sys.platform == "win32":
         [SeqIO.write(alignment, os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + f"\\aphylogeo\\bin\\tmp\\{window}.fasta", "fasta") for window, alignment in msaset.items()]
     elif (sys.platform == "linux") | (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "darwin"):
         [SeqIO.write(alignment, f"aphylogeo/bin/tmp/{window}.fasta", "fasta") for window, alignment in msaset.items()]
 
 def fasttree(msaset, boot=1000, nt=True):
-    """Create phylogenetic trees from a set of multiple alignments using FastTree application
-    The function creates temporary fasta files used as input for fastTree
-    Since FastTree output .tree file(s), the function reads them back inside the execution and
-    remove the output tree files.
+    """
+    Create phylogenetic trees from a set of multiple sequence alignments using the FastTree application.
 
-    Parameters:
-    -----------
-    msaset (dict)
-        key (String) the window name
-        value (AlignIO) the MSA object
-    boot (int): The number of trees to create in bootstrap calculation
-    nt (Boolean): True if sequences are nucleotides, False if sequences are amino acids
+    This function creates temporary FASTA files to be used as input for FastTree. Since FastTree outputs `.tree` files, 
+    the function reads them back during execution and removes the output tree files afterward.
 
-    Return:
-    -------
-    trees: (dict)
-        key (String) the window name
-        value (Tree) A tree in newick format
+    :param msaset: A dictionary containing the multiple sequence alignments (MSA).
+    :type msaset: dict(str, AlignIO)
+    :param boot: The number of bootstrap replicates to generate. Default is 100.
+    :type boot: int, optional
+    :param nt: Whether the sequences are nucleotides (True) or amino acids (False). Default is True (nucleotide sequences).
+    :type nt: bool, optional
+
+    :return: A dictionary where the key is the window name and the value is a tree in Newick format.
+    :rtype: dict(str, Tree)
     """
     createTmpFasta(msaset)
     if sys.platform == "win32":
@@ -368,12 +376,13 @@ def createGeneticList(geneticTrees, bootstrap_threshold):
     Create a list of Trees if the bootstrap Average is higher than
     the threshold
 
-    Args :
-        geneticTrees (a dictionnary of genetic trees)
-        bootstrap_threshold
-    Return :
-        geneticList (a sorted list with the geneticTrees)
-        bootstrapList (a list with the bootstrap average of each tree)
+    :param geneticTrees: A dictionary containing the genetic trees.
+    :type geneticTrees: dict
+    :param bootstrap_threshold: 
+    
+    :return: 
+     - geneticTrees: A sorted list of genetic trees.
+     - bootstrapList: A list of the bootstrap average of each tree.
     """
     bootstrapList = []
     geneticList = []
@@ -389,11 +398,11 @@ def createGeneticList(geneticTrees, bootstrap_threshold):
 def createClimaticList(climaticTrees):
     """
     Create a list of climaticTrees
-
-    Args :
-        climaticTrees (a dictionnary of climatic trees)
-    Return :
-        climaticList(a list with the climaticTrees)
+    
+    :param climaticTrees: A dictionary containing the climatic trees.
+    :type climaticTrees: dict
+    
+    :return: A list of the climatic trees.
     """
     climaticList = []
     for key in climaticTrees:
@@ -405,14 +414,24 @@ def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data,
     """
     Get data from a csv file a various parameters to store into a list
 
-    Args :
-        leavesName (the list of the actual leaves)
-        ls (least square distance between two trees)
-        climaticList (the list of climatic trees)
-        bootstrap (bootstrap values)
-        genetic  (genetic tree)
-        csv_data (the pf containing the data)
-        reference_gene_filename
+    :param leavesName: The list of the actual leaves.
+    :type leavesName: list
+    :param dist: The least square distance between two trees.
+    :type dist: float
+    :param index: The index of the climatic tree.
+    :type index: int
+    :param climaticList: The list of climatic trees.
+    :type climaticList: list
+    :param bootstrap: The bootstrap values.
+    :param genetic: The genetic tree.
+    :param csv_data: The pf containing the data.
+    :param reference_gene_filename: The name of the reference gene.
+    :param dist_norm:
+    :param dist2: 
+    :param dist3:
+    
+    :return: A list containing the data.
+    :rtype: list
     """
 
     for leave in leavesName:
@@ -440,8 +459,8 @@ def writeOutputFile(data):
     """
     Write the datas from data list into a new csv file
 
-    Args :
-        data (the list contaning the final data)
+    :param data: The list containing the final data.
+    :type data: list
     """
     print("Writing the output file")
     directory = os.path.abspath("./results")
@@ -463,14 +482,17 @@ def filterResults(
     """
     Create the final datas from the Climatic Tree and the Genetic Tree
 
-    Args :
-        climaticTrees (the dictionnary containing every climaticTrees)
-        geneticTrees (the dictionnary containing every geneticTrees)
-        bootstrap_threshold (the bootstrap threshold)
-        dist_threshold (the least square threshold)
-        distance_method (the distance method)
-        csv_data (dataframe containing the data from the csv file)
-        reference_gene_filename (the name of the reference gene)
+    :param climaticTrees: The dictionary containing the climatic trees.
+    :type climaticTrees: dict
+    :param geneticTrees: The dictionary containing the genetic trees.
+    :type geneticTrees: dict
+    :param csv_data: The dataframe containing the data from the CSV file.
+    :type csv_data: pd.DataFrame
+    :param create_file: Whether to create a file or not. Default is True.
+    :type create_file: bool
+    
+    :return: The final data in a dictionary format.
+    :rtype: dict
     """
 
     # Create a list of the tree if the bootstrap is superior to the
@@ -586,12 +608,12 @@ def filterResults(
 def format_to_csv(data):
     """
     Format the data to a csv file
-
-    Args:
-        data: array of arrays of data
-
-    Returns:
-        result: dict with key header and value array of data
+    
+    :param data: The data to format.
+    :type data: list
+    
+    :return: The formatted data in a dictionary format.
+    :rtype: dict
     """
     result = {}
 
@@ -612,10 +634,11 @@ def geneticPipeline(seq_alignement):
     end it calls a method that create a final csv file with all
     the data that we need for the comparison
 
-    Args:
-        climaticTrees (the dictionnary of climaticTrees)
-        p (the Params object)[optionnal]
-        aligneementObject (the AlignSequences object)[optionnal]
+    :param seq_alignement: The multiple sequence alignment.
+    :type seq_alignement: dict
+    
+    :return: The genetic trees.
+    :rtype: dict
     """
 
     # GM no more needed
@@ -637,12 +660,12 @@ def geneticPipeline(seq_alignement):
 def loadSequenceFile(file):
     """
     Reads the .fasta file. Extract sequence ID and sequences.
-
-    Args:
-        file (String) the file name of a .fasta file
-
-    Return:
-        sequences (dictionnary)
+    
+    :param file: The file name of a .fasta file.
+    :type file: str
+    
+    :return: The sequences in a dictionary format.
+    :rtype: dict
     """
     sequences = {}
     with open(file) as sequencesFile:
