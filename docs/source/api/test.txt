@@ -1,0 +1,23 @@
+"""
+Debugging method that creates files from a dictionary of sequences.
+The file is placed in the debug folder of the current working directory.
+
+Arguments
+----------
+dict: (dict)
+    The objects to write in the file.
+    - key: (string) the key in the dictionary.
+    - values: (string) the values in the dictionary.
+
+filename: (str)
+    The name of the future file.
+
+ext: (str)
+    The file extension.
+
+Returns
+-------
+dict: (dict)
+    The same dictionary passed in the arguments.
+"""
+
