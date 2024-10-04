@@ -78,14 +78,6 @@ Please email us at: Nadia.Tahiri@USherbrooke.ca for any questions or feedback.
         metrics
 
 .. toctree::
-        :maxdepth: 1
-        :caption: Misc
-        :hidden:
-        
-        user-preferences
-        references
-
-.. toctree::
         :maxdepth: 2
         :caption: Api
         :hidden:
@@ -95,3 +87,11 @@ Please email us at: Nadia.Tahiri@USherbrooke.ca for any questions or feedback.
         api/multiProcessor
         api/params
         api/utils
+
+.. toctree::
+        :maxdepth: 1
+        :caption: Misc
+        :hidden:
+        
+        user-preferences
+        references

@@ -27,9 +27,18 @@ Levenshtein Distance
 
 The Levenshtein distance, denoted as :math:`L(s_1, s_2)`, calculates the minimum number of single-character edits (insertions, deletions, or substitutions) needed to transform one sequence into another. It is applicable to sequences of varying lengths.
 
+
 .. math::
 
-    L(s_1, s_2) = \min\left( L(s_1[1:m-1], s_2) + 1, L(s_1, s_2[1:n-1]) + 1, L(s_1[1:m-1], s_2[1:n-1]) + \delta(s_{1m} \neq s_{2n}) \right)
+    L(s_1, s_2) = \min\left( 
+    \begin{split} 
+        & L(s_1[1:m-1], s_2) + 1, \\
+        & L(s_1, s_2[1:n-1]) + 1, \\
+        & L(s_1[1:m-1], \\ 
+        & s_2[1:n-1]) + \delta(s_{1m} \neq s_{2n}) 
+    \end{split} 
+    \right)
+
 
 Damerau-Levenshtein Distance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +47,17 @@ The Damerau-Levenshtein distance, denoted as :math:`D(s_1, s_2)`, extends the Le
 
 .. math::
 
-    D(s_1, s_2) = \min\left( D(s_1[1:m-1], s_2) + 1, D(s_1, s_2[1:n-1]) + 1, D(s_1[1:m-1], s_2[1:n-1]) + \delta(s_{1m} \neq s_{2n}), D(s_1[1:m-2], s_2[1:n-2]) + 1 \right)
+    D(s_1, s_2) = \min\left( 
+    \begin{split}
+        & D(s_1[1:m-1], s_2) + 1, \\
+        & D(s_1, s_2[1:n-1]) + 1, \\
+        & D(s_1[1:m-1], \\
+        & s_2[1:n-1]) + \delta(s_{1m} \neq s_{2n}), \\
+        & D(s_1[1:m-2],\\ 
+        & s_2[1:n-2]) + 1  
+    \end{split} 
+    \right)
+
 
 Jaro Similarity
 ~~~~~~~~~~~~~~~
@@ -98,4 +117,9 @@ Smith–Waterman similarity, denoted as :math:`SW(s_1, s_2)`, is a local sequenc
 
 .. math::
 
-    \text{score}(s_1[i], s_2[j]) = \max \left(0, \text{score}(s_1[i-1], s_2[j-1]) + \text{similarity}(s_1[i], s_2[j]) \right)
+    \text{score}(s_1[i], s_2[j]) = \max\left( 
+        0, \\
+        \text{score}(s_1[i-1], s_2[j-1]) + \\
+        \text{similarity}(s_1[i], s_2[j]) 
+    \right)
+
