@@ -1,4 +1,4 @@
-name: "aPhyloGeo CI/CD Pipeline"
+name: "Sphinx Documentation for aPhyloGeo"
 
 on:
     push:
@@ -17,7 +17,6 @@ permissions:
 
 jobs:
     build-deploy-docs:
-        needs: security-scan
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v4
@@ -38,6 +37,6 @@ jobs:
                 with:
                     publish_branch: gh-pages
                     github_token: ${{ secrets.GITHUB_TOKEN }}
-                    publish_dir: _build/
+                    publish_dir: aphylogeo/_build/
                     force_orphan: true
 
