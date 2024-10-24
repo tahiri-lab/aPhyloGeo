@@ -321,10 +321,10 @@ class AlignSequences:
             Values: Aligned sequences
         """
         if sys.platform == "win32":
-            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle5.1.win64.exe"
+            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle.win64.exe"
             out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
         elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            muscle_exe = r"aphylogeo/bin/muscle5.1.linux_intel64"
+            muscle_exe = r"aphylogeo/bin/muscle.linux_intel64"
             out_dir = r"aphylogeo/bin/tmp/"
         in_file = Params.reference_gene_filepath
         out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
