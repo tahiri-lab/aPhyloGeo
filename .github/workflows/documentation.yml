@@ -27,7 +27,7 @@ jobs:
             -   name: Install dependencies
                 uses: py-actions/py-dependency-install@v4
                 with:
-                    path: "aphylogeo/requirements.txt"
+                    path: "requirements-dev.txt"
             -   name: Sphinx build
                 run: |
                     sphinx-build docs _build
