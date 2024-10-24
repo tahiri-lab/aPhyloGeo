@@ -35,7 +35,7 @@ if __name__ == "__main__":
     print("\nStarting alignement")
     start_time = time.time()
     alignements = align_sequence.align()
-
+    
     geneticTrees = utils.geneticPipeline(alignements.msa)
     trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
     end_time = time.time()

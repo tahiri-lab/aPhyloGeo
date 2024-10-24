@@ -329,6 +329,7 @@ class AlignSequences:
         in_file = Params.reference_gene_filepath
         out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
         out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
+        print("\n Starting Muscle alignment")
         process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
         process.wait()
         records = Bio.SeqIO.parse(out_fullname, "fasta")
