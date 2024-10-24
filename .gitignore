@@ -9,6 +9,7 @@ temp.ipynb
 debug*
 *.egg-info
 bin/tmp/*.fasta
+_build
 
 #Ignore virtual environments
 .env
