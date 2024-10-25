@@ -38,4 +38,3 @@ Once Poetry is installed, you can clone the repository and install the package u
 .. code-block:: bash
 
     poetry install
-

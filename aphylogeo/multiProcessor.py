@@ -84,15 +84,19 @@ class Multi:
 
     def executeOnce(self, arg):
         """
-        The method that is ran as a single process
+        Executes a method as a single process.
+
+        This method runs a specified function with the given argument 
+        and stores the result in `self.resultList`.
 
         Args:
-            args    list    The list of arguments given to the method
+            arg (list): The list of arguments given to the method.
 
-        Return:
-            Nothing None    But the return value of the executed method
-                            is passed to self.resultList
+        Returns:
+            None: The return value of the executed method is 
+            passed to `self.resultList`.
         """
+
         self.tasks.value += 1
         self.started.value += 1
         self.processes.append(os.getpid())
@@ -105,22 +109,21 @@ class Multi:
 
     def processingLargeData(self):
         """
-        Method for executing mutliprocess on tasks that demand a LARGE amount
-        of individual memory. Will, first, run a single process then, will
-        start as many child processes as the available RAM permits, starting
-        new ones as the RAM is freed.
+        Method for executing multiprocessing on tasks that require a large amount 
+        of individual memory. It first runs a single process and then starts as many 
+        child processes as the available RAM permits, launching new ones as RAM is freed.
 
         Variables:
-            p   (Process)   Representes a single child process
+            p (Process): Represents a single child process.
 
-        Return:
-            The multiprocess-friendly list, that was updated by each child
+        Returns:
+            list: The multiprocess-friendly list that is updated by each child process.
 
         Errors:
-            If other application reduce the avalable RAM mid-execution,
-            Multiprocess outputs "Killed" and kills the child.
-
+            If another application reduces the available RAM mid-execution, 
+            the multiprocessing framework outputs "Killed" and terminates the child process.
         """
+
         print(
             "    Starting multiprocessing, this might take some time\n",
             "    The first process is ran alone for calibration purposes",
@@ -208,8 +211,7 @@ class Multi:
         This method is ran from the buttler() and updates every second
 
         Variables:
-            memBuffer  double   %Amount of bytes to substract from the
-                                available RAM for safety purposes
+            memBuffer  double   %Amount of bytes to substract from the available RAM for safety purposes
             mem        double   Amount of bytes
         """
 

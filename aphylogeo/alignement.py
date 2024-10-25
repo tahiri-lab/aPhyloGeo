@@ -187,6 +187,7 @@ class AlignSequences:
         Returns:
             Alignment: The alignment object
         """
+        
         if Params.alignment_method == "1":
             centroidKey = self.getSequenceCentroid()[0]
             centroidSeq = self.sequences.pop(centroidKey)
@@ -320,21 +321,25 @@ class AlignSequences:
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle.win64.exe"
-            out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            muscle_exe = r"aphylogeo/bin/muscle.linux_intel64"
-            out_dir = r"aphylogeo/bin/tmp/"
-        in_file = Params.reference_gene_filepath
-        out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
-        out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
-        print("\n Starting Muscle alignment")
-        process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
-        process.wait()
-        records = Bio.SeqIO.parse(out_fullname, "fasta")
-        return {rec.id: str(rec.seq) for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle5.1.win64.exe"
+                out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                muscle_exe = r"aphylogeo/bin/muscle5.1.linux_intel64"
+                out_dir = r"aphylogeo/bin/tmp/"
+            in_file = Params.reference_gene_filepath
+            out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
+            out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
+            process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
+            process.wait()
+            records = Bio.SeqIO.parse(out_fullname, "fasta")
+            return {rec.id: str(rec.seq) for rec in records}
+        # If the muscle executable is not found
+        except FileNotFoundError:
+            print("Muscle executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)            
+            
     def clustalAlign(self):
         """Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm
 
@@ -344,18 +349,23 @@ class AlignSequences:
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            clustal_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\clustalw2.exe"
-            fasta_out = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            clustal_exe = r"aphylogeo/bin/clustalw2"
-            fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
-        in_file = Params.reference_gene_filepath
-        clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
-        out, err = clustalw_cline()
-        records = Bio.SeqIO.parse(fasta_out, "fasta")
-        return {rec.id: str(rec.seq) for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                clustal_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\clustalw2.exe"
+                fasta_out = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                clustal_exe = r"aphylogeo/bin/clustalw2"
+                fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
+            in_file = Params.reference_gene_filepath
+            clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
+            out, err = clustalw_cline()
+            records = Bio.SeqIO.parse(fasta_out, "fasta")
+            return {rec.id: str(rec.seq) for rec in records}
+        # If the clustalw executable is not found
+        except FileNotFoundError:
+            print("ClustalW2 executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)
+            
     def mafftAlign(self):
         """Method to perform a multiple DNA sequence alignment using MAFFT Algorithm
 
@@ -365,17 +375,22 @@ class AlignSequences:
             Keys: accession ID
             Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            mafft_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\mafft-win\\mafft.bat"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
-        in_file = Params.reference_gene_filepath
-        mafft_cline = MafftCommandline(mafft_exe, input=in_file)
-        out, err = mafft_cline()
-        fasta_io = StringIO(out)
-        records = Bio.SeqIO.parse(fasta_io, "fasta")
-        return {rec.id: str(rec.seq).upper() for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                mafft_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\mafft-win\\mafft.bat"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
+            in_file = Params.reference_gene_filepath
+            mafft_cline = MafftCommandline(mafft_exe, input=in_file)
+            out, err = mafft_cline()
+            fasta_io = StringIO(out)
+            records = Bio.SeqIO.parse(fasta_io, "fasta")
+            return {rec.id: str(rec.seq).upper() for rec in records}
+        # If the mafft executable is not found
+        except FileNotFoundError:
+            print("MAFFT executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)
+            
     def alignSingle(self, args):
         """
         Method that aligns two DNA sequences using the pairwise2 algorithm.

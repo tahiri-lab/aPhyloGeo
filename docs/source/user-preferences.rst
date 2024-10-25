@@ -85,3 +85,4 @@ User Preferences Options
   
 - **Method Similarity**: The choice of similarity methods (Options: **`1: Hamming distance, 2: Levenshtein distance, 3: Damerau-Levenshtein distance, 4: Jaro similarity, 5: Jaro-Winkler similarity, 6: Smith–Waterman similarity, 7: Jaccard similarity, 8: Sørensen-Dice similarity`** in the example).
 
+To use the following alignement methods, **MUSCLE**, **CLUSTALW**, and **MAFFT**, please ensure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.

@@ -89,9 +89,10 @@ Please email us at: Nadia.Tahiri@USherbrooke.ca for any questions or feedback.
         api/utils
 
 .. toctree::
-        :maxdepth: 1
-        :caption: Misc
-        :hidden:
+         :maxdepth: 1
+         :caption: Misc
+         :hidden:
         
-        user-preferences
-        references
+         user-preferences
+         alignment_dependencies
+         references
