@@ -3,8 +3,9 @@
 Alignment Dependencies Installation
 ====================================
 
-To use the **MUSCLE**, **CLUSTALW**, and **MAFFT** alignment methods, please ensure the following dependencies are installed. To change the alignment method, modify the `alignment_method` parameter in the `params.yaml` file.
+To change the alignment method, modify the `alignment_method` parameter in the `params.yaml` file.
 
+To use the **MUSCLE**, **CLUSTALW**, and **MAFFT** alignment methods, please ensure the following dependencies are installed. 
 1. **MUSCLE**:
    - Download the appropriate version from the MUSCLE 5.1.0 release:
      - `MUSCLE 5.1.0 Release <https://github.com/rcedgar/muscle/releases/tag/5.1.0>`_
