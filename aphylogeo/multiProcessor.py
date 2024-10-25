@@ -114,7 +114,8 @@ class Multi:
         child processes as the available RAM permits, launching new ones as RAM is freed.
 
         Variables:
-            p (Process): Represents a single child process.
+            p : Process
+                Represents a single child process.
 
         Returns:
             list: The multiprocess-friendly list that is updated by each child process.
@@ -184,8 +185,8 @@ class Multi:
         constantly run other methods forever.
 
         In this case, it:
-            updates de memory capacity and
-            prints updates on the terminal.
+            - Updates the memory capacity.
+            - Prints updates to the terminal
         It exists so not to bottleneck the main thread.
 
         Uses timers to execute it's methods because time.sleep()
@@ -211,8 +212,10 @@ class Multi:
         This method is ran from the buttler() and updates every second
 
         Variables:
-            memBuffer  double   %Amount of bytes to substract from the available RAM for safety purposes
-            mem        double   Amount of bytes
+            memBuffer : float
+                Percentage of bytes to subtract from the available RAM for safety purposes.
+            mem : float
+                Amount of bytes.
         """
 
         memBuffer = 0.9  # 90%
@@ -312,11 +315,11 @@ class Multi:
         causes some marginal time lost; Only use for methods that take at
         least a second to run : below that, a for loop is likely much faster
 
-        Variables:
-            p   Process   Representes a single child process
-            a   None      Exists only to permit the for loop
+        Variables: 
+            p : Process
+                Represents a single child process.
 
-        Return:
+        Returns:
             The multiprocess-friendly list, that was updated by each child
 
         Errors:
