@@ -1,0 +1,553 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.utils &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Editing User Preferences" href="../user-preferences.html" />
+    <link rel="prev" title="aphylogeo.params" href="params.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="params.html">aphylogeo.params</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">aphylogeo.utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.header"><code class="docutils literal notranslate"><span class="pre">header()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.getDissimilaritiesMatrix"><code class="docutils literal notranslate"><span class="pre">getDissimilaritiesMatrix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.leastSquare"><code class="docutils literal notranslate"><span class="pre">leastSquare()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.robinsonFoulds"><code class="docutils literal notranslate"><span class="pre">robinsonFoulds()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.euclideanDist"><code class="docutils literal notranslate"><span class="pre">euclideanDist()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.createTree"><code class="docutils literal notranslate"><span class="pre">createTree()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.climaticPipeline"><code class="docutils literal notranslate"><span class="pre">climaticPipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.createBoostrap"><code class="docutils literal notranslate"><span class="pre">createBoostrap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.bootSingle"><code class="docutils literal notranslate"><span class="pre">bootSingle()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.calculateAverageBootstrap"><code class="docutils literal notranslate"><span class="pre">calculateAverageBootstrap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.fasttreeCMD"><code class="docutils literal notranslate"><span class="pre">fasttreeCMD()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.createTmpFasta"><code class="docutils literal notranslate"><span class="pre">createTmpFasta()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.fasttree"><code class="docutils literal notranslate"><span class="pre">fasttree()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.createGeneticList"><code class="docutils literal notranslate"><span class="pre">createGeneticList()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.createClimaticList"><code class="docutils literal notranslate"><span class="pre">createClimaticList()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.getData"><code class="docutils literal notranslate"><span class="pre">getData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.writeOutputFile"><code class="docutils literal notranslate"><span class="pre">writeOutputFile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.filterResults"><code class="docutils literal notranslate"><span class="pre">filterResults()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.format_to_csv"><code class="docutils literal notranslate"><span class="pre">format_to_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.geneticPipeline"><code class="docutils literal notranslate"><span class="pre">geneticPipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.utils.loadSequenceFile"><code class="docutils literal notranslate"><span class="pre">loadSequenceFile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">aphylogeo.utils</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tahiri-lab/aPhiloGeo/blob/main/docs/api/utils.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="aphylogeo-utils">
+<span id="id1"></span><h1>aphylogeo.utils<a class="headerlink" href="#aphylogeo-utils" title="Link to this heading"></a></h1>
+<dl class="py function" id="module-aphylogeo.utils">
+<dt class="sig sig-object py" id="aphylogeo.utils.header">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.header" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.getDissimilaritiesMatrix">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">getDissimilaritiesMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnWithSpecimenName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnToSearch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#getDissimilaritiesMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.getDissimilaritiesMatrix" title="Link to this definition"></a></dt>
+<dd><p>Create a list containing the names of specimens and their corresponding minimum temperatures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – The content of the CSV file.</p></li>
+<li><p><strong>columnWithSpecimenName</strong> (<em>str</em>) – The first column containing specimen names.</p></li>
+<li><p><strong>columnToSearch</strong> (<em>str</em>) – The column to compare with the first one.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dissimilarities matrix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.leastSquare">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">leastSquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#leastSquare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.leastSquare" title="Link to this definition"></a></dt>
+<dd><p>Calculate the least square distance between two trees.</p>
+<ul class="simple">
+<li><p>Trees must have the same number of leaves.</p></li>
+<li><p>Leaves must all have a twin in each tree.</p></li>
+<li><p>A tree must not have duplicate leaves.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree1</strong> (<em>distanceTree</em><em> (</em><em>from Biopython</em><em>)</em>) – The first tree to compare.</p></li>
+<li><p><strong>tree2</strong> (<em>distanceTree</em><em> (</em><em>from Biopython</em><em>)</em>) – The second tree to compare.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final distance between the two trees.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.robinsonFoulds">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">robinsonFoulds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#robinsonFoulds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.robinsonFoulds" title="Link to this definition"></a></dt>
+<dd><p>Method that calculates the robinson foulds distance between two trees.</p>
+<ul class="simple">
+<li><p>Trees must have the same number of leaves.</p></li>
+<li><p>Leaves must all have a twin in each tree.</p></li>
+<li><p>A tree must not have duplicate leaves</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree1</strong> (<em>distanceTree object from biopython converted to Newick</em>) – The first tree to compare</p></li>
+<li><p><strong>tree2</strong> (<em>distanceTree object from biopython converted to Newick</em>) – The second tree to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final distance between the two</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.euclideanDist">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">euclideanDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#euclideanDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.euclideanDist" title="Link to this definition"></a></dt>
+<dd><p>Method that calculate the Euclidean distance (a.k.a. Felsenstein’s 2004 “branch length
+distance”) between two trees based on <code class="docutils literal notranslate"><span class="pre">edge_weight_attr</span></code>.</p>
+<p>Trees need to share the same <a href="#id2"><span class="problematic" id="id3">|TaxonNamespace|</span></a> reference.
+The bipartition bitmasks of the trees must be correct for the current tree
+structures (by calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">Tree.encode_bipartitions()</span></code> method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree1</strong> (<em>distanceTree object from biopython converted to DendroPY format Newick</em>) – The first tree to compare</p></li>
+<li><p><strong>tree2</strong> (<em>distanceTree object from biopython converted to DendroPY format Newick</em>) – The second tree to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final Euclidean distance between the two</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.createTree">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">createTree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#createTree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.createTree" title="Link to this definition"></a></dt>
+<dd><p>Create a dna tree from content coming from a fasta file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dm</strong> – The content used to create the tree.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The tree created.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.climaticPipeline">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">climaticPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#climaticPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.climaticPipeline" title="Link to this definition"></a></dt>
+<dd><p>Creates a dictionnary containing the climatic Trees</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – Data to use to create the trees</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The climatic tree dictionnary</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.createBoostrap">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">createBoostrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msaSet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapAmount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#createBoostrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.createBoostrap" title="Link to this definition"></a></dt>
+<dd><p>Create a tree structure from sequences given by a dictionnary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msaSet</strong> (<em>dict</em>) – A dictionary containing the multiple sequence alignments.</p></li>
+<li><p><strong>bootstrapAmount</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the trees for each sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.bootSingle">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">bootSingle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#bootSingle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.bootSingle" title="Link to this definition"></a></dt>
+<dd><p>Perform a bootstrap consensus analysis on a multiple sequence alignment (MSA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – <p>A list of arguments, which includes:</p>
+<ul class="simple">
+<li><p>msaSet (dict): A dictionary of multiple sequence alignments.</p></li>
+<li><p>constructor (function): A function used to construct trees from the MSA.</p></li>
+<li><p>key (str): The key to access a specific MSA from the msaSet.</p></li>
+<li><p>bootstrapAmount (int): The number of bootstrap samples to generate.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>result (Tree): The consensus tree obtained from the bootstrap analysis.</p></li>
+<li><p>key (str): The key corresponding to the MSA used for this result.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.calculateAverageBootstrap">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">calculateAverageBootstrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#calculateAverageBootstrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.calculateAverageBootstrap" title="Link to this definition"></a></dt>
+<dd><p>Calculate the average bootstrap confidence of a tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The tree from which to calculate the average confidence.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The average bootstrap (confidence) value of the tree.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.fasttreeCMD">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">fasttreeCMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_fasta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#fasttreeCMD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.fasttreeCMD" title="Link to this definition"></a></dt>
+<dd><p>Create the command line executed to create a phylogenetic tree using FastTree application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_fasta</strong> (<em>str</em>) – The input FASTA file containing the multiple sequence alignment.</p></li>
+<li><p><strong>output</strong> (<em>str</em>) – The relative path of the output tree generated upon FastTree execution.</p></li>
+<li><p><strong>boot</strong> (<em>int</em><em>, </em><em>optional</em>) – The value of bootstrap to be used for tree generation (default is 100).</p></li>
+<li><p><strong>nt</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the sequences are nucleotides (default is True for nucleotide sequences, set to False for protein sequences).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The FastTree command line object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FastTreeCommandline</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.createTmpFasta">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">createTmpFasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msaset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#createTmpFasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.createTmpFasta" title="Link to this definition"></a></dt>
+<dd><p>Create fasta files from multiple sequences alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msaset</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>AlignIO</em><em>)</em>) – A dictionary where the key is the window name, and the value is the MSA object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.fasttree">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">fasttree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msaset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#fasttree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.fasttree" title="Link to this definition"></a></dt>
+<dd><p>Create phylogenetic trees from a set of multiple sequence alignments using the FastTree application.</p>
+<p>This function creates temporary FASTA files to be used as input for FastTree. Since FastTree outputs <cite>.tree</cite> files,
+the function reads them back during execution and removes the output tree files afterward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msaset</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>AlignIO</em><em>)</em>) – A dictionary containing the multiple sequence alignments (MSA).</p></li>
+<li><p><strong>boot</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of bootstrap replicates to generate. Default is 100.</p></li>
+<li><p><strong>nt</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the sequences are nucleotides (True) or amino acids (False). Default is True (nucleotide sequences).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary where the key is the window name and the value is a tree in Newick format.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict(str, Tree)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.createGeneticList">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">createGeneticList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geneticTrees</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#createGeneticList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.createGeneticList" title="Link to this definition"></a></dt>
+<dd><p>Create a list of Trees if the bootstrap Average is higher than
+the threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geneticTrees</strong> (<em>dict</em>) – A dictionary containing the genetic trees.</p></li>
+<li><p><strong>bootstrap_threshold</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>geneticTrees: A sorted list of genetic trees.</p></li>
+<li><p>bootstrapList: A list of the bootstrap average of each tree.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.createClimaticList">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">createClimaticList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">climaticTrees</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#createClimaticList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.createClimaticList" title="Link to this definition"></a></dt>
+<dd><p>Create a list of climaticTrees</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>climaticTrees</strong> (<em>dict</em>) – A dictionary containing the climatic trees.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the climatic trees.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.getData">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">leavesName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">climaticList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genetic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_gene_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.getData" title="Link to this definition"></a></dt>
+<dd><p>Get data from a csv file a various parameters to store into a list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>leavesName</strong> (<em>list</em>) – The list of the actual leaves.</p></li>
+<li><p><strong>dist</strong> (<em>float</em>) – The least square distance between two trees.</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – The index of the climatic tree.</p></li>
+<li><p><strong>climaticList</strong> (<em>list</em>) – The list of climatic trees.</p></li>
+<li><p><strong>bootstrap</strong> – The bootstrap values.</p></li>
+<li><p><strong>genetic</strong> – The genetic tree.</p></li>
+<li><p><strong>csv_data</strong> – The pf containing the data.</p></li>
+<li><p><strong>reference_gene_filename</strong> – The name of the reference gene.</p></li>
+<li><p><strong>dist_norm</strong></p></li>
+<li><p><strong>dist2</strong></p></li>
+<li><p><strong>dist3</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing the data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.writeOutputFile">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">writeOutputFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#writeOutputFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.writeOutputFile" title="Link to this definition"></a></dt>
+<dd><p>Write the datas from data list into a new csv file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – The list containing the final data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.filterResults">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">filterResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">climaticTrees</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geneticTrees</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#filterResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.filterResults" title="Link to this definition"></a></dt>
+<dd><p>Create the final datas from the Climatic Tree and the Genetic Tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>climaticTrees</strong> (<em>dict</em>) – The dictionary containing the climatic trees.</p></li>
+<li><p><strong>geneticTrees</strong> (<em>dict</em>) – The dictionary containing the genetic trees.</p></li>
+<li><p><strong>csv_data</strong> (<em>pd.DataFrame</em>) – The dataframe containing the data from the CSV file.</p></li>
+<li><p><strong>create_file</strong> (<em>bool</em>) – Whether to create a file or not. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final data in a dictionary format.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.format_to_csv">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">format_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#format_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.format_to_csv" title="Link to this definition"></a></dt>
+<dd><p>Format the data to a csv file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – The data to format.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The formatted data in a dictionary format.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.geneticPipeline">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">geneticPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq_alignement</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#geneticPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.geneticPipeline" title="Link to this definition"></a></dt>
+<dd><p>Get the genetic Trees from the initial file datas so we
+can compare every valid tree with the climatic ones. In the
+end it calls a method that create a final csv file with all
+the data that we need for the comparison</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq_alignement</strong> (<em>dict</em>) – The multiple sequence alignment.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The genetic trees.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aphylogeo.utils.loadSequenceFile">
+<span class="sig-prename descclassname"><span class="pre">aphylogeo.utils.</span></span><span class="sig-name descname"><span class="pre">loadSequenceFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/utils.html#loadSequenceFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.utils.loadSequenceFile" title="Link to this definition"></a></dt>
+<dd><p>Reads the .fasta file. Extract sequence ID and sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – The file name of a .fasta file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequences in a dictionary format.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="params.html" class="btn btn-neutral float-left" title="aphylogeo.params" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../user-preferences.html" class="btn btn-neutral float-right" title="Editing User Preferences" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

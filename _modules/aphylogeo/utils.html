@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.utils &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aphylogeo.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aphylogeo.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">csv</span> <span class="kn">import</span> <span class="n">writer</span> <span class="k">as</span> <span class="n">csv_writer</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="kn">import</span> <span class="nn">dendropy</span>
+<span class="kn">import</span> <span class="nn">ete3</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">Phylo</span>
+<span class="kn">from</span> <span class="nn">Bio.Phylo.Applications</span> <span class="kn">import</span> <span class="n">_Fasttree</span>
+<span class="kn">from</span> <span class="nn">Bio.Phylo.Consensus</span> <span class="kn">import</span> <span class="n">bootstrap_consensus</span><span class="p">,</span> <span class="n">majority_consensus</span>
+<span class="kn">from</span> <span class="nn">Bio.Phylo.TreeConstruction</span> <span class="kn">import</span> <span class="n">DistanceCalculator</span><span class="p">,</span> <span class="n">DistanceTreeConstructor</span><span class="p">,</span> <span class="n">_DistanceMatrix</span>
+
+<span class="kn">from</span> <span class="nn">.multiProcessor</span> <span class="kn">import</span> <span class="n">Multi</span>
+<span class="kn">from</span> <span class="nn">.params</span> <span class="kn">import</span> <span class="n">Params</span>
+
+
+<div class="viewcode-block" id="header">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.header">[docs]</a>
+<span class="k">def</span> <span class="nf">header</span><span class="p">():</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Gene&quot;</span><span class="p">,</span> <span class="s2">&quot;Phylogeographic tree&quot;</span><span class="p">,</span> <span class="s2">&quot;Name of species&quot;</span><span class="p">,</span> <span class="s2">&quot;Position in ASM&quot;</span><span class="p">,</span> <span class="s2">&quot;Bootstrap mean&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Least-Square Distance&quot;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Robinson-Foulds Distance&quot;</span><span class="p">,</span> <span class="s2">&quot;Normalised RF Dist&quot;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Euclidean Distance&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Least-Square Distance&quot;</span><span class="p">])</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Robinson-Foulds Distance&quot;</span><span class="p">,</span> <span class="s2">&quot;Normalised RF Dist&quot;</span><span class="p">])</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Euclidean Distance&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">header</span></div>
+
+
+
+<div class="viewcode-block" id="getDissimilaritiesMatrix">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.getDissimilaritiesMatrix">[docs]</a>
+<span class="k">def</span> <span class="nf">getDissimilaritiesMatrix</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columnWithSpecimenName</span><span class="p">,</span> <span class="n">columnToSearch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list containing the names of specimens and their corresponding minimum temperatures.</span>
+
+<span class="sd">    :param df: The content of the CSV file.</span>
+<span class="sd">    :param columnWithSpecimenName: The first column containing specimen names.</span>
+<span class="sd">    :type columnWithSpecimenName: str</span>
+<span class="sd">    :param columnToSearch: The column to compare with the first one.</span>
+<span class="sd">    :type columnToSearch: str</span>
+
+<span class="sd">    :return: The dissimilarities matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meteoData</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columnToSearch</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">nomVar</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columnWithSpecimenName</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">nbrSeq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nomVar</span><span class="p">)</span>
+    <span class="n">maxValue</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">minValue</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># First loop that allow us to calculate a matrix for each sequence</span>
+    <span class="n">tempTab</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbrSeq</span><span class="p">):</span>
+        <span class="c1"># A list that will contain every distances before normalisation</span>
+        <span class="n">tempList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbrSeq</span><span class="p">):</span>
+            <span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">meteoData</span><span class="p">[</span><span class="n">e</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">meteoData</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">meteoData</span><span class="p">[</span><span class="n">e</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">meteoData</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">maximum</span> <span class="o">-</span> <span class="n">minimum</span>
+            <span class="n">tempList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="p">)))</span>
+
+        <span class="c1"># Allow to find the maximum and minimum value for the weather value and</span>
+        <span class="c1"># then to add the temporary list in an array</span>
+        <span class="k">if</span> <span class="n">maxValue</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">tempList</span><span class="p">):</span>
+            <span class="n">maxValue</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tempList</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minValue</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">tempList</span><span class="p">):</span>
+            <span class="n">minValue</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tempList</span><span class="p">)</span>
+        <span class="n">tempTab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tempList</span><span class="p">)</span>
+
+    <span class="c1"># Calculate normalised matrix</span>
+    <span class="n">tabDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tempTab</span><span class="p">)</span>
+    <span class="n">dmDf</span> <span class="o">=</span> <span class="p">(</span><span class="n">tabDf</span> <span class="o">-</span> <span class="n">minValue</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">maxValue</span> <span class="o">-</span> <span class="n">minValue</span><span class="p">)</span>
+    <span class="n">dmDf</span> <span class="o">=</span> <span class="n">dmDf</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="n">matrix</span> <span class="o">=</span> <span class="p">[</span><span class="n">dmDf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dmDf</span><span class="p">))]</span>
+    <span class="n">dm</span> <span class="o">=</span> <span class="n">_DistanceMatrix</span><span class="p">(</span><span class="n">nomVar</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dm</span></div>
+
+
+
+<div class="viewcode-block" id="leastSquare">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.leastSquare">[docs]</a>
+<span class="k">def</span> <span class="nf">leastSquare</span><span class="p">(</span><span class="n">tree1</span><span class="p">,</span> <span class="n">tree2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the least square distance between two trees.</span>
+
+<span class="sd">    - Trees must have the same number of leaves. </span>
+<span class="sd">    - Leaves must all have a twin in each tree. </span>
+<span class="sd">    - A tree must not have duplicate leaves.</span>
+
+<span class="sd">    :param tree1: The first tree to compare.</span>
+<span class="sd">    :type tree1: distanceTree (from Biopython)</span>
+<span class="sd">    :param tree2: The second tree to compare.</span>
+<span class="sd">    :type tree2: distanceTree (from Biopython)</span>
+
+<span class="sd">    :return: The final distance between the two trees.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="mf">0.00</span>
+    <span class="n">leaves</span> <span class="o">=</span> <span class="n">tree1</span><span class="o">.</span><span class="n">get_terminals</span><span class="p">()</span>
+
+    <span class="n">leavesName</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">leaves</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">leavesName</span><span class="p">:</span>
+        <span class="n">leavesName</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">leavesName</span><span class="p">:</span>
+            <span class="n">d1</span> <span class="o">=</span> <span class="n">tree1</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">tree1</span><span class="o">.</span><span class="n">find_any</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">tree1</span><span class="o">.</span><span class="n">find_any</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+            <span class="n">d2</span> <span class="o">=</span> <span class="n">tree2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">tree2</span><span class="o">.</span><span class="n">find_any</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">tree2</span><span class="o">.</span><span class="n">find_any</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+            <span class="n">ls</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d1</span> <span class="o">-</span> <span class="n">d2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ls</span></div>
+
+
+
+<div class="viewcode-block" id="robinsonFoulds">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.robinsonFoulds">[docs]</a>
+<span class="k">def</span> <span class="nf">robinsonFoulds</span><span class="p">(</span><span class="n">tree1</span><span class="p">,</span> <span class="n">tree2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method that calculates the robinson foulds distance between two trees.</span>
+<span class="sd">    </span>
+<span class="sd">    - Trees must have the same number of leaves.</span>
+<span class="sd">    - Leaves must all have a twin in each tree.</span>
+<span class="sd">    - A tree must not have duplicate leaves</span>
+<span class="sd">    </span>
+<span class="sd">    :param tree1: The first tree to compare</span>
+<span class="sd">    :type tree1: distanceTree object from biopython converted to Newick</span>
+<span class="sd">    :param tree2: The second tree to compare</span>
+<span class="sd">    :type tree2: distanceTree object from biopython converted to Newick</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The final distance between the two</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tree1_newick</span> <span class="o">=</span> <span class="n">ete3</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="n">tree1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;newick&quot;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tree2_newick</span> <span class="o">=</span> <span class="n">ete3</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="n">tree2</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;newick&quot;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">rf</span><span class="p">,</span> <span class="n">rf_max</span><span class="p">,</span> <span class="n">common_leaves</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">x5</span> <span class="o">=</span> <span class="n">tree1_newick</span><span class="o">.</span><span class="n">robinson_foulds</span><span class="p">(</span><span class="n">tree2_newick</span><span class="p">,</span> <span class="n">unrooted_trees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_leaves</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rf</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">rf</span><span class="p">,</span> <span class="n">rf</span> <span class="o">/</span> <span class="n">rf_max</span></div>
+
+
+
+<div class="viewcode-block" id="euclideanDist">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.euclideanDist">[docs]</a>
+<span class="k">def</span> <span class="nf">euclideanDist</span><span class="p">(</span><span class="n">tree1</span><span class="p">,</span> <span class="n">tree2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method that calculate the Euclidean distance (a.k.a. Felsenstein&#39;s 2004 &quot;branch length</span>
+<span class="sd">    distance&quot;) between two trees based on ``edge_weight_attr``.</span>
+
+<span class="sd">    Trees need to share the same |TaxonNamespace| reference.</span>
+<span class="sd">    The bipartition bitmasks of the trees must be correct for the current tree</span>
+<span class="sd">    structures (by calling :meth:`Tree.encode_bipartitions()` method)</span>
+
+<span class="sd">    :param tree1: The first tree to compare</span>
+<span class="sd">    :type tree1: distanceTree object from biopython converted to DendroPY format Newick</span>
+<span class="sd">    :param tree2: The second tree to compare</span>
+<span class="sd">    :type tree2: distanceTree object from biopython converted to DendroPY format Newick</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The final Euclidean distance between the two</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tns</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">TaxonNamespace</span><span class="p">()</span>
+    <span class="n">tree1_tc</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;newick&quot;</span><span class="p">),</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span> <span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
+    <span class="n">tree2_tc</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree2</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;newick&quot;</span><span class="p">),</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span> <span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
+    <span class="n">tree1_tc</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
+    <span class="n">tree2_tc</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
+    <span class="n">ed</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">calculate</span><span class="o">.</span><span class="n">treecompare</span><span class="o">.</span><span class="n">euclidean_distance</span><span class="p">(</span><span class="n">tree1_tc</span><span class="p">,</span> <span class="n">tree2_tc</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ed</span></div>
+
+
+
+<div class="viewcode-block" id="createTree">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.createTree">[docs]</a>
+<span class="k">def</span> <span class="nf">createTree</span><span class="p">(</span><span class="n">dm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a dna tree from content coming from a fasta file.</span>
+
+<span class="sd">    :param dm: The content used to create the tree.</span>
+<span class="sd">    :return: The tree created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">constructor</span> <span class="o">=</span> <span class="n">DistanceTreeConstructor</span><span class="p">()</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="n">nj</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tree</span></div>
+
+
+
+<div class="viewcode-block" id="climaticPipeline">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.climaticPipeline">[docs]</a>
+<span class="k">def</span> <span class="nf">climaticPipeline</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a dictionnary containing the climatic Trees</span>
+<span class="sd">    </span>
+<span class="sd">    :param df: Data to use to create the trees</span>
+<span class="sd">    :return: The climatic tree dictionnary</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">Params</span><span class="o">.</span><span class="n">names</span>
+    <span class="n">trees</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+        <span class="n">dm</span> <span class="o">=</span> <span class="n">getDissimilaritiesMatrix</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">trees</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">createTree</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">trees</span></div>
+
+
+
+<div class="viewcode-block" id="createBoostrap">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.createBoostrap">[docs]</a>
+<span class="k">def</span> <span class="nf">createBoostrap</span><span class="p">(</span><span class="n">msaSet</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">bootstrapAmount</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a tree structure from sequences given by a dictionnary.</span>
+<span class="sd">    </span>
+<span class="sd">    :param msaSet: A dictionary containing the multiple sequence alignments.</span>
+<span class="sd">    :type msaSet: dict</span>
+<span class="sd">    :param bootstrapAmount:</span>
+<span class="sd">    :type bootstrapAmount: int</span>
+<span class="sd">    </span>
+<span class="sd">    :return: A dictionary with the trees for each sequence.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">constructor</span> <span class="o">=</span> <span class="n">DistanceTreeConstructor</span><span class="p">(</span><span class="n">DistanceCalculator</span><span class="p">(</span><span class="s2">&quot;identity&quot;</span><span class="p">))</span>
+
+    <span class="c1"># creation of intermidiary array</span>
+    <span class="c1"># each array is a process</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">msaSet</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">array</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">msaSet</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">bootstrapAmount</span><span class="p">])</span>
+
+    <span class="c1"># multiprocessing</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating bootstrap variations with multiplyer of : &quot;</span><span class="p">,</span> <span class="n">bootstrapAmount</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Multi</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">bootSingle</span><span class="p">)</span><span class="o">.</span><span class="n">processingSmallData</span><span class="p">()</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="c1"># reshaping the output into a readble dictionary</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="bootSingle">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.bootSingle">[docs]</a>
+<span class="k">def</span> <span class="nf">bootSingle</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform a bootstrap consensus analysis on a multiple sequence alignment (MSA).</span>
+
+<span class="sd">    :param args: A list of arguments, which includes:</span>
+<span class="sd">    </span>
+<span class="sd">        - msaSet (dict): A dictionary of multiple sequence alignments.</span>
+<span class="sd">        - constructor (function): A function used to construct trees from the MSA.</span>
+<span class="sd">        - key (str): The key to access a specific MSA from the msaSet.</span>
+<span class="sd">        - bootstrapAmount (int): The number of bootstrap samples to generate.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: </span>
+<span class="sd">    </span>
+<span class="sd">        - result (Tree): The consensus tree obtained from the bootstrap analysis.</span>
+<span class="sd">        - key (str): The key corresponding to the MSA used for this result.</span>
+<span class="sd">        </span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msaSet</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">constructor</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">bootstrapAmount</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bootstrap_consensus</span><span class="p">(</span><span class="n">msaSet</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">bootstrapAmount</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">majority_consensus</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">result</span><span class="p">,</span> <span class="n">key</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="calculateAverageBootstrap">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.calculateAverageBootstrap">[docs]</a>
+<span class="k">def</span> <span class="nf">calculateAverageBootstrap</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the average bootstrap confidence of a tree.</span>
+
+<span class="sd">    :param tree: The tree from which to calculate the average confidence.</span>
+
+<span class="sd">    :return: The average bootstrap (confidence) value of the tree.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">leaves</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_nonterminals</span><span class="p">()</span>
+    <span class="n">treeConfidences</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">confidence</span><span class="p">,</span> <span class="n">leaves</span><span class="p">))</span>
+    <span class="n">treeConfidences</span> <span class="o">=</span> <span class="p">[</span><span class="n">conf</span> <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">treeConfidences</span> <span class="k">if</span> <span class="n">conf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+    <span class="c1"># Convert confidences to % if FastTree is used</span>
+    <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">tree_type</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+        <span class="n">treeConfidences</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">conf</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">treeConfidences</span><span class="p">]</span>
+
+    <span class="n">totalConfidence</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">treeConfidences</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">confidences</span> <span class="ow">in</span> <span class="n">treeConfidences</span><span class="p">:</span>
+            <span class="n">totalConfidence</span> <span class="o">+=</span> <span class="n">confidences</span>
+        <span class="n">averageBootsrap</span> <span class="o">=</span> <span class="n">totalConfidence</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">treeConfidences</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">averageBootsrap</span> <span class="o">=</span> <span class="mf">100.0</span>
+
+    <span class="k">return</span> <span class="n">averageBootsrap</span></div>
+
+
+
+<div class="viewcode-block" id="fasttreeCMD">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.fasttreeCMD">[docs]</a>
+<span class="k">def</span> <span class="nf">fasttreeCMD</span><span class="p">(</span><span class="n">input_fasta</span><span class="p">,</span> <span class="n">boot</span><span class="p">,</span> <span class="n">nt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the command line executed to create a phylogenetic tree using FastTree application</span>
+
+<span class="sd">    :param input_fasta: The input FASTA file containing the multiple sequence alignment.</span>
+<span class="sd">    :type input_fasta: str</span>
+<span class="sd">    :param output: The relative path of the output tree generated upon FastTree execution.</span>
+<span class="sd">    :type output: str</span>
+<span class="sd">    :param boot: The value of bootstrap to be used for tree generation (default is 100).</span>
+<span class="sd">    :type boot: int, optional</span>
+<span class="sd">    :param nt: Whether the sequences are nucleotides (default is True for nucleotide sequences, set to False for protein sequences).</span>
+<span class="sd">    :type nt: bool, optional</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The FastTree command line object.</span>
+<span class="sd">    :rtype: FastTreeCommandline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="n">fasttree_exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">FastTree.exe&quot;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+        <span class="n">fasttree_exe</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/FastTree&quot;</span>
+    <span class="k">return</span> <span class="n">_Fasttree</span><span class="o">.</span><span class="n">FastTreeCommandline</span><span class="p">(</span><span class="n">fasttree_exe</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">input_fasta</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span> <span class="n">boot</span><span class="o">=</span><span class="n">boot</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="createTmpFasta">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.createTmpFasta">[docs]</a>
+<span class="k">def</span> <span class="nf">createTmpFasta</span><span class="p">(</span><span class="n">msaset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create fasta files from multiple sequences alignment</span>
+
+<span class="sd">    :param msaset: A dictionary where the key is the window name, and the value is the MSA object.</span>
+<span class="sd">    :type msaset: dict(str, AlignIO)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">alignment</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">tmp</span><span class="se">\\</span><span class="si">{</span><span class="n">window</span><span class="si">}</span><span class="s2">.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">window</span><span class="p">,</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">msaset</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">alignment</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;aphylogeo/bin/tmp/</span><span class="si">{</span><span class="n">window</span><span class="si">}</span><span class="s2">.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">window</span><span class="p">,</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">msaset</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="fasttree">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.fasttree">[docs]</a>
+<span class="k">def</span> <span class="nf">fasttree</span><span class="p">(</span><span class="n">msaset</span><span class="p">,</span> <span class="n">boot</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create phylogenetic trees from a set of multiple sequence alignments using the FastTree application.</span>
+
+<span class="sd">    This function creates temporary FASTA files to be used as input for FastTree. Since FastTree outputs `.tree` files, </span>
+<span class="sd">    the function reads them back during execution and removes the output tree files afterward.</span>
+
+<span class="sd">    :param msaset: A dictionary containing the multiple sequence alignments (MSA).</span>
+<span class="sd">    :type msaset: dict(str, AlignIO)</span>
+<span class="sd">    :param boot: The number of bootstrap replicates to generate. Default is 100.</span>
+<span class="sd">    :type boot: int, optional</span>
+<span class="sd">    :param nt: Whether the sequences are nucleotides (True) or amino acids (False). Default is True (nucleotide sequences).</span>
+<span class="sd">    :type nt: bool, optional</span>
+
+<span class="sd">    :return: A dictionary where the key is the window name and the value is a tree in Newick format.</span>
+<span class="sd">    :rtype: dict(str, Tree)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">createTmpFasta</span><span class="p">(</span><span class="n">msaset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="n">alignments</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">tmp</span><span class="se">\\</span><span class="s2">*.fasta&quot;</span><span class="p">)</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;tmp</span><span class="se">\\\\</span><span class="s2">(.+?).fasta&quot;</span><span class="p">,</span> <span class="n">fasta</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">fasta</span> <span class="ow">in</span> <span class="n">alignments</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+        <span class="n">alignments</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;aphylogeo/bin/tmp/*.fasta&quot;</span><span class="p">)</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;tmp/(.+?).fasta&quot;</span><span class="p">,</span> <span class="n">fasta</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">fasta</span> <span class="ow">in</span> <span class="n">alignments</span><span class="p">]</span>
+
+    <span class="c1"># Sort windows and alignments ascendent order</span>
+    <span class="n">sorted_windows</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">windows</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()))</span>
+    <span class="n">sortedindex</span> <span class="o">=</span> <span class="p">[</span><span class="n">windows</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">win</span><span class="p">)</span> <span class="k">for</span> <span class="n">win</span> <span class="ow">in</span> <span class="n">sorted_windows</span><span class="p">]</span>
+    <span class="n">sorted_alignments</span> <span class="o">=</span> <span class="p">[</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sortedindex</span><span class="p">]</span>
+
+    <span class="c1"># Build FastTree command lines</span>
+    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">fasttreeCMD</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span> <span class="n">boot</span><span class="p">,</span> <span class="n">nt</span><span class="p">)</span> <span class="k">for</span> <span class="n">fasta</span> <span class="ow">in</span> <span class="n">sorted_alignments</span><span class="p">]</span>
+
+    <span class="c1"># Execute cmd lines and create trees</span>
+    <span class="n">trees</span> <span class="o">=</span> <span class="p">{</span><span class="n">sorted_windows</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">Phylo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">cmd</span><span class="p">()[</span><span class="mi">0</span><span class="p">]),</span> <span class="s2">&quot;newick&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cmds</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">tmp</span><span class="se">\\</span><span class="s2">*.fasta&quot;</span><span class="p">)]</span>  <span class="c1"># Remove temp fasta files</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;aphylogeo/bin/tmp/*.fasta&quot;</span><span class="p">)]</span>  <span class="c1"># Remove temp fasta files</span>
+    <span class="k">return</span> <span class="n">trees</span></div>
+
+
+
+<div class="viewcode-block" id="createGeneticList">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.createGeneticList">[docs]</a>
+<span class="k">def</span> <span class="nf">createGeneticList</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">,</span> <span class="n">bootstrap_threshold</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of Trees if the bootstrap Average is higher than</span>
+<span class="sd">    the threshold</span>
+
+<span class="sd">    :param geneticTrees: A dictionary containing the genetic trees.</span>
+<span class="sd">    :type geneticTrees: dict</span>
+<span class="sd">    :param bootstrap_threshold: </span>
+<span class="sd">    </span>
+<span class="sd">    :return: </span>
+<span class="sd">     - geneticTrees: A sorted list of genetic trees.</span>
+<span class="sd">     - bootstrapList: A list of the bootstrap average of each tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bootstrapList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">geneticList</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">geneticTrees</span><span class="p">:</span>
+        <span class="n">bootstrap_average</span> <span class="o">=</span> <span class="n">calculateAverageBootstrap</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">bootstrap_average</span> <span class="o">&gt;=</span> <span class="n">bootstrap_threshold</span><span class="p">:</span>
+            <span class="n">bootstrapList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bootstrap_average</span><span class="p">)</span>
+            <span class="n">geneticList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">geneticList</span><span class="p">,</span> <span class="n">bootstrapList</span></div>
+
+
+
+<div class="viewcode-block" id="createClimaticList">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.createClimaticList">[docs]</a>
+<span class="k">def</span> <span class="nf">createClimaticList</span><span class="p">(</span><span class="n">climaticTrees</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of climaticTrees</span>
+<span class="sd">    </span>
+<span class="sd">    :param climaticTrees: A dictionary containing the climatic trees.</span>
+<span class="sd">    :type climaticTrees: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :return: A list of the climatic trees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">climaticList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">climaticTrees</span><span class="p">:</span>
+        <span class="n">climaticList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">climaticList</span></div>
+
+
+
+<div class="viewcode-block" id="getData">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.getData">[docs]</a>
+<span class="k">def</span> <span class="nf">getData</span><span class="p">(</span><span class="n">leavesName</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">climaticList</span><span class="p">,</span> <span class="n">bootstrap</span><span class="p">,</span> <span class="n">genetic</span><span class="p">,</span> <span class="n">csv_data</span><span class="p">,</span> <span class="n">reference_gene_filename</span><span class="p">,</span> <span class="n">dist_norm</span><span class="p">,</span> <span class="n">dist2</span><span class="p">,</span> <span class="n">dist3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get data from a csv file a various parameters to store into a list</span>
+
+<span class="sd">    :param leavesName: The list of the actual leaves.</span>
+<span class="sd">    :type leavesName: list</span>
+<span class="sd">    :param dist: The least square distance between two trees.</span>
+<span class="sd">    :type dist: float</span>
+<span class="sd">    :param index: The index of the climatic tree.</span>
+<span class="sd">    :type index: int</span>
+<span class="sd">    :param climaticList: The list of climatic trees.</span>
+<span class="sd">    :type climaticList: list</span>
+<span class="sd">    :param bootstrap: The bootstrap values.</span>
+<span class="sd">    :param genetic: The genetic tree.</span>
+<span class="sd">    :param csv_data: The pf containing the data.</span>
+<span class="sd">    :param reference_gene_filename: The name of the reference gene.</span>
+<span class="sd">    :param dist_norm:</span>
+<span class="sd">    :param dist2: </span>
+<span class="sd">    :param dist3:</span>
+<span class="sd">    </span>
+<span class="sd">    :return: A list containing the data.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">leave</span> <span class="ow">in</span> <span class="n">leavesName</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">leave</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">reference_gene_filename</span><span class="p">,</span> <span class="n">climaticList</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">leave</span><span class="p">,</span> <span class="n">genetic</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">dist_norm</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span>
+                        <span class="n">reference_gene_filename</span><span class="p">,</span>
+                        <span class="n">climaticList</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                        <span class="n">leave</span><span class="p">,</span>
+                        <span class="n">genetic</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">dist2</span><span class="p">),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">dist_norm</span><span class="p">),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dist3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">reference_gene_filename</span><span class="p">,</span> <span class="n">climaticList</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">leave</span><span class="p">,</span> <span class="n">genetic</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mi">2</span><span class="p">))]</span></div>
+
+
+
+<div class="viewcode-block" id="writeOutputFile">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.writeOutputFile">[docs]</a>
+<span class="k">def</span> <span class="nf">writeOutputFile</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write the datas from data list into a new csv file</span>
+
+<span class="sd">    :param data: The list containing the final data.</span>
+<span class="sd">    :type data: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing the output file&quot;</span><span class="p">)</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;./results&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./results/output.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv_writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">header</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span></div>
+
+
+
+<div class="viewcode-block" id="filterResults">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.filterResults">[docs]</a>
+<span class="k">def</span> <span class="nf">filterResults</span><span class="p">(</span>
+    <span class="n">climaticTrees</span><span class="p">,</span>
+    <span class="n">geneticTrees</span><span class="p">,</span>
+    <span class="n">csv_data</span><span class="p">,</span>
+    <span class="n">create_file</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the final datas from the Climatic Tree and the Genetic Tree</span>
+
+<span class="sd">    :param climaticTrees: The dictionary containing the climatic trees.</span>
+<span class="sd">    :type climaticTrees: dict</span>
+<span class="sd">    :param geneticTrees: The dictionary containing the genetic trees.</span>
+<span class="sd">    :type geneticTrees: dict</span>
+<span class="sd">    :param csv_data: The dataframe containing the data from the CSV file.</span>
+<span class="sd">    :type csv_data: pd.DataFrame</span>
+<span class="sd">    :param create_file: Whether to create a file or not. Default is True.</span>
+<span class="sd">    :type create_file: bool</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The final data in a dictionary format.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create a list of the tree if the bootstrap is superior to the</span>
+    <span class="c1"># bootstrap treshold</span>
+    <span class="n">geneticList</span><span class="p">,</span> <span class="n">bootstrapList</span> <span class="o">=</span> <span class="n">createGeneticList</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">,</span> <span class="n">Params</span><span class="o">.</span><span class="n">bootstrap_threshold</span><span class="p">)</span>
+
+    <span class="c1"># Create a list with the climatic trees name</span>
+    <span class="n">climaticList</span> <span class="o">=</span> <span class="n">createClimaticList</span><span class="p">(</span><span class="n">climaticTrees</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Compare every genetic trees with every climatic trees. If the returned</span>
+    <span class="c1"># value is inferior or equal to the distance threshold,</span>
+    <span class="c1"># we keep the data</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">geneticList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">current_genetic</span> <span class="o">=</span> <span class="n">geneticList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">current_bootstrap</span> <span class="o">=</span> <span class="n">bootstrapList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">leaves</span> <span class="o">=</span> <span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">]</span><span class="o">.</span><span class="n">get_terminals</span><span class="p">()</span>
+        <span class="n">leavesName</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">leaves</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">climaticTrees</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">ls</span> <span class="o">=</span> <span class="n">leastSquare</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">if</span> <span class="n">ls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The LS distance is not calculable&quot;</span> <span class="o">+</span> <span class="s2">&quot; for </span><span class="si">{aligned_file}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ls</span> <span class="o">&lt;=</span> <span class="n">Params</span><span class="o">.</span><span class="n">dist_threshold</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">getData</span><span class="p">(</span>
+                            <span class="n">leavesName</span><span class="p">,</span>
+                            <span class="n">ls</span><span class="p">,</span>
+                            <span class="n">i</span><span class="p">,</span>
+                            <span class="n">climaticList</span><span class="p">,</span>
+                            <span class="n">current_bootstrap</span><span class="p">,</span>
+                            <span class="n">current_genetic</span><span class="p">,</span>
+                            <span class="n">csv_data</span><span class="p">,</span>
+                            <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                <span class="n">rf</span><span class="p">,</span> <span class="n">rf_norm</span> <span class="o">=</span> <span class="n">robinsonFoulds</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">if</span> <span class="n">rf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The RF distance is not calculable&quot;</span> <span class="o">+</span> <span class="s2">&quot; for </span><span class="si">{aligned_file}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rf</span> <span class="o">&lt;=</span> <span class="n">Params</span><span class="o">.</span><span class="n">dist_threshold</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">getData</span><span class="p">(</span>
+                            <span class="n">leavesName</span><span class="p">,</span>
+                            <span class="n">rf</span><span class="p">,</span>
+                            <span class="n">i</span><span class="p">,</span>
+                            <span class="n">climaticList</span><span class="p">,</span>
+                            <span class="n">current_bootstrap</span><span class="p">,</span>
+                            <span class="n">current_genetic</span><span class="p">,</span>
+                            <span class="n">csv_data</span><span class="p">,</span>
+                            <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span><span class="p">,</span>
+                            <span class="n">rf_norm</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                <span class="n">ed</span> <span class="o">=</span> <span class="n">euclideanDist</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">if</span> <span class="n">ed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The Euclidean (DendroPY) distance is not calculable&quot;</span> <span class="o">+</span> <span class="s2">&quot; for </span><span class="si">{aligned_file}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ed</span> <span class="o">&lt;=</span> <span class="n">Params</span><span class="o">.</span><span class="n">dist_threshold</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">getData</span><span class="p">(</span>
+                            <span class="n">leavesName</span><span class="p">,</span>
+                            <span class="n">ed</span><span class="p">,</span>
+                            <span class="n">i</span><span class="p">,</span>
+                            <span class="n">climaticList</span><span class="p">,</span>
+                            <span class="n">current_bootstrap</span><span class="p">,</span>
+                            <span class="n">current_genetic</span><span class="p">,</span>
+                            <span class="n">csv_data</span><span class="p">,</span>
+                            <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                            <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">distance_method</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">ls</span> <span class="o">=</span> <span class="n">leastSquare</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="n">rf</span><span class="p">,</span> <span class="n">rf_norm</span> <span class="o">=</span> <span class="n">robinsonFoulds</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="n">ed</span> <span class="o">=</span> <span class="n">euclideanDist</span><span class="p">(</span><span class="n">geneticTrees</span><span class="p">[</span><span class="n">current_genetic</span><span class="p">],</span> <span class="n">climaticTrees</span><span class="p">[</span><span class="n">climaticList</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">if</span> <span class="n">ls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The LS distance is not calculable&quot;</span> <span class="o">+</span> <span class="s2">&quot; for </span><span class="si">{aligned_file}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ls</span> <span class="o">&lt;=</span> <span class="n">Params</span><span class="o">.</span><span class="n">dist_threshold</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">getData</span><span class="p">(</span>
+                            <span class="n">leavesName</span><span class="p">,</span>
+                            <span class="n">ls</span><span class="p">,</span>
+                            <span class="n">i</span><span class="p">,</span>
+                            <span class="n">climaticList</span><span class="p">,</span>
+                            <span class="n">current_bootstrap</span><span class="p">,</span>
+                            <span class="n">current_genetic</span><span class="p">,</span>
+                            <span class="n">csv_data</span><span class="p">,</span>
+                            <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span><span class="p">,</span>
+                            <span class="n">rf_norm</span><span class="p">,</span>
+                            <span class="n">rf</span><span class="p">,</span>
+                            <span class="n">ed</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid distance method&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">create_file</span><span class="p">:</span>
+        <span class="c1"># We write the datas into an output csv file</span>
+        <span class="n">writeOutputFile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">format_to_csv</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="format_to_csv">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.format_to_csv">[docs]</a>
+<span class="k">def</span> <span class="nf">format_to_csv</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format the data to a csv file</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: The data to format.</span>
+<span class="sd">    :type data: list</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The formatted data in a dictionary format.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">header</span><span class="p">():</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">col_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">header</span><span class="p">()[</span><span class="n">col_index</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">col_index</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="geneticPipeline">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.geneticPipeline">[docs]</a>
+<span class="k">def</span> <span class="nf">geneticPipeline</span><span class="p">(</span><span class="n">seq_alignement</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the genetic Trees from the initial file datas so we</span>
+<span class="sd">    can compare every valid tree with the climatic ones. In the</span>
+<span class="sd">    end it calls a method that create a final csv file with all</span>
+<span class="sd">    the data that we need for the comparison</span>
+
+<span class="sd">    :param seq_alignement: The multiple sequence alignment.</span>
+<span class="sd">    :type seq_alignement: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The genetic trees.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># GM no more needed</span>
+    <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+    <span class="c1"># if os.path.exists(&quot;./debug&quot;):</span>
+    <span class="c1">#     shutil.rmtree(&quot;./debug&quot;)</span>
+    <span class="c1"># if Params.makeDebugFiles:</span>
+    <span class="c1">#     os.mkdir(&quot;./debug&quot;)</span>
+    <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+
+    <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">tree_type</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+        <span class="n">geneticTrees</span> <span class="o">=</span> <span class="n">createBoostrap</span><span class="p">(</span><span class="n">seq_alignement</span><span class="p">,</span> <span class="n">Params</span><span class="o">.</span><span class="n">bootstrap_amount</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">tree_type</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+        <span class="n">geneticTrees</span> <span class="o">=</span> <span class="n">fasttree</span><span class="p">(</span><span class="n">seq_alignement</span><span class="p">,</span> <span class="n">Params</span><span class="o">.</span><span class="n">bootstrap_amount</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">geneticTrees</span></div>
+
+
+
+<div class="viewcode-block" id="loadSequenceFile">
+<a class="viewcode-back" href="../../api/utils.html#aphylogeo.utils.loadSequenceFile">[docs]</a>
+<span class="k">def</span> <span class="nf">loadSequenceFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the .fasta file. Extract sequence ID and sequences.</span>
+<span class="sd">    </span>
+<span class="sd">    :param file: The file name of a .fasta file.</span>
+<span class="sd">    :type file: str</span>
+<span class="sd">    </span>
+<span class="sd">    :return: The sequences in a dictionary format.</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sequences</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">sequencesFile</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sequencesFile</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">):</span>
+            <span class="n">sequences</span><span class="p">[</span><span class="n">sequence</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence</span><span class="o">.</span><span class="n">seq</span>
+    <span class="k">return</span> <span class="n">sequences</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

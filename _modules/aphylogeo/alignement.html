@@ -1,0 +1,1156 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.alignement &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aphylogeo.alignement</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aphylogeo.alignement</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">statistics</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+
+<span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">AlignIO</span>
+<span class="kn">from</span> <span class="nn">Bio.Align</span> <span class="kn">import</span> <span class="n">PairwiseAligner</span>
+<span class="kn">from</span> <span class="nn">Bio.Align.Applications</span> <span class="kn">import</span> <span class="n">ClustalwCommandline</span><span class="p">,</span> <span class="n">MafftCommandline</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.params</span> <span class="kn">import</span> <span class="n">Params</span>
+<span class="kn">from</span> <span class="nn">.multiProcessor</span> <span class="kn">import</span> <span class="n">Multi</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">textdistance</span> <span class="k">as</span> <span class="nn">td</span>
+
+
+<div class="viewcode-block" id="Alignment">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment">[docs]</a>
+<span class="k">class</span> <span class="nc">Alignment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that contains the data of a multiple sequence alignment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alignment_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msa</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init method</span>
+<span class="sd">        args:</span>
+<span class="sd">            alignment_method (str): The method used to align the sequences</span>
+<span class="sd">            msa (dict): The multiple sequence alignment data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;Alignment&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment_method</span> <span class="o">=</span> <span class="n">alignment_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msa</span> <span class="o">=</span> <span class="n">msa</span>
+
+<div class="viewcode-block" id="Alignment.to_dict">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that converts the alignment data to a dictionary</span>
+<span class="sd">        args:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert the msa data to string format</span>
+        <span class="n">msa_str_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">msa_to_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msa</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">msa</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;alignment_method&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignment_method</span><span class="p">,</span> <span class="s2">&quot;msa&quot;</span><span class="p">:</span> <span class="n">msa_str_dict</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Alignment.msa_to_string">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.msa_to_string">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">msa_to_string</span><span class="p">(</span><span class="n">msa_obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that converts the alignment data to a string</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            MSA (AlignIO): The multiple sequence alignment data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">msa_obj</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Alignment.msa_from_string">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.msa_from_string">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">msa_from_string</span><span class="p">(</span><span class="n">msa_str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that converts the alignment string to MSA</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            MSA string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">msa_str</span><span class="p">),</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Alignment.from_dict">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="c1"># Convert msa data back to its original format</span>
+        <span class="n">msa_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">msa_from_string</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;msa&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;msa&quot;</span><span class="p">]}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;alignment_method&quot;</span><span class="p">],</span> <span class="n">msa_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Alignment.save_to_json">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.save_to_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that saves a json sequence file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The name of the json file to save</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Alignment.load_from_json">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.load_from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that loads a json sequence file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The name of the json file to load</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            alignment class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Alignment.from_json_string">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.from_json_string">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json_string</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that loads an Alignment object from a JSON string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            json_string (str): The JSON string to load.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of the Alignment class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Alignment.from_fasta_file">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.Alignment.from_fasta_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_fasta_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">alignment_method</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that loads a sequence from a fasta file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The name of the fasta file to load</span>
+<span class="sd">            alignment_method: The method used to align the sequences</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            _type_: MSA</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">msa</span> <span class="o">=</span> <span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+        <span class="n">msa_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">msa</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">msa</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">alignment_method</span><span class="p">,</span> <span class="n">msa_dict</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AlignSequences">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences">[docs]</a>
+<span class="k">class</span> <span class="nc">AlignSequences</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequences</span><span class="p">,</span> <span class="n">makeDebugFiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor if the alignment object.</span>
+<span class="sd">        All parts of the process are available as variables.</span>
+
+<span class="sd">        Inputs:</span>
+<span class="sd">            sequences (dict) key = Sequence ID, value = Seq()</span>
+<span class="sd">            makeDebugFiles (Boolean) if True, will create a folder with all the intermediate files</span>
+
+
+<span class="sd">        args:</span>
+<span class="sd">            self.sequences (Dictionary) Read data from the fasta file</span>
+<span class="sd">                key = Sequence ID</span>
+<span class="sd">                value = Seq()</span>
+
+<span class="sd">            self.centroidKey (String) Specimen ID of the centroid sequence</span>
+
+<span class="sd">            self.centroidSeq (Seq()) The centroid sequence</span>
+
+<span class="sd">            self.aligned (Dictionary) Sequences after pairwise alignement</span>
+<span class="sd">                key = Sequence ID (String) the specimen&#39;s ID</span>
+<span class="sd">                value = Sequence (Seq()) the specimen&#39;s DNA sequence</span>
+
+<span class="sd">            self.heuristicMSA (Dictionary) Sequences after star style alignement</span>
+<span class="sd">                key = Sequence ID (String) the specimen&#39;s ID</span>
+<span class="sd">                value = Sequence (Seq()) the specimen&#39;s DNA sequence</span>
+
+<span class="sd">            self.windowed (Dictionary of Dictionary) Sequences after being windowed</span>
+<span class="sd">                key = Window ID (String) as &quot;startPosition_endPosition&quot;</span>
+<span class="sd">                value = (Dictionary)</span>
+<span class="sd">                    key = Sequence ID (String) the specimen&#39;s ID</span>
+<span class="sd">                    value = Sequence (Seq()) the specimen&#39;s DNA sequence</span>
+
+<span class="sd">            ##todo</span>
+<span class="sd">            self.msa (AlignIO())</span>
+<span class="sd">            self.rate_similarity</span>
+<span class="sd">            self.method_similarity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span> <span class="o">=</span> <span class="n">sequences</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">makeDebugFiles</span> <span class="o">=</span> <span class="n">makeDebugFiles</span>
+
+<div class="viewcode-block" id="AlignSequences.align">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.align">[docs]</a>
+    <span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alignment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that align sequences</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Alignment: The alignment object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">alignment_method</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="n">centroidKey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSequenceCentroid</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">centroidSeq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">centroidKey</span><span class="p">)</span>
+            <span class="n">aligned</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignSequencesWithPairwise</span><span class="p">(</span><span class="n">centroidKey</span><span class="p">,</span> <span class="n">centroidSeq</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">fit_method</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">heuristicMSA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">starAlignement</span><span class="p">(</span><span class="n">centroidKey</span><span class="p">,</span> <span class="n">aligned</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">fit_method</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                <span class="n">heuristicMSA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">narrowFitPairwise</span><span class="p">(</span><span class="n">aligned</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">alignment_method</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+            <span class="n">heuristicMSA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">muscleAlign</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">alignment_method</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+            <span class="n">heuristicMSA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clustalAlign</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">alignment_method</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+            <span class="n">heuristicMSA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mafftAlign</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid alignment method&quot;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;aphylogeo/bin/tmp/*.fasta&quot;</span><span class="p">)]</span>  <span class="c1"># Remove temp fasta files</span>
+        <span class="n">windowed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slidingWindow</span><span class="p">(</span><span class="n">heuristicMSA</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeMSA</span><span class="p">(</span><span class="n">windowed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">Alignment</span><span class="p">(</span><span class="n">Params</span><span class="o">.</span><span class="n">alignment_method</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msa</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.getSequenceCentroid">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.getSequenceCentroid">[docs]</a>
+    <span class="k">def</span> <span class="nf">getSequenceCentroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that picks the centroid sequence in a dictionary of sequences</span>
+
+<span class="sd">        variables:</span>
+<span class="sd">            list (list) Needed variable format for using Multiprocessor</span>
+<span class="sd">        return: a list of:</span>
+<span class="sd">            resultKey (String)</span>
+<span class="sd">            resultSum (int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Searching for the centroid&quot;</span><span class="p">)</span>
+
+        <span class="c1"># formats input as a list for the Multiprocess</span>
+        <span class="n">seq_pairs_swapped</span> <span class="o">=</span> <span class="p">[((</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+        <span class="n">seq_pairs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">()))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seq_pairs_swapped</span><span class="p">]</span>
+
+        <span class="c1"># starts all the processes</span>
+        <span class="n">align_scores</span> <span class="o">=</span> <span class="n">Multi</span><span class="p">(</span><span class="n">seq_pairs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ScoreSingle</span><span class="p">)</span><span class="o">.</span><span class="n">processingLargeData</span><span class="p">()</span>
+
+        <span class="c1"># formats the multiprocess output back in a dictionnary</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">align_scores</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">scores</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">centroid_accession</span> <span class="o">=</span> <span class="nb">max</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="n">centroid_score</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">centroid_accession</span><span class="p">])</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The centroid is &#39;</span><span class="si">{</span><span class="n">centroid_accession</span><span class="si">}</span><span class="s2">&#39; with a median score of </span><span class="si">{</span><span class="n">centroid_score</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">centroid_accession</span><span class="p">,</span> <span class="n">centroid_score</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.ScoreSingle">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.ScoreSingle">[docs]</a>
+    <span class="k">def</span> <span class="nf">ScoreSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method the gets only the score of a couple of sequence regarding the</span>
+<span class="sd">        pairwise alignement</span>
+
+<span class="sd">        Args: a list:</span>
+<span class="sd">            seqA    (Seq()) Sequence A; considered the refenrence</span>
+<span class="sd">            seqAID  (String) Specimen A&#39;s ID</span>
+<span class="sd">            seqB    (Seq()) Sequence B</span>
+<span class="sd">            seqBID  (String) Speciment B&#39;s ID</span>
+
+<span class="sd">        return:</span>
+<span class="sd">            seqAID  see above</span>
+<span class="sd">            seqBID  see above</span>
+<span class="sd">            score   (float) the resulting score of this couple of alignement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seqA</span><span class="p">,</span> <span class="n">seqB</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">seqAID</span><span class="p">,</span> <span class="n">seqBID</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">aligner</span> <span class="o">=</span> <span class="n">PairwiseAligner</span><span class="p">()</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">seqA</span><span class="p">,</span> <span class="n">seqB</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seqAID</span><span class="p">,</span> <span class="n">seqBID</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.alignSequencesWithPairwise">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.alignSequencesWithPairwise">[docs]</a>
+    <span class="k">def</span> <span class="nf">alignSequencesWithPairwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centroidKey</span><span class="p">,</span> <span class="n">centroidSeq</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that aligns multiple DNA sequences.</span>
+<span class="sd">        The first speciment of the dataset is used as the main pivot.</span>
+<span class="sd">        This method uses parrallel computing.</span>
+
+<span class="sd">        Variables:</span>
+<span class="sd">            seqs (Dictionary) see self.sequences</span>
+<span class="sd">            list (list) Needed variable format for using Multiprocessor</span>
+<span class="sd">            result (list) output of all the processes</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            resultList (Dictionary) see self.aligned</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Starting sequence alignement&quot;</span><span class="p">)</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span>
+
+        <span class="n">seq_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">seqXID</span> <span class="ow">in</span> <span class="n">seqs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">seq_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">centroidKey</span><span class="p">,</span> <span class="n">centroidSeq</span><span class="p">,</span> <span class="n">seqXID</span><span class="p">,</span> <span class="n">seqs</span><span class="p">[</span><span class="n">seqXID</span><span class="p">]])</span>
+
+        <span class="n">align_scores</span> <span class="o">=</span> <span class="n">Multi</span><span class="p">(</span><span class="n">seq_pairs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignSingle</span><span class="p">)</span><span class="o">.</span><span class="n">processingLargeData</span><span class="p">()</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># reformats the output in a  dictionnary</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">align_scores</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">((</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">((</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">aligned</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; vs &quot;</span> <span class="o">+</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span> <span class="o">=</span> <span class="n">temp</span>
+
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeDebugFiles</span><span class="p">:</span>
+            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;./debug/1_alignSequences&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># os.mkdir(&quot;./debug/1_alignSequences&quot;)</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">aligned</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dictToFile</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">w</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;1_alignSequences/&quot;</span> <span class="o">+</span> <span class="n">w</span><span class="p">),</span> <span class="s2">&quot;.fasta&quot;</span><span class="p">)</span>
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+
+        <span class="k">return</span> <span class="n">aligned</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.muscleAlign">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.muscleAlign">[docs]</a>
+    <span class="k">def</span> <span class="nf">muscleAlign</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to perform a multiple DNA sequence alignment using Muscle Algorithm</span>
+
+<span class="sd">        Returns (Dict):</span>
+<span class="sd">            heuristicMSA</span>
+<span class="sd">                - Keys: accession ID</span>
+<span class="sd">                - Values: Aligned sequences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                <span class="n">muscle_exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">muscle5.1.win64.exe&quot;</span>
+                <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">tmp&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+                <span class="n">muscle_exe</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/muscle5.1.linux_intel64&quot;</span>
+                <span class="n">out_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/tmp/&quot;</span>
+            <span class="n">in_file</span> <span class="o">=</span> <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span>
+            <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">out_fullname</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="n">out_file</span> <span class="o">+</span> <span class="s2">&quot;_muscle_aligned.fasta&quot;</span><span class="p">)</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">muscle_exe</span><span class="p">,</span> <span class="s2">&quot;-align&quot;</span><span class="p">,</span> <span class="n">in_file</span><span class="p">,</span> <span class="s2">&quot;-output&quot;</span><span class="p">,</span> <span class="n">out_fullname</span><span class="p">])</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">out_fullname</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">rec</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">}</span>
+        <span class="c1"># If the muscle executable is not found</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Muscle executable not found inside the bin folder. Please check the documentation for installation instructions.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>            </div>
+
+            
+<div class="viewcode-block" id="AlignSequences.clustalAlign">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.clustalAlign">[docs]</a>
+    <span class="k">def</span> <span class="nf">clustalAlign</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm</span>
+
+<span class="sd">        Returns (Dict):</span>
+<span class="sd">            heuristicMSA</span>
+<span class="sd">                - Keys: accession ID</span>
+<span class="sd">                - Values: Aligned sequences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                <span class="n">clustal_exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">clustalw2.exe&quot;</span>
+                <span class="n">fasta_out</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">tmp</span><span class="se">\\</span><span class="s2">clustal_alignment.fasta&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+                <span class="n">clustal_exe</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/clustalw2&quot;</span>
+                <span class="n">fasta_out</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/tmp/clustal_alignment.fasta&quot;</span>
+            <span class="n">in_file</span> <span class="o">=</span> <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span>
+            <span class="n">clustalw_cline</span> <span class="o">=</span> <span class="n">ClustalwCommandline</span><span class="p">(</span><span class="n">clustal_exe</span><span class="p">,</span> <span class="n">infile</span><span class="o">=</span><span class="n">in_file</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">fasta_out</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;FASTA&quot;</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">clustalw_cline</span><span class="p">()</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fasta_out</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">rec</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">}</span>
+        <span class="c1"># If the clustalw executable is not found</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ClustalW2 executable not found inside the bin folder. Please check the documentation for installation instructions.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+            
+<div class="viewcode-block" id="AlignSequences.mafftAlign">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.mafftAlign">[docs]</a>
+    <span class="k">def</span> <span class="nf">mafftAlign</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to perform a multiple DNA sequence alignment using MAFFT Algorithm</span>
+
+<span class="sd">        Returns (Dict):</span>
+<span class="sd">            heuristicMSA</span>
+<span class="sd">                - Keys: accession ID</span>
+<span class="sd">                - Values: Aligned sequences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                <span class="n">mafft_exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">aphylogeo</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">mafft-win</span><span class="se">\\</span><span class="s2">mafft.bat&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux1&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">):</span>
+                <span class="n">mafft_exe</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;aphylogeo/bin/mafft-linux64/mafft.bat&quot;</span>
+            <span class="n">in_file</span> <span class="o">=</span> <span class="n">Params</span><span class="o">.</span><span class="n">reference_gene_filepath</span>
+            <span class="n">mafft_cline</span> <span class="o">=</span> <span class="n">MafftCommandline</span><span class="p">(</span><span class="n">mafft_exe</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">in_file</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">mafft_cline</span><span class="p">()</span>
+            <span class="n">fasta_io</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fasta_io</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">rec</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">}</span>
+        <span class="c1"># If the mafft executable is not found</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MAFFT executable not found inside the bin folder. Please check the documentation for installation instructions.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+            
+<div class="viewcode-block" id="AlignSequences.alignSingle">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.alignSingle">[docs]</a>
+    <span class="k">def</span> <span class="nf">alignSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that aligns two DNA sequences using the pairwise2 algorithm.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args (list)</span>
+<span class="sd">                scID    (String) The centroid sequence ID to compare to</span>
+<span class="sd">                sc      (Seq()) The DNA sequence of scID</span>
+<span class="sd">                seqBID  (String) The sequence ID to compare with</span>
+<span class="sd">                seqB    (Seq()) The DNA sequence of seqBID</span>
+
+<span class="sd">        Return: (list)</span>
+<span class="sd">            seqBID see above</span>
+<span class="sd">            aligned (List) The list containing the results.</span>
+<span class="sd">            scID see above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scID</span><span class="p">,</span> <span class="n">seqBID</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">sc</span><span class="p">,</span> <span class="n">seqB</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="c1"># Must return Alignment at index [0] of BioPairwiseAlignment</span>
+        <span class="n">aligner</span> <span class="o">=</span> <span class="n">PairwiseAligner</span><span class="p">()</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">seqB</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">seqBID</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">scID</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.narrowFitPairwise">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.narrowFitPairwise">[docs]</a>
+    <span class="k">def</span> <span class="nf">narrowFitPairwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit length of a centroid sequence and its pairwise aligned sequences</span>
+
+<span class="sd">        The length of each sequence from the pairwise alignment are set equal by</span>
+<span class="sd">        inserting dash (-) in most appropriate location of a given sequence.</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: dict of nested dict</span>
+<span class="sd">                {accession couple #1 : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #1: non-centroid Aligned Seq #1},</span>
+<span class="sd">                ... ,</span>
+<span class="sd">                {accession couple #n : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #n: non-centroid Aligned Seq #n}}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dictionary of all accessions and their fitted aligned sequences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignSeqs</span><span class="p">(</span><span class="n">aligned</span><span class="p">)</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAlignSeqLens</span><span class="p">(</span><span class="n">aligned</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">nucleo_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">seq_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCurrentCharDash</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">seq_i</span><span class="p">,</span> <span class="n">nucleo_i</span><span class="p">):</span>
+                    <span class="n">seqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insertDashToShorterSeq</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">nucleo_i</span><span class="p">,</span> <span class="n">aligned</span><span class="p">)</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">appendDashToShorterSeqs</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mergeFitPairwise</span><span class="p">(</span><span class="n">aligned</span><span class="p">,</span> <span class="n">seqs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.getAlignSeqs">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.getAlignSeqs">[docs]</a>
+    <span class="k">def</span> <span class="nf">getAlignSeqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract all sequences aligned using a pairwise alignment</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: see fitPairwise(alignment) docstring</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of sequences aligned through pairwise alignment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seqs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">:</span>
+            <span class="n">seqs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">[</span><span class="n">alignment</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="p">[]))</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.getAlignSeqLens">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.getAlignSeqLens">[docs]</a>
+    <span class="k">def</span> <span class="nf">getAlignSeqLens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get length of all sequences aligned using a pairwise alignment</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: see fitPairwise(alignment) docstring</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of the length of each aligned sequences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignSeqs</span><span class="p">(</span><span class="n">aligned</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.getAlignCouple">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.getAlignCouple">[docs]</a>
+    <span class="k">def</span> <span class="nf">getAlignCouple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get nested couple accessions and their respective sequences</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: see fitPairwise(alignment) docstring</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of paired accessions and their aligned sequences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">aligned</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.extractOneAlignAcc">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.extractOneAlignAcc">[docs]</a>
+    <span class="k">def</span> <span class="nf">extractOneAlignAcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">nest_ord</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the accession from a nested alignment couple</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: see fitPairwise(alignment) docstring</span>
+<span class="sd">            nest_ord (int) optional:</span>
+<span class="sd">                The position of the nested accessions (Default = 0 (centroid), 1 (aligned sequence))</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The list of either centroid (nest_ord = 0 (Default)) or non-centroid (nest_ord = 1)</span>
+<span class="sd">            accessions of a group of sequences aligned throug pairwise alignment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="n">nest_ord</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignCouple</span><span class="p">(</span><span class="n">aligned</span><span class="p">)]</span>
+
+        <span class="c1"># Return the centroid sequence if an invalid position is queried</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlignCouple</span><span class="p">(</span><span class="n">aligned</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.isCurrentCharDash">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.isCurrentCharDash">[docs]</a>
+    <span class="k">def</span> <span class="nf">isCurrentCharDash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqs</span><span class="p">,</span> <span class="n">seq_i</span><span class="p">,</span> <span class="n">ch_i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assess whether the character at current cursor position is a dash</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            seqs  (list): aligned sequences to fit</span>
+<span class="sd">            seq_i (int):  index of the current sequence</span>
+<span class="sd">            ch_i  (int):  index of the currenct character</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the current character assessed is a dash, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">seqs</span><span class="p">[</span><span class="n">seq_i</span><span class="p">][</span><span class="n">ch_i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.insertDashToShorterSeq">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.insertDashToShorterSeq">[docs]</a>
+    <span class="k">def</span> <span class="nf">insertDashToShorterSeq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqs</span><span class="p">,</span> <span class="n">ch_i</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a dash at the current position of a sequence</span>
+
+<span class="sd">        Insert a dash (-) character in a sequence if its length is shorter</span>
+<span class="sd">        than the longest one in the group of aligned sequence.</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            seqs  (list):    aligned sequences to fit</span>
+<span class="sd">            seq_i (int):     index of the current sequence</span>
+
+<span class="sd">        Returns (List):</span>
+<span class="sd">            - The fitted sequences of a pairwise alignment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">seq_j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAlignSeqLens</span><span class="p">(</span><span class="n">aligned</span><span class="p">)))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">][</span><span class="n">ch_i</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span><span class="p">):</span>
+                    <span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">][:</span><span class="n">ch_i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">][</span><span class="n">ch_i</span><span class="p">:]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">seqs</span><span class="p">[</span><span class="n">seq_j</span><span class="p">][:</span><span class="n">ch_i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span>
+        <span class="k">return</span> <span class="n">seqs</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.mergeFitPairwise">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.mergeFitPairwise">[docs]</a>
+    <span class="k">def</span> <span class="nf">mergeFitPairwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">seqs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a dictionary of all accessions and their fitted sequences</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            alignment: see fitPairwise(alignment) docstring</span>
+<span class="sd">            seqs  (list):    aligned sequences to fit</span>
+
+<span class="sd">        Returns (Dict):</span>
+<span class="sd">             Group of accessions and their fitted sequences from a pairwise alignment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="p">{</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extractOneAlignAcc</span><span class="p">(</span><span class="n">aligned</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+        <span class="n">non_centroid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extractOneAlignAcc</span><span class="p">(</span><span class="n">aligned</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">seqs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">centroid</span> <span class="o">|</span> <span class="n">non_centroid</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.appendDashToShorterSeqs">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.appendDashToShorterSeqs">[docs]</a>
+    <span class="k">def</span> <span class="nf">appendDashToShorterSeqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqs</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append dash to all sequences shorter than the longest one from a list of sequences</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            seqs, list:  List of fitted sequences post pairwise alignment</span>
+<span class="sd">            max_len int: Length of the longest aligned sequence, including the blank/dash</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of sequences with dash appended where applicable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="si">:</span><span class="s2">-&lt;</span><span class="si">{</span><span class="n">max_len</span><span class="si">}}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">seqs</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.starAlignement">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.starAlignement">[docs]</a>
+    <span class="k">def</span> <span class="nf">starAlignement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centroidKey</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that combs through all the pairwise alignments couples and makes</span>
+<span class="sd">        it so that every sequenced is aligned with every other sequences. If a</span>
+<span class="sd">        &quot;-&quot; is found in the seqA of a pair, but not another, it is inserted</span>
+<span class="sd">        into every other ones.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            pair1:          pair2:</span>
+
+<span class="sd">            seqA1: TACTAC   seqA2: TAC-TAC</span>
+<span class="sd">            seqB1: TACTAC   seqB2: TACTTAC</span>
+
+<span class="sd">            becomes:</span>
+<span class="sd">            seqA1: TAC-TAC   seqA2: TAC-TAC</span>
+<span class="sd">            seqB1: TAC-TAC   seqB2: TACTTAC</span>
+
+<span class="sd">            and outputs:</span>
+<span class="sd">            seqA : TAC-TAC   #now combines SeqA1 and SeqA2</span>
+<span class="sd">            seqB1: TAC-TAC</span>
+<span class="sd">            seqB2: TACTTAC</span>
+
+<span class="sd">            then, we compare the aligned set with the next pair:</span>
+
+<span class="sd">            SeqA : TAC-TAC  seqA3: TACTA-C</span>
+<span class="sd">            seqB1: TAC-TAC  seqB3: TACTAAC</span>
+<span class="sd">            seqB2: TACTTAC</span>
+
+<span class="sd">            wich makes:</span>
+<span class="sd">            SeqA : TAC-TA-C  seqA3: TAC-TA-C</span>
+<span class="sd">            seqB1: TAC-TA-C  seqB3: TAC-TAAC</span>
+<span class="sd">            seqB2: TACTTA-C</span>
+
+<span class="sd">            and outputs:</span>
+<span class="sd">            SeqA : TAC-TA-C     #now combines SeqA1, SeqA2 and SeqA3</span>
+<span class="sd">            seqB1: TAC-TA-C</span>
+<span class="sd">            seqB2: TACTTA-C</span>
+<span class="sd">            seqB3: TAC-TAAC</span>
+
+<span class="sd">            over and over again</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            starAlign (dict) see self.heuristicMSA</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scKey</span> <span class="o">=</span> <span class="n">centroidKey</span>
+        <span class="n">starAlign</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">aligned</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># couple is SeqA and SeqB of a pairwise alignement</span>
+            <span class="n">couple</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">couple</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">scKey</span><span class="p">)</span>
+            <span class="n">sNewKey</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># SeqB ID, *not* the reference</span>
+
+            <span class="n">starAlign</span><span class="p">[</span><span class="n">scKey</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">couple</span><span class="p">[</span><span class="n">scKey</span><span class="p">])</span>  <span class="c1"># SeqA, the reference</span>
+            <span class="n">starAlign</span><span class="p">[</span><span class="n">sNewKey</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">couple</span><span class="p">[</span><span class="n">sNewKey</span><span class="p">])</span>  <span class="c1"># SeqB, *not* the reference</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">starAlign</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">starAlign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">starAlign</span><span class="p">,</span> <span class="n">scKey</span><span class="p">,</span> <span class="n">sNewKey</span><span class="p">,</span> <span class="n">centroidKey</span><span class="p">)</span>
+
+            <span class="n">starAlign</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">starAlign</span><span class="p">[</span><span class="n">scKey</span><span class="p">]</span>  <span class="c1"># SeqA, the *old* reference</span>
+        <span class="n">starAlign</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">)</span>
+
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeDebugFiles</span><span class="p">:</span>
+            <span class="n">directory_path</span> <span class="o">=</span> <span class="s2">&quot;./debug/2_starAlignement&quot;</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dictToFile</span><span class="p">(</span><span class="n">starAlign</span><span class="p">,</span> <span class="s2">&quot;2_starAlignement/starAligned&quot;</span><span class="p">,</span> <span class="s2">&quot;.fasta&quot;</span><span class="p">)</span>
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+
+        <span class="k">return</span> <span class="n">starAlign</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.merge">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.merge">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">centroidKey</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that loops through each position of two strings ans compares the Chars.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            result (dict) the dictionnary of objects to compare;</span>
+<span class="sd">                contains only object that have already been aligned + a new pair to align</span>
+<span class="sd">                can be refered to as &quot;aligned set&quot;</span>
+<span class="sd">            k1 (String) The Key of the object we want compared</span>
+<span class="sd">            k2 (String) The Key of the object we want compared</span>
+<span class="sd">        Variables:</span>
+<span class="sd">            minLen  (int)   The number of char in the smallest of the two strings</span>
+<span class="sd">            pos     (int)   The char position at wich we are now; it loops</span>
+<span class="sd">            nChar   (char)  The char from k1</span>
+<span class="sd">            tChar   (char)  The char from K2</span>
+<span class="sd">            keylist (list)  Ultimatly, contains all the keys of the object that need to change</span>
+<span class="sd">        Return:</span>
+<span class="sd">            result (dict)   The same object we started with, but with one more aligned pair inside.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newRef</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">k1</span><span class="p">]</span>
+        <span class="n">tempRef</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span>
+        <span class="n">minLen</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">minLen</span><span class="p">:</span>
+            <span class="c1"># The sequence length could change at each iteration</span>
+            <span class="c1"># these assignemnts needs to be done each loop to get</span>
+            <span class="c1"># to the true end and not to skip the &#39;-&#39; we just added</span>
+            <span class="n">newRef</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">k1</span><span class="p">]</span>
+            <span class="n">tempRef</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span>
+            <span class="n">minLen</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">newRef</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">tempRef</span><span class="p">))</span>
+
+            <span class="n">nChar</span> <span class="o">=</span> <span class="n">newRef</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+            <span class="n">tChar</span> <span class="o">=</span> <span class="n">tempRef</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">nChar</span> <span class="o">!=</span> <span class="n">tChar</span><span class="p">:</span>
+                <span class="c1"># - found in the new ref, change all but the 2 new elements</span>
+                <span class="k">if</span> <span class="n">nChar</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                    <span class="n">keyList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="n">keyList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
+                    <span class="n">keyList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">k2</span><span class="p">)</span>
+
+                <span class="c1"># - found in the old ref; change the 2 new elements</span>
+                <span class="k">elif</span> <span class="n">tChar</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                    <span class="n">keyList</span> <span class="o">=</span> <span class="p">[</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">errStr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="s1">&#39;Alignement error. Merge() found &quot;&#39;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nChar</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s1">&#39;&quot; and &quot;&#39;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tChar</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s1">&#39;&quot; &#39;</span>
+                        <span class="o">+</span> <span class="s2">&quot;at position &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; of two versions of the centroid &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;sequences</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;Please check the previous methods&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot; and ensure the pairwise alignemnt is correct&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Centroid ID: &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">centroidKey</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Pairwise seq ID&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot; last inserted: &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k2</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">errStr</span><span class="p">)</span>
+
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insertDash</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">keyList</span><span class="p">)</span>
+
+            <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.insertDash">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.insertDash">[docs]</a>
+    <span class="k">def</span> <span class="nf">insertDash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">keyList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that inserts a &quot;-&quot; at [pos] in a string at every Key in a dict</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            dict    (dict)  contains many objects as:</span>
+<span class="sd">                - key = (string)</span>
+<span class="sd">                - values = (string)</span>
+<span class="sd">            pos     (int)   the char position at wich to insert</span>
+<span class="sd">            keyList (list)  list of keys of objects to modify</span>
+<span class="sd">        Variables:</span>
+<span class="sd">            char    (char)  The char to insert</span>
+<span class="sd">        Return:</span>
+<span class="sd">            dict    (dict)  The same we started with, with the modifications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyList</span><span class="p">:</span>
+            <span class="n">char</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span> <span class="o">+</span> <span class="n">char</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">pos</span><span class="p">:]</span>
+            <span class="nb">dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="nb">dict</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.slidingWindow">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.slidingWindow">[docs]</a>
+    <span class="k">def</span> <span class="nf">slidingWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristicMSA</span><span class="p">,</span> <span class="n">optimized</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that slices all the sequences in a dictionary to a specific window (substring)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            step_size=3</span>
+<span class="sd">            window_size=5</span>
+
+<span class="sd">            123 : CGGCTCAGCT  --&gt;   123_3_7 : GCTCA</span>
+<span class="sd">            456 : TAGCTTCAGT  --&gt;   456_3_7 : GCTTC</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            alignedSequences (Dictionary)</span>
+<span class="sd">                - Key (String) is the ID of the specimen</span>
+<span class="sd">                - Data (Seq(String)) is the specimen&#39;s DNS sequence</span>
+<span class="sd">            others* (var) see param.yaml</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            resultDict (Dictionary)</span>
+<span class="sd">                Key is originalKey_i_j</span>
+<span class="sd">                    originalKey = the name of the key before the window</span>
+<span class="sd">                    i = The starting position of the window, relative to the original sequence</span>
+<span class="sd">                    j = The ending position of the window, relative to the original sequence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">Params</span><span class="o">.</span><span class="n">window_size</span>
+
+        <span class="n">windowed_alignment</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">seq_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">heuristicMSA</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+
+        <span class="n">paddedMSA</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">heuristicMSA</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">if</span> <span class="n">optimized</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="n">seq_len</span><span class="p">:</span>
+                    <span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">step</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">paddedMSA</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                    <span class="n">combinations</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">rate_similarity</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                        <span class="n">windowed_alignment</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">seq_len</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">seq_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">paddedMSA</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                    <span class="n">combinations</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">seq_len</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">rate_similarity</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                        <span class="n">windowed_alignment</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">seq_len</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="n">seq_len</span><span class="p">:</span>
+                    <span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">step</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">paddedMSA</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">windowed_alignment</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">seq_len</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">seq_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">paddedMSA</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+            <span class="c1"># if self.rate_similarity[0] &lt; self.similarity(df):</span>
+            <span class="c1">#    windowed_alignment.pop(f&quot;{i}_{seq_len-1}&quot;)</span>
+            <span class="c1">#    print(self.rate_similarity)</span>
+
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeDebugFiles</span><span class="p">:</span>
+            <span class="n">directory_path</span> <span class="o">=</span> <span class="s2">&quot;./debug/3_slidingWindow&quot;</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">windowed_alignment</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dictToFile</span><span class="p">(</span><span class="n">windowed_alignment</span><span class="p">[</span><span class="n">w</span><span class="p">],</span> <span class="s2">&quot;3_slidingWindow/&quot;</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;.fasta&quot;</span><span class="p">)</span>
+        <span class="c1"># JUST TO MAKE THE DEBUG FILES</span>
+
+        <span class="k">return</span> <span class="n">windowed_alignment</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.dictToFile">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.dictToFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">dictToFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Debuging method that creates files from a dictonnary of sequences.</span>
+<span class="sd">        File is put in the debug file of the cwd</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            dict        (dict)      the objects to write in the file</span>
+<span class="sd">                - key = (string)</span>
+<span class="sd">                - values = (string)</span>
+<span class="sd">            filename    (String)    the name of the future file</span>
+<span class="sd">            ext         (String)    the file extension</span>
+
+<span class="sd">        return:</span>
+<span class="sd">            dict        (dict)       see dict from arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="s2">&quot;./debug&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">dict</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.makeMSA">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.makeMSA">[docs]</a>
+    <span class="k">def</span> <span class="nf">makeMSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowed</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that create a dictionnary of Multiple Sequence Alignment(MSA)</span>
+<span class="sd">        objects from bioPython. Each entry in the dictionnary is a MSA object</span>
+<span class="sd">        of a single sliding window.</span>
+
+<span class="sd">        returns: </span>
+<span class="sd">            msaSet (dict)</span>
+<span class="sd">                - key (String) - the window name</span>
+<span class="sd">                - value (AlignIO) - the MSA object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msaSet</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">windowSet</span> <span class="ow">in</span> <span class="n">windowed</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">window</span> <span class="o">=</span> <span class="n">windowed</span><span class="p">[</span><span class="n">windowSet</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span> <span class="o">+</span> <span class="n">seq</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">window</span><span class="p">[</span><span class="n">seq</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">msaSet</span><span class="p">[</span><span class="n">windowSet</span><span class="p">]</span> <span class="o">=</span> <span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">msaSet</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.fileToDict">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.fileToDict">[docs]</a>
+    <span class="k">def</span> <span class="nf">fileToDict</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that reads a fasta file and returns a dictionnary of Seq objects</span>
+
+<span class="sd">        arguments:</span>
+<span class="sd">            filename    (String)    </span>
+<span class="sd">                the name of the file</span>
+<span class="sd">            ext         (String)    </span>
+<span class="sd">                the file extension</span>
+
+<span class="sd">        return:</span>
+<span class="sd">            dict        (dict)</span>
+<span class="sd">                - key = (string)</span>
+<span class="sd">                - values = (string)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="n">ext</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="nb">dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">dict</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.fileToAlignIO">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.fileToAlignIO">[docs]</a>
+    <span class="k">def</span> <span class="nf">fileToAlignIO</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that reads a fasta file and returns a AlignIO object</span>
+
+<span class="sd">        arguments:</span>
+<span class="sd">            filename    (String)    the name of the file</span>
+<span class="sd">            ext         (String)    the file extension</span>
+
+<span class="sd">        return:</span>
+<span class="sd">            alignIO     (AlignIO)   the AlignIO object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="n">ext</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="n">line</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">alignIO</span> <span class="o">=</span> <span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alignIO</span></div>
+
+
+<div class="viewcode-block" id="AlignSequences.similarity">
+<a class="viewcode-back" href="../../api/alignement.html#aphylogeo.alignement.AlignSequences.similarity">[docs]</a>
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that compute similarity in all string in dataframe (df)</span>
+<span class="sd">        Method source:</span>
+<span class="sd">        https://yassineelkhal.medium.com/the-complete-guide-to-string-similarity-algorithms-1290ad07c6b7</span>
+
+<span class="sd">        arguments:</span>
+<span class="sd">            method (int) similarity method</span>
+<span class="sd">                1: Hamming distance</span>
+<span class="sd">                2: Levenshtein distance</span>
+<span class="sd">                3: Damerau-Levenshtein distance</span>
+<span class="sd">                4: Jaro similarity</span>
+<span class="sd">                5: Jaro-Winkler similarity</span>
+<span class="sd">                6: Smith–Waterman similarity</span>
+<span class="sd">                7: Jaccard similarity</span>
+<span class="sd">                8: Sørensen-Dice similarity</span>
+<span class="sd">                --NOT IMPLEMENTED--</span>
+<span class="sd">                9: Tversky similarity</span>
+<span class="sd">                10: Overlap similarity</span>
+<span class="sd">                11: Cosine similarity</span>
+<span class="sd">                12: N-gram similarity</span>
+<span class="sd">                13: Ratcliff-Obershelp similarity</span>
+<span class="sd">                14: Longest common substring/subsequence similarity</span>
+<span class="sd">            df    (dataframe)    dataframe of all string sequances</span>
+
+<span class="sd">        return:</span>
+<span class="sd">            percentage similarity     (float)   the similarity between the dataframe of all strings elements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">hamming</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">levenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">damerau_levenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">jaro</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">jaro_winkler</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;6&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">smith_waterman</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;7&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">jaccard</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">Params</span><span class="o">.</span><span class="n">method_similarity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;8&quot;</span><span class="p">:</span>
+            <span class="n">rateSimilarity</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">sorencen</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+
+        <span class="k">return</span> <span class="n">rateSimilarity</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

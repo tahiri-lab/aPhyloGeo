@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.alignement &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="aphylogeo.multiProcessor" href="multiProcessor.html" />
+    <link rel="prev" title="aphylogeo.genetic_trees" href="genetic_trees.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">aphylogeo.alignement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.alignement.Alignment"><code class="docutils literal notranslate"><span class="pre">Alignment</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.to_dict"><code class="docutils literal notranslate"><span class="pre">Alignment.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.msa_to_string"><code class="docutils literal notranslate"><span class="pre">Alignment.msa_to_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.msa_from_string"><code class="docutils literal notranslate"><span class="pre">Alignment.msa_from_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.from_dict"><code class="docutils literal notranslate"><span class="pre">Alignment.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.save_to_json"><code class="docutils literal notranslate"><span class="pre">Alignment.save_to_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.load_from_json"><code class="docutils literal notranslate"><span class="pre">Alignment.load_from_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.from_json_string"><code class="docutils literal notranslate"><span class="pre">Alignment.from_json_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.Alignment.from_fasta_file"><code class="docutils literal notranslate"><span class="pre">Alignment.from_fasta_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences"><code class="docutils literal notranslate"><span class="pre">AlignSequences</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.align"><code class="docutils literal notranslate"><span class="pre">AlignSequences.align()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.getSequenceCentroid"><code class="docutils literal notranslate"><span class="pre">AlignSequences.getSequenceCentroid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.ScoreSingle"><code class="docutils literal notranslate"><span class="pre">AlignSequences.ScoreSingle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.alignSequencesWithPairwise"><code class="docutils literal notranslate"><span class="pre">AlignSequences.alignSequencesWithPairwise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.muscleAlign"><code class="docutils literal notranslate"><span class="pre">AlignSequences.muscleAlign()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.clustalAlign"><code class="docutils literal notranslate"><span class="pre">AlignSequences.clustalAlign()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.mafftAlign"><code class="docutils literal notranslate"><span class="pre">AlignSequences.mafftAlign()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.alignSingle"><code class="docutils literal notranslate"><span class="pre">AlignSequences.alignSingle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.narrowFitPairwise"><code class="docutils literal notranslate"><span class="pre">AlignSequences.narrowFitPairwise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.getAlignSeqs"><code class="docutils literal notranslate"><span class="pre">AlignSequences.getAlignSeqs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.getAlignSeqLens"><code class="docutils literal notranslate"><span class="pre">AlignSequences.getAlignSeqLens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.getAlignCouple"><code class="docutils literal notranslate"><span class="pre">AlignSequences.getAlignCouple()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.extractOneAlignAcc"><code class="docutils literal notranslate"><span class="pre">AlignSequences.extractOneAlignAcc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.isCurrentCharDash"><code class="docutils literal notranslate"><span class="pre">AlignSequences.isCurrentCharDash()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.insertDashToShorterSeq"><code class="docutils literal notranslate"><span class="pre">AlignSequences.insertDashToShorterSeq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.mergeFitPairwise"><code class="docutils literal notranslate"><span class="pre">AlignSequences.mergeFitPairwise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.appendDashToShorterSeqs"><code class="docutils literal notranslate"><span class="pre">AlignSequences.appendDashToShorterSeqs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.starAlignement"><code class="docutils literal notranslate"><span class="pre">AlignSequences.starAlignement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.merge"><code class="docutils literal notranslate"><span class="pre">AlignSequences.merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.insertDash"><code class="docutils literal notranslate"><span class="pre">AlignSequences.insertDash()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.slidingWindow"><code class="docutils literal notranslate"><span class="pre">AlignSequences.slidingWindow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.dictToFile"><code class="docutils literal notranslate"><span class="pre">AlignSequences.dictToFile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.makeMSA"><code class="docutils literal notranslate"><span class="pre">AlignSequences.makeMSA()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.fileToDict"><code class="docutils literal notranslate"><span class="pre">AlignSequences.fileToDict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.fileToAlignIO"><code class="docutils literal notranslate"><span class="pre">AlignSequences.fileToAlignIO()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.alignement.AlignSequences.similarity"><code class="docutils literal notranslate"><span class="pre">AlignSequences.similarity()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">aphylogeo.alignement</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tahiri-lab/aPhiloGeo/blob/main/docs/api/alignement.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="aphylogeo-alignement">
+<span id="id1"></span><h1>aphylogeo.alignement<a class="headerlink" href="#aphylogeo-alignement" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-aphylogeo.alignement">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aphylogeo.alignement.</span></span><span class="sig-name descname"><span class="pre">Alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alignment_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msa</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that contains the data of a multiple sequence alignment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Method that converts the alignment data to a dictionary
+:param None:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.msa_to_string">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msa_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msa_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.msa_to_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.msa_to_string" title="Link to this definition"></a></dt>
+<dd><p>Method that converts the alignment data to a string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>MSA</strong> (<em>AlignIO</em>) – The multiple sequence alignment data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.msa_from_string">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msa_from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msa_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.msa_from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.msa_from_string" title="Link to this definition"></a></dt>
+<dd><p>Method that converts the alignment string to MSA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> (<em>MSA</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.from_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.save_to_json">
+<span class="sig-name descname"><span class="pre">save_to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.save_to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.save_to_json" title="Link to this definition"></a></dt>
+<dd><p>Method that saves a json sequence file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the json file to save</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.load_from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.load_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.load_from_json" title="Link to this definition"></a></dt>
+<dd><p>Method that loads a json sequence file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the json file to load</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>alignment class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.from_json_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.from_json_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.from_json_string" title="Link to this definition"></a></dt>
+<dd><p>Method that loads an Alignment object from a JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>json_string</strong> (<em>str</em>) – The JSON string to load.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the Alignment class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.Alignment.from_fasta_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fasta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment_method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#Alignment.from_fasta_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.Alignment.from_fasta_file" title="Link to this definition"></a></dt>
+<dd><p>Method that loads a sequence from a fasta file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the fasta file to load</p></li>
+<li><p><strong>alignment_method</strong> – The method used to align the sequences</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MSA</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aphylogeo.alignement.</span></span><span class="sig-name descname"><span class="pre">AlignSequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeDebugFiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that perform a heuristic Multiple Sequence Alignement and windi from a single fasta file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.align">
+<span class="sig-name descname"><span class="pre">align</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#aphylogeo.alignement.Alignment" title="aphylogeo.alignement.Alignment"><span class="pre">Alignment</span></a></span></span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.align" title="Link to this definition"></a></dt>
+<dd><p>Method that align sequences</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The alignment object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#aphylogeo.alignement.Alignment" title="aphylogeo.alignement.Alignment">Alignment</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.getSequenceCentroid">
+<span class="sig-name descname"><span class="pre">getSequenceCentroid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.getSequenceCentroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.getSequenceCentroid" title="Link to this definition"></a></dt>
+<dd><p>Method that picks the centroid sequence in a dictionary of sequences</p>
+<dl class="simple">
+<dt>variables:</dt><dd><p>list (list) Needed variable format for using Multiprocessor</p>
+</dd>
+<dt>return: a list of:</dt><dd><p>resultKey (String)
+resultSum (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.ScoreSingle">
+<span class="sig-name descname"><span class="pre">ScoreSingle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.ScoreSingle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.ScoreSingle" title="Link to this definition"></a></dt>
+<dd><p>Method the gets only the score of a couple of sequence regarding the
+pairwise alignement</p>
+<dl class="simple">
+<dt>Args: a list:</dt><dd><p>seqA    (Seq()) Sequence A; considered the refenrence
+seqAID  (String) Specimen A’s ID
+seqB    (Seq()) Sequence B
+seqBID  (String) Speciment B’s ID</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>seqAID  see above
+seqBID  see above
+score   (float) the resulting score of this couple of alignement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.alignSequencesWithPairwise">
+<span class="sig-name descname"><span class="pre">alignSequencesWithPairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centroidKey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroidSeq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.alignSequencesWithPairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.alignSequencesWithPairwise" title="Link to this definition"></a></dt>
+<dd><p>Method that aligns multiple DNA sequences.
+The first speciment of the dataset is used as the main pivot.
+This method uses parrallel computing.</p>
+<dl class="simple">
+<dt>Variables:</dt><dd><p>seqs (Dictionary) see self.sequences
+list (list) Needed variable format for using Multiprocessor
+result (list) output of all the processes</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>resultList (Dictionary) see self.aligned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.muscleAlign">
+<span class="sig-name descname"><span class="pre">muscleAlign</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.muscleAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.muscleAlign" title="Link to this definition"></a></dt>
+<dd><p>Method to perform a multiple DNA sequence alignment using Muscle Algorithm</p>
+<dl class="simple">
+<dt>Returns (Dict):</dt><dd><dl class="simple">
+<dt>heuristicMSA</dt><dd><ul class="simple">
+<li><p>Keys: accession ID</p></li>
+<li><p>Values: Aligned sequences</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.clustalAlign">
+<span class="sig-name descname"><span class="pre">clustalAlign</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.clustalAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.clustalAlign" title="Link to this definition"></a></dt>
+<dd><p>Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm</p>
+<dl class="simple">
+<dt>Returns (Dict):</dt><dd><dl class="simple">
+<dt>heuristicMSA</dt><dd><ul class="simple">
+<li><p>Keys: accession ID</p></li>
+<li><p>Values: Aligned sequences</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.mafftAlign">
+<span class="sig-name descname"><span class="pre">mafftAlign</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.mafftAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.mafftAlign" title="Link to this definition"></a></dt>
+<dd><p>Method to perform a multiple DNA sequence alignment using MAFFT Algorithm</p>
+<dl class="simple">
+<dt>Returns (Dict):</dt><dd><dl class="simple">
+<dt>heuristicMSA</dt><dd><ul class="simple">
+<li><p>Keys: accession ID</p></li>
+<li><p>Values: Aligned sequences</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.alignSingle">
+<span class="sig-name descname"><span class="pre">alignSingle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.alignSingle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.alignSingle" title="Link to this definition"></a></dt>
+<dd><p>Method that aligns two DNA sequences using the pairwise2 algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – scID    (String) The centroid sequence ID to compare to
+sc      (Seq()) The DNA sequence of scID
+seqBID  (String) The sequence ID to compare with
+seqB    (Seq()) The DNA sequence of seqBID</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Return: (list)</dt><dd><p>seqBID see above
+aligned (List) The list containing the results.
+scID see above</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.narrowFitPairwise">
+<span class="sig-name descname"><span class="pre">narrowFitPairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.narrowFitPairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.narrowFitPairwise" title="Link to this definition"></a></dt>
+<dd><p>Fit length of a centroid sequence and its pairwise aligned sequences</p>
+<p>The length of each sequence from the pairwise alignment are set equal by
+inserting dash (-) in most appropriate location of a given sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alignment</strong> – dict of nested dict
+{accession couple #1 : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #1: non-centroid Aligned Seq #1},
+… ,
+{accession couple #n : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #n: non-centroid Aligned Seq #n}}</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of all accessions and their fitted aligned sequences.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.getAlignSeqs">
+<span class="sig-name descname"><span class="pre">getAlignSeqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.getAlignSeqs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.getAlignSeqs" title="Link to this definition"></a></dt>
+<dd><p>Extract all sequences aligned using a pairwise alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alignment</strong> – see fitPairwise(alignment) docstring</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of sequences aligned through pairwise alignment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.getAlignSeqLens">
+<span class="sig-name descname"><span class="pre">getAlignSeqLens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.getAlignSeqLens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.getAlignSeqLens" title="Link to this definition"></a></dt>
+<dd><p>Get length of all sequences aligned using a pairwise alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alignment</strong> – see fitPairwise(alignment) docstring</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of the length of each aligned sequences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.getAlignCouple">
+<span class="sig-name descname"><span class="pre">getAlignCouple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.getAlignCouple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.getAlignCouple" title="Link to this definition"></a></dt>
+<dd><p>Get nested couple accessions and their respective sequences</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alignment</strong> – see fitPairwise(alignment) docstring</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of paired accessions and their aligned sequences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.extractOneAlignAcc">
+<span class="sig-name descname"><span class="pre">extractOneAlignAcc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nest_ord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.extractOneAlignAcc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.extractOneAlignAcc" title="Link to this definition"></a></dt>
+<dd><p>Extract the accession from a nested alignment couple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alignment</strong> – see fitPairwise(alignment) docstring</p></li>
+<li><p><strong>nest_ord</strong> (<em>int</em>) – The position of the nested accessions (Default = 0 (centroid), 1 (aligned sequence))</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The list of either centroid (nest_ord = 0 (Default)) or non-centroid (nest_ord = 1)
+accessions of a group of sequences aligned throug pairwise alignment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.isCurrentCharDash">
+<span class="sig-name descname"><span class="pre">isCurrentCharDash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.isCurrentCharDash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.isCurrentCharDash" title="Link to this definition"></a></dt>
+<dd><p>Assess whether the character at current cursor position is a dash</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seqs</strong> (<em>list</em>) – aligned sequences to fit</p></li>
+<li><p><strong>seq_i</strong> (<em>int</em>) – index of the current sequence</p></li>
+<li><p><strong>ch_i</strong> (<em>int</em>) – index of the currenct character</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the current character assessed is a dash, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.insertDashToShorterSeq">
+<span class="sig-name descname"><span class="pre">insertDashToShorterSeq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.insertDashToShorterSeq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.insertDashToShorterSeq" title="Link to this definition"></a></dt>
+<dd><p>Insert a dash at the current position of a sequence</p>
+<p>Insert a dash (-) character in a sequence if its length is shorter
+than the longest one in the group of aligned sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seqs</strong> (<em>list</em>) – aligned sequences to fit</p></li>
+<li><p><strong>seq_i</strong> (<em>int</em>) – index of the current sequence</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns (List):</dt><dd><ul class="simple">
+<li><p>The fitted sequences of a pairwise alignment</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.mergeFitPairwise">
+<span class="sig-name descname"><span class="pre">mergeFitPairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.mergeFitPairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.mergeFitPairwise" title="Link to this definition"></a></dt>
+<dd><p>Generate a dictionary of all accessions and their fitted sequences</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alignment</strong> – see fitPairwise(alignment) docstring</p></li>
+<li><p><strong>seqs</strong> (<em>list</em>) – aligned sequences to fit</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns (Dict):</dt><dd><p>Group of accessions and their fitted sequences from a pairwise alignment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.appendDashToShorterSeqs">
+<span class="sig-name descname"><span class="pre">appendDashToShorterSeqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.appendDashToShorterSeqs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.appendDashToShorterSeqs" title="Link to this definition"></a></dt>
+<dd><p>Append dash to all sequences shorter than the longest one from a list of sequences</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seqs</strong> – List of fitted sequences post pairwise alignment</p></li>
+<li><p><strong>list</strong> – List of fitted sequences post pairwise alignment</p></li>
+<li><p><strong>int</strong> (<em>max_len</em>) – Length of the longest aligned sequence, including the blank/dash</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of sequences with dash appended where applicable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.starAlignement">
+<span class="sig-name descname"><span class="pre">starAlignement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centroidKey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.starAlignement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.starAlignement" title="Link to this definition"></a></dt>
+<dd><p>Method that combs through all the pairwise alignments couples and makes
+it so that every sequenced is aligned with every other sequences. If a
+“-” is found in the seqA of a pair, but not another, it is inserted
+into every other ones.</p>
+<p class="rubric">Example</p>
+<p>pair1:          pair2:</p>
+<p>seqA1: TACTAC   seqA2: TAC-TAC
+seqB1: TACTAC   seqB2: TACTTAC</p>
+<p>becomes:
+seqA1: TAC-TAC   seqA2: TAC-TAC
+seqB1: TAC-TAC   seqB2: TACTTAC</p>
+<p>and outputs:
+seqA : TAC-TAC   #now combines SeqA1 and SeqA2
+seqB1: TAC-TAC
+seqB2: TACTTAC</p>
+<p>then, we compare the aligned set with the next pair:</p>
+<p>SeqA : TAC-TAC  seqA3: TACTA-C
+seqB1: TAC-TAC  seqB3: TACTAAC
+seqB2: TACTTAC</p>
+<p>wich makes:
+SeqA : TAC-TA-C  seqA3: TAC-TA-C
+seqB1: TAC-TA-C  seqB3: TAC-TAAC
+seqB2: TACTTA-C</p>
+<p>and outputs:
+SeqA : TAC-TA-C     #now combines SeqA1, SeqA2 and SeqA3
+seqB1: TAC-TA-C
+seqB2: TACTTA-C
+seqB3: TAC-TAAC</p>
+<p>over and over again</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>starAlign (dict) see self.heuristicMSA</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroidKey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.merge" title="Link to this definition"></a></dt>
+<dd><p>Method that loops through each position of two strings ans compares the Chars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>dict</em>) – contains only object that have already been aligned + a new pair to align
+can be refered to as “aligned set”</p></li>
+<li><p><strong>k1</strong> (<em>String</em>)</p></li>
+<li><p><strong>k2</strong> (<em>String</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Variables:</dt><dd><p>minLen  (int)   The number of char in the smallest of the two strings
+pos     (int)   The char position at wich we are now; it loops
+nChar   (char)  The char from k1
+tChar   (char)  The char from K2
+keylist (list)  Ultimatly, contains all the keys of the object that need to change</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>result (dict)   The same object we started with, but with one more aligned pair inside.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.insertDash">
+<span class="sig-name descname"><span class="pre">insertDash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyList</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.insertDash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.insertDash" title="Link to this definition"></a></dt>
+<dd><p>Method that inserts a “-” at [pos] in a string at every Key in a dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> (<em>dict</em>) – <ul>
+<li><p>key = (string)</p></li>
+<li><p>values = (string)</p></li>
+</ul>
+</p></li>
+<li><p><strong>pos</strong> (<em>int</em>)</p></li>
+<li><p><strong>keyList</strong> (<em>list</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Variables:</dt><dd><p>char    (char)  The char to insert</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict    (dict)  The same we started with, with the modifications</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.slidingWindow">
+<span class="sig-name descname"><span class="pre">slidingWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heuristicMSA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.slidingWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.slidingWindow" title="Link to this definition"></a></dt>
+<dd><p>Method that slices all the sequences in a dictionary to a specific window (substring)</p>
+<p class="rubric">Example</p>
+<p>step_size=3
+window_size=5</p>
+<p>123 : CGGCTCAGCT  –&gt;   123_3_7 : GCTCA
+456 : TAGCTTCAGT  –&gt;   456_3_7 : GCTTC</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alignedSequences</strong> (<em>Dictionary</em>) – <ul>
+<li><p>Key (String) is the ID of the specimen</p></li>
+<li><p>Data (Seq(String)) is the specimen’s DNS sequence</p></li>
+</ul>
+</p></li>
+<li><p><strong>others*</strong> (<em>var</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>resultDict (Dictionary)</dt><dd><dl class="simple">
+<dt>Key is originalKey_i_j</dt><dd><p>originalKey = the name of the key before the window
+i = The starting position of the window, relative to the original sequence
+j = The ending position of the window, relative to the original sequence</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.dictToFile">
+<span class="sig-name descname"><span class="pre">dictToFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.dictToFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.dictToFile" title="Link to this definition"></a></dt>
+<dd><p>Debuging method that creates files from a dictonnary of sequences.
+File is put in the debug file of the cwd</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> (<em>dict</em>) – <ul>
+<li><p>key = (string)</p></li>
+<li><p>values = (string)</p></li>
+</ul>
+</p></li>
+<li><p><strong>filename</strong> (<em>String</em>)</p></li>
+<li><p><strong>ext</strong> (<em>String</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict        (dict)       see dict from arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.makeMSA">
+<span class="sig-name descname"><span class="pre">makeMSA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windowed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.makeMSA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.makeMSA" title="Link to this definition"></a></dt>
+<dd><p>Method that create a dictionnary of Multiple Sequence Alignment(MSA)
+objects from bioPython. Each entry in the dictionnary is a MSA object
+of a single sliding window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>msaSet (dict)</dt><dd><ul class="simple">
+<li><p>key (String) - the window name</p></li>
+<li><p>value (AlignIO) - the MSA object</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.fileToDict">
+<span class="sig-name descname"><span class="pre">fileToDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.fileToDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.fileToDict" title="Link to this definition"></a></dt>
+<dd><p>Method that reads a fasta file and returns a dictionnary of Seq objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>String</em>) – the name of the file</p></li>
+<li><p><strong>ext</strong> (<em>String</em>) – the file extension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>dict        (dict)</dt><dd><ul class="simple">
+<li><p>key = (string)</p></li>
+<li><p>values = (string)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.fileToAlignIO">
+<span class="sig-name descname"><span class="pre">fileToAlignIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.fileToAlignIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.fileToAlignIO" title="Link to this definition"></a></dt>
+<dd><p>Method that reads a fasta file and returns a AlignIO object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>String</em>)</p></li>
+<li><p><strong>ext</strong> (<em>String</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>alignIO     (AlignIO)   the AlignIO object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.alignement.AlignSequences.similarity">
+<span class="sig-name descname"><span class="pre">similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/alignement.html#AlignSequences.similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.alignement.AlignSequences.similarity" title="Link to this definition"></a></dt>
+<dd><p>Method that compute similarity in all string in dataframe (df)
+Method source:
+<a class="reference external" href="https://yassineelkhal.medium.com/the-complete-guide-to-string-similarity-algorithms-1290ad07c6b7">https://yassineelkhal.medium.com/the-complete-guide-to-string-similarity-algorithms-1290ad07c6b7</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>int</em>) – 1: Hamming distance
+2: Levenshtein distance
+3: Damerau-Levenshtein distance
+4: Jaro similarity
+5: Jaro-Winkler similarity
+6: Smith–Waterman similarity
+7: Jaccard similarity
+8: Sørensen-Dice similarity
+–NOT IMPLEMENTED–
+9: Tversky similarity
+10: Overlap similarity
+11: Cosine similarity
+12: N-gram similarity
+13: Ratcliff-Obershelp similarity
+14: Longest common substring/subsequence similarity</p></li>
+<li><p><strong>df</strong> (<em>dataframe</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>percentage similarity     (float)   the similarity between the dataframe of all strings elements</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="genetic_trees.html" class="btn btn-neutral float-left" title="aphylogeo.genetic_trees" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multiProcessor.html" class="btn btn-neutral float-right" title="aphylogeo.multiProcessor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
