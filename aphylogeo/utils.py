@@ -90,11 +90,6 @@ def leastSquare(tree1, tree2):
     - Leaves must all have a twin in each tree. 
     - A tree must not have duplicate leaves.
 
-    Example:
-        x      x \n  
-       ╓╫╖    ╓╫╖ \n
-       123    312 
-
     :param tree1: The first tree to compare.
     :type tree1: distanceTree (from Biopython)
     :param tree2: The second tree to compare.
@@ -124,11 +119,6 @@ def robinsonFoulds(tree1, tree2):
     - Leaves must all have a twin in each tree.
     - A tree must not have duplicate leaves
     
-    Example:
-     x   x \n
-    ╓╫╖ ╓╫╖ \n
-    123 312
-
     :param tree1: The first tree to compare
     :type tree1: distanceTree object from biopython converted to Newick
     :param tree2: The second tree to compare
@@ -156,10 +146,6 @@ def euclideanDist(tree1, tree2):
     Trees need to share the same |TaxonNamespace| reference.
     The bipartition bitmasks of the trees must be correct for the current tree
     structures (by calling :meth:`Tree.encode_bipartitions()` method)
-
-     x   x \n
-    ╓╫╖ ╓╫╖ \n
-    123 312
 
     :param tree1: The first tree to compare
     :type tree1: distanceTree object from biopython converted to DendroPY format Newick

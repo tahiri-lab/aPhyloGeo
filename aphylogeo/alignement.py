@@ -187,6 +187,7 @@ class AlignSequences:
         Returns:
             Alignment: The alignment object
         """
+        
         if Params.alignment_method == "1":
             centroidKey = self.getSequenceCentroid()[0]
             centroidSeq = self.sequences.pop(centroidKey)
@@ -314,67 +315,79 @@ class AlignSequences:
     def muscleAlign(self):
         """Method to perform a multiple DNA sequence alignment using Muscle Algorithm
 
-        Return:
-        -------
-        (Dict): heuristicMSA
-            Keys: accession ID
-            Values: Aligned sequences
+        Returns (Dict):
+            heuristicMSA
+                - Keys: accession ID
+                - Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle5.1.win64.exe"
-            out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            muscle_exe = r"aphylogeo/bin/muscle5.1.linux_intel64"
-            out_dir = r"aphylogeo/bin/tmp/"
-        in_file = Params.reference_gene_filepath
-        out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
-        out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
-        process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
-        process.wait()
-        records = Bio.SeqIO.parse(out_fullname, "fasta")
-        return {rec.id: str(rec.seq) for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                muscle_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\muscle5.1.win64.exe"
+                out_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                muscle_exe = r"aphylogeo/bin/muscle5.1.linux_intel64"
+                out_dir = r"aphylogeo/bin/tmp/"
+            in_file = Params.reference_gene_filepath
+            out_file = os.path.splitext(os.path.basename(Params.reference_gene_filepath))[0]
+            out_fullname = str(out_dir + out_file + "_muscle_aligned.fasta")
+            process = subprocess.Popen([muscle_exe, "-align", in_file, "-output", out_fullname])
+            process.wait()
+            records = Bio.SeqIO.parse(out_fullname, "fasta")
+            return {rec.id: str(rec.seq) for rec in records}
+        # If the muscle executable is not found
+        except FileNotFoundError:
+            print("Muscle executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)            
+            
     def clustalAlign(self):
         """Method to perform a multiple DNA sequence alignment using ClustalW2 Algorithm
 
-        Return:
-        -------
-        (Dict): heuristicMSA
-            Keys: accession ID
-            Values: Aligned sequences
+        Returns (Dict):
+            heuristicMSA
+                - Keys: accession ID
+                - Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            clustal_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\clustalw2.exe"
-            fasta_out = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            clustal_exe = r"aphylogeo/bin/clustalw2"
-            fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
-        in_file = Params.reference_gene_filepath
-        clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
-        out, err = clustalw_cline()
-        records = Bio.SeqIO.parse(fasta_out, "fasta")
-        return {rec.id: str(rec.seq) for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                clustal_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\clustalw2.exe"
+                fasta_out = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\tmp\\clustal_alignment.fasta"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                clustal_exe = r"aphylogeo/bin/clustalw2"
+                fasta_out = r"aphylogeo/bin/tmp/clustal_alignment.fasta"
+            in_file = Params.reference_gene_filepath
+            clustalw_cline = ClustalwCommandline(clustal_exe, infile=in_file, outfile=fasta_out, output="FASTA")
+            out, err = clustalw_cline()
+            records = Bio.SeqIO.parse(fasta_out, "fasta")
+            return {rec.id: str(rec.seq) for rec in records}
+        # If the clustalw executable is not found
+        except FileNotFoundError:
+            print("ClustalW2 executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)
+            
     def mafftAlign(self):
         """Method to perform a multiple DNA sequence alignment using MAFFT Algorithm
 
-        Return:
-        -------
-        (Dict): heuristicMSA
-            Keys: accession ID
-            Values: Aligned sequences
+        Returns (Dict):
+            heuristicMSA
+                - Keys: accession ID
+                - Values: Aligned sequences
         """
-        if sys.platform == "win32":
-            mafft_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\mafft-win\\mafft.bat"
-        elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
-            mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
-        in_file = Params.reference_gene_filepath
-        mafft_cline = MafftCommandline(mafft_exe, input=in_file)
-        out, err = mafft_cline()
-        fasta_io = StringIO(out)
-        records = Bio.SeqIO.parse(fasta_io, "fasta")
-        return {rec.id: str(rec.seq).upper() for rec in records}
-
+        try:
+            if sys.platform == "win32":
+                mafft_exe = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "\\aphylogeo\\bin\\mafft-win\\mafft.bat"
+            elif (sys.platform == "linux1") | (sys.platform == "linux2") | (sys.platform == "linux") | (sys.platform == "darwin"):
+                mafft_exe = r"aphylogeo/bin/mafft-linux64/mafft.bat"
+            in_file = Params.reference_gene_filepath
+            mafft_cline = MafftCommandline(mafft_exe, input=in_file)
+            out, err = mafft_cline()
+            fasta_io = StringIO(out)
+            records = Bio.SeqIO.parse(fasta_io, "fasta")
+            return {rec.id: str(rec.seq).upper() for rec in records}
+        # If the mafft executable is not found
+        except FileNotFoundError:
+            print("MAFFT executable not found inside the bin folder. Please check the documentation for installation instructions.")
+            sys.exit(1)
+            
     def alignSingle(self, args):
         """
         Method that aligns two DNA sequences using the pairwise2 algorithm.
@@ -405,16 +418,14 @@ class AlignSequences:
         The length of each sequence from the pairwise alignment are set equal by
         inserting dash (-) in most appropriate location of a given sequence.
 
-        Parameters:
-        -----------
-        alignment: dict of nested dict
-            {accession couple #1 : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #1: non-centroid Aligned Seq #1},
-            ... ,
-            {accession couple #n : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #n: non-centroid Aligned Seq #n}}
+        args:
+            alignment: dict of nested dict
+                {accession couple #1 : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #1: non-centroid Aligned Seq #1},
+                ... ,
+                {accession couple #n : {Centroid Acc:Centroid Aligned Seq, Non-centroid Acc #n: non-centroid Aligned Seq #n}}
 
-        Return:
-        -------
-        A dictionary of all accessions and their fitted aligned sequences.
+        Returns:
+            A dictionary of all accessions and their fitted aligned sequences.
         """
         seqs = self.getAlignSeqs(aligned)
         max_len = max(self.getAlignSeqLens(aligned))
@@ -428,13 +439,11 @@ class AlignSequences:
     def getAlignSeqs(self, aligned):
         """Extract all sequences aligned using a pairwise alignment
 
-        Parameters:
-        -----------
-        alignment: see fitPairwise(alignment) docstring
+        args:
+            alignment: see fitPairwise(alignment) docstring
 
-        Return:
-        -------
-        List of sequences aligned through pairwise alignment
+        Returns:
+            List of sequences aligned through pairwise alignment
         """
         seqs = []
         for alignment in aligned:
@@ -444,42 +453,36 @@ class AlignSequences:
     def getAlignSeqLens(self, aligned):
         """Get length of all sequences aligned using a pairwise alignment
 
-        Parameters:
-        -----------
-        alignment: see fitPairwise(alignment) docstring
+        args:
+            alignment: see fitPairwise(alignment) docstring
 
-        Return:
-        -------
-        List of the length of each aligned sequences
+        Returns:
+            List of the length of each aligned sequences
         """
         return [len(seq) for seq in self.getAlignSeqs(aligned)]
 
     def getAlignCouple(self, aligned):
         """Get nested couple accessions and their respective sequences
 
-        Parameters:
-        -----------
-        alignment: see fitPairwise(alignment) docstring
+        args:
+            alignment: see fitPairwise(alignment) docstring
 
-        Return:
-        -------
-        List of paired accessions and their aligned sequences
+        Returns:
+            List of paired accessions and their aligned sequences
         """
         return [val for val in list(aligned.values())]
 
     def extractOneAlignAcc(self, aligned, nest_ord=0):
         """Extract the accession from a nested alignment couple
 
-        Parameters:
-        -----------
-        alignment: see fitPairwise(alignment) docstring
-        nest_ord, int, optional:
-            The position of the nested accessions (Default = 0 (centroid), 1 (aligned sequence))
+        args:
+            alignment: see fitPairwise(alignment) docstring
+            nest_ord (int) optional:
+                The position of the nested accessions (Default = 0 (centroid), 1 (aligned sequence))
 
-        Return:
-        -------
-        The list of either centroid (nest_ord = 0 (Default)) or non-centroid (nest_ord = 1)
-        accessions of a group of sequences aligned throug pairwise alignment.
+        Returns:
+            The list of either centroid (nest_ord = 0 (Default)) or non-centroid (nest_ord = 1)
+            accessions of a group of sequences aligned throug pairwise alignment.
         """
         try:
             return [list(i)[nest_ord] for i in self.getAlignCouple(aligned)]
@@ -491,15 +494,13 @@ class AlignSequences:
     def isCurrentCharDash(self, seqs, seq_i, ch_i):
         """Assess whether the character at current cursor position is a dash
 
-        Parameters:
-        -----------
-        seqs,  list: aligned sequences to fit
-        seq_i, int:  index of the current sequence
-        ch_i,  int:  index of the currenct character
+        args:
+            seqs  (list): aligned sequences to fit
+            seq_i (int):  index of the current sequence
+            ch_i  (int):  index of the currenct character
 
-        Return:
-        -------
-        True if the current character assessed is a dash, False otherwise
+        Returns:
+            True if the current character assessed is a dash, False otherwise
         """
         try:
             return seqs[seq_i][ch_i] == "-"
@@ -512,14 +513,12 @@ class AlignSequences:
         Insert a dash (-) character in a sequence if its length is shorter
         than the longest one in the group of aligned sequence.
 
-        Parameters:
-        -----------
-        seqs,  list:    aligned sequences to fit
-        seq_i, int:     index of the current sequence
+        args:
+            seqs  (list):    aligned sequences to fit
+            seq_i (int):     index of the current sequence
 
-        Return:
-        -------
-        List, The fitted sequences of a pairwise alignment
+        Returns (List):
+            - The fitted sequences of a pairwise alignment
         """
         for seq_j in range(0, len(seqs)):
             try:
@@ -532,14 +531,12 @@ class AlignSequences:
     def mergeFitPairwise(self, aligned, seqs):
         """Generate a dictionary of all accessions and their fitted sequences
 
-        Parameters:
-        -----------
-        alignment: see fitPairwise(alignment) docstring
-        seqs,  list:    aligned sequences to fit
+        args:
+            alignment: see fitPairwise(alignment) docstring
+            seqs  (list):    aligned sequences to fit
 
-        Return:
-        -------
-        Dict, Group of accessions and their fitted sequences from a pairwise alignment
+        Returns (Dict):
+             Group of accessions and their fitted sequences from a pairwise alignment
         """
         centroid = {list(set(self.extractOneAlignAcc(aligned)))[0]: seqs[0]}
         non_centroid = dict(zip(self.extractOneAlignAcc(aligned, 1), seqs[1::2]))
@@ -548,14 +545,12 @@ class AlignSequences:
     def appendDashToShorterSeqs(self, seqs, max_len):
         """Append dash to all sequences shorter than the longest one from a list of sequences
 
-        Parameters:
-        -----------
-        seqs, list:  List of fitted sequences post pairwise alignment
-        max_len int: Length of the longest aligned sequence, including the blank/dash
+        args:
+            seqs, list:  List of fitted sequences post pairwise alignment
+            max_len int: Length of the longest aligned sequence, including the blank/dash
 
-        Return:
-        -------
-        List of sequences with dash appended where applicable
+        Returns:
+            List of sequences with dash appended where applicable
         """
         return [f"{str(seq):-<{max_len}}" for seq in seqs]
 
@@ -566,7 +561,7 @@ class AlignSequences:
         "-" is found in the seqA of a pair, but not another, it is inserted
         into every other ones.
 
-        ex.:
+        Example:
             pair1:          pair2:
 
             seqA1: TACTAC   seqA2: TAC-TAC
@@ -710,8 +705,8 @@ class AlignSequences:
 
         Arguments:
             dict    (dict)  contains many objects as:
-                key = (string)
-                values = (string)
+                - key = (string)
+                - values = (string)
             pos     (int)   the char position at wich to insert
             keyList (list)  list of keys of objects to modify
         Variables:
@@ -730,7 +725,7 @@ class AlignSequences:
         """
         Method that slices all the sequences in a dictionary to a specific window (substring)
 
-        ex.:
+        Example:
             step_size=3
             window_size=5
 
@@ -739,8 +734,8 @@ class AlignSequences:
 
         Args:
             alignedSequences (Dictionary)
-                Key (String) is the ID of the specimen
-                Data (Seq(String)) is the specimen's DNS sequence
+                - Key (String) is the ID of the specimen
+                - Data (Seq(String)) is the specimen's DNS sequence
             others* (var) see param.yaml
 
         Return:
@@ -797,10 +792,10 @@ class AlignSequences:
         Debuging method that creates files from a dictonnary of sequences.
         File is put in the debug file of the cwd
 
-        arguments
+        args:
             dict        (dict)      the objects to write in the file
-                key = (string)
-                values = (string)
+                - key = (string)
+                - values = (string)
             filename    (String)    the name of the future file
             ext         (String)    the file extension
 
@@ -823,10 +818,10 @@ class AlignSequences:
         objects from bioPython. Each entry in the dictionnary is a MSA object
         of a single sliding window.
 
-        return
+        returns: 
             msaSet (dict)
-                key (String) the window name
-                value (AlignIO) the MSA object
+                - key (String) - the window name
+                - value (AlignIO) - the MSA object
         """
         msaSet = {}
         for windowSet in windowed.keys():
@@ -843,13 +838,15 @@ class AlignSequences:
         Method that reads a fasta file and returns a dictionnary of Seq objects
 
         arguments:
-            filename    (String)    the name of the file
-            ext         (String)    the file extension
+            filename    (String)    
+                the name of the file
+            ext         (String)    
+                the file extension
 
         return:
             dict        (dict)
-                key = (string)
-                values = (string)
+                - key = (string)
+                - values = (string)
         """
         f = open(Path(filename + ext), "r")
         dict = {}

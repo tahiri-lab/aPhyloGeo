@@ -9,6 +9,9 @@ temp.ipynb
 debug*
 *.egg-info
 bin/tmp/*.fasta
+_build
+!aPhyloGeo/aphylogeo/bin/tmp/
+aPhyloGeo/aphylogeo/bin/*
 
 #Ignore virtual environments
 .env
