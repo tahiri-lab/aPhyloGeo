@@ -38,10 +38,20 @@ class Params:
 
         args:
             params_file (str): the path to the yaml file
+
+        Raises:
+            FileNotFoundError: If the yaml file is not found
         """
-        with open(params_file) as f:
-            params = yaml.load(f, Loader=SafeLoader)
-            cls.validate_and_set_params(params)
+        try:
+            with open(params_file) as f:
+                params = yaml.load(f, Loader=SafeLoader)
+                cls.validate_and_set_params(params)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File not found: {params_file}.")
+
+    @classmethod
+    def load_default_param(cls):
+        cls.validate_and_set_params(cls.PARAMETER_KEYS)
 
     @classmethod
     def update_from_dict(cls, params_content):
