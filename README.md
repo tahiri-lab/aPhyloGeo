@@ -109,12 +109,15 @@ Some useful links:
 
 💡 If you are using our algorithm in your research, please cite our recent papers:
 
-1️⃣  Li, W. & Tahiri, N. (2024). Host-Virus Cophylogeny Trajectories: Investigating Molecular Relationships between Coronaviruses and Bat Hosts. [Preprint researchsquare](https://doi.org/10.21203/rs.3.rs-3362308/v1)
+1️⃣  Li, W. & Tahiri, N. (2024). Host-Virus Cophylogeny Trajectories: Investigating Molecular Relationships between Coronaviruses and Bat Hosts. [Viruses, 16(7), p.1133](https://www.mdpi.com/1999-4915/16/7/1133)
 
-2️⃣ Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
+2️⃣ Gagnon, J. & Tahiri, N. (2024). Ecological and Spatial Influences on the Genetics of Cumacea (Crustacea: Peracarida) in the Northern North Atlantic.
+[Proceeding in SciPy 2024, Tacoma, WA, USA](https://proceedings.scipy.org/articles/NVYF1037)
+
+3️⃣ Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
 [Proceeding in SciPy 2023, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2023/pdfs/nadia_tahiri.pdf)
 
-3️⃣ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
+:four: Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
 [Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
 
 
