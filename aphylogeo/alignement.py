@@ -187,8 +187,10 @@ class AlignSequences:
         Returns:
             Alignment: The alignment object
         """
-        
-        if Params.alignment_method == "1":
+        if Params.alignment_method == "0":
+            heuristicMSA = self.sequences
+            
+        elif Params.alignment_method == "1":
             centroidKey = self.getSequenceCentroid()[0]
             centroidSeq = self.sequences.pop(centroidKey)
             aligned = self.alignSequencesWithPairwise(centroidKey, centroidSeq)
