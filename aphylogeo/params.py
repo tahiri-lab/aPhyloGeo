@@ -26,7 +26,7 @@ class Params:
         "alignment_method": "0",
         "distance_method": "0",
         "fit_method": "0",
-        "tree_type": "20",
+        "tree_type": "0",
         "rate_similarity": 0,
         "method_similarity": "0",
     }
