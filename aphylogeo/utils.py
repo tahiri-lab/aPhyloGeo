@@ -74,7 +74,10 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
 
     # Calculate normalised matrix
     tabDf = pd.DataFrame(tempTab)
-    dmDf = (tabDf - minValue) / (maxValue - minValue)
+    if (maxValue - minValue) != 0:
+        dmDf = (tabDf - minValue) / (maxValue - minValue)
+    else:
+        dmDf = 0.0
     dmDf = dmDf.round(6)
 
     matrix = [dmDf.iloc[i, : i + 1].tolist() for i in range(len(dmDf))]
