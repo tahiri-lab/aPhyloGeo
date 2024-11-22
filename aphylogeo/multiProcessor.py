@@ -233,11 +233,17 @@ class Multi:
             except Exception:
                 pass
 
-        self.nbAllowed.value = math.floor((self.memA.value / self.mem1.value))
+        if (self.mem1.value!=0):
+            self.nbAllowed.value = math.floor((self.memA.value / self.mem1.value))
+            self.maxAllowed.value = math.floor((self.memT.value / self.mem1.value))
+        else:
+            self.nbAllowed.value = 0.0
+            self.maxAllowed.value = 0.0
+            
         if self.nbAllowed.value < 1:
             # Need to at least be able to start a single process
             self.nbAllowed.value = 1
-        self.maxAllowed.value = math.floor((self.memT.value / self.mem1.value))
+        
         if self.maxAllowed.value < 1:
             # Need to at least be able to start a single process
             self.maxAllowed.value = 1
