@@ -130,7 +130,8 @@ def robinsonFoulds(tree1, tree2):
     :return: The final distance between the two
     :rtype: float
     """
-    rf = 0
+    rf = 0.0
+    rf_norm = 0.0
     tree1_newick = ete3.Tree(tree1.format("newick"), format=1)
     tree2_newick = ete3.Tree(tree2.format("newick"), format=1)
 
@@ -138,7 +139,10 @@ def robinsonFoulds(tree1, tree2):
     if len(common_leaves) == 0:
         rf = 0
 
-    return rf, rf / rf_max
+    if rf / rf_max != 0:
+        rf_norm = rf / rf_max
+
+    return rf, rf_norm
 
 
 def euclideanDist(tree1, tree2):
