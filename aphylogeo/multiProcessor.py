@@ -285,13 +285,11 @@ class Multi:
             )
 
             print("Min memory per:   ", round(self.mem1.value / 10000000) / 100, "Gb        ", end="\n", flush=True)
-
             print("Time for one:     ", round(self.timeForOne.value * 10) / 10, " seconds               ", flush=True)
-
             print("---")
-
-        print("Started:          ", s, "/", a, "   ", round(s / a * 100), "%           ", flush=True)
-        print("Finished:         ", f, "/", s, "   ", round(f / a * 100), "%           ", flush=True)
+        if (a!=0):
+            print("Started:          ", s, "/", a, "   ", round(s / a * 100), "%           ", flush=True)
+            print("Finished:         ", f, "/", s, "   ", round(f / a * 100), "%           ", flush=True)
         print("Time elapsed:     ", eTime, " seconds               ", flush=True)
         print("---")
 
