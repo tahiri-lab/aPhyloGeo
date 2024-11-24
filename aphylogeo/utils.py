@@ -200,6 +200,20 @@ def climaticPipeline(df):
         trees[names[i]] = createTree(dm)
     return trees
 
+def reverse_climatic_pipeline(trees):
+    """
+    Converts a dictionary of climatic trees back into a DataFrame.
+
+    :param trees: The climatic trees dictionary.
+    :return: The DataFrame containing the climatic data.
+    :rtype: pd.DataFrame
+    """
+    data = []
+    for key, tree in trees.items():
+        for leaf in tree.get_terminals():
+            data.append([leaf.name, key, leaf.branch_length])
+    df = pd.DataFrame(data, columns=[Params.names[0], 'Variable', 'Value'])
+    return df
 
 def createBoostrap(msaSet: dict, bootstrapAmount):
     """
@@ -665,3 +679,35 @@ def loadSequenceFile(file):
         for sequence in SeqIO.parse(sequencesFile, "fasta"):
             sequences[sequence.id] = sequence.seq
     return sequences
+
+def save_climatic_trees(climatic_trees, file_path):
+    """
+    Save the climatic trees to a file.
+
+    :param dict climatic_trees: The climatic trees to save.
+    :param str file_path: The path to the file where the climatic trees will be saved.
+    """
+
+    with open(file_path, 'w') as file:
+        for key, tree in climatic_trees.items():
+            file.write(f">{key}\n")
+            Phylo.write(tree, file, "newick")
+
+
+def load_climatic_trees(file_path):
+    """
+    Load climatic trees from a file.
+
+    :param str file_path: Path to the target file where the climatic trees will be loaded
+    :returns: The loaded climatic trees
+    :rtype: dict
+    """
+    climatic_trees = {}
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for i in range(0, len(lines), 2):
+            key = lines[i].strip()[1:]
+            tree = Phylo.read(StringIO(lines[i + 1]), "newick")
+            climatic_trees[key] = tree
+    return climatic_trees

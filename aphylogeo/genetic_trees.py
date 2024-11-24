@@ -63,7 +63,7 @@ class GeneticTrees:
         with open(file_name, "r") as f:
             str_trees = f.read()
         trees = cls.load_trees_from_json(str_trees)
-        return cls(trees)
+        return trees
 
     @classmethod
     def load_trees_from_json(cls, trees: str, format: str = "newick") -> dict:

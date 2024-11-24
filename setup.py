@@ -20,6 +20,7 @@ setup(
         "ete3==3.1.3",
         "dendropy==4.6.1",
         "textdistance==4.6.0",
+        "typer==0.13.1"
     ],
     python_requires=">=3.9.0",
     packages=find_packages(),
