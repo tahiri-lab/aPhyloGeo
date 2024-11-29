@@ -33,3 +33,7 @@ aphylogeo/bin/*.fasta
 
 #Output
 *.dnd
+
+#Ignore process files
+datasets/example/geneticTrees.json
+result.csv

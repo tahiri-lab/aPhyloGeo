@@ -1,3 +1,5 @@
+import sys
+
 import pandas as pd
 import time
 from aphylogeo.alignement import AlignSequences
@@ -21,7 +23,11 @@ titleCard = r"""
                               \/__/
 """  # https://patorjk.com/software/taag/#p=display&f=Larry%203D&t=aphylogeo%20
 
-app = typer.Typer(invoke_without_command=True)
+app = typer.Typer(
+    invoke_without_command=False,
+    help="A tool for processing climatic and genetic data to generate phylogenetic trees.",
+    callback=lambda: typer.echo(typer.style(titleCard, fg=typer.colors.GREEN))
+)
 
 @app.command()
 def climate_pipeline(
@@ -29,9 +35,11 @@ def climate_pipeline(
         output: str = typer.Option("./datasets/example/climaticTrees.nwk", help="The name of the file to save the climatic trees."),
     ):
     """
-    This function is used to run the climatic pipeline that creates the climatic trees.
+    Run the climatic pipeline that process the climatic trees.
+
     Args:
         file_name (str): The name of the file containing the climatic data.
+        output (str): The name of the file to save the climatic trees.
     """
     Params.load_from_file()
 
@@ -49,9 +57,11 @@ def genetic_pipeline(
         output: str = typer.Option("./datasets/example/geneticTrees.json", help="The name of the file to save the genetic trees."),
     ):
     """
-    This function is used to run the genetic pipeline that creates the genetic trees.
+    Run the genetic pipeline that process the genetic trees.
+
     Args:
         reference_gene_filepath (str): The path to the reference gene file.
+        output (str): The name of the file to save the genetic trees.
     """
     Params.load_from_file()
 
@@ -72,12 +82,20 @@ def genetic_pipeline(
     except Exception as e:
         print(f"Error saving the file: {e}")
 
-@app.callback()
-def main(
+@app.command()
+def run(
     climatic_tree: str = typer.Option(None, help="The name of the file containing the climatic trees."),
     genetic_tree: str = typer.Option(None, help="The name of the file containing the genetic trees."),
+    output: str = typer.Option("./results/output.csv", help="The name of the file to save the output."),
 ):
+    """
+    Run the pipelines and process the trees and phylogeographic analyses.
 
+    Args:
+        climatic_tree (str): The name of the file containing the climatic trees.
+        genetic_tree (str): The name of the file containing the genetic trees.
+        output (str): The name of the file to save the output.
+    """
     # geneticTrees = GeneticTrees.load_trees_from_file("./results/geneticTreesTest.json")
     # loaded_seq_alignment = Alignment.load_from_json("./results/aligned_sequences.json")
 
@@ -92,8 +110,6 @@ def main(
         geneticTrees = geneticTrees.trees
         trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
     else:
-
-        typer.echo(typer.style(titleCard, fg=typer.colors.GREEN))
 
         sequenceFile = utils.loadSequenceFile(Params.reference_gene_filepath)
         align_sequence = AlignSequences(sequenceFile)
@@ -115,14 +131,15 @@ def main(
         climatic_data = pd.read_csv(Params.file_name)
         climaticTrees = utils.climaticPipeline(climatic_data)
 
-    utils.filterResults(climaticTrees, geneticTrees, climatic_data)
+    filtered_results = utils.filterResults(climaticTrees, geneticTrees, climatic_data)
+
+    utils.writeOutputFile(filtered_results, output)
 
     # save results
     if alignements is not None:
         alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
 
     trees.save_trees_to_json("./results/geneticTrees.json")
-
 
 if __name__ == "__main__":
     app()
