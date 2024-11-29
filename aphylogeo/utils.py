@@ -462,17 +462,19 @@ def getData(leavesName, dist, index, climaticList, bootstrap, genetic, csv_data,
                     return [reference_gene_filename, climaticList[index], leave, genetic, str(bootstrap), str(round(dist, 2))]
 
 
-def writeOutputFile(data):
+def writeOutputFile(data, output_file):
     """
     Write the datas from data list into a new csv file
 
     :param data: The list containing the final data.
+    :param output_file: Output csv filepath for the results.
     :type data: list
+    :type output_file: String
     """
     print("Writing the output file")
     directory = os.path.abspath("./results")
     os.makedirs(directory, exist_ok=True)
-    with open("./results/output.csv", "w", encoding="UTF8") as f:
+    with open(output_file, "w", encoding="UTF8") as f:
         writer = csv_writer(f)
         writer.writerow(header())
         for i in range(len(data)):
@@ -498,8 +500,8 @@ def filterResults(
     :param create_file: Whether to create a file or not. Default is True.
     :type create_file: bool
     
-    :return: The final data in a dictionary format.
-    :rtype: dict
+    :return: The final data in a list format.
+    :rtype: list
     """
 
     # Create a list of the tree if the bootstrap is superior to the
@@ -606,10 +608,10 @@ def filterResults(
             else:
                 raise ValueError("Invalid distance method")
 
-    if create_file:
-        # We write the datas into an output csv file
-        writeOutputFile(data)
-    return format_to_csv(data)
+    # if create_file:
+    #     # We write the datas into an output csv file
+    #     writeOutputFile(data, Params.output_file)
+    return data
 
 
 def format_to_csv(data):
