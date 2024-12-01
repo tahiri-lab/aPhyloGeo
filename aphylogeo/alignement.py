@@ -924,6 +924,6 @@ class AlignSequences:
         elif Params.method_similarity[0] == "7":
             rateSimilarity = df.apply(lambda x: td.jaccard(x[0], x[1]), axis=1).mean() * 100
         elif Params.method_similarity[0] == "8":
-            rateSimilarity = df.apply(lambda x: td.sorencen(x[0], x[1]), axis=1).mean() * 100
+            rateSimilarity = df.apply(lambda x: td.sorensen(x[0], x[1]), axis=1).mean() * 100
 
         return rateSimilarity
