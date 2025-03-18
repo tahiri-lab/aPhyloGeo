@@ -193,7 +193,7 @@ def climaticPipeline(df):
     :return: The climatic tree dictionnary
     :rtype: dict
     """
-    names = Params.names
+    names = Params.data_names
     trees = {}
     for i in range(1, len(names)):
         dm = getDissimilaritiesMatrix(df, names[0], names[i])
@@ -212,7 +212,7 @@ def reverse_climatic_pipeline(trees):
     for key, tree in trees.items():
         for leaf in tree.get_terminals():
             data.append([leaf.name, key, leaf.branch_length])
-    df = pd.DataFrame(data, columns=[Params.names[0], 'Variable', 'Value'])
+    df = pd.DataFrame(data, columns=[Params.data_names[0], 'Variable', 'Value'])
     return df
 
 def createBoostrap(msaSet: dict, bootstrapAmount):

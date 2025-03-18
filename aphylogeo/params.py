@@ -20,7 +20,6 @@ class Params:
         "reference_gene_file": "",
         "file_name": "",
         "specimen": "",
-        "names": [],
         "makeDebugFiles": False,
         "bootstrap_amount": 0,
         "alignment_method": "0",
