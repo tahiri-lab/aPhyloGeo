@@ -1,7 +1,7 @@
+.PHONY: aPhylogeo clean test
+
 aPhylogeo:
 	python aphylogeo/main.py run
-
-.PHONY: clean
 
 clean:
 	rm -rf output/*
