@@ -97,14 +97,14 @@ We offer several comprehensive tutorials to help users get started with the pack
 
 # 📖 Documentation
 
-You can also refer to the [documentation](https://github.com/tahiri-lab/aPhyloGeo/wiki) for more details.
+You can also refer to the [documentation](https://tahiri-lab.github.io/aPhyloGeo/) for more details.
 Some useful links:
 
 * [Installation guide](https://github.com/tahiri-lab/aPhyloGeo/wiki/Installation-guide)
 * [Tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial)
 * [Worflow](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)
 * [Contribution Guidelines](https://github.com/tahiri-lab/aPhyloGeo/wiki/Contribution-Guidelines)
-* [aPhyloGeo documentation](https://tahiri-lab.github.io/aPhyloGeo/)
+* [aPhyloGeo wiki](https://github.com/tahiri-lab/aPhyloGeo/wiki)
 
 # ✔️ References
 
