@@ -126,7 +126,7 @@ def run(
     # climatic sequence
     if climatic_tree is not None and os.path.exists(climatic_tree):
         climaticTrees = utils.load_climatic_trees(climatic_tree)
-        climatic_data = utils.reverse_climatic_pipeline(climaticTrees)
+        climatic_data = utils.reverse_climatic_pipeline(climaticTrees, climatic_data)
     else:
         climatic_data = pd.read_csv(Params.file_name)
         climaticTrees = utils.climaticPipeline(climatic_data)

@@ -126,7 +126,7 @@ class TestGenetic:
         """
 
         # Test the createBootstrap function
-        genetic_trees = utils.createBoostrap(self.msa, Params.bootstrap_amount)
+        genetic_trees = utils.createBoostrap(self.msa, Params.bootstrap_threshold)
         actual_bootstrap = [str(Phylogeny.from_tree(tree)) for tree in list(genetic_trees.values())]
 
         trees = Phylo.parse("tests/testFiles/createBootstrap/seq very small.xml", "phyloxml")
@@ -239,7 +239,7 @@ class TestGenetic:
         alignment = Alignment(Params.alignment_method, msa)
 
         # Generate Tree using fasttree algorithm
-        trees = fasttree(alignment.msa, Params.bootstrap_amount, True)
+        trees = fasttree(alignment.msa, Params.bootstrap_threshold, True)
 
         # To generate test files (keep commented out unless another batch of test files needs to be generated)
         # [Phylo.write(tree, f"tests/testFiles/fasttree/tree_{window}.xml", "phyloxml") for window, tree in trees.items()]

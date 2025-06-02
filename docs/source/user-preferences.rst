@@ -12,12 +12,10 @@ Configuration File Example
 
     file_name: './datasets/example/geo.csv'
     specimen: 'id'
-    bootstrap_threshold: 0
     dist_threshold: 60
     window_size: 200
     step_size: 100
-    bootstrap_amount: 100
-    data_names: ['id', 'ALLSKY_SFC_SW_DWN', 'T2M', 'PRECTOTCORR', 'QV2M', 'WS10M']
+    bootstrap_threshold: 100
     reference_gene_dir: './datasets/example'
     reference_gene_file: 'sequences.fasta'
     makeDebugFiles: True

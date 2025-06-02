@@ -11,17 +11,15 @@ class Params:
     """
 
     PARAMETER_KEYS = {
-        "bootstrap_threshold": 0,
         "dist_threshold": 0,
         "window_size": 0,
         "step_size": 0,
-        "data_names": [],
         "reference_gene_dir": "",
         "reference_gene_file": "",
         "file_name": "",
         "specimen": "",
         "makeDebugFiles": False,
-        "bootstrap_amount": 0,
+        "bootstrap_threshold": 0,
         "alignment_method": "0",
         "distance_method": "0",
         "fit_method": "0",

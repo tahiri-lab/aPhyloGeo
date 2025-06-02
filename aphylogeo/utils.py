@@ -187,42 +187,46 @@ def createTree(dm):
 
 def climaticPipeline(df):
     """
-    Creates a dictionnary containing the climatic Trees
+    Creates a dictionary containing the climatic Trees.
     
-    :param df: Data to use to create the trees
-    :return: The climatic tree dictionnary
+    :param df: DataFrame with the climatic data.
+    :return: Dictionary with trees for each variable.
     :rtype: dict
     """
-    names = Params.data_names
+    column_names = df.columns.tolist()
     trees = {}
-    for i in range(1, len(names)):
-        dm = getDissimilaritiesMatrix(df, names[0], names[i])
-        trees[names[i]] = createTree(dm)
+    specimen_column = column_names[0]  # assume 'id' or first column is specimen
+    for i in range(1, len(column_names)):
+        dm = getDissimilaritiesMatrix(df, specimen_column, column_names[i])
+        trees[column_names[i]] = createTree(dm)
     return trees
 
-def reverse_climatic_pipeline(trees):
+
+def reverse_climatic_pipeline(trees, df):
     """
     Converts a dictionary of climatic trees back into a DataFrame.
-
+    
     :param trees: The climatic trees dictionary.
-    :return: The DataFrame containing the climatic data.
+    :param df: Original DataFrame to infer specimen column.
+    :return: DataFrame containing the climatic data.
     :rtype: pd.DataFrame
     """
+    specimen_column = df.columns.tolist()[0]  # again, assume first column is ID
     data = []
     for key, tree in trees.items():
         for leaf in tree.get_terminals():
             data.append([leaf.name, key, leaf.branch_length])
-    df = pd.DataFrame(data, columns=[Params.data_names[0], 'Variable', 'Value'])
-    return df
+    return pd.DataFrame(data, columns=[specimen_column, 'Variable', 'Value'])
 
-def createBoostrap(msaSet: dict, bootstrapAmount):
+
+def createBoostrap(msaSet: dict, bootstrapThreshold):
     """
     Create a tree structure from sequences given by a dictionnary.
     
     :param msaSet: A dictionary containing the multiple sequence alignments.
     :type msaSet: dict
-    :param bootstrapAmount:
-    :type bootstrapAmount: int
+    :param bootstrapThreshold:
+    :type bootstrapThreshold: int
     
     :return: A dictionary with the trees for each sequence.
     :rtype: dict
@@ -233,10 +237,10 @@ def createBoostrap(msaSet: dict, bootstrapAmount):
     # each array is a process
     array = []
     for key in msaSet.keys():
-        array.append([msaSet, constructor, key, bootstrapAmount])
+        array.append([msaSet, constructor, key, bootstrapThreshold])
 
     # multiprocessing
-    print("Creating bootstrap variations with multiplyer of : ", bootstrapAmount)
+    print("Creating bootstrap variations with multiplyer of : ", bootstrapThreshold)
 
     result = Multi(array, bootSingle).processingSmallData()
 
@@ -255,7 +259,7 @@ def bootSingle(args):
         - msaSet (dict): A dictionary of multiple sequence alignments.
         - constructor (function): A function used to construct trees from the MSA.
         - key (str): The key to access a specific MSA from the msaSet.
-        - bootstrapAmount (int): The number of bootstrap samples to generate.
+        - bootstrapThreshold (int): The number of bootstrap samples to generate.
     
     :returns: 
     
@@ -267,9 +271,9 @@ def bootSingle(args):
     msaSet = args[0]
     constructor = args[1]
     key = args[2]
-    bootstrapAmount = args[3]
+    bootstrapThreshold = args[3]
 
-    result = bootstrap_consensus(msaSet[key], bootstrapAmount, constructor, majority_consensus)
+    result = bootstrap_consensus(msaSet[key], bootstrapThreshold, constructor, majority_consensus)
     return [result, key]
 
 
@@ -659,9 +663,9 @@ def geneticPipeline(seq_alignement):
     # JUST TO MAKE THE DEBUG FILES
 
     if Params.tree_type == "1":
-        geneticTrees = createBoostrap(seq_alignement, Params.bootstrap_amount)
+        geneticTrees = createBoostrap(seq_alignement, Params.bootstrap_threshold)
     elif Params.tree_type == "2":
-        geneticTrees = fasttree(seq_alignement, Params.bootstrap_amount, True)
+        geneticTrees = fasttree(seq_alignement, Params.bootstrap_threshold, True)
 
     return geneticTrees
 
