@@ -104,6 +104,7 @@ Some useful links:
 * [Tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial)
 * [Worflow](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)
 * [Contribution Guidelines](https://github.com/tahiri-lab/aPhyloGeo/wiki/Contribution-Guidelines)
+* [aPhyloGeo documentation](https://tahiri-lab.github.io/aPhyloGeo/)
 
 # ✔️ References
 
