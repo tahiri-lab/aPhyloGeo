@@ -35,9 +35,6 @@ User Preferences Options
 - **Specimen**: Identifier for the specimens in the dataset (**`id`** in the example).
 
   
-- **Names**: List of column names in the dataset (**`['id', 'ALLSKY_SFC_SW_DWN', 'T2M', 'PRECTOTCORR', 'QV2M', 'WS10M']`** in the example).
-
-  
 - **Bootstrap Threshold**: Number of replicates threshold to be generated for each sub-MSA.
 
   
@@ -49,8 +46,6 @@ User Preferences Options
   
 - **Step Size**: Sliding window advancement step.
 
-  
-- **Bootstrap Amount**: Number of bootstraps to be generated.
 
   
 - **Data Names**: List of newick file names for each dataset.
