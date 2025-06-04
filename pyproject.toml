@@ -34,7 +34,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = "aphylogeo/"
-testpaths = 'tests/'
+testpaths = "tests/"
+filterwarnings = [
+  "ignore:.*cgi.*:DeprecationWarning"
+]
 
 [tool.ruff]
 line-length = 130
