@@ -8,9 +8,14 @@ from aphylogeo import utils
 from aphylogeo.genetic_trees import GeneticTrees
 import typer
 import os
+import warnings
 
 # from aphylogeo.utils import climaticPipeline, geneticPipeline, filterResults, loadSequenceFile
-
+warnings.filterwarnings("ignore", "'cgi' is deprecated", DeprecationWarning)
+print(
+    "Note: If you see a warning about 'cgi' being deprecated, don't worry! "
+    "This is due to a dependency and does not affect the functionality of this tool."
+)
 titleCard = r"""
         ____    __               ___           ____
        /\  _`\ /\ \             /\_ \         /\  _`\
