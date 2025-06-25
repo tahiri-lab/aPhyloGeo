@@ -21,3 +21,7 @@ method_similarity: '1' #Please select one :
     # 6: Smith–Waterman similarity
     # 7: Jaccard similarity
     # 8: Sørensen-Dice similarity
+preprocessing_genetic: 0
+preprocessing_climatic: 0
+preprocessing_threshold_genetic: 0.0
+preprocessing_threshold_climatic: 0.0
