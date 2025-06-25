@@ -608,7 +608,12 @@ class AlignSequences:
             couple = aligned[k]
 
             a = list(couple.keys())
-            a.remove(scKey)
+            if scKey in a:
+                a.remove(scKey)
+            if not a:
+                # No second sequence, skip this pair
+                continue
+
             sNewKey = a[0]  # SeqB ID, *not* the reference
 
             starAlign[scKey] = str(couple[scKey])  # SeqA, the reference
@@ -760,13 +765,15 @@ class AlignSequences:
                     windowed_alignment[f"{i}_{i + step - 1}"] = {key: val[i : i + step - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{i + step - 1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if Params.rate_similarity > self.similarity(df):
+                    similarity_score = float(self.similarity(df))
+                    if Params.rate_similarity > similarity_score:
                         windowed_alignment.pop(f"{i}_{i + step - 1}")
                 else:
                     windowed_alignment[f"{i}_{seq_len-1}"] = {key: val[i : i + seq_len - 1] for key, val in paddedMSA.items()}
                     combinations = itertools.combinations(windowed_alignment[f"{i}_{seq_len-1}"].values(), 2)
                     df = pd.DataFrame(list(combinations))
-                    if Params.rate_similarity > self.similarity(df):
+                    similarity_score2 = float(self.similarity(df))
+                    if Params.rate_similarity > similarity_score2:
                         windowed_alignment.pop(f"{i}_{seq_len-1}")
         else:
             for i in range(0, seq_len, step):
@@ -808,10 +815,13 @@ class AlignSequences:
         if not os.path.exists(dir):
             os.mkdir(dir)
 
-        f = open(dir + "/" + filename + ext, "w")
-        for key in dict.keys():
-            f.write(">" + str(key) + "\n")
-            f.write(str(dict[key] + "\n"))
+        file_path = os.path.join(dir, str(filename) + ext)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        with open(file_path, "w") as f:
+            for key in dict.keys():
+                f.write(">" + str(key) + "\n")
+                f.write(str(dict[key] + "\n"))
         return dict
 
     def makeMSA(self, windowed):

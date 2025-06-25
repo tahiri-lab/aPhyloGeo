@@ -26,6 +26,10 @@ class Params:
         "tree_type": "0",
         "rate_similarity": 0,
         "method_similarity": "0",
+        "preprocessing_genetic": "0",
+        "preprocessing_climatic": "0",
+        "preprocessing_threshold_genetic": 0,
+        "preprocessing_threshold_climatic": 0,
     }
 
     @classmethod

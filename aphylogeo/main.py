@@ -2,10 +2,15 @@ import sys
 
 import pandas as pd
 import time
+import json
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
 from aphylogeo import utils
 from aphylogeo.genetic_trees import GeneticTrees
+from aphylogeo.preprocessing import filter_low_variance_features, preprocess_windowed_alignment
+from aphylogeo.utils import convert_alignment_to_simple_format
+from Bio import AlignIO
+from io import StringIO
 import typer
 import os
 import warnings
@@ -48,7 +53,24 @@ def climate_pipeline(
     """
     Params.load_from_file()
 
-    climatic_data = pd.read_csv(file_name)
+    preprocess_climate = int(Params.preprocessing_climatic)
+    thresh_climate = float(Params.preprocessing_threshold_climatic)
+    id_column = Params.specimen
+
+    # Climatic preprocessing
+    if preprocess_climate:
+        print(" Climatic preprocessing...")
+        climatic_data = filter_low_variance_features(
+            file_name,
+            threshold=thresh_climate,
+            id_column=id_column
+        )
+        filtered_path = os.path.splitext(file_name)[0] + "_filtered.csv"
+        climatic_data.to_csv(filtered_path, index=False)
+        print(f"Filtered CSV saved to: {filtered_path}")
+    else:
+        climatic_data = pd.read_csv(file_name)
+
     climaticTrees = utils.climaticPipeline(climatic_data)
 
     try:
@@ -76,8 +98,44 @@ def genetic_pipeline(
     print("\nStarting alignement")
     start_time = time.time()
     alignements = align_sequence.align()
-    geneticTrees = utils.geneticPipeline(alignements.msa)
-    trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
+    alignements.save_to_json("results/aligned_sequences.fasta.json")
+
+    align_sequence.makeMSA(
+        align_sequence.slidingWindow(align_sequence.sequences), 
+    )
+
+    convert_alignment_to_simple_format(
+        msa_json_path="results/aligned_sequences.fasta.json",
+        output_path="results/aligned_sequences_formated.fasta.json"
+    )
+
+    # Genetic preprocessing
+    if Params.preprocessing_genetic:
+        print("Genetic preprocessing...")
+        preprocess_windowed_alignment(
+                input_path="results/aligned_sequences.fasta.json",
+                threshold=Params.preprocessing_threshold_genetic,
+                output_path="results/filtered_aligned_sequences.fasta.json"
+        )
+
+        genetic_path = "results/filtered_aligned_sequences.fasta.json"
+
+        convert_alignment_to_simple_format(
+        input_path=genetic_path,
+        output_path="results/filtered_formated_aligned_sequences.fasta.json"
+        )
+        with open(genetic_path) as f:
+                genetic_data = json.load(f)
+                msaSet = {}
+                for window, fasta_str in genetic_data["msa"].items():
+                    alignment = AlignIO.read(StringIO(fasta_str), "fasta")
+                    msaSet[window] = alignment
+        
+        geneticTrees = utils.geneticPipeline(msaSet)
+        trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
+    else:
+        geneticTrees = utils.geneticPipeline(alignements.msa)
+        trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
     end_time = time.time()
     elapsed_time = round(end_time - start_time, 3)
     print(f"Elapsed time: {elapsed_time} seconds")
@@ -106,8 +164,10 @@ def run(
 
     # load params
     Params.load_from_file()
+    climatic_path = Params.file_name
+    genetic_path = None
 
-    # genetic pipeline
+    # === Genentic pipeline ===
     alignements = None
 
     if genetic_tree is not None and os.path.exists(genetic_tree):
@@ -122,18 +182,69 @@ def run(
         print("\nStarting alignement")
         start_time = time.time()
         alignements = align_sequence.align()
-        geneticTrees = utils.geneticPipeline(alignements.msa)
-        trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
+        msa_path = f"./results/aligned_{Params.reference_gene_file}.json"
+        alignements.save_to_json(msa_path)
+
+        convert_alignment_to_simple_format(
+            input_path=msa_path,
+            output_path="results/aligned_sequences_formated.fasta.json"
+        )
+
+        #genetic preprocessing
+        if Params.preprocessing_genetic:
+            print("Genetic preprocessing...")
+            
+            preprocess_windowed_alignment(
+                input_path="results/aligned_sequences.fasta.json",
+                threshold=Params.preprocessing_threshold_genetic,
+                output_path="results/filtered_aligned_sequences.fasta.json"
+            )
+
+            genetic_path = "results/filtered_aligned_sequences.fasta.json"
+
+            convert_alignment_to_simple_format(
+            input_path=genetic_path,
+            output_path="results/filtered_formated_aligned_sequences.fasta.json"
+            )
+            with open(genetic_path) as f:
+                genetic_data = json.load(f)
+                msaSet = {}
+                for window, fasta_str in genetic_data["msa"].items():
+                    alignment = AlignIO.read(StringIO(fasta_str), "fasta")
+                    msaSet[window] = alignment
+            geneticTrees = utils.geneticPipeline(msaSet)
+            trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
+        else:
+            geneticTrees = utils.geneticPipeline(alignements.msa)
+            trees = GeneticTrees(trees_dict=geneticTrees, format="newick")
         end_time = time.time()
         elapsed_time = round(end_time - start_time, 3)
         print(f"Elapsed time: {elapsed_time} seconds")
 
-    # climatic sequence
+    # === Climatic sequence ===
     if climatic_tree is not None and os.path.exists(climatic_tree):
         climaticTrees = utils.load_climatic_trees(climatic_tree)
+        climatic_data = pd.read_csv(climatic_path)
         climatic_data = utils.reverse_climatic_pipeline(climaticTrees, climatic_data)
     else:
-        climatic_data = pd.read_csv(Params.file_name)
+        # load parameters
+        preprocess_climate = int(Params.preprocessing_climatic)
+        thresh_climate = float(Params.preprocessing_threshold_climatic)
+        id_column = Params.specimen
+
+        # climatic preprocessing
+        if preprocess_climate:
+            print(" Climatic preprocessing...")
+            climatic_data = filter_low_variance_features(
+                Params.file_name,
+                threshold=thresh_climate,
+                id_column=id_column
+            )
+            filtered_path = os.path.splitext(Params.file_name)[0] + "_filtered.csv"
+            climatic_data.to_csv(filtered_path, index=False)
+            print(f"Filtered CSV saved to: {filtered_path}")
+        else:
+            climatic_data = pd.read_csv(Params.file_name)
         climaticTrees = utils.climaticPipeline(climatic_data)
 
     filtered_results = utils.filterResults(climaticTrees, geneticTrees, climatic_data)

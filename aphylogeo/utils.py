@@ -2,6 +2,7 @@ import glob
 import os
 import re
 import sys
+import json
 from csv import writer as csv_writer
 from io import StringIO
 
@@ -10,6 +11,9 @@ import ete3
 import pandas as pd
 from Bio import SeqIO
 from Bio import Phylo
+from Bio.SeqRecord import SeqRecord
+from Bio.Seq import Seq
+from Bio.Align import MultipleSeqAlignment
 from Bio.Phylo.Applications import _Fasttree
 from Bio.Phylo.Consensus import bootstrap_consensus, majority_consensus
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, _DistanceMatrix
@@ -49,8 +53,8 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     meteoData = df[columnToSearch].tolist()
     nomVar = df[columnWithSpecimenName].tolist()
     nbrSeq = len(nomVar)
-    maxValue = 0
-    minValue = 0
+    maxValue = float('-inf')
+    minValue = float('inf')
 
     # First loop that allow us to calculate a matrix for each sequence
     tempTab = []
@@ -77,7 +81,7 @@ def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     if (maxValue - minValue) != 0:
         dmDf = (tabDf - minValue) / (maxValue - minValue)
     else:
-        dmDf = 0.0
+        dmDf = pd.DataFrame(0.0, index=tabDf.index, columns=tabDf.columns)
     dmDf = dmDf.round(6)
 
     matrix = [dmDf.iloc[i, : i + 1].tolist() for i in range(len(dmDf))]
@@ -717,3 +721,45 @@ def load_climatic_trees(file_path):
             tree = Phylo.read(StringIO(lines[i + 1]), "newick")
             climatic_trees[key] = tree
     return climatic_trees
+
+def convert_alignment_to_simple_format(input_path: str, output_path: str):
+    """
+    Transform a JSON file with windows in FASTA simple format to one with {window: {id: sequence}} format.
+    To improve file readability
+    
+    Args:
+        input_path (str): Path of the JSON input file.
+        output_path (str): Path of the output JSON file.
+    """
+    with open(input_path, "r") as f:
+        data = json.load(f)
+
+    new_data = {
+        "type": data.get("type", "Alignment"),
+        "alignment_method": data.get("alignment_method", "1"),
+        "msa": {}
+    }
+
+    for window, fasta_block in data["msa"].items():
+        sequences = {}
+        current_id = None
+        for line in fasta_block.strip().splitlines():
+            if line.startswith(">"):
+                current_id = line[1:].strip()
+                sequences[current_id] = ""
+            else:
+                sequences[current_id] += line.strip()
+        new_data["msa"][window] = sequences
+
+    with open(output_path, "w") as f:
+        json.dump(new_data, f, indent=4)
+
+def dictToJson(data, filepath):
+    """
+    Save a dictionary as a JSON file.
+    
+    :param data: Dictionary to save.
+    :param filepath: Path to the output JSON file.
+    """
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
