@@ -183,6 +183,7 @@ def run(
         start_time = time.time()
         alignements = align_sequence.align()
         msa_path = f"./results/aligned_{Params.reference_gene_file}.json"
+        os.makedirs(os.path.dirname(msa_path), exist_ok=True)
         alignements.save_to_json(msa_path)
 
         convert_alignment_to_simple_format(
@@ -253,9 +254,11 @@ def run(
 
     # save results
     if alignements is not None:
+        os.makedirs("./results", exist_ok=True)  # Crear la carpeta si no existe
         alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
 
     trees.save_trees_to_json("./results/geneticTrees.json")
+
 
 if __name__ == "__main__":
     app()
