@@ -254,7 +254,7 @@ def run(
 
     # save results
     if alignements is not None:
-        os.makedirs("./results", exist_ok=True)  # Crear la carpeta si no existe
+        os.makedirs("./results", exist_ok=True)
         alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
 
     trees.save_trees_to_json("./results/geneticTrees.json")
