@@ -13,10 +13,6 @@ aPhyloGeo documentation
    :alt: Py version
    :target: https://pypi.python.org/pypi/pysd/
 
-.. image:: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Ftahiri-lab%2FaPhylogeo&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false
-   :alt: Hits
-   :target: https://hits.seeyoufarm.com
-
 .. image:: https://img.shields.io/github/v/release/tahiri-lab/aPhylogeo.svg?maxAge=3600
    :alt: GitHub release
    :target: https://github.com/tahiri-lab/aPhylogeo/releases/
