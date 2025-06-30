@@ -1,0 +1,1 @@
+['Lat_start_dec', 'Lat_end_dec', 'Long_start_dec', 'Long_end_dec', 'Depth_start', 'Depth_end', 'Windspeed_start', 'Windspeed_end', 'Watertemp_ground', 'O2-saturation_ground']
