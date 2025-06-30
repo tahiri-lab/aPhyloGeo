@@ -1,0 +1,20 @@
+file_name: './datasets/Cumacea/Cumacea.csv'
+specimen: 'Sampleid'
+dist_threshold: 80
+window_size: 100
+step_size: 100
+bootstrap_threshold: 10
+rate_similarity: 20
+method_similarity: '1'
+reference_gene_dir: './datasets/Cumacea'
+reference_gene_file: 'Cumacea.fasta'
+makeDebugFiles: True
+alignment_method: '1' # method for test alignment
+# Please select one ~ 1:pairwiseAligner, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
+tree_type: '1' #Please select one ~ 1: BioPython consensus tree, 2: FastTree application
+distance_method: '0'
+fit_method: '1'
+preprocessing_genetic: 1
+preprocessing_climatic: 1
+preprocessing_threshold_genetic: 0.9
+preprocessing_threshold_climatic: 0.7
