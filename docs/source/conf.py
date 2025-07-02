@@ -42,7 +42,7 @@ html_static_path = ['_static']
 html_context = {
     'display_github': True,
     'github_user': 'tahiri-lab',
-    'github_repo': 'aPhiloGeo',
+    'github_repo': 'aPhyloGeo',
     'github_version': 'main/',
     'conf_py_path': 'docs/',
     'source_suffix': '.rst',
