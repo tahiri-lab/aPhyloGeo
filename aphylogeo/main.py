@@ -3,12 +3,15 @@ import sys
 import pandas as pd
 import time
 import json
+from scipy.spatial.distance import pdist, squareform
+
 from aphylogeo.alignement import AlignSequences
 from aphylogeo.params import Params
 from aphylogeo import utils
 from aphylogeo.genetic_trees import GeneticTrees
 from aphylogeo.preprocessing import filter_low_variance_features, preprocess_windowed_alignment
 from aphylogeo.utils import convert_alignment_to_simple_format
+from aphylogeo.utils import get_patristic_distance_matrix
 from Bio import AlignIO
 from io import StringIO
 import typer
@@ -251,6 +254,25 @@ def run(
     filtered_results = utils.filterResults(climaticTrees, geneticTrees, climatic_data)
 
     utils.writeOutputFile(filtered_results, output)
+
+    # === Mantel test (statistical correlation) ===
+    try:
+        print("Running Mantel test...")
+
+        # Prepare climatic distance matrix
+        climatic_matrix = climatic_data.drop(columns=[Params.specimen])
+        climatic_dist = squareform(pdist(climatic_matrix, metric="euclidean"))
+
+        # Prepare genetic distance matrix (simple version from trees)
+        genetic_dist = get_patristic_distance_matrix(geneticTrees)
+
+        # Run Mantel test
+        r, p, n = utils.run_mantel_test(genetic_dist, climatic_dist)
+
+        print(f"Mantel test result: \n r = {r:.3f} Correlation coefficient \n p = {p:.4f} Significance level \n n = {n} Number of observations")
+    except Exception as e:
+        print(f"Could not compute Mantel test: {e}")
+
 
     # save results
     if alignements is not None:

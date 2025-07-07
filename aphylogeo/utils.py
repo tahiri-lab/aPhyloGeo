@@ -5,6 +5,9 @@ import sys
 import json
 from csv import writer as csv_writer
 from io import StringIO
+from scipy.spatial.distance import pdist, squareform
+from skbio.stats.distance import mantel
+import numpy as np
 
 import dendropy
 import ete3
@@ -37,6 +40,50 @@ def header():
         header.extend(["Euclidean Distance"])
     return header
 
+def run_mantel_test(genetic_dist_matrix, climatic_dist_matrix, permutations=999, method='pearson'):
+    """
+    Performs the Mantel test between two distance matrices.
+
+    Args:
+        genetic_dist_matrix (np.ndarray or pd.DataFrame): Genetic distances.
+        climatic_dist_matrix (np.ndarray or pd.DataFrame): Climatic distances.
+        permutations (int): Number of permutations (default: 999).
+        method (str): 'pearson' or 'spearman'.
+
+    Returns:
+        Tuple: (r-value, p-value, number of comparisons)
+    """
+    if isinstance(genetic_dist_matrix, pd.DataFrame):
+        genetic_dist_matrix = genetic_dist_matrix.values
+    if isinstance(climatic_dist_matrix, pd.DataFrame):
+        climatic_dist_matrix = climatic_dist_matrix.values
+
+    r, p_value, n = mantel(
+        genetic_dist_matrix,
+        climatic_dist_matrix,
+        method=method,
+        permutations=permutations
+    )
+    return r, p_value, n
+
+def get_patristic_distance_matrix(trees_dict):
+    """
+    Returns an average patristic distance matrix from a dict of Phylo trees.
+    """
+    labels = list(trees_dict[list(trees_dict.keys())[0]].get_terminals())
+    label_names = [t.name for t in labels]
+    n = len(label_names)
+    distance_matrix = np.zeros((n, n))
+
+    for tree in trees_dict.values():
+        for i, t1 in enumerate(label_names):
+            for j, t2 in enumerate(label_names):
+                if i != j:
+                    dist = tree.distance(t1, t2)
+                    distance_matrix[i, j] += dist
+
+    distance_matrix /= len(trees_dict)
+    return distance_matrix
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
