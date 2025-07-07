@@ -12,4 +12,5 @@ dendropy==4.6.1
 textdistance==4.6.0
 scikit-bio>=0.5.8
 scipy>=1.8.1
+skbio = ^0.6.4 
 git+https://github.com/althonos/pymuscle5
