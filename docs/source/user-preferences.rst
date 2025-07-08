@@ -30,7 +30,7 @@ Configuration File Example
     preprocessing_threshold_genetic: 0.2    # Proportion of gaps allowed per column in genetic alignments
     preprocessing_threshold_climatic: 0.7   # Variance threshold for filtering climatic features
     permutations_mantel_test: 999 # Number of permutations for significance testing 
-    mantel_test_method: "pearson" # Correlation method ('pearson', 'spearman')
+    mantel_test_method: "pearson" # Correlation method ('pearson', 'spearman', 'kendalltau')
 
 User Preferences Options
 -------------------------
@@ -52,7 +52,7 @@ User Preferences Options
   
 - **Step Size**: Sliding window advancement step.
   
-  
+
 - **Data Names**: List of newick file names for each dataset.
 
   
