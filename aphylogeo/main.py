@@ -196,7 +196,7 @@ def run(
 
         #genetic preprocessing
         if Params.preprocessing_genetic:
-            print("Genetic preprocessing...")
+            print("\n\nGenetic preprocessing...")
             
             preprocess_windowed_alignment(
                 input_path="results/aligned_sequences.fasta.json",
@@ -238,7 +238,7 @@ def run(
 
         # climatic preprocessing
         if preprocess_climate:
-            print(" Climatic preprocessing...")
+            print("\n\nClimatic preprocessing...")
             climatic_data = filter_low_variance_features(
                 Params.file_name,
                 threshold=thresh_climate,
@@ -257,7 +257,7 @@ def run(
 
     # === Mantel test (statistical correlation) ===
     try:
-        print("Running Mantel test...")
+        print(f"\n\nRunning Mantel test {Params.mantel_test_method} with {Params.permutations_mantel_test} permutations... ")
 
         # Prepare climatic distance matrix
         climatic_matrix = climatic_data.drop(columns=[Params.specimen])
@@ -267,9 +267,9 @@ def run(
         genetic_dist = get_patristic_distance_matrix(geneticTrees)
 
         # Run Mantel test
-        r, p, n = utils.run_mantel_test(genetic_dist, climatic_dist)
+        r, p, n = utils.run_mantel_test(genetic_dist, climatic_dist, Params.permutations_mantel_test, Params.mantel_test_method)
 
-        print(f"Mantel test result: \n r = {r:.3f} Correlation coefficient \n p = {p:.4f} Significance level \n n = {n} Number of observations")
+        print(f"Mantel test result: \n r = {r:.3f} Correlation coefficient \n p = {p:.4f} Significance level \n n = {n} Number of observations\n")
     except Exception as e:
         print(f"Could not compute Mantel test: {e}")
 
