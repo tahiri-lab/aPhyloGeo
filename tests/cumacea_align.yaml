@@ -19,4 +19,6 @@ preprocessing_climatic: 1
 preprocessing_threshold_genetic: 0.9
 preprocessing_threshold_climatic: 0.7
 permutations_mantel_test: 999 #permutations for Mantel test
+permutations_protest: 999 #permutations for PROTEST analysis
 mantel_test_method: "pearson" #method for Mantel test
+statistical_test: '0' #Please select one ~ 0: Both test, 1: Mantel test, 2: Procrustes analysis
