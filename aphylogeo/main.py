@@ -10,8 +10,7 @@ from aphylogeo.params import Params
 from aphylogeo import utils
 from aphylogeo.genetic_trees import GeneticTrees
 from aphylogeo.preprocessing import filter_low_variance_features, preprocess_windowed_alignment
-from aphylogeo.utils import convert_alignment_to_simple_format
-from aphylogeo.utils import get_patristic_distance_matrix
+from aphylogeo.utils import convert_alignment_to_simple_format, get_patristic_distance_matrix, run_procrustes_analysis, run_protest_test
 from Bio import AlignIO
 from io import StringIO
 import typer
@@ -252,35 +251,84 @@ def run(
         climaticTrees = utils.climaticPipeline(climatic_data)
 
     filtered_results = utils.filterResults(climaticTrees, geneticTrees, climatic_data)
-
     utils.writeOutputFile(filtered_results, output)
 
-    # === Mantel test (statistical correlation) ===
+    # === Statistical tests ===
     try:
+            # Prepare climatic distance matrix
+            climatic_matrix = climatic_data.drop(columns=[Params.specimen])
+            climatic_dist = squareform(pdist(climatic_matrix, metric="euclidean"))
+
+            # Prepare genetic distance matrix (simple version from trees)
+            genetic_dist = get_patristic_distance_matrix(geneticTrees)
+            genetic_matrix = pd.DataFrame(genetic_dist)
+    except Exception as e:
+        print(f"Could not compute Statistical test: {e}")
+
+    if Params.statistical_test == '0' or Params.statistical_test == '1':
+    # === Mantel test (statistical correlation) ===
         print(f"\n\nRunning Mantel test {Params.mantel_test_method} with {Params.permutations_mantel_test} permutations... ")
-
-        # Prepare climatic distance matrix
-        climatic_matrix = climatic_data.drop(columns=[Params.specimen])
-        climatic_dist = squareform(pdist(climatic_matrix, metric="euclidean"))
-
-        # Prepare genetic distance matrix (simple version from trees)
-        genetic_dist = get_patristic_distance_matrix(geneticTrees)
-
         # Run Mantel test
         r, p, n = utils.run_mantel_test(genetic_dist, climatic_dist, Params.permutations_mantel_test, Params.mantel_test_method)
-
         print(f"Mantel test result: \n r = {r:.3f} Correlation coefficient \n p = {p:.4f} Significance level \n n = {n} Number of observations\n")
-    except Exception as e:
-        print(f"Could not compute Mantel test: {e}")
+    
+        # Make the row for summary
+        result_row = {
+            "window": "Mantel test result:",
+            "r (Correlation coefficient)": r,
+            "p (Significance level)": p,
+            "n (Number of observations)": n
+        }
+        # Load the input
+        if os.path.exists(output):
+            df_output = pd.read_csv(output)
+        else:
+            df_output = pd.DataFrame()
 
+        # Transform the row to DataFrame
+        summary_df = pd.DataFrame([result_row])
+        df_output = pd.concat([df_output, summary_df], ignore_index=True)
 
-    # save results
-    if alignements is not None:
-        os.makedirs("./results", exist_ok=True)
-        alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
+        # Guardar
+        df_output.to_csv(output, index=False)
 
-    trees.save_trees_to_json("./results/geneticTrees.json")
+    if Params.statistical_test == '0' or Params.statistical_test == '2':
+        # === Procrustes analysis ===
+        print("\n\nRunning Procrustes analysis...")
+        m2, genetic_transf, climatic_transf = run_procrustes_analysis(genetic_matrix, climatic_matrix)
+        print(f"Procrustes M² = {round(m2, 4)} (closer to 0 = better fit)")
+        
+        # === PROTEST ===
+        print(f"\nRunning PROTEST with {Params.permutations_protest} permutations...")
+        _, protest_p = utils.run_protest_test(climatic_matrix, genetic_matrix, n_permutations=Params.permutations_protest)
+        print(f"PROTEST result:\n p-value = {protest_p:.4f} (lower means more significant)")
+        
+        # save results
+        if alignements is not None:
+            os.makedirs("./results", exist_ok=True)
+            alignements.save_to_json(f"./results/aligned_{Params.reference_gene_file}.json")
 
+        trees.save_trees_to_json("./results/geneticTrees.json")
+
+        # Make the row for summary
+        result_row = {
+            "window": "global",
+            "Procrustes_M2": m2,
+            "PROTEST_pvalue": protest_p
+        }
+
+        # Load the input
+        if os.path.exists(output):
+            df_output = pd.read_csv(output)
+        else:
+            df_output = pd.DataFrame()
+
+        # Transform the row to DataFrame
+        summary_df = pd.DataFrame([result_row])
+        df_output = pd.concat([df_output, summary_df], ignore_index=True)
+
+        # Guardar
+        df_output.to_csv(output, index=False)
 
 if __name__ == "__main__":
     app()
