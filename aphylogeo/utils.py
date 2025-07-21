@@ -7,6 +7,9 @@ from csv import writer as csv_writer
 from io import StringIO
 from scipy.spatial.distance import pdist, squareform
 from skbio.stats.distance import mantel
+from skbio.stats.ordination import pcoa
+from scipy.spatial import procrustes
+from scipy.spatial.distance import squareform
 import numpy as np
 
 import dendropy
@@ -84,6 +87,132 @@ def get_patristic_distance_matrix(trees_dict):
 
     distance_matrix /= len(trees_dict)
     return distance_matrix
+
+def run_procrustes_analysis(genetic_matrix, climatic_matrix):
+    """
+    Perform Procrustes analysis between genetic and climatic datasets.
+
+    Parameters:
+    - genetic_matrix (ndarray or DataFrame): A square distance matrix representing genetic distances between samples.
+    - climatic_matrix (ndarray or DataFrame): A matrix of climatic variables per sample (not a distance matrix).
+
+    Returns:
+    - disparity (float): Procrustes M² statistic (closer to 0 = better fit).
+    - mtx2 (ndarray): Transformed genetic coordinates.
+    - mtx1 (ndarray): Transformed climatic coordinates.
+    """
+
+    # Ensure input matrices are NumPy arrays
+    if hasattr(climatic_matrix, "values"):
+        climatic_matrix = climatic_matrix.values
+    if hasattr(genetic_matrix, "values"):
+        genetic_matrix = genetic_matrix.values
+
+    # Step 1: Apply PCoA to genetic distance matrix
+    genetic_coords = pcoa(genetic_matrix).samples.to_numpy()
+
+    # Step 2: Compute climatic distance matrix (Euclidean), then apply PCoA
+    climatic_dist = squareform(pdist(climatic_matrix, metric="euclidean"))
+    climatic_coords = pcoa(climatic_dist).samples.to_numpy()
+
+    # Step 3: Ensure both coordinate matrices have the same number of samples
+    min_rows = min(genetic_coords.shape[0], climatic_coords.shape[0])
+    genetic_coords = genetic_coords[:min_rows]
+    climatic_coords = climatic_coords[:min_rows]
+
+    # Step 4: Perform Procrustes analysis
+    mtx1, mtx2, disparity = procrustes(climatic_coords, genetic_coords)
+
+    return disparity, mtx2, mtx1  # climatic (mtx1) and genetic (mtx2) aligned
+
+def run_procrustes_test_with_permutation(genetic_matrix, climatic_matrix, n_permutations=999, random_state=None):
+    """
+    Perform a PROTEST (Procrustes randomization test) to evaluate the statistical significance 
+    of the Procrustes M² statistic between genetic and climatic data.
+
+    Parameters:
+    - genetic_matrix (ndarray or DataFrame): A square distance matrix representing genetic distances.
+    - climatic_matrix (ndarray or DataFrame): A matrix of climatic variables (not distances).
+    - n_permutations (int): Number of permutations for the test.
+    - random_state (int or None): Seed for reproducibility.
+
+    Returns:
+    - observed_m2 (float): The observed Procrustes M² statistic.
+    - p_value (float): The empirical p-value from permutation.
+    """
+    if hasattr(climatic_matrix, "values"):
+        climatic_matrix = climatic_matrix.values
+    if hasattr(genetic_matrix, "values"):
+        genetic_matrix = genetic_matrix.values
+
+    genetic_coords = pcoa(genetic_matrix).samples.to_numpy()
+
+    climatic_dist = squareform(pdist(climatic_matrix, metric="euclidean"))
+    climatic_coords = pcoa(climatic_dist).samples.to_numpy()
+
+    min_rows = min(genetic_coords.shape[0], climatic_coords.shape[0])
+    genetic_coords = genetic_coords[:min_rows]
+    climatic_coords = climatic_coords[:min_rows]
+
+    _, _, observed_m2 = procrustes(climatic_coords, genetic_coords)
+
+    rng = np.random.default_rng(random_state)
+    permuted_m2s = []
+    for _ in range(n_permutations):
+        permuted = rng.permutation(climatic_coords)
+        _, _, m2 = procrustes(permuted, genetic_coords)
+        permuted_m2s.append(m2)
+
+    p_value = np.mean(np.array(permuted_m2s) <= observed_m2)
+
+    return observed_m2, p_value
+
+def run_protest_test(climatic_matrix, genetic_matrix, n_permutations=999, random_state=None):
+    """
+    Runs the PROTEST (Procrustean randomization test) between two data matrices.
+    
+    Parameters:
+        climatic_matrix (array-like): Original climate data matrix (sites × variables).
+        genetic_matrix (array-like): Genetic distance matrix (sites × sites).
+        n_permutations (int): Number of permutations.
+        random_state (int or None): Seed for reproducibility.
+
+    Returns:
+        m2_original (float): Procrustes M² statistic.
+        p_value (float): p-value from permutation test.
+    """
+    rng = np.random.default_rng(random_state)
+
+    # Convert to NumPy if DataFrame
+    if hasattr(climatic_matrix, "values"):
+        climatic_matrix = climatic_matrix.values
+    if hasattr(genetic_matrix, "values"):
+        genetic_matrix = genetic_matrix.values
+
+    # Convert genetic distance matrix to PCoA coordinates
+    genetic_coords = pcoa(genetic_matrix).samples.to_numpy()
+
+    # Match rows
+    n = min(climatic_matrix.shape[0], genetic_coords.shape[0])
+    climatic_matrix = climatic_matrix[:n]
+    genetic_coords = genetic_coords[:n]
+
+    # 🔧 Match columns: truncate PCoA coordinates to same shape
+    genetic_coords = genetic_coords[:, :climatic_matrix.shape[1]]
+
+    # Run original Procrustes
+    _, _, m2_original = procrustes(climatic_matrix, genetic_coords)
+
+    # Permutation test
+    permuted_m2s = []
+    for _ in range(n_permutations):
+        perm = rng.permutation(climatic_matrix)
+        _, _, m2_perm = procrustes(perm, genetic_coords)
+        permuted_m2s.append(m2_perm)
+
+    p_value = np.mean(np.array(permuted_m2s) <= m2_original)
+    return m2_original, p_value
+
 
 def getDissimilaritiesMatrix(df, columnWithSpecimenName, columnToSearch):
     """
