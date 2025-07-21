@@ -26,4 +26,6 @@ preprocessing_climatic: 1
 preprocessing_threshold_genetic: 0.2   # proportion of gaps allowed
 preprocessing_threshold_climatic: 0.7  #variance threshold for numeric columns
 permutations_mantel_test: 999 #permutations for Mantel test
+permutations_protest: 999 #permutations for PROTEST analysis
 mantel_test_method: "pearson" #method for Mantel test
+statistical_test: '1' #Please select one ~ 0: Both test, 1: Mantel test, 2: PROTEST (Procrustes) analysis

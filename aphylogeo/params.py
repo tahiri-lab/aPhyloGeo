@@ -31,7 +31,9 @@ class Params:
         "preprocessing_threshold_genetic": 0,
         "preprocessing_threshold_climatic": 0,
         "permutations_mantel_test": 999,
+        "permutations_protest": 999 ,
         "mantel_test_method": "pearson",
+        "statistical_test": '0',
     }
 
     @classmethod
