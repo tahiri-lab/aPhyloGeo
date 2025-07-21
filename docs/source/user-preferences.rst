@@ -30,7 +30,9 @@ Configuration File Example
     preprocessing_threshold_genetic: 0.2    # Proportion of gaps allowed per column in genetic alignments
     preprocessing_threshold_climatic: 0.7   # Variance threshold for filtering climatic features
     permutations_mantel_test: 999 # Number of permutations for significance testing 
+    permutations_protest: 999 #permutations for PROTEST analysis
     mantel_test_method: "pearson" # Correlation method ('pearson', 'spearman', 'kendalltau')
+    statistical_test: '0' # Please select one ~ 0: Both test, 1: Mantel test, 2: Procrustes analysis
 
 User Preferences Options
 -------------------------
@@ -98,6 +100,16 @@ User Preferences Options
 - **Mantel Test Permutations**: Number of permutations for the Mantel test (**`permutations_mantel_test: 999`** in the example).
 
 
+- **PROTEST Permutations**: Number of random permutations for the PROTEST (Procrustes randomization test) to assess statistical significance (**`permutations_protest: 999`** in the example).
+
+
 - **Mantel Test Method**: Correlation method for the Mantel test (**`mantel_test_method: "pearson"`** in the example).
 
 To use the following alignement methods, **MUSCLE**, **CLUSTALW**, and **MAFFT**, please ensure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.
+
+- **Statistical Test**: Select which statistical test(s) to perform for global correlation between climatic and genetic matrices.  
+  Options:  
+  **`0`**: Run both Mantel and Procrustes/PROTEST  
+  **`1`**: Run only the Mantel test  
+  **`2`**: Run only Procrustes + PROTEST  
+  (**`statistical_test: '0'`** in the example)
