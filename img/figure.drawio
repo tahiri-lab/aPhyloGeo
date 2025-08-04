@@ -618,12 +618,12 @@
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="110" y="-400" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="306" y="-400" />
+              <mxPoint x="320" y="-400" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="GqQ9ciNXuP-na4kiYT8O-5" value="&lt;span style=&quot;color: rgb(51, 51, 51); font-size: 18px;&quot;&gt;trim of gaps&amp;nbsp;&amp;nbsp;&lt;/span&gt;" style="rounded=1;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#60A917;fontSize=17;strokeColor=#2D7600;" parent="xq17VbXv30ehePnhXH57-1" vertex="1">
-          <mxGeometry x="242.08" y="-484.17" width="127.92" height="30" as="geometry" />
+        <mxCell id="GqQ9ciNXuP-na4kiYT8O-5" value="&lt;span style=&quot;color: rgb(51, 51, 51); font-size: 18px;&quot;&gt;Trimming gaps&lt;/span&gt;" style="rounded=1;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#60A917;fontSize=17;strokeColor=#2D7600;" parent="xq17VbXv30ehePnhXH57-1" vertex="1">
+          <mxGeometry x="242.08" y="-484.17" width="147.92" height="30" as="geometry" />
         </mxCell>
         <mxCell id="oAwSsOdbA3ATmvDYZU6Y-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="xq17VbXv30ehePnhXH57-1" source="oAwSsOdbA3ATmvDYZU6Y-0" target="xq17VbXv30ehePnhXH57-20" edge="1">
           <mxGeometry relative="1" as="geometry" />
