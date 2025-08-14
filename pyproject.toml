@@ -9,7 +9,7 @@ repository = "https://github.com/tahiri-lab/aPhyloGeo"
 include = ["bin/**"]
 
 [tool.poetry.dependencies]
-python = ">=3.9.0"
+python = ">=3.10"
 bio = "^1.5.9"
 multiprocess = "^0.70.15"
 pandas = "^2.1.1"
@@ -24,6 +24,8 @@ dendropy = "^4.6.1"
 textdistance = "^4.6.0"
 typer = "^0.13.1"
 scipy = "^1.11.4"
+scikit-bio = "^0.7.0"
+scikit-learn = "^1.7.1"
 
 
 [tool.poetry.group.dev.dependencies]
