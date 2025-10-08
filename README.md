@@ -105,7 +105,7 @@ Some useful links:
 * [Contribution guidelines](https://github.com/tahiri-lab/aPhyloGeo/wiki/Contribution-Guidelines)
 * [aPhyloGeo wiki](https://github.com/tahiri-lab/aPhyloGeo/wiki)
 * [aPhyloGeo Sphinx](https://tahiri-lab.github.io/aPhyloGeo/)
-* [zenodo](https://zenodo.org/records/17290768)
+* [zenodo - DOI:17290768](https://zenodo.org/records/17290768)
 
 # ✔️ References
 
