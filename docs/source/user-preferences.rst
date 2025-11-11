@@ -58,31 +58,30 @@ User Preferences Options
 - **Data Names**: List of newick file names for each dataset.
 
   
-- **Reference Gene Directory**: Directory containing reference gene data (**`./datasets/example`** in the example).
+- **Reference Gene Directory**: Directory containing reference gene data (**:code:`./datasets/example`** in the example).
 
   
-- **Reference Gene File**: File containing reference gene sequences (**`sequences.fasta`** in the example).
+- **Reference Gene File**: File containing reference gene sequences (**:code:`sequences.fasta`** in the example).
 
   
 - **Make Debug Files**: Option to generate debug files (**True** or **False**).
 
   
-- **Alignment Method**: Algorithm selection for sequence alignment (Options: **`1: pairwiseAligner, 2: MUSCLE, 3: CLUSTALW, 4: MAFFT`** in the example).
+- **Alignment Method**: Algorithm selection for sequence alignment (**:code:`'1'`** in the example). To use the **MUSCLE**, **CLUSTALW**, or **MAFFT** alignement method, please make sure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.
+  
+- **Distance Method**: Distance selection (**:code:`'1'`** in the example).
 
   
-- **Distance Method**: Distance selection (Options: **`1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)`** in the example).
+- **Fit Method**: Gap selection elongation (**:code:`'1'`** in the example).
 
   
-- **Fit Method**: Gap selection elongation (Options: **`1: Wider Fit by elongating with Gap (starAlignment), 2: Narrow-fit prevent elongation with gap when possible`** in the example).
-
-  
-- **Tree Inference Method**: The choice of inference methods (Options: **`1: BioPython consensus tree, 2: FastTree application`** in the example).
+- **Tree Inference Method** / **Tree Type**: The choice of inference methods (**:code:`'1'`** in the example).
 
   
 - **Rate Similarity**: The rate similarity between sequences to reduce and remove the sub-MSA with a high value of similarity.
 
   
-- **Method Similarity**: The choice of similarity methods (Options: **`1: Hamming distance, 2: Levenshtein distance, 3: Damerau-Levenshtein distance, 4: Jaro similarity, 5: Jaro-Winkler similarity, 6: Smith–Waterman similarity, 7: Jaccard similarity, 8: Sørensen-Dice similarity`** in the example).
+- **Method Similarity**: The choice of similarity methods (**:code:`'1'`** in the example).
 
 
 - **Genetic Preprocessing**: Enable or disable filtering of alignment columns with gaps (**`preprocessing_genetic: 1`** to enable, **`0`** to disable).
@@ -103,9 +102,7 @@ User Preferences Options
 - **PROTEST Permutations**: Number of random permutations for the PROTEST (Procrustes randomization test) to assess statistical significance (**`permutations_protest: 999`** in the example).
 
 
-- **Mantel Test Method**: Correlation method for the Mantel test (**`mantel_test_method: "pearson"`** in the example).
-
-To use the following alignement methods, **MUSCLE**, **CLUSTALW**, and **MAFFT**, please ensure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.
+- **Mantel Test Method**: Correlation method for the Mantel test (**`"pearson"`** in the example).
 
 - **Statistical Test**: Select which statistical test(s) to perform for global correlation between climatic and genetic matrices.  
   Options:  
