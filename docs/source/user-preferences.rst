@@ -61,52 +61,52 @@ User Preferences Options
 - **Reference Gene Directory**: Directory containing reference gene data (:code:`./datasets/example` in the example).
 
   
-- **Reference Gene File**: File containing reference gene sequences (**:code:`sequences.fasta`** in the example).
+- **Reference Gene File**: File containing reference gene sequences (:code:`sequences.fasta` in the example).
 
   
 - **Make Debug Files**: Option to generate debug files (**True** or **False**).
 
   
-- **Alignment Method**: Algorithm selection for sequence alignment (**:code:`'1'`** in the example). To use the **MUSCLE**, **CLUSTALW**, or **MAFFT** alignement method, please make sure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.
+- **Alignment Method**: Algorithm selection for sequence alignment (:code:`'1'` in the example). To use the **MUSCLE**, **CLUSTALW**, or **MAFFT** alignement method, please make sure to follow the installation instructions provided in the `Alignment Dependencies Installation <alignment_dependencies.html>`_ section.
   
-- **Distance Method**: Distance selection (**:code:`'1'`** in the example).
+- **Distance Method**: Distance selection (:code:`'1'` in the example).
 
   
-- **Fit Method**: Gap selection elongation (**:code:`'1'`** in the example).
+- **Fit Method**: Gap selection elongation (:code:`'1'` in the example).
 
   
-- **Tree Inference Method** / **Tree Type**: The choice of inference methods (**:code:`'1'`** in the example).
+- **Tree Inference Method** / **Tree Type**: The choice of inference methods (:code:`'1'` in the example).
 
   
 - **Rate Similarity**: The rate similarity between sequences to reduce and remove the sub-MSA with a high value of similarity.
 
   
-- **Method Similarity**: The choice of similarity methods (**:code:`'1'`** in the example).
+- **Method Similarity**: The choice of similarity methods (:code:`'1'` in the example).
 
 
-- **Genetic Preprocessing**: Enable or disable filtering of alignment columns with gaps (**`preprocessing_genetic: 1`** to enable, **`0`** to disable).
+- **Genetic Preprocessing**: Enable or disable filtering of alignment columns with gaps (:code:`preprocessing_genetic: 1` to enable, **`0`** to disable).
 
 
-- **Climatic Preprocessing**: Enable or disable variance-based filtering of climatic features (**`preprocessing_climatic: 1`** to enable, **`0`** to disable).
+- **Climatic Preprocessing**: Enable or disable variance-based filtering of climatic features (:code:`preprocessing_climatic: 1` to enable, **`0`** to disable).
 
 
-- **Genetic Preprocessing Threshold**: Maximum allowed proportion of gaps per column in the alignment (**`preprocessing_threshold_genetic: 0.2`** in the example).
+- **Genetic Preprocessing Threshold**: Maximum allowed proportion of gaps per column in the alignment (:code:`preprocessing_threshold_genetic: 0.2` in the example).
 
 
-- **Climatic Preprocessing Threshold**: Minimum variance threshold to retain a climatic feature (**`preprocessing_threshold_climatic: 0.7`** in the example).
+- **Climatic Preprocessing Threshold**: Minimum variance threshold to retain a climatic feature (:code:`preprocessing_threshold_climatic: 0.7` in the example).
 
 
-- **Mantel Test Permutations**: Number of permutations for the Mantel test (**`permutations_mantel_test: 999`** in the example).
+- **Mantel Test Permutations**: Number of permutations for the Mantel test (:code:`permutations_mantel_test: 999` in the example).
 
 
-- **PROTEST Permutations**: Number of random permutations for the PROTEST (Procrustes randomization test) to assess statistical significance (**`permutations_protest: 999`** in the example).
+- **PROTEST Permutations**: Number of random permutations for the PROTEST (Procrustes randomization test) to assess statistical significance (:code:`permutations_protest: 999` in the example).
 
 
-- **Mantel Test Method**: Correlation method for the Mantel test (**`"pearson"`** in the example).
+- **Mantel Test Method**: Correlation method for the Mantel test (:code:`"pearson"` in the example).
 
 - **Statistical Test**: Select which statistical test(s) to perform for global correlation between climatic and genetic matrices.  
   Options:  
-  **`0`**: Run both Mantel and Procrustes/PROTEST  
-  **`1`**: Run only the Mantel test  
-  **`2`**: Run only Procrustes + PROTEST  
-  (**`statistical_test: '0'`** in the example)
+  :code:`0`: Run both Mantel and Procrustes/PROTEST  
+  :code:`1`: Run only the Mantel test  
+  :code:`2`: Run only Procrustes + PROTEST  
+  (:code:`statistical_test: '0'` in the example)
