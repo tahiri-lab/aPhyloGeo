@@ -89,7 +89,7 @@ class GeneticTrees:
     @classmethod
     def testtrees(cls, file_name: str, format: str = "newick") -> dict:
         """
-        Load the trees from json format.
+        Load the trees from a file containing them in json format.
 
         args:
             file_name (str): the name of the file
