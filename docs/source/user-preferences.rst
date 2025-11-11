@@ -58,7 +58,7 @@ User Preferences Options
 - **Data Names**: List of newick file names for each dataset.
 
   
-- **Reference Gene Directory**: Directory containing reference gene data (**:code:`./datasets/example`** in the example).
+- **Reference Gene Directory**: Directory containing reference gene data (:code:`./datasets/example` in the example).
 
   
 - **Reference Gene File**: File containing reference gene sequences (**:code:`sequences.fasta`** in the example).
