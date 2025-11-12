@@ -40,6 +40,8 @@
 
 `aPhyloGeo` is a powerful and versatile bioinformatics pipeline specifically designed for the analysis of phylogeography. Developed by the dedicated team led by Professor [Nadia Tahiri](https://tahirinadia.github.io/) at the University of Sherbrooke in Quebec, Canada, this open-source multi-platform application is implemented in Python. It serves as a valuable tool for researchers and scientists interested in unraveling the intricate relationships between genetic sequences and geographic locations.
 
+Reference: [Chenoweth Galaz, Ana Laura, and Nadia Tahiri. "aPhyloGeo: a Python application for correlating genetic and climatic conditions." Bioinformatics 41.11 (2025): btaf574.](https://academic.oup.com/bioinformatics/article/41/11/btaf574/8294574)
+
 # ⚒️ Installation
 
 ## Linux UNIX & Windows versions
@@ -111,15 +113,17 @@ Some useful links:
 
 💡 If you are using our algorithm in your research, please cite our recent papers:
 
-1️⃣  Li, W. & Tahiri, N. (2024). Host-Virus Cophylogeny Trajectories: Investigating Molecular Relationships between Coronaviruses and Bat Hosts. [Viruses, 16(7), p.1133](https://www.mdpi.com/1999-4915/16/7/1133)
+1️⃣  Chenoweth Galaz, A. L., & Tahiri, N. (2025). aPhyloGeo: a Python application for correlating genetic and climatic conditions. [Bioinformatics, 41(11), btaf574](https://academic.oup.com/bioinformatics/article/41/11/btaf574/8294574)
 
-2️⃣ Gagnon, J. & Tahiri, N. (2024). Ecological and Spatial Influences on the Genetics of Cumacea (Crustacea: Peracarida) in the Northern North Atlantic.
+2️⃣ Li, W. & Tahiri, N. (2024). Host-Virus Cophylogeny Trajectories: Investigating Molecular Relationships between Coronaviruses and Bat Hosts. [Viruses, 16(7), p.1133](https://www.mdpi.com/1999-4915/16/7/1133)
+
+3️⃣ Gagnon, J. & Tahiri, N. (2024). Ecological and Spatial Influences on the Genetics of Cumacea (Crustacea: Peracarida) in the Northern North Atlantic.
 [Proceeding in SciPy 2024, Tacoma, WA, USA](https://proceedings.scipy.org/articles/NVYF1037)
 
-3️⃣ Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
+4️⃣ Li, W. & Tahiri, N. (2023). aPhyloGeo-Covid: A Web Interface for Reproducible Phylogeographic Analysis of SARS-CoV-2 Variation using Neo4j and Snakemake.
 [Proceeding in SciPy 2023, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2023/pdfs/nadia_tahiri.pdf)
 
-:four: Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
+5️⃣ Koshkarov, A., Li, W., Luu, M. L., & Tahiri, N. (2022). Phylogeography: Analysis of genetic and climatic data of SARS-CoV-2.
 [Proceeding in SciPy 2022, Auxtin, TX, USA](https://conference.scipy.org/proceedings/scipy2022/pdfs/nadia_tahiri.pdf)
 
 
