@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.multiProcessor &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aphylogeo.multiProcessor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aphylogeo.multiProcessor</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocess</span><span class="w"> </span><span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Value</span>
+
+
+<div class="viewcode-block" id="Multi">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Multi</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that harnesses the power of &quot;multiprocess&quot; and wraps it, for ease of use, as a single callable line.</span>
+<span class="sd">    It is mainly aimed at very many large tasks that could be run on supercomputers with an ridiculous amount of RAM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of the multiprocessing tool</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args        (list)      The list of value to run. One process will be born per 1st level member</span>
+<span class="sd">            function    (method)    The method that needs to run as multiple instance</span>
+
+<span class="sd">        The constructor needs two thing, a method, and a list of lists.</span>
+<span class="sd">        Each sub-list of the list will be the list of arguments given to the child process running the given method</span>
+<span class="sd">        ***The methods used must only take a single list as input; and then, deal with it&#39;s division into other variables***</span>
+
+<span class="sd">        ex.: Run 3 processes of g()</span>
+
+<span class="sd">            def g(args):</span>
+<span class="sd">                n1=args[0]</span>
+<span class="sd">                n2=args[1]</span>
+<span class="sd">                return n1+n2</span>
+
+<span class="sd">            list = [ [0,1], [1,1] ,[2,1] ]</span>
+
+<span class="sd">            mps = Multi( list, g ).processingSmallData()        #note that &quot;g&quot; is not written &quot;g()&quot; we want to pass it, not run it</span>
+<span class="sd">            print( mps )</span>
+
+<span class="sd">            &gt;&gt;[1,2,3]</span>
+
+<span class="sd">        Variables:</span>
+<span class="sd">            args        Manager().list()    A list accessible from child processes; for the arguments</span>
+<span class="sd">            processes   Manager().list()    A list accessible from child processes; list of all the process ID started in this object</span>
+<span class="sd">            resultList  Manager().list()    A list accessible from child processes; for the return values</span>
+<span class="sd">            function    method              The method that needs to run as multiple instances</span>
+
+<span class="sd">            processlist list        All of the child processes</span>
+<span class="sd">            mem1        Value(f)    A value accessible from child processes; The memory needed to run a single child</span>
+<span class="sd">            memA        Value(f)    A value accessible from child processes; The current available memory</span>
+<span class="sd">            memT        Value(f)    A value accessible from child processes; The total amount of available memory at the creation of the object</span>
+<span class="sd">            nbAllowed   int         The amount of theoretical child processes that can fit in FREE memory</span>
+<span class="sd">            maxAllowed  int         The amount of theoretical child processes that can fit in TOTAL memory</span>
+<span class="sd">            tasks       Value(i)    A value accessible from child processes; The amount of child processes currently running</span>
+
+<span class="sd">            started     Value(i)    A value accessible from child processes; Number of started processes</span>
+<span class="sd">            finished    Value(i)    A value accessible from child processes; Number of finished processes</span>
+<span class="sd">            amount      int         The amount of processes that the object will start</span>
+
+<span class="sd">            startTime   float       the present time</span>
+<span class="sd">            timeForOne  Value(f)    A value accessible from child processes; Time it takes for the first iteration to complete</span>
+<span class="sd">            rewrite     dict        ints used the the terminal update rewriting process; amount of lines rewinded if large or small</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultList</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">processlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mem1</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memA</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memT</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbAllowed</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeForOne</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rewrite</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Multi.executeOnce">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.executeOnce">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">executeOnce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The method that is ran as a single process</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args    list    The list of arguments given to the method</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            Nothing None    But the return value of the executed method</span>
+<span class="sd">                            is passed to self.resultList</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+
+        <span class="c1"># execution of the passed method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">value</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Multi.processingLargeData">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.processingLargeData">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processingLargeData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method for executing mutliprocess on tasks that demand a LARGE amount</span>
+<span class="sd">        of individual memory. Will, first, run a single process then, will</span>
+<span class="sd">        start as many child processes as the available RAM permits, starting</span>
+<span class="sd">        new ones as the RAM is freed.</span>
+
+<span class="sd">        Variables:</span>
+<span class="sd">            p   (Process)   Representes a single child process</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            The multiprocess-friendly list, that was updated by each child</span>
+
+<span class="sd">        Errors:</span>
+<span class="sd">            If other application reduce the avalable RAM mid-execution,</span>
+<span class="sd">            Multiprocess outputs &quot;Killed&quot; and kills the child.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;    Starting multiprocessing, this might take some time</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;    The first process is ran alone for calibration purposes&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Multiprocess runs once alone</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executeOnce</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)]))</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># &quot;\033[B&quot; acts as a reverse \n, return the pointer one line up</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[B&quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewrite</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># adds the main thread on the list of processes to keep an eye on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+
+        <span class="c1"># ask the buttler to start complimentary processes</span>
+        <span class="n">alfred</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">buttler</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="kc">True</span><span class="p">]))</span>
+        <span class="n">alfred</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># give it a second to open the process, so it doesn&#39;t skip the while()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># wait for the calibration process to finish</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeForOne</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span>
+
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># Multiprocess runs the rest of the processes</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executeOnce</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">processlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processlist</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># give it a second to close the processes, do not remove</span>
+        <span class="n">alfred</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>  <span class="c1"># sorry Alfred, we have to let you go</span>
+
+        <span class="c1"># These weird prints need to be done because there is no telling where</span>
+        <span class="c1"># the terminal is at termination time, better make sure it&#39;s clean</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="c1"># &quot;\033[B&quot; acts as a reverse \n, return the pointer one line up</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[B&quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewrite</span><span class="p">[</span><span class="kc">True</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># if a process was killed or didn&#39;t finished; it will be know here</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completed with &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="s2">&quot; errors</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultList</span></div>
+
+
+<div class="viewcode-block" id="Multi.buttler">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.buttler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">buttler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memBloc</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ran as a child process, the buttler will</span>
+<span class="sd">        constantly run other methods forever.</span>
+
+<span class="sd">        In this case, it:</span>
+<span class="sd">            updates de memory capacity and</span>
+<span class="sd">            prints updates on the terminal.</span>
+<span class="sd">        It exists so not to bottleneck the main thread.</span>
+
+<span class="sd">        Uses timers to execute it&#39;s methods because time.sleep()</span>
+<span class="sd">        it processor hungry if constantly called</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">terminal</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">terminal</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>  <span class="c1"># has 0.1 second passed?</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">terminalUpdate</span><span class="p">(</span><span class="n">memBloc</span><span class="p">)</span>
+                <span class="n">terminal</span> <span class="o">=</span> <span class="n">now</span>
+            <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">mem</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;</span> <span class="n">memBloc</span><span class="p">:</span>  <span class="c1"># has 1 second passed?</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">memUpdate</span><span class="p">()</span>
+                <span class="n">mem</span> <span class="o">=</span> <span class="n">now</span></div>
+
+
+<div class="viewcode-block" id="Multi.memUpdate">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.memUpdate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">memUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that sets the baseline for memory calculation</span>
+<span class="sd">        + output some information to the terminal</span>
+<span class="sd">        All memory values are in bytes</span>
+
+<span class="sd">        This method is ran from the buttler() and updates every second</span>
+
+<span class="sd">        Variables:</span>
+<span class="sd">            memBuffer  double   %Amount of bytes to substract from the</span>
+<span class="sd">                                available RAM for safety purposes</span>
+<span class="sd">            mem        double   Amount of bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">memBuffer</span> <span class="o">=</span> <span class="mf">0.9</span>  <span class="c1"># 90%</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memA</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">memBuffer</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processes</span><span class="p">:</span>
+            <span class="c1"># in a try/except because processes ID</span>
+            <span class="c1"># are never removed from the list</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># uss memory usage; humch much is this process using NOW</span>
+                <span class="n">mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">child</span><span class="p">)</span><span class="o">.</span><span class="n">memory_full_info</span><span class="p">()[</span><span class="mi">8</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem1</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">mem</span><span class="p">:</span>
+                    <span class="c1"># does it for the whole run in case this maximum</span>
+                    <span class="c1"># is increased by future childs</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mem1</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">mem</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">memA</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem1</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Need to at least be able to start a single process</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nbAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">memT</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem1</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Need to at least be able to start a single process</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Multi.terminalUpdate">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.terminalUpdate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">terminalUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memBlock</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that constantly updates the user about the currently run tasks</span>
+
+<span class="sd">        This method is ran from the buttler() and updates every 0.1 second</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amount</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">nowTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># current execution time</span>
+        <span class="n">eTime</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">nowTime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">memBlock</span><span class="p">:</span>  <span class="c1"># block of prints used only by processingLargeData()</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Available memory: &quot;</span><span class="p">,</span>
+                <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memA</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="mi">10000000</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+                <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memT</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="mi">10000000</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s2">&quot;Gb        &quot;</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Active processes: &quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
+                <span class="s2">&quot; / &quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxAllowed</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
+                <span class="s2">&quot;            &quot;</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Min memory per:   &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mem1</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="mi">10000000</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;Gb        &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time for one:     &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeForOne</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot; seconds               &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started:          &quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;   &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="s2">&quot;%           &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished:         &quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;   &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">f</span> <span class="o">/</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="s2">&quot;%           &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time elapsed:     &quot;</span><span class="p">,</span> <span class="n">eTime</span><span class="p">,</span> <span class="s2">&quot; seconds               &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># &quot;\033[B&quot; acts as a reverse \n, return the pointer one line up</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[A&quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewrite</span><span class="p">[</span><span class="n">memBlock</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multi.executeSmall">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.executeSmall">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">executeSmall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The method executed by processingSmallData</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            Nothing, but the return value of the executed method is passed to a</span>
+<span class="sd">            global multiprocessing-friendly list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Multi.processingSmallData">
+<a class="viewcode-back" href="../../api/multiProcessor.html#aphylogeo.multiProcessor.Multi.processingSmallData">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processingSmallData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method for executing mutliprocess on tasks that demand little to no</span>
+<span class="sd">        memory. Will immedialty start all the child processes. The packaging</span>
+<span class="sd">        causes some marginal time lost; Only use for methods that take at</span>
+<span class="sd">        least a second to run : below that, a for loop is likely much faster</span>
+
+<span class="sd">        Variables:</span>
+<span class="sd">            p   Process   Representes a single child process</span>
+<span class="sd">            a   None      Exists only to permit the for loop</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            The multiprocess-friendly list, that was updated by each child</span>
+
+<span class="sd">        Errors:</span>
+<span class="sd">            If other application reduce the avalable RAM mid-execution,</span>
+<span class="sd">            Multiprocess outputs &quot;Killed&quot; and kills the child.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">alfred</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">buttler</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
+        <span class="n">alfred</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">executeSmall</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)]))</span>  <span class="c1"># Multiprocess runs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processlist</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># wait for the processes to close; do not remove</span>
+        <span class="n">finishedTime</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">/</span> <span class="mi">10</span>
+
+        <span class="n">alfred</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># &quot;\033[B&quot; acts as a reverse \n, return the pointer one line up</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[B&quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewrite</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completed &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultList</span><span class="p">),</span> <span class="s2">&quot;tasks in &quot;</span><span class="p">,</span> <span class="n">finishedTime</span><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultList</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

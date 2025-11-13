@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editing User Preferences &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Alignment Dependencies Installation" href="alignment_dependencies.html" />
+    <link rel="prev" title="aphylogeo.utils" href="api/utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Editing User Preferences</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-file-example">Configuration File Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#user-preferences-options">User Preferences Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Editing User Preferences</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/docs/source/user-preferences.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="editing-user-preferences">
+<span id="user-preferences"></span><h1>Editing User Preferences<a class="headerlink" href="#editing-user-preferences" title="Link to this heading"></a></h1>
+<p>The <cite>aPhyloGeo</cite> software allows users to customize their preferences through a YAML configuration file. This file includes a set of parameters for easy handling. Below is an example configuration file with explanations for each parameter:</p>
+<section id="configuration-file-example">
+<h2>Configuration File Example<a class="headerlink" href="#configuration-file-example" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">file_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./datasets/example/geo.csv&#39;</span>
+<span class="nt">specimen</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;id&#39;</span>
+<span class="nt">dist_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="nt">window_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+<span class="nt">step_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="nt">bootstrap_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="nt">reference_gene_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./datasets/example&#39;</span>
+<span class="nt">reference_gene_file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;sequences.fasta&#39;</span>
+<span class="nt">makeDebugFiles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">alignment_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w"> </span><span class="c1"># Options: 1: pairwiseAligner, 2: MUSCLE, 3: CLUSTALW, 4: MAFFT</span>
+<span class="nt">distance_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w"> </span><span class="c1"># Options: 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)</span>
+<span class="nt">fit_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w"> </span><span class="c1"># Options: 1: Wider Fit by elongating with Gap (starAlignment), 2: Narrow-fit prevent elongation with gap when possible</span>
+<span class="nt">tree_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w"> </span><span class="c1"># Options: 1: BioPython consensus tree, 2: FastTree application</span>
+<span class="nt">rate_similarity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
+<span class="nt">method_similarity</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span><span class="w"> </span><span class="c1"># Options: 1: Hamming distance, 2: Levenshtein distance, 3: Damerau-Levenshtein distance, 4: Jaro similarity, 5: Jaro-Winkler similarity, 6: Smith–Waterman similarity, 7: Jaccard similarity, 8: Sørensen-Dice similarity</span>
+<span class="nt">preprocessing_genetic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                </span><span class="c1"># Enable genetic preprocessing (1 = yes, 0 = no)</span>
+<span class="nt">preprocessing_climatic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">               </span><span class="c1"># Enable climatic preprocessing (1 = yes, 0 = no)</span>
+<span class="nt">preprocessing_threshold_genetic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w">    </span><span class="c1"># Proportion of gaps allowed per column in genetic alignments</span>
+<span class="nt">preprocessing_threshold_climatic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.7</span><span class="w">   </span><span class="c1"># Variance threshold for filtering climatic features</span>
+<span class="nt">permutations_mantel_test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">999</span><span class="w"> </span><span class="c1"># Number of permutations for significance testing</span>
+<span class="nt">permutations_protest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">999</span><span class="w"> </span><span class="c1">#permutations for PROTEST analysis</span>
+<span class="nt">mantel_test_method</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;pearson&quot;</span><span class="w"> </span><span class="c1"># Correlation method (&#39;pearson&#39;, &#39;spearman&#39;, &#39;kendalltau&#39;)</span>
+<span class="nt">statistical_test</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0&#39;</span><span class="w"> </span><span class="c1"># Please select one ~ 0: Both test, 1: Mantel test, 2: Procrustes analysis</span>
+</pre></div>
+</div>
+</section>
+<section id="user-preferences-options">
+<h2>User Preferences Options<a class="headerlink" href="#user-preferences-options" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>File Name</strong>: Path to the input data file (<strong>`./datasets/example/geo.csv`</strong> in the example).</p></li>
+<li><p><strong>Specimen</strong>: Identifier for the specimens in the dataset (<strong>`id`</strong> in the example).</p></li>
+<li><p><strong>Bootstrap Threshold</strong>: Number of replicates threshold to be generated for each sub-MSA.</p></li>
+<li><p><strong>Distance Threshold</strong>: Distance threshold between genetic tree and climatic tree for each sub-MSA.</p></li>
+<li><p><strong>Window Size</strong>: Size of the sliding window.</p></li>
+<li><p><strong>Step Size</strong>: Sliding window advancement step.</p></li>
+<li><p><strong>Data Names</strong>: List of newick file names for each dataset.</p></li>
+<li><p><strong>Reference Gene Directory</strong>: Directory containing reference gene data (<code class="code docutils literal notranslate"><span class="pre">./datasets/example</span></code> in the example).</p></li>
+<li><p><strong>Reference Gene File</strong>: File containing reference gene sequences (<code class="code docutils literal notranslate"><span class="pre">sequences.fasta</span></code> in the example).</p></li>
+<li><p><strong>Make Debug Files</strong>: Option to generate debug files (<strong>True</strong> or <strong>False</strong>).</p></li>
+<li><p><strong>Alignment Method</strong>: Algorithm selection for sequence alignment (<code class="code docutils literal notranslate"><span class="pre">'1'</span></code> in the example). To use the <strong>MUSCLE</strong>, <strong>CLUSTALW</strong>, or <strong>MAFFT</strong> alignement method, please make sure to follow the installation instructions provided in the <a class="reference external" href="alignment_dependencies.html">Alignment Dependencies Installation</a> section.</p></li>
+<li><p><strong>Distance Method</strong>: Distance selection (<code class="code docutils literal notranslate"><span class="pre">'1'</span></code> in the example).</p></li>
+<li><p><strong>Fit Method</strong>: Gap selection elongation (<code class="code docutils literal notranslate"><span class="pre">'1'</span></code> in the example).</p></li>
+<li><p><strong>Tree Inference Method</strong> / <strong>Tree Type</strong>: The choice of inference methods (<code class="code docutils literal notranslate"><span class="pre">'1'</span></code> in the example).</p></li>
+<li><p><strong>Rate Similarity</strong>: The rate similarity between sequences to reduce and remove the sub-MSA with a high value of similarity.</p></li>
+<li><p><strong>Method Similarity</strong>: The choice of similarity methods (<code class="code docutils literal notranslate"><span class="pre">'1'</span></code> in the example).</p></li>
+<li><p><strong>Genetic Preprocessing</strong>: Enable or disable filtering of alignment columns with gaps (<code class="code docutils literal notranslate"><span class="pre">preprocessing_genetic:</span> <span class="pre">1</span></code> to enable, <strong>`0`</strong> to disable).</p></li>
+<li><p><strong>Climatic Preprocessing</strong>: Enable or disable variance-based filtering of climatic features (<code class="code docutils literal notranslate"><span class="pre">preprocessing_climatic:</span> <span class="pre">1</span></code> to enable, <strong>`0`</strong> to disable).</p></li>
+<li><p><strong>Genetic Preprocessing Threshold</strong>: Maximum allowed proportion of gaps per column in the alignment (<code class="code docutils literal notranslate"><span class="pre">preprocessing_threshold_genetic:</span> <span class="pre">0.2</span></code> in the example).</p></li>
+<li><p><strong>Climatic Preprocessing Threshold</strong>: Minimum variance threshold to retain a climatic feature (<code class="code docutils literal notranslate"><span class="pre">preprocessing_threshold_climatic:</span> <span class="pre">0.7</span></code> in the example).</p></li>
+<li><p><strong>Mantel Test Permutations</strong>: Number of permutations for the Mantel test (<code class="code docutils literal notranslate"><span class="pre">permutations_mantel_test:</span> <span class="pre">999</span></code> in the example).</p></li>
+<li><p><strong>PROTEST Permutations</strong>: Number of random permutations for the PROTEST (Procrustes randomization test) to assess statistical significance (<code class="code docutils literal notranslate"><span class="pre">permutations_protest:</span> <span class="pre">999</span></code> in the example).</p></li>
+<li><p><strong>Mantel Test Method</strong>: Correlation method for the Mantel test (<code class="code docutils literal notranslate"><span class="pre">&quot;pearson&quot;</span></code> in the example).</p></li>
+<li><p><strong>Statistical Test</strong>: Select which statistical test(s) to perform for global correlation between climatic and genetic matrices.
+Options:
+<code class="code docutils literal notranslate"><span class="pre">0</span></code>: Run both Mantel and Procrustes/PROTEST
+<code class="code docutils literal notranslate"><span class="pre">1</span></code>: Run only the Mantel test
+<code class="code docutils literal notranslate"><span class="pre">2</span></code>: Run only Procrustes + PROTEST
+(<code class="code docutils literal notranslate"><span class="pre">statistical_test:</span> <span class="pre">'0'</span></code> in the example)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/utils.html" class="btn btn-neutral float-left" title="aphylogeo.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="alignment_dependencies.html" class="btn btn-neutral float-right" title="Alignment Dependencies Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
