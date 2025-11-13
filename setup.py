@@ -5,7 +5,7 @@ setup(
     url="https://github.com/tahiri-lab/aPhyloGeo",
     author="Tahiri Lab",
     description="A phylogenetic and geographic analysis tool",
-    version="1.0.0",
+    version="2.0.0",
     include_package_data=True,
     install_requires=[
         "bio==1.5.9",
