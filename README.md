@@ -102,7 +102,7 @@ Some useful links:
 
 * [Installation guide](https://github.com/tahiri-lab/aPhyloGeo/wiki/Installation-guide)
 * [Tutorial](https://github.com/tahiri-lab/aPhyloGeo/wiki/Tutorial)
-* [Worflow](https://github.com/tahiri-lab/aPhyloGeo/wiki/Worflow)
+* [Workflow](https://github.com/tahiri-lab/aPhyloGeo/wiki/workflow)
 * [Contribution guidelines](https://github.com/tahiri-lab/aPhyloGeo/wiki/Contribution-Guidelines)
 * [aPhyloGeo wiki](https://github.com/tahiri-lab/aPhyloGeo/wiki)
 * [aPhyloGeo Sphinx](https://tahiri-lab.github.io/aPhyloGeo/)
