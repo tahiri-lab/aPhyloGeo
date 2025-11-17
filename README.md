@@ -44,10 +44,9 @@ Reference: [Chenoweth Galaz, Ana Laura, and Nadia Tahiri. "aPhyloGeo: a Python a
 
 # ⚒️ Installation
 
-## Linux UNIX & Windows versions
 `aPhyloGeo` is available as a Python package.
 
-### Installation from PyPI via pip
+## Installation from PyPI via pip
 
 `aPhyloGeo` can be installed directly from the Python Packaging Index,
 
@@ -55,8 +54,8 @@ Reference: [Chenoweth Galaz, Ana Laura, and Nadia Tahiri. "aPhyloGeo: a Python a
 python3 -m pip install aPhyloGeo
 ```
 
-### Installation from Source via Poetry
-This package use ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation). 
+## Installation from source via Poetry
+This package uses ```Poetry``` dependency management and packaging tool for Python. Poetry installation guide can be found here: [Poetry Install](https://python-poetry.org/docs/#installation). 
 ⚠️ For windows installation it's recommended to launch powershell in **Administrator mode**.
 
 Installation of Poetry is using the following commands:
@@ -71,14 +70,14 @@ Once Poetry is installed, you can clone the repository and install the package u
 poetry install
 ```
 
-### Usage
+## Usage
 Poetry automatically manages the virtual environment. If manual activation is preferred, the following command can be used
 
 ```
 poetry shell
 ```
 
-### Run the application
+## Run the application
 Launch the application and tutorial example using the following command:
 
 ```
