@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Sequence Similarity Algorithms" href="sequence-similarity-algorithms.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#description">Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cumacea-crustacea-peracarida-from-the-deep-north-atlantic-to-the-arctic-ocean">Cumacea (Crustacea: Peracarida) from the deep North Atlantic to the Arctic Ocean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#severe-acute-respiratory-syndrome-coronavirus-2-sars-cov-2">Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#input">Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparing-your-data">Preparing Your Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-features-of-aphylogeo">Key Features of aPhyloGeo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/multiProcessor.html">aphylogeo.multiProcessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/docs/source/tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading"></a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<section id="cumacea-crustacea-peracarida-from-the-deep-north-atlantic-to-the-arctic-ocean">
+<h3>Cumacea (Crustacea: Peracarida) from the deep North Atlantic to the Arctic Ocean<a class="headerlink" href="#cumacea-crustacea-peracarida-from-the-deep-north-atlantic-to-the-arctic-ocean" title="Link to this heading"></a></h3>
+<p>The study area was located in a northern region of the North Atlantic, including the Icelandic Sea, the Denmark Strait, and the Norwegian Sea. The specimens examined were collected as part of the IceAGE project (Icelandic marine Animals: Genetic and Ecology; Cruise ship M85/3 in 2011), which studied the deep continental slopes and abyssal waters around Iceland <a class="reference external" href="https://doi.org/10.1007/s12526-018-0884-7">Meißner et al., 2018</a>. The sampling period for the included specimens was from August 30 to September 22, 2011, and they were collected at depths ranging from 316 to 2568 m. Information on the sampling plan, sample processing, DNA extraction steps, PCR amplification, sequencing, and extracted and aligned DNA sequences is available in the <a class="reference external" href="https://doi.org/10.7717/peerj.12379">Uhlir et al., 2021</a> article. Refer to the <a class="reference external" href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/datasets/Cumacea/Cumacea.fasta">example Cumacea FASTA file</a> and <a class="reference external" href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/datasets/Cumacea/Cumacea.csv">example Cumacea CSV file</a> for guidance.</p>
+</section>
+<section id="severe-acute-respiratory-syndrome-coronavirus-2-sars-cov-2">
+<h3>Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)<a class="headerlink" href="#severe-acute-respiratory-syndrome-coronavirus-2-sars-cov-2" title="Link to this heading"></a></h3>
+<p>In a previous study (Koshkarov et al., 2022), a total of 38 distinct genetic lineages were identified across the species’ range. For this specific analysis, we focused on 5 of these lineages, selected for their pronounced regional characteristics and relevance to our research. Based on location information, complete nucleotide sequencing data for these 5 lineages was collected from the <a class="reference external" href="https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/">NCBI Virus website</a>. In the case of the availability of multiple sequencing results for the same lineage in the same country, we selected the sequence whose collection date was closest to the earliest date presented. If there are several sequencing results for the same country on the same date, the sequence with the least number of ambiguous characters (N per nucleotide) is selected.</p>
+<p>Although the selection of samples was based on the phylogenetic cluster of lineage and transmission, most of the sites involved represent different meteorological conditions. The 5 samples involved temperatures ranging from -4°C to 32.6°C, with an average temperature of 15.3°C. The specific humidity ranged from 2.9 g/kg to 19.2 g/kg with an average of 8.3 g/kg. The variability of wind speed and all-sky surface shortwave downward irradiance was relatively small across samples compared to other parameters. The wind speed ranged from 0.7 m/s to 9.3 m/s with an average of 4.0 m/s, and all-sky surface shortwave downward irradiance ranged from 0.8 kW-hr/m²/day to 8.6 kW-hr/m²/day with an average of 4.5 kW-hr/m²/day. In contrast to the other parameters, 75% of the cities involved receive less than 2.2 mm of precipitation per day, and only 5 cities have more than 5 mm of precipitation per day. The minimum precipitation is 0 mm/day, the maximum precipitation is 12 mm/day, and the average value is 2.1 mm/day. Refer to the <a class="reference external" href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/datasets/example/sequences.fasta">example SARS-CoV-2 FASTA file</a> and <a class="reference external" href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/datasets/example/geo.csv">example SARS-CoV-2 CSV file</a> for guidance.</p>
+</section>
+</section>
+<section id="input">
+<h2>Input<a class="headerlink" href="#input" title="Link to this heading"></a></h2>
+<p>The algorithm takes two files as input with the following definitions:</p>
+<ul class="simple">
+<li><p>🧬 <strong>Genetic file</strong> with FASTA extension. The first file or set of files will contain the genetic sequence information of the species sets selected for the study. The name of the file must allow you to know the name of the gene. It is therefore strongly recommended to follow the following nomenclature: <code class="docutils literal notranslate"><span class="pre">gene_name.fasta</span></code>. It should contain genetic variants (e.g., SNPs) and their associated metadata (e.g., sample IDs, location information).</p></li>
+<li><p>⛅ <strong>Climatic file</strong> with CSV extension (Comma-Separated Values). The second file will contain the habitat information for the species sets selected for the study. Each row will represent the species identifier and each column will represent a climate condition. It should include relevant climatic variables (e.g., temperature, precipitation) for each geographic location represented in your genetic data and must be clearly labeled to match the expected format.</p></li>
+</ul>
+<section id="preparing-your-data">
+<h3>Preparing Your Data<a class="headerlink" href="#preparing-your-data" title="Link to this heading"></a></h3>
+<p>Include relevant climatic variables (e.g., temperature, precipitation) for each geographic location represented in your genetic data. Column headers must be clearly labeled to match the expected format. Refer to the example files in the datasets directory for guidance.</p>
+</section>
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Link to this heading"></a></h2>
+<p>The algorithm will return a CSV file that contains information from all relevant MSAs (see the Workflow section for more details). The sliding windows of interest are those with interesting bootstrap support (i.e., indicating the robustness of the tree) and high similarity to the climate condition in question (i.e., based on the <code class="docutils literal notranslate"><span class="pre">RF</span></code>, <code class="docutils literal notranslate"><span class="pre">RFnorm</span></code>, <code class="docutils literal notranslate"><span class="pre">LS</span></code>, and <code class="docutils literal notranslate"><span class="pre">Euclidean</span></code> values). They will indicate, among other things, the name of the gene, the position of the beginning and end of the sliding window, the average bootstrap value, the LS value, and finally the climatic condition for which this genetic zone would explain the adaptation of the species in a given environment.</p>
+<p>To sum up, aPhyloGeo generates an <code class="docutils literal notranslate"><span class="pre">output.csv</span></code> file containing analysis results. Additional visualizations (e.g., maps, plots) may be generated based on your configuration.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<section id="system-requirements">
+<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Operating System:</strong> Windows, macOS, or Linux.</p></li>
+<li><p><strong>Python:</strong> <a class="reference external" href="https://www.python.org">Python</a> 3.8 or higher.</p></li>
+</ul>
+</section>
+<section id="key-features-of-aphylogeo">
+<h3>Key Features of aPhyloGeo<a class="headerlink" href="#key-features-of-aphylogeo" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Multi-Platform:</strong> Works seamlessly on Windows, macOS, and Linux.</p></li>
+<li><dl class="simple">
+<dt><strong>Flexible Analysis:</strong> Supports various phylogeographic analyses, including:</dt><dd><ul>
+<li><p>Identifying genetic lineages and their geographic origins</p></li>
+<li><p>Assessing the impact of climate on genetic diversity</p></li>
+<li><p>Visualizing genetic and geographic relationships</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Customizable:</strong> Tailor analyses using a configuration file to fit your specific research questions.</p></li>
+<li><p><strong>Open Source:</strong> Freely available and encourages contributions from the research community.</p></li>
+</ul>
+<p>Before you begin, ensure you have the following installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pandas<span class="w"> </span>aphylogeo
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sequence-similarity-algorithms.html" class="btn btn-neutral float-right" title="Sequence Similarity Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
