@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aphylogeo.multiProcessor &mdash; aPhyloGeo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="aphylogeo.params" href="params.html" />
+    <link rel="prev" title="aphylogeo.alignement" href="alignement.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            aPhyloGeo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Available Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../sequence-similarity-algorithms.html">Sequence Similarity Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="genetic_trees.html">aphylogeo.genetic_trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignement.html">aphylogeo.alignement</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">aphylogeo.multiProcessor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi"><code class="docutils literal notranslate"><span class="pre">Multi</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.executeOnce"><code class="docutils literal notranslate"><span class="pre">Multi.executeOnce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.processingLargeData"><code class="docutils literal notranslate"><span class="pre">Multi.processingLargeData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.buttler"><code class="docutils literal notranslate"><span class="pre">Multi.buttler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.memUpdate"><code class="docutils literal notranslate"><span class="pre">Multi.memUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.terminalUpdate"><code class="docutils literal notranslate"><span class="pre">Multi.terminalUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.executeSmall"><code class="docutils literal notranslate"><span class="pre">Multi.executeSmall()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aphylogeo.multiProcessor.Multi.processingSmallData"><code class="docutils literal notranslate"><span class="pre">Multi.processingSmallData()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="params.html">aphylogeo.params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">aphylogeo.utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-preferences.html">Editing User Preferences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../alignment_dependencies.html">Alignment Dependencies Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">aPhyloGeo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">aphylogeo.multiProcessor</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tahiri-lab/aPhyloGeo/blob/main/docs/source/api/multiProcessor.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="aphylogeo-multiprocessor">
+<span id="id1"></span><h1>aphylogeo.multiProcessor<a class="headerlink" href="#aphylogeo-multiprocessor" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-aphylogeo.multiProcessor">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aphylogeo.multiProcessor.</span></span><span class="sig-name descname"><span class="pre">Multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that harnesses the power of “multiprocess” and wraps it, for ease of use, as a single callable line.
+It is mainly aimed at very many large tasks that could be run on supercomputers with an ridiculous amount of RAM.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.executeOnce">
+<span class="sig-name descname"><span class="pre">executeOnce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.executeOnce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.executeOnce" title="Link to this definition"></a></dt>
+<dd><p>The method that is ran as a single process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<em>args    list    The list</em><em> of </em><em>arguments given to the</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Nothing None    But the return value of the executed method</dt><dd><p>is passed to self.resultList</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.processingLargeData">
+<span class="sig-name descname"><span class="pre">processingLargeData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.processingLargeData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.processingLargeData" title="Link to this definition"></a></dt>
+<dd><p>Method for executing mutliprocess on tasks that demand a LARGE amount
+of individual memory. Will, first, run a single process then, will
+start as many child processes as the available RAM permits, starting
+new ones as the RAM is freed.</p>
+<dl class="simple">
+<dt>Variables:</dt><dd><p>p   (Process)   Representes a single child process</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The multiprocess-friendly list, that was updated by each child</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Errors:</dt><dd><p>If other application reduce the avalable RAM mid-execution,
+Multiprocess outputs “Killed” and kills the child.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.buttler">
+<span class="sig-name descname"><span class="pre">buttler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memBloc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.buttler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.buttler" title="Link to this definition"></a></dt>
+<dd><p>Ran as a child process, the buttler will
+constantly run other methods forever.</p>
+<dl class="simple">
+<dt>In this case, it:</dt><dd><p>updates de memory capacity and
+prints updates on the terminal.</p>
+</dd>
+</dl>
+<p>It exists so not to bottleneck the main thread.</p>
+<p>Uses timers to execute it’s methods because time.sleep()
+it processor hungry if constantly called</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.memUpdate">
+<span class="sig-name descname"><span class="pre">memUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.memUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.memUpdate" title="Link to this definition"></a></dt>
+<dd><p>Method that sets the baseline for memory calculation
++ output some information to the terminal
+All memory values are in bytes</p>
+<p>This method is ran from the buttler() and updates every second</p>
+<dl>
+<dt>Variables:</dt><dd><dl class="simple">
+<dt>memBuffer  double   %Amount of bytes to substract from the</dt><dd><p>available RAM for safety purposes</p>
+</dd>
+</dl>
+<p>mem        double   Amount of bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.terminalUpdate">
+<span class="sig-name descname"><span class="pre">terminalUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memBlock</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.terminalUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.terminalUpdate" title="Link to this definition"></a></dt>
+<dd><p>Method that constantly updates the user about the currently run tasks</p>
+<p>This method is ran from the buttler() and updates every 0.1 second</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.executeSmall">
+<span class="sig-name descname"><span class="pre">executeSmall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.executeSmall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.executeSmall" title="Link to this definition"></a></dt>
+<dd><p>The method executed by processingSmallData</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Nothing, but the return value of the executed method is passed to a
+global multiprocessing-friendly list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aphylogeo.multiProcessor.Multi.processingSmallData">
+<span class="sig-name descname"><span class="pre">processingSmallData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aphylogeo/multiProcessor.html#Multi.processingSmallData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aphylogeo.multiProcessor.Multi.processingSmallData" title="Link to this definition"></a></dt>
+<dd><p>Method for executing mutliprocess on tasks that demand little to no
+memory. Will immedialty start all the child processes. The packaging
+causes some marginal time lost; Only use for methods that take at
+least a second to run : below that, a for loop is likely much faster</p>
+<dl class="simple">
+<dt>Variables:</dt><dd><p>p   Process   Representes a single child process
+a   None      Exists only to permit the for loop</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The multiprocess-friendly list, that was updated by each child</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Errors:</dt><dd><p>If other application reduce the avalable RAM mid-execution,
+Multiprocess outputs “Killed” and kills the child.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="alignement.html" class="btn btn-neutral float-left" title="aphylogeo.alignement" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="params.html" class="btn btn-neutral float-right" title="aphylogeo.params" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tahiri Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
